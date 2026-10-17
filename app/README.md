@@ -1,4 +1,4 @@
-# أثر · Athar — مشروع Flutter (الأسبوعان ١ + ٢)
+# أثر · Athar — مشروع Flutter (الأسابيع ١–٣)
 
 > حالة：**مكتوبة يدويًا وغير مُجمَّعة بعد** — مفيش Flutter SDK في بيئة التطوير المستخدمة هنا.
 > لازم تشغّل الخطوات اللي تحت على جهازك مرة واحدة على الأقل قبل أي تعديل.
@@ -46,7 +46,9 @@ flutter analyze
 
 ---
 
-## ٢. صلاحيات الموقع (لازم تضاف يدويًا بعد `flutter create`)
+## ٢. الصلاحيات (لازم تضاف يدويًا بعد `flutter create`)
+
+### ٢.١ الموقع
 
 `geolocator` مش هيشتغل من غير الإعلان عن الصلاحية في ملفات المنصّة:
 
@@ -68,6 +70,35 @@ flutter analyze
 > «تحديد موقعي تلقائيًا» (راجع `docs/03` §3.1). والوضع اليدوي (اختيار مدينة)
 > شغال بالكامل بدون أي صلاحية.
 
+### ٢.٢ الإشعارات والأذان (أسبوع ٣)
+
+**`android/app/src/main/AndroidManifest.xml`**:
+
+```xml
+<!-- أندرويد ١٣+: إذن الإشعارات -->
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<!-- الجدولة الدقيقة (الأذان في ثانيته) — يُمنح من المستخدم، وبيُسحب أحيانًا -->
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+<!-- إعادة الجدولة بعد إعادة التشغيل -->
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.VIBRATE" />
+```
+
+> بديل `SCHEDULE_EXACT_ALARM` هو `USE_EXACT_ALARM`: **لا يطلب إذن المستخدم**
+> لكن جوجل بيراجعه يدويًا وقت النشر ويشترط إن التطبيق منبّه/تقويم.
+> اخترنا `SCHEDULE_EXACT_ALARM` (أسبوع ٣) لأن الأذان **منبّه ديني** —
+> والاستخدام واضح ومبرّر في سياسة جوجل. الكود بيتحمّل غيابها: بيسقط على
+> `inexactAllowWhileIdle` وبيعرض banner للمستخدم بدل ما يكراش.
+
+**`ios/Runner/Info.plist`** — لا شيء إضافي (الإذن بيُطلب وقت التشغيل).
+
+> ⚠️ **ثلاثة أشياء لازم تتأكد منها على أندرويد:**
+> 1. `compileSdk 35` على الأقل (مطلوب من `flutter_local_notifications` ١٩).
+> 2. تفعيل **desugaring** (حتى لو مش بتستخدم الجدولة) — وإلا البناء يفشل.
+> 3. على أجهزة **Samsung / Xiaomi / Huawei**، إدارة البطارية العدوانية تقدر
+>    تقتل التنبيهات رغم كل الصلاحيات — الشاشة بتعرض banner توجيهي.
+
 ---
 
 ## ٣. ما تحتويه السقالة
@@ -77,10 +108,10 @@ lib/
 ├── main.dart                     → يستدعي bootstrap() فقط
 ├── app/
 │   ├── bootstrap.dart            → WidgetsBinding + SharedPreferences + ProviderScope (overrides)
-│   ├── app.dart                  → MaterialApp.router (locale · theme · textScaler)
+│   ├── app.dart                  → MaterialApp.router + مراقب دورة الحياة (إعادة الجدولة)
 │   └── router.dart               → Routes + routerProvider + StatefulShellRoute (٥ تبويبات)
 ├── core/
-│   ├── l10n/                     → AppLocale + Strings + ٣ حزم (~٢٠٠ مفتاح)
+│   ├── l10n/                     → AppLocale + Strings + ٣ حزم (٢٥٤ مفتاحًا)
 │   ├── settings/                 → AppSettings (JSON) + SettingsController +Providers
 │   ├── theme/                    → ألوان · مسافات · خطوط · ثيم فاتح/داكن · ثيم القراءة
 │   ├── utils/                    → أرقام عربية-هندية · تحية · مفاتيح الصلوات
@@ -135,7 +166,7 @@ final s = ref.watch(stringsProvider);  // ترجمة اللغة الحالية
 
 ---
 
-## ٤. المواقيت (أسبوع ٢)
+## ٤. المواقيت والإشعارات (أسبوعان ٢ + ٣)
 
 ```
 features/prayer/
@@ -155,7 +186,7 @@ features/prayer/
 │   ├── prayer_providers.dart
 │   └── location_controller.dart
 └── presentation/
-    ├── pages/    prayer_settings_page · city_picker_page
+    ├── pages/    prayer_settings_page · city_picker_page · notifications_page
     └── widgets/  next_prayer_card · prayer_times_list
 ```
 
@@ -170,7 +201,7 @@ features/prayer/
 | **~٦٥ مدينة مرفقة كبذرة** | أوفلاين أولًا؛ التوسعة لاحقًا بملف JSON |
 | **المنطقة الزمنية من IANA مش من إزاحة ثابتة** | عشان التوقيت الصيفي (DST) ما يبوّظش المواقيت |
 
-### ⚠️ نقاط التحقّق عند أول كومبايل
+### ⚠️ نقاط التحقّق عند أول كومبايل (أسبوع ٢)
 
 السقالة مكتوبة يدويًا (مافيش Flutter SDK في بيئة التطوير)، فلازم تتحقّق من
 دي عند أول `flutter test` — وكلها متجمّعة في **ملف واحد**:
@@ -182,11 +213,71 @@ features/prayer/
    (MWL قد يحمل تعديلات خاصة بالطريقة).
 2. أسماء الخصائص `fajrAngle · ishaAngle · ishaInterval · maghribAngle · madhab · highLatitudeRule`.
 3. `Madhab.hanafi / Madhab.shafi` و `HighLatitudeRule.*`.
-4. `prayerTimes.fajr` إلخ — الكود متدرّج على الحالتين (nullable ولا لأ).
+
+### ٤.١ الإشعارات والأذان (أسبوع ٣)
+
+```
+features/prayer/
+├── domain/
+│   ├── alert_id.dart                 معرّف إشعار حتمي (deterministic)
+│   ├── notification_settings.dart    PrayerAlertMode · AdhanSound · NotificationSettings
+│   └── notification_planner.dart     «متى» فقط — محض بالكامل وقابل للاختبار
+├── data/
+│   └── notification_service.dart     الغلاف الوحيد حول flutter_local_notifications
+├── application/
+│   ├── notification_settings_controller.dart  (يُحفظ تحت athar.notifications.v1)
+│   └── notification_controller.dart           الخطة · الصلاحيات · المزامنة
+└── presentation/
+    └── pages/notifications_page.dart          شاشة الإعدادات الكاملة
+```
+
+**الفصل بين «متى» و«ماذا»** — أهم قرار معماري في الأسبوع:
+
+| الطبقة | المسؤولية | تعتمد على حزم؟ |
+|---|---|---|
+| `notification_planner.dart` | يحسب **متى** يُطلق كل تنبيه | ❌ صفر — محض ١٠٠٪ |
+| `notification_service.dart` | يبني **ماذا** (العنوان · النص · القناة · الصوت) ويجدوله | ✅ flutter_local_notifications |
+
+السبب: المنطق اللي يهمّ المستخدم (توقيت الأذان، التذكير، الجمعة) يتختبر
+بدون محاكاة أي منصّة، والكود المعرّض لتغيّر الـ API يبقى محصورًا في ملف واحد.
+
+**معرّف الإشعار حتمي** — `kind × 1,000,000 + dayEpoch × 10 + prayerSlot`
+(الأساس ٢٠٠٠-٠١-٠١). يعني نقدر نلغي/نحدّث تنبيهًا بعينه من غير خريطة محفوظة
+في التخزين، والأقصى ≈ ٣ ملايين (بعيد عن حدّ `int` في أندرويد = ٢.١ مليار).
+
+**ثلاث قنوات أندرويد منفصلة** (`athan` · `reminder` · `jumuah`): عشان المستخدم
+يكتّم «التذكير» ويخلّي «الأذان» شغال من إعدادات النظام نفسه، بدون شاشة صلاحيات منّا.
+
+| القرار | السبب |
+|---|---|
+| **إعادة جدولة كاملة (cancelAll ثم جدولة) بدل حساب فارق** | عدد التنبيهات صغير (~٤٠) وأبسط بكتير من تتبّع الحالة |
+| **سقف ٦٠ تنبيهًا معلّقًا** | iOS يسمح بـ ٦٤ فقط ويسقط الزيادة **بصمت**؛ نحتفظ بالأقرب زمنيًا |
+| **أفق ٧ أيام** | إعادة الجدولة بتحصل عند فتح التطبيق وعند الرجوع للمقدمة |
+| **الشروق مستحيل له أذان** | ليس صلاة — مقفول في المخطّط **وفي** `modeFor()` (خطّان للدفاع) |
+| **لا تذكير لصلاة موقوفة (`off`)** | لو المستخدم أوقف العشاء، التذكير إزعاج بلا معنى |
+| **صوت الأذان `null` حتى إشعار آخر** | لا نُمرّر مسار ملف غير مرفق أبدًا — أندرويد بيسقط الإشعار كله |
+| **الجدولة الدقيقة اختيارية** | `canScheduleExactNotifications()` وإلا `inexactAllowWhileIdle` |
+| **`flutter_local_notifications` مثبّت على ١٩.x** | ٢٠ يطلب Flutter ٣.٣٢ و٢١ يطلب ٣.٣٨، وحدّنا `sdk: ^3.5.0` |
+
+#### ⚠️ نقاط التحقّق عند أول كومبايل (أسبوع ٣)
+
+**تم التحقّق من كل واحدة مقابل توثيق ١٩.٥.٠ على pub.dev** — لكن راجعها لو غيّرت الإصدار:
+
+1. `zonedSchedule(id, title, body, TZDateTime, NotificationDetails, {required androidScheduleMode, payload, matchDateTimeComponents})`
+   — **موضعي** في ١٩.x. الإصدار ٢٠ حوّلها لمعلمات مسماة.
+2. **لا يوجد** `uiLocalNotificationDateInterpretation` في ١٩ (أُضيف في ١٨ وحُذف في ١٩).
+3. `AndroidNotificationChannel(id, name, {description, …})` — `description` **مش** `channelDescription`.
+4. `IOSFlutterLocalNotificationsPlugin.checkPermissions()` بيرجّع `NotificationsEnabledOptions?` **مش** `bool` — ما استخدمناهش.
+
+> **الأصوات:** كل الأصوات في `AdhanSounds` عندها `bundled: false` و`assetPath`
+> كمرجع فقط. لإضافة أذان حقيقي: ضع الملف في
+> `android/app/src/main/res/raw/adhan_makkah.mp3` (مورد خام، **مش** أصل Flutter)،
+> ثم غيّر `bundled: true` و`resourceName`. الأصول المُعلنة في `pubspec.yaml`
+> **لا تعمل** مع إشعارات أندرويد. راجع `assets/audio/README.md` و`docs/05` §3.3 أولًا.
 
 ---
 
-## ٥. الاختبارات
+## ٦. الاختبارات
 
 ```bash
 flutter test
@@ -203,6 +294,9 @@ flutter test
 | `test/features/prayer/prayer_day_test.dart` | الحالي/الجاي، فجر الغد، منتصف الليل الإسلامي |
 | `test/features/prayer/prayer_settings_test.dart` | JSON ذهابًا/إيابًا، تلف، تقييد التعديلات ±٦٠ |
 | `test/features/prayer/cities_test.dart` | تحليل كل الصفوف، البحث بالثلاث لغات، المسافة والاتجاه |
+| `test/features/prayer/alert_id_test.dart` | **حتمية المعرّف**، فرادته عبر ٧×٦×٣، فك الترميز، حدود int32 |
+| `test/features/prayer/notification_planner_test.dart` | «متى» بالكامل: الشروق · ما فات · التذكير · لفّ الجمعة · الفرادة |
+| `test/features/prayer/notification_settings_test.dart` | JSON ذهابًا/إيابًا، تلف، تقييد ٣٠–٢٤٠، **وأن لا صوت مُرفق** |
 
 ### 🔬 `adhan_engine_test.dart` — شبكة الأمان الحقيقية
 
@@ -225,12 +319,12 @@ flutter test
 
 ---
 
-## ٦. ما **ليس** موجودًا بعد (خريطة الأسابيع)
+## ٧. ما **ليس** موجودًا بعد (خريطة الأسابيع)
 
 | الأسبوع | المحتوى | الحالة |
 |---|---|---|
 | ٢ | المواقيت: الحساب الفلكي · الموقع · المدن · الطرق · المذهب | ✅ **تم** |
-| ٣ | الإشعارات: الأذان · التذكير · أصوات · قنوات | ⬜ التالي — `flutter_local_notifications`, `timezone`, `just_audio` |
+| ٣ | الإشعارات: الأذان · التذكير · تذكير الجمعة · القنوات | ✅ **تم** (الأصوات مؤجّلة لحقوق الترخيص) |
 | ٤ | الشاشة الرئيسية + الودجت الأساسي + «أثري» v1 | ⬜ `home_widget`, `shared_preferences` |
 | ٥–٨ | القرآن: Drift + FTS5 + نص عثماني + تلاوة + بحث | ⬜ `drift`, `sqlite3_flutter_libs`, `dio`, `just_audio`, `audio_service` |
 | ٩–١١ | أذكار · تسبيح · قبلة (**تصحيح الميل المغناطيسي!**) | ⬜ `flutter_compass`, `sensors_plus` |
@@ -241,7 +335,7 @@ flutter test
 
 ---
 
-## ٧. ملاحظات مهمة
+## ٨. ملاحظات مهمة
 
 - **الخطوط:** السقالة تستخدم `google_fonts` مؤقتًا (`AppTypography.useGoogleFonts = true`).
   للإطلاق: حمّل الخطوط، ضعها في `assets/fonts/`، فعّل بلوك `fonts:` في `pubspec.yaml`،
@@ -250,15 +344,17 @@ flutter test
 - **التراخيص:** لا تستخدم Quran.com API v4 تجاريًا. راجع `docs/05` §3 قبل أي مصدر بيانات.
 - **حجم النص:** `AtharApp` يقيّد مقياس نص النظام بين 0.85× و2× — لا يكسر التصميم ولا يمنع التكبير.
 - **الإعدادات:** كائن واحد `AppSettings` محفوظ كـ JSON تحت مفتاح `athar.settings.v1`،
-  وإعدادات الصلاة منفصلة تحت `athar.prayer.v1`.
+  وإعدادات الصلاة منفصلة تحت `athar.prayer.v1`، وإعدادات الإشعارات تحت `athar.notifications.v1`.
+  (ثلاثة مفاتيح عن قصد: تلف واحد ما يبوّظش الباقي.)
   `sharedPreferencesProvider` و`settingsProvider` يرميان `UnimplementedError` بدون override في `bootstrap()`.
 - **لو `flutter pub get` فشل على إصدار حزمة:** القيود مقصودة إنها واسعة بس محافظة
-  (مثلًا `geolocator: ^13.0.2` بدل ١٤ لأن ١٤ يطلب Flutter ≥ ٣.٢٩).
+  (مثلًا `geolocator: ^13.0.2` بدل ١٤ لأن ١٤ يطلب Flutter ≥ ٣.٢٩،
+  و`flutter_local_notifications: ^19.4.2` بدل ٢٢ لأن ٢٠+ يطلب Flutter ≥ ٣.٣٢).
   لو أردت أحدث إصدار متاح: `flutter pub upgrade --major-versions`.
 
 ---
 
-## ٨. المراجع
+## ٩. المراجع
 
 - `../docs/04-design-system.md` — مصدر الحقيقة للألوان والخطوط والمكوّنات
 - `../docs/05-technical-plan-flutter.md` — المعمارية، الحزم، التراخيص

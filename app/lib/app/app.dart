@@ -4,18 +4,62 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/l10n/app_locale.dart';
 import '../core/settings/settings_controller.dart';
 import '../core/theme/app_theme.dart';
+import '../features/prayer/application/notification_controller.dart';
 import 'router.dart';
 
 /// جذر التطبيق.
 ///
 /// كل حاجة ديناميكية (اللغة، الاتجاه، الثيم، مقياس النص) جاية من
 /// `SettingsController` — فتغيير اللغة بيعيد بناء الشجرة بالـ RTL فورًا.
-class AtharApp extends ConsumerWidget {
+///
+/// **أسبوع ٣:** مسؤول كمان عن إعادة جدولة الإشعارات عند أول تشغيل وعند
+/// رجوع التطبيق للمقدمة (لأن أندرويد يقدر يسحب صلاحية المنبّه الدقيق،
+/// والسفر يغيّر المكان).
+class AtharApp extends ConsumerStatefulWidget {
   const AtharApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AtharApp> createState() => _AtharAppState();
+}
+
+class _AtharAppState extends ConsumerState<AtharApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _syncNotifications();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _syncNotifications();
+  }
+
+  void _syncNotifications() {
+    // لا نطلب أي شيء قبل ما يخلّص المستخدم أول تشغيل.
+    if (!ref.read(settingsProvider).onboardingCompleted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(notificationStatusProvider.notifier).sync();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
+
+    // أول تشغيل خلص الآن ← نبدأ الجدولة (ما طلبناش إذن قبل كده).
+    ref.listen(settingsProvider, (previous, next) {
+      final wasDone = previous?.onboardingCompleted ?? true;
+      if (!wasDone && next.onboardingCompleted) _syncNotifications();
+    });
+
     final locale = ref.watch(currentLocaleProvider);
     final themeMode = ref.watch(themeModeProvider);
     final textScale = ref.watch(textScaleProvider);

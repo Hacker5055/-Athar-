@@ -43,6 +43,12 @@ dependencies:
   # تنسيق التواريخ بالثلاث لغات
   intl: ^0.20.2
 
+  # ── أسبوع ٣: الإشعارات والأذان ──────────────────────────
+  # الجدولة الدقيقة (exact alarms) + قنوات أندرويد + أذونات iOS
+  # ⚠️ مثبّت على ١٩.x عن قصد: ٢٠ يطلب Flutter ٣.٣٢ و٢١ يطلب ٣.٣٨،
+  # بينما حدّنا الحالي `sdk: ^3.5.0` / `flutter: ">=3.24.0"`.
+  flutter_local_notifications: ^19.4.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

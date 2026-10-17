@@ -329,4 +329,50 @@ class Strings {
   // الشاشة الرئيسية (أسبوع ٢)
   // ══════════════════════════════════════════════════════════
   String get homeWeek2Note => t('home_week2_note');
+  // ══ الإشعارات والأذان (أسبوع ٣) ══
+  String get notifAthanTitle => t('notif_athan_title');
+  String get notifAthanBody => t('notif_athan_body');
+  String get notifReminderTitle => t('notif_reminder_title');
+  String get notifReminderBody => t('notif_reminder_body');
+  String get notifJumuahTitle => t('notif_jumuah_title');
+  String get notifJumuahBody => t('notif_jumuah_body');
+  String get notifChannelAthan => t('notif_channel_athan');
+  String get notifChannelAthanDesc => t('notif_channel_athan_desc');
+  String get notifChannelReminder => t('notif_channel_reminder');
+  String get notifChannelReminderDesc => t('notif_channel_reminder_desc');
+  String get notifChannelJumuah => t('notif_channel_jumuah');
+  String get notifChannelJumuahDesc => t('notif_channel_jumuah_desc');
+  String get notificationsTestTitle => t('notifications_test_title');
+  String get notificationsTestBody => t('notifications_test_body');
+  String get notificationsMaster => t('notifications_master');
+  String get notificationsMasterDesc => t('notifications_master_desc');
+  String get notificationsTest => t('notifications_test');
+  String get notificationsTestQueued => t('notifications_test_queued');
+  String get notificationsOffHint => t('notifications_off_hint');
+  String get notificationsPermissionNeeded => t('notifications_permission_needed');
+  String get notificationsPermissionAction => t('notifications_permission_action');
+  String get notificationsExactNeeded => t('notifications_exact_needed');
+  String get notificationsExactNeededShort => t('notifications_exact_needed_short');
+  String get notificationsExactAction => t('notifications_exact_action');
+  String get notificationsPerPrayer => t('notifications_per_prayer');
+  String get notificationsPerPrayerHint => t('notifications_per_prayer_hint');
+  String get notificationsReminder => t('notifications_reminder');
+  String get notificationsReminderDesc => t('notifications_reminder_desc');
+  String get notificationsReminderMinutes => t('notifications_reminder_minutes');
+  String get notificationsMinutesOff => t('notifications_minutes_off');
+  String get notificationsJumuah => t('notifications_jumuah');
+  String get notificationsJumuahDesc => t('notifications_jumuah_desc');
+  String get notificationsJumuahBefore => t('notifications_jumuah_before');
+  String get notificationsSound => t('notifications_sound');
+  String get notificationsSoundDesc => t('notifications_sound_desc');
+  String get notificationsModeAdhan => t('notifications_mode_adhan');
+  String get notificationsModeBeep => t('notifications_mode_beep');
+  String get notificationsModeVibrate => t('notifications_mode_vibrate');
+  String get notificationsModeSilent => t('notifications_mode_silent');
+  String get notificationsModeOff => t('notifications_mode_off');
+  String get notificationsScheduled => t('notifications_scheduled');
+  String get notificationsScheduledMany => t('notifications_scheduled_many');
+  String get notificationsModeShortAdhan => t('notifications_mode_short_adhan');
+  String get notificationsMinutesValue => t('notifications_minutes_value');
+  String get notificationsScheduledNone => t('notifications_scheduled_none');
 }
