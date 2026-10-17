@@ -286,4 +286,47 @@ class Strings {
   String get adhkarSoonBody => t('adhkar_soon_body');
   String get qiblaSoonTitle => t('qibla_soon_title');
   String get qiblaSoonBody => t('qibla_soon_body');
+
+  // ══════════════════════════════════════════════════════════
+  // المواقيت (أسبوع ٢)
+  // ══════════════════════════════════════════════════════════
+  String get prayerSettingsTitle => t('prayer_settings_title');
+  String get prayerTimesTitle => t('prayer_times_title');
+  String get prayerSettingsOpen => t('prayer_settings_open');
+  String get prayerEngineCredit => t('prayer_engine_credit');
+  String get prayerLocation => t('prayer_location');
+  String get prayerChooseCity => t('prayer_choose_city');
+  String get prayerUseMyLocation => t('prayer_use_my_location');
+  String get prayerLocationRationale => t('prayer_location_rationale');
+  String get prayerLocationUpdated => t('prayer_location_updated');
+  String get prayerLocationDenied => t('prayer_location_denied');
+  String get prayerLocationDeniedForever => t('prayer_location_denied_forever');
+  String get prayerLocationServiceOff => t('prayer_location_service_off');
+  String get prayerLocationTimeout => t('prayer_location_timeout');
+  String get prayerLocationUnknown => t('prayer_location_unknown');
+  String get prayerOpenSettings => t('prayer_open_settings');
+  String get prayerMethod => t('prayer_method');
+  String get prayerMadhab => t('prayer_madhab');
+  String get prayerMadhabSub => t('prayer_madhab_sub');
+  String get prayerHighLatitude => t('prayer_high_latitude');
+  String get prayerHighLatitudeSub => t('prayer_high_latitude_sub');
+  String get prayerAdjustments => t('prayer_adjustments');
+  String get prayerAdjustmentsSub => t('prayer_adjustments_sub');
+  String get prayerAdjustedNotice => t('prayer_adjusted_notice');
+  String get prayerClearAdjustments => t('prayer_clear_adjustments');
+  String get prayerNextLabel => t('prayer_next_label');
+  String get prayerTomorrowFajr => t('prayer_tomorrow_fajr');
+  String get prayerNow => t('prayer_now');
+  String get prayerUpcoming => t('prayer_upcoming');
+  String get prayerUnavailable => t('prayer_unavailable');
+  String get citySearchHint => t('city_search_hint');
+  String get cityNoResults => t('city_no_results');
+  String get cityNoResultsHint => t('city_no_results_hint');
+  String get timeAm => t('time_am');
+  String get timePm => t('time_pm');
+
+  // ══════════════════════════════════════════════════════════
+  // الشاشة الرئيسية (أسبوع ٢)
+  // ══════════════════════════════════════════════════════════
+  String get homeWeek2Note => t('home_week2_note');
 }

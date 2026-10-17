@@ -292,6 +292,20 @@ class AppTheme {
 }
 
 /// وصول سريع لألوان الثيم الحالي من أي `context`.
+/// بديل ثابت لمعالجة الشفافية.
+///
+/// `withOpacity` مهمّل في Flutter ٣.٢٧+، و`withValues` مش موجود قبلها —
+/// فبنستخدم [Color.value] + [Color.fromRGBO] الاتنين مستقرّين من زمن طويل.
+extension AtharColorAlphaX on Color {
+  /// يرجّع نفس اللون بشفافية [opacity] (٠..١).
+  Color alpha(double opacity) => Color.fromRGBO(
+        (value >> 16) & 0xFF,
+        (value >> 8) & 0xFF,
+        value & 0xFF,
+        opacity.clamp(0.0, 1.0),
+      );
+}
+
 extension AtharThemeX on BuildContext {
   AppColorSet get colors =>
       Theme.of(this).brightness == Brightness.dark

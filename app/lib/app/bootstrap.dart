@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/l10n/app_locale.dart';
 import '../core/settings/settings_controller.dart';
+import '../features/prayer/data/timezone_service.dart';
 import 'app.dart';
 
 /// نقطة دخول موحّدة — كل إعداد قبل `runApp` يتعمل هنا.
@@ -16,6 +17,10 @@ Future<void> bootstrap() async {
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
   };
+
+  // قاعدة بيانات المناطق الزمنية (IANA) — ضرورية لتحويل أوقات الصلاة
+  // من UTC للتوقيت المحلي للمكان المختار (بما فيه التوقيت الصيفي).
+  TimezoneService.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();
   final initialSettings = SettingsController.initial(

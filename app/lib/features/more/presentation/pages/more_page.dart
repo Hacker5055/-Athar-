@@ -118,6 +118,12 @@ class MorePage extends ConsumerWidget {
                   onTap: () => context.push(Routes.settings),
                 ),
                 AtharSettingsTile(
+                  icon: Icons.mosque_outlined,
+                  title: s.prayerSettingsOpen,
+                  subtitle: s.prayerMethod,
+                  onTap: () => context.push(Routes.prayerSettings),
+                ),
+                AtharSettingsTile(
                   icon: Icons.palette_outlined,
                   title: s.designSystem,
                   subtitle: s.dsComponents,

@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../core/settings/settings_controller.dart';
 import '../features/adhkar/presentation/pages/adhkar_page.dart';
 import '../features/home/presentation/pages/home_page.dart';
+import '../features/prayer/presentation/pages/city_picker_page.dart';
+import '../features/prayer/presentation/pages/prayer_settings_page.dart';
 import '../features/more/presentation/pages/design_system_page.dart';
 import '../features/more/presentation/pages/more_page.dart';
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
@@ -23,6 +25,8 @@ abstract final class Routes {
   static const more = '/more';
   static const settings = '/settings';
   static const designSystem = '/design-system';
+  static const prayerSettings = '/prayer-settings';
+  static const cityPicker = '/city-picker';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -104,6 +108,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.designSystem,
         name: 'design-system',
         builder: (context, state) => const DesignSystemPage(),
+      ),
+      GoRoute(
+        path: Routes.prayerSettings,
+        name: 'prayer-settings',
+        builder: (context, state) => const PrayerSettingsPage(),
+      ),
+      GoRoute(
+        path: Routes.cityPicker,
+        name: 'city-picker',
+        builder: (context, state) => const CityPickerPage(),
       ),
     ],
   );

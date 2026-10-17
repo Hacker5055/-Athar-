@@ -8,19 +8,26 @@ import '../../../../core/settings/settings_controller.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/greeting.dart';
+import '../../../../core/utils/prayer_time_format.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../prayer/application/prayer_providers.dart';
+import '../../../prayer/presentation/prayer_icons.dart';
+import '../../../prayer/presentation/widgets/next_prayer_card.dart';
 
 /// الشاشة الرئيسية.
 ///
-/// ⚠️ أسبوع ١: البطاقات دي **هياكل ثابتة** — البيانات الحقيقية
-/// (المواقيت بالحساب الفلكي، آخر موضع قراءة، الختمة) بتيجي في أسبوع ٢ و٣.
-/// التصميم والـ tokens نهائية ومطابقة للبروتوتايب.
+/// **أسبوع ٢:** المواقيت بقت **حقيقية** (حساب فلكي بـ `adhan_dart` +
+/// الموقع + التوقيت المحلي عبر حزمة `timezone`).
+///
+/// ما زال placeholder: الورد القرآني والأذكار (أسبوع ٣) و«أثري» (أسبوع ٤).
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final s = ref.watch(stringsProvider);
+    final locale = ref.watch(currentLocaleProvider);
+    final arabicDigits = ref.watch(useArabicDigitsProvider);
     final c = context.colors;
     final now = DateTime.now();
 
@@ -33,7 +40,11 @@ class HomePage extends ConsumerWidget {
           children: [
             Text(greetingFor(now, s)),
             Text(
-              MaterialLocalizations.of(context).formatMediumDate(now),
+              AtharTimeFormat.longDate(
+                now,
+                locale: locale,
+                useArabicDigits: arabicDigits,
+              ),
               style: context.textStyles.bodySmall?.copyWith(
                 color: c.ink60,
                 fontSize: 11.5,
@@ -44,9 +55,9 @@ class HomePage extends ConsumerWidget {
         ),
         actions: [
           AtharIconButton(
-            icon: Icons.translate,
-            tooltip: s.language,
-            onPressed: () => context.push(Routes.settings),
+            icon: Icons.tune_outlined,
+            tooltip: s.prayerSettingsOpen,
+            onPressed: () => context.push(Routes.prayerSettings),
           ),
         ],
       ),
@@ -56,7 +67,11 @@ class HomePage extends ConsumerWidget {
         ),
         children: [
           const VSpace(AppSpacing.sm),
-          const _NextPrayerCard(),
+
+          // ─── الصلاة القادمة (حيّة — عدّ تنازلي كل ثانية) ───
+          NextPrayerCard(
+            onTap: () => context.push(Routes.prayerSettings),
+          ),
 
           SectionHeader(
             title: s.today,
@@ -103,7 +118,7 @@ class HomePage extends ConsumerWidget {
                 const HSpace(AppSpacing.md),
                 Expanded(
                   child: Text(
-                    s.week1Note,
+                    s.homeWeek2Note,
                     style: context.textStyles.bodySmall?.copyWith(
                       color: c.primary600,
                       height: 1.7,
@@ -129,86 +144,20 @@ class HomePage extends ConsumerWidget {
   }
 }
 
-/// بطاقة الصلاة القادمة — أكبر عنصر في الشاشة (قرار تصميم موثّق في docs/04).
-class _NextPrayerCard extends ConsumerWidget {
-  const _NextPrayerCard();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final s = ref.watch(stringsProvider);
-    final c = context.colors;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [c.primary, c.primary600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: AppRadius.cardRadius,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            s.nextPrayer,
-            style: context.textStyles.bodySmall?.copyWith(
-              color: const Color(0xCCFFFFFF),
-              fontSize: 12,
-            ),
-          ),
-          const VSpace(AppSpacing.xs),
-          Text(
-            s.maghrib,
-            style: context.textStyles.displayLarge?.copyWith(
-              color: Colors.white,
-              fontSize: 26,
-            ),
-          ),
-          const VSpace(AppSpacing.md),
-          Text(
-            '--:--:--',
-            style: context.textStyles.displayLarge?.copyWith(
-              color: Colors.white,
-              fontSize: 40,
-              fontWeight: FontWeight.w300,
-              letterSpacing: 1,
-            ),
-          ),
-          const VSpace(AppSpacing.xs),
-          Row(
-            children: [
-              const Icon(
-                Icons.location_on_outlined,
-                size: 13,
-                color: Color(0xC7FFFFFF),
-              ),
-              const HSpace(AppSpacing.xs),
-              Text(
-                s.comingWeek2,
-                style: context.textStyles.bodySmall?.copyWith(
-                  color: const Color(0xC7FFFFFF),
-                  fontSize: 11.5,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /// شبكة مواقيت ٣×٢ — كل الوقت في شاشة واحدة بدون تمرير.
+///
+/// تبرز الصلاة الجاية وتقرأ الأوقات من [todayPrayerProvider]
+/// بعد تحويلها للتوقيت المحلي للمكان.
 class _PrayerGrid extends ConsumerWidget {
   const _PrayerGrid();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final s = ref.watch(stringsProvider);
+    final arabicDigits = ref.watch(useArabicDigitsProvider);
     final c = context.colors;
+    final day = ref.watch(todayPrayerProvider);
+    final next = ref.watch(nextPrayerProvider);
 
     return GridView.count(
       crossAxisCount: 3,
@@ -217,37 +166,65 @@ class _PrayerGrid extends ConsumerWidget {
       mainAxisSpacing: AppSpacing.sm,
       crossAxisSpacing: AppSpacing.sm,
       childAspectRatio: 1.35,
-      children: prayerOrderWithSunrise.map((key) {
-        final isMaghrib = key == PrayerNameKey.maghrib;
-        return Container(
-          decoration: BoxDecoration(
-            color: isMaghrib ? c.primary : c.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isMaghrib ? c.primary : c.border),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                key.label(s),
-                style: context.textStyles.bodySmall?.copyWith(
-                  fontSize: 11.5,
-                  color: isMaghrib ? Colors.white70 : c.ink60,
+      children: [
+        for (final prayer in prayerOrderWithSunrise)
+          Builder(
+            key: ValueKey(prayer),
+            builder: (context) {
+              final isSunrise = prayer == PrayerNameKey.sunrise;
+              final isNext = prayer == next?.key && !isSunrise;
+              final local = day == null ? null : localTimeFor(day, prayer);
+
+              final bg = isNext ? c.primary : c.surface;
+              final fg = isNext ? Colors.white : c.ink;
+
+              return Container(
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: isNext ? c.primary : c.border),
                 ),
-              ),
-              const VSpace(3),
-              Text(
-                '--:--',
-                style: context.textStyles.titleMedium?.copyWith(
-                  fontSize: 14.5,
-                  fontWeight: FontWeight.w600,
-                  color: isMaghrib ? Colors.white : c.ink,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      prayer.icon,
+                      size: 14,
+                      color: isNext
+                          ? Colors.white70
+                          : (isSunrise ? c.ink40 : c.ink60),
+                    ),
+                    const VSpace(3),
+                    Text(
+                      prayer.label(s),
+                      style: context.textStyles.bodySmall?.copyWith(
+                        fontSize: 11.5,
+                        color: isNext ? Colors.white70 : c.ink60,
+                      ),
+                    ),
+                    const VSpace(3),
+                    Text(
+                      local == null
+                          ? '--:--'
+                          : AtharTimeFormat.hm12(
+                              local,
+                              s: s,
+                              useArabicDigits: arabicDigits,
+                            ),
+                      style: context.textStyles.titleMedium?.copyWith(
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w600,
+                        color: fg,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
-        );
-      }).toList(),
+      ],
     );
   }
 }
