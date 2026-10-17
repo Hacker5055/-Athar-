@@ -40,6 +40,10 @@ jobs:
       - name: تثبيت الحزم
         run: flutter pub get
 
+      # app_database.g.dart غير مُرفق بالمستودع (ملف مولّد)
+      - name: توليد كود Drift
+        run: dart run build_runner build --delete-conflicting-outputs
+
       - name: تحليل
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
@@ -69,6 +73,9 @@ jobs:
 
       - name: تثبيت الحزم
         run: flutter pub get
+
+      - name: توليد كود Drift
+        run: dart run build_runner build --delete-conflicting-outputs
 
       # مجلد android/ غير مُرفق في المستودع (يُولّد محليًا)،
       # فنولّده هنا في CI قبل البناء.

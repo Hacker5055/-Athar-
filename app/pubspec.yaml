@@ -43,6 +43,17 @@ dependencies:
   # تنسيق التواريخ بالثلاث لغات
   intl: ^0.20.2
 
+  # ── أسبوع ٥: القرآن (قاعدة البيانات + البحث) ────────────
+  # Drift فوق SQLite (بما فيه FTS5 للبحث القرآني)
+  drift: ^2.35.2
+  # منفّذ موحّد لكل المنصّات (يوفّر sqlite3 الأصلي)
+  drift_flutter: ^0.3.1
+  # sqlite3 حديث على أندرويد (FTS5 مضمون)
+  sqlite3_flutter_libs: ^0.6.0
+  # قراءة ملف الاستيراد من مسارات النظام
+  path: ^1.9.0
+  path_provider: ^2.1.5
+
   # ── أسبوع ٤: الودجت ─────────────────────────────────────
   # ⚠️ هذه الحزمة لا ترسم الودجت — الرسم كود أصلي في native/android/
   # ويُنسخ بـ tool/setup_android.sh. هي توفّر قناة البيانات فقط.
@@ -58,6 +69,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  # ⚠️ مطلوب: `app_database.g.dart` **غير مُرفق** بالمستودع
+  # ويُولّد بهذين الحزمتين. شغّل:
+  #   dart run build_runner build --delete-conflicting-outputs
+  build_runner: ^2.4.11
+  drift_dev: ^2.35.2
 
 flutter:
   uses-material-design: true

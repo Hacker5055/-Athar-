@@ -122,6 +122,7 @@ lib/
     ├── home/                     → الشاشة الرئيسية (بيانات placeholder)
     ├── quran · adhkar · qibla/   → شاشات «قريبًا» (أسابيع ٢–٣)
     ├── athary/                   → «أثري» المتتبع: ٨ عبادات · سلسلة · شبكة ٣٠ يوم
+    ├── quran/                    → الأسبوع ٥: قاعدة + استيراد + بحث (domain/data/application)
     ├── more/                     → المزيد + معرض نظام التصميم
     ├── settings/                 → اللغة · الثيم · حجم النص · الأرقام العربية
     └── shared/                   → ComingSoonView
@@ -368,7 +369,8 @@ flutter test
 | ٢ | المواقيت: الحساب الفلكي · الموقع · المدن · الطرق · المذهب | ✅ **تم** |
 | ٣ | الإشعارات: الأذان · التذكير · تذكير الجمعة · القنوات | ✅ **تم** (الأصوات مؤجّلة لحقوق الترخيص) |
 | ٤ | الشاشة الرئيسية + الودجت الأساسي + «أثري» v1 | ✅ **تم** — `home_widget`, `shared_preferences` |
-| ٥–٨ | القرآن: Drift + FTS5 + نص عثماني + تلاوة + بحث | ⬜ `drift`, `sqlite3_flutter_libs`, `dio`, `just_audio`, `audio_service` |
+| ٦–٨ | القرآن: شاشة القارئ · تلاوة · تفسير | ⬜ `dio`, `just_audio`, `audio_service` |
+| — | ✅ **تم في ٥**: Drift + FTS5 + نص عثماني + استيراد + بحث | ✅ `drift`, `drift_flutter`, `sqlite3_flutter_libs` |
 | ٩–١١ | أذكار · تسبيح · قبلة (**تصحيح الميل المغناطيسي!**) | ⬜ `flutter_compass`, `sensors_plus` |
 | ١٢–١٤ | التلميع والهجري والإطلاق | ⬜ راجع `docs/06` |
 
@@ -393,6 +395,42 @@ flutter test
   (مثلًا `geolocator: ^13.0.2` بدل ١٤ لأن ١٤ يطلب Flutter ≥ ٣.٢٩،
   و`flutter_local_notifications: ^19.4.2` بدل ٢٢ لأن ٢٠+ يطلب Flutter ≥ ٣.٣٢).
   لو أردت أحدث إصدار متاح: `flutter pub upgrade --major-versions`.
+
+---
+
+## ٨½. القرآن (الأسبوع ٥)
+
+**الكود جاهز — البيانات ليست في المستودع.** نص القرآن لا يُرفع إلى git
+(قرار ترخيصي، راجع `docs/09` §1)، فالتطبيق يبدأ بقاعدة فارغة ويستوردها
+من ملف.
+
+```bash
+# ١) تنزيل + تحويل — لا يلمس المستودع
+./tool/fetch_quran_data.sh --with-translations --out-dir ~/athar-data
+
+# ٢) الاستيراد من داخل التطبيق (يتحقّق من الرخصة أولًا)
+```
+
+| المسار | ما يفعله |
+|---|---|
+| `lib/features/quran/domain/quran_text.dart` | تطبيع النص (يشيل التشكيل، يوحّد أ/إ/آ/ٱ) |
+| `lib/features/quran/domain/search_query.dart` | تصنيف الاستعلام + بناء تعبير FTS5 |
+| `lib/features/quran/domain/quran_repository.dart` | الواجهة — `domain` لا يستورد Drift ولا Flutter |
+| `lib/features/quran/data/database/app_database.dart` | الجداول + `ayahs_fts` / `translations_fts` |
+| `lib/features/quran/data/import/import_payload.dart` | قراءة + **تدقيق** ملف الاستيراد |
+| `lib/features/quran/data/import/quran_importer.dart` | إدخال مجمّع في معاملة واحدة |
+| `tool/fetch_quran_data.sh` · `tool/convert_quran_json.py` | التنزيل والتحويل |
+
+**⚠️ خطوة مطلوبة قبل أول تشغيل:** ملف `app_database.g.dart` **مولّد
+وغير مُرفق** (مستثنى في `.gitignore`). شغّل:
+
+```bash
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+```
+
+> التوثيق الكامل — شكل الملف، جدول الرخص، الفجوات المعروفة — في
+> **[`docs/09-quran-data.md`](../docs/09-quran-data.md)**.
 
 ---
 
@@ -426,4 +464,5 @@ flutter create --platforms=android --org com.athar --project-name athar .
 - `../docs/04-design-system.md` — مصدر الحقيقة للألوان والخطوط والمكوّنات
 - `../docs/05-technical-plan-flutter.md` — المعمارية، الحزم، التراخيص
 - `../docs/06-roadmap.md` — خطة الـ١٤ أسبوعًا
+- `../docs/09-quran-data.md` — بيانات القرآن: الشكل · المصادر · الاستيراد
 - `../prototype/` — النموذج التفاعلي (١٤ شاشة) الذي نُقلت منه الترجمات والألوان

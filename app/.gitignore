@@ -29,6 +29,13 @@ android/captures/
 *.iml
 *.swp
 
+# بايثون (أدوات tool/)
+__pycache__/
+*.pyc
+
+# ملفات Drift المولّدة — تُبنى بـ build_runner (مضمّن في CI)
+*.g.dart
+
 # أسرار/توقيع — لا تُرفع أبدًا
 *.jks
 *.keystore

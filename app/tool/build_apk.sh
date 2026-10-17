@@ -19,6 +19,10 @@ OUT="build/outputs"
 echo "→ flutter pub get"
 flutter pub get
 
+# app_database.g.dart ملف مولّد وغير مُرفق بالمستودع
+echo "→ توليد كود Drift"
+dart run build_runner build --delete-conflicting-outputs
+
 echo "→ التحليل"
 flutter analyze || echo "   ⚠ analyzer أبلغ عن ملاحظات (غير مانع)"
 
