@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أثر — بروتوتايب تفاعلي (Design Prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Amiri+Quran&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- ─────────────────────────── لوحة التحكم (خارج التطبيق) ─────────────────────────── -->
+  <aside class="side">
+    <div class="brand">
+      <div class="brand__mark">أ</div>
+      <div>
+        <h1 class="brand__name">أثر</h1>
+        <p class="brand__sub">بروتوتايب تصميم تفاعلي · v0.1</p>
+      </div>
+    </div>
+
+    <p class="side__intro" id="sideIntro">
+      نموذج تفاعلي لتطبيق إسلامي شامل (صلاة · قرآن · أذكار · قبلة · متتبع).
+      اضغط على التبويبات والبطاقات — كل حاجة قابلة للنقر.
+    </p>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">اللغة</span>
+      <div class="seg" id="langSeg">
+        <button data-lang="ar" class="seg__btn is-on">العربية</button>
+        <button data-lang="en" class="seg__btn">English</button>
+        <button data-lang="fr" class="seg__btn">Français</button>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">المظهر</span>
+      <div class="seg" id="themeSeg">
+        <button data-theme="light" class="seg__btn is-on">فاتح</button>
+        <button data-theme="dark" class="seg__btn">داكن</button>
+        <button data-theme="auto" class="seg__btn">تلقائي</button>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">المدينة</span>
+      <select class="select" id="citySelect"></select>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">طريقة حساب المواقيت</span>
+      <select class="select" id="methodSelect"></select>
+    </div>
+
+    <label class="switchrow">
+      <span>ملاحظات التصميم على الشاشة</span>
+      <input type="checkbox" id="annoToggle" checked>
+      <span class="switch"></span>
+    </label>
+
+    <div class="side__hint">
+      💡 المواقيت والتاريخ الهجري واتجاه القبلة <strong>محسوبة فعلًا</strong> برياضيّات فلكية حقيقية في المتصفح — مش أرقام ثابتة.
+    </div>
+  </aside>
+
+  <!-- ─────────────────────────── الهاتف ─────────────────────────── -->
+  <div class="phonewrap">
+    <div class="phone theme-light" id="phone">
+      <div class="phone__screen">
+
+        <div class="statusbar">
+          <span class="statusbar__time" id="statusTime">9:41</span>
+          <span class="statusbar__icons">
+            <svg viewBox="0 0 20 14" width="17" height="12" aria-hidden="true"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1" opacity=".35"/></svg>
+            <svg viewBox="0 0 26 13" width="22" height="11" aria-hidden="true"><rect x="0" y="1" width="21" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="3" width="14" height="7" rx="1.6"/><rect x="23" y="4.5" width="2" height="4" rx="1" opacity=".5"/></svg>
+          </span>
+        </div>
+
+        <header class="appbar" id="appbar"></header>
+        <div class="content" id="content"></div>
+        <div class="sheet-host" id="sheetHost"></div>
+        <nav class="tabbar" id="tabbar"></nav>
+
+      </div>
+      <div class="anno-layer" id="annoLayer"></div>
+    </div>
+
+    <div class="phonehint" id="phoneHint"></div>
+  </div>
+
+  <!-- ─────────────────────────── ملاحظات التصميم ─────────────────────────── -->
+  <aside class="side side--notes">
+    <h2 class="notes__title">📐 ملاحظات التصميم</h2>
+    <ol class="notes__list" id="notesList"></ol>
+    <div class="notes__foot">
+      <div class="notes__kicker">الحالة الحالية</div>
+      <pre class="notes__state" id="stateDump"></pre>
+    </div>
+  </aside>
+
+</div>
+
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/calc.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
