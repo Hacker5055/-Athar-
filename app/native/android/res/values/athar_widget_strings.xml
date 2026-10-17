@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- نصوص يقرأها النظام (مش المستخدم) — وصف الودجت في منتقي الودجت. -->
+<resources>
+    <string name="athar_widget_description">الصلاة القادمة ومواقيت اليوم</string>
+    <string name="athar_widget_description_en">Next prayer and today\'s times</string>
+</resources>

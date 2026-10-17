@@ -10,6 +10,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/greeting.dart';
 import '../../../../core/utils/prayer_time_format.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../athary/presentation/widgets/athary_home_card.dart';
 import '../../../prayer/application/prayer_providers.dart';
 import '../../../prayer/presentation/prayer_icons.dart';
 import '../../../prayer/presentation/widgets/next_prayer_card.dart';
@@ -109,6 +110,13 @@ class HomePage extends ConsumerWidget {
             ),
           ),
 
+          SectionHeader(
+            title: s.trackerTitle,
+            actionLabel: s.atharyOpen,
+            onAction: () => context.push(Routes.athary),
+          ),
+          AtharyHomeCard(onOpen: () => context.push(Routes.athary)),
+
           const VSpace(AppSpacing.md),
           AtharCard(
             tinted: true,
@@ -118,7 +126,7 @@ class HomePage extends ConsumerWidget {
                 const HSpace(AppSpacing.md),
                 Expanded(
                   child: Text(
-                    s.homeWeek2Note,
+                    s.homeWeek4Note,
                     style: context.textStyles.bodySmall?.copyWith(
                       color: c.primary600,
                       height: 1.7,

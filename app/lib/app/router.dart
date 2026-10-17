@@ -6,6 +6,7 @@ import '../core/settings/settings_controller.dart';
 import '../features/adhkar/presentation/pages/adhkar_page.dart';
 import '../features/home/presentation/pages/home_page.dart';
 import '../features/prayer/presentation/pages/city_picker_page.dart';
+import '../features/athary/presentation/pages/athary_page.dart';
 import '../features/prayer/presentation/pages/notifications_page.dart';
 import '../features/prayer/presentation/pages/prayer_settings_page.dart';
 import '../features/more/presentation/pages/design_system_page.dart';
@@ -29,6 +30,7 @@ abstract final class Routes {
   static const prayerSettings = '/prayer-settings';
   static const cityPicker = '/city-picker';
   static const notifications = '/notifications';
+  static const athary = '/athary';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -125,6 +127,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.notifications,
         name: 'notifications',
         builder: (context, state) => const NotificationsPage(),
+      ),
+      GoRoute(
+        path: Routes.athary,
+        name: 'athary',
+        builder: (context, state) => const AtharyPage(),
       ),
     ],
   );

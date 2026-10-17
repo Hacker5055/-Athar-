@@ -1,0 +1,29 @@
+// ═══════════════════════════════════════════════════════════════
+// توقيع الإصدار — يُقرأ من android/key.properties (غير مرفوع لـ Git).
+// يُدرج **قبل** `buildTypes` في android/app/build.gradle
+// ═══════════════════════════════════════════════════════════════
+
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+signingConfigs {
+    release {
+        if (keystorePropertiesFile.exists()) {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        } else {
+            // لا مفاتيح → نوقّع بمفتاح التصحيح (يبني APK صالح للتجربة فقط)
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+buildTypes {
+    release {
+        signingConfig signingConfigs.release
+    }
+}

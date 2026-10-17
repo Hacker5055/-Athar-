@@ -5,6 +5,7 @@ import '../core/l10n/app_locale.dart';
 import '../core/settings/settings_controller.dart';
 import '../core/theme/app_theme.dart';
 import '../features/prayer/application/notification_controller.dart';
+import '../features/prayer/data/home_widget_service.dart';
 import 'router.dart';
 
 /// جذر التطبيق.
@@ -27,7 +28,7 @@ class _AtharAppState extends ConsumerState<AtharApp> with WidgetsBindingObserver
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _syncNotifications();
+    _syncBackground();
   }
 
   @override
@@ -38,15 +39,18 @@ class _AtharAppState extends ConsumerState<AtharApp> with WidgetsBindingObserver
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _syncNotifications();
+    if (state == AppLifecycleState.resumed) _syncBackground();
   }
 
-  void _syncNotifications() {
-    // لا نطلب أي شيء قبل ما يخلّص المستخدم أول تشغيل.
+  /// كل ما يحتاج مزامنة مع النظام: الإشعارات + ودجت الشاشة الرئيسية.
+  ///
+  /// لا نطلب أي شيء قبل ما يخلّص المستخدم أول تشغيل.
+  void _syncBackground() {
     if (!ref.read(settingsProvider).onboardingCompleted) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       ref.read(notificationStatusProvider.notifier).sync();
+      ref.read(homeWidgetServiceProvider).sync();
     });
   }
 
@@ -57,7 +61,7 @@ class _AtharAppState extends ConsumerState<AtharApp> with WidgetsBindingObserver
     // أول تشغيل خلص الآن ← نبدأ الجدولة (ما طلبناش إذن قبل كده).
     ref.listen(settingsProvider, (previous, next) {
       final wasDone = previous?.onboardingCompleted ?? true;
-      if (!wasDone && next.onboardingCompleted) _syncNotifications();
+      if (!wasDone && next.onboardingCompleted) _syncBackground();
     });
 
     final locale = ref.watch(currentLocaleProvider);

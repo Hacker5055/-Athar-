@@ -130,6 +130,12 @@ class MorePage extends ConsumerWidget {
                   onTap: () => context.push(Routes.notifications),
                 ),
                 AtharSettingsTile(
+                  icon: Icons.local_fire_department_outlined,
+                  title: s.trackerTitle,
+                  subtitle: s.trackerSub,
+                  onTap: () => context.push(Routes.athary),
+                ),
+                AtharSettingsTile(
                   icon: Icons.palette_outlined,
                   title: s.designSystem,
                   subtitle: s.dsComponents,

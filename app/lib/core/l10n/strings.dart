@@ -375,4 +375,21 @@ class Strings {
   String get notificationsModeShortAdhan => t('notifications_mode_short_adhan');
   String get notificationsMinutesValue => t('notifications_minutes_value');
   String get notificationsScheduledNone => t('notifications_scheduled_none');
+  // ══ أثري · الودجت (أسبوع ٤) ══
+  String get atharyOpen => t('athary_open');
+  String get atharyBest => t('athary_best');
+  String get atharyLess => t('athary_less');
+  String get atharyMore => t('athary_more');
+  String get atharyNext => t('athary_next');
+  String get atharyReset => t('athary_reset');
+  String get atharyResetConfirm => t('athary_reset_confirm');
+  String get atharyFutureNote => t('athary_future_note');
+  String get homeWeek4Note => t('home_week4_note');
+  String get widgetLabel => t('widget_label');
+  String get widgetDescription => t('widget_description');
+  String get widgetNextPrayer => t('widget_next_prayer');
+  String get widgetIn => t('widget_in');
+  String get widgetNoData => t('widget_no_data');
+  String get widgetAdd => t('widget_add');
+  String get widgetAddHint => t('widget_add_hint');
 }

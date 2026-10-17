@@ -1,4 +1,4 @@
-# أثر · Athar — مشروع Flutter (الأسابيع ١–٣)
+# أثر · Athar — مشروع Flutter (الأسابيع ١–٤)
 
 > حالة：**مكتوبة يدويًا وغير مُجمَّعة بعد** — مفيش Flutter SDK في بيئة التطوير المستخدمة هنا.
 > لازم تشغّل الخطوات اللي تحت على جهازك مرة واحدة على الأقل قبل أي تعديل.
@@ -121,6 +121,7 @@ lib/
     ├── onboarding/               → اختيار اللغة فقط (مفيش أذونات — docs/03 §3.1)
     ├── home/                     → الشاشة الرئيسية (بيانات placeholder)
     ├── quran · adhkar · qibla/   → شاشات «قريبًا» (أسابيع ٢–٣)
+    ├── athary/                   → «أثري» المتتبع: ٨ عبادات · سلسلة · شبكة ٣٠ يوم
     ├── more/                     → المزيد + معرض نظام التصميم
     ├── settings/                 → اللغة · الثيم · حجم النص · الأرقام العربية
     └── shared/                   → ComingSoonView
@@ -166,7 +167,7 @@ final s = ref.watch(stringsProvider);  // ترجمة اللغة الحالية
 
 ---
 
-## ٤. المواقيت والإشعارات (أسبوعان ٢ + ٣)
+## ٤. المواقيت · الإشعارات · «أثري» (أسابيع ٢ + ٣ + ٤)
 
 ```
 features/prayer/
@@ -275,6 +276,46 @@ features/prayer/
 > ثم غيّر `bundled: true` و`resourceName`. الأصول المُعلنة في `pubspec.yaml`
 > **لا تعمل** مع إشعارات أندرويد. راجع `assets/audio/README.md` و`docs/05` §3.3 أولًا.
 
+### ٤.٢ «أثري» — المتتبع (أسبوع ٤)
+
+```
+features/athary/
+├── domain/                 ← محض ١٠٠٪ (لا حزم، لا منصّة)
+│   ├── habit.dart          ٨ عبادات ثابتة
+│   ├── daily_record.dart   يوم واحد + مستويات الكثافة + مفاتيح التاريخ
+│   └── tracker_state.dart  السلسلة · الشبكة · الاقتراح · التقليم
+├── data/tracker_repository.dart        (يُحفظ تحت athar.tracker.v1)
+├── application/tracker_controller.dart
+└── presentation/
+    ├── pages/athary_page.dart
+    └── widgets/athary_widgets.dart · athary_home_card.dart
+```
+
+| القرار | السبب |
+|---|---|
+| **٨ عبادات ثابتة في v1** | التخصيص يفتح باب تصميم كبير (أهداف · أيقونات · ترتيب) — مؤجّل لما بعد الإطلاق |
+| **اليوم = يوم مدني محلي** | اليوم العبادي (من المغرب) يفتح أسئلة صعبة؛ مُسجّل كمرشّح بعد الإطلاق |
+| **قاعدة التسامح في السلسلة** | لو اليوم فاضي نعدّ من إمبارح — بدونها تظهر السلسلة «صفر» كل صباح |
+| **اليوم الفارغ لا يُخزّن** | أوضح في التصحيح وأصغر في التخزين |
+| **التقليم عند ٤٠٠ يوم** | يمنع نمو `SharedPreferences` بلا حدّ على جهاز المستخدم |
+| **`previousDay` بالبناء لا بـ `subtract`** | `subtract(Duration(days:1))` = ٢٤ ساعة بالضبط ≠ يوم مدني في التوقيت الصيفي |
+| **اللون مش الإشارة الوحيدة** | كل خلية لها `tooltip` بالتاريخ والعدد + عدّاد نصّي فوق (إمكانية الوصول) |
+
+### ٤.٣ الودجت (أسبوع ٤)
+
+`home_widget` **لا يرسم الودجت** — هو قناة بيانات فقط؛ الرسم كود أصلي
+في `native/android/` ويُنسخ بـ `tool/setup_android.sh`.
+
+```
+data/home_widget_service.dart  ← يكتب: next_name · next_time · next_in · times · place
+native/android/                ← Kotlin + layout + xml + manifest snippet
+```
+
+يُحدَّث عند: فتح التطبيق · الرجوع للمقدمة · إكمال أول تشغيل.
+
+**قيود `RemoteViews`:** لا خطوط مرفقة (خط النظام فقط داخل الودجت)،
+لا عناصر مخصّصة ولا SVG، ولا تحديث تلقائي أسرع من ٣٠ دقيقة.
+
 ---
 
 ## ٦. الاختبارات
@@ -297,6 +338,7 @@ flutter test
 | `test/features/prayer/alert_id_test.dart` | **حتمية المعرّف**، فرادته عبر ٧×٦×٣، فك الترميز، حدود int32 |
 | `test/features/prayer/notification_planner_test.dart` | «متى» بالكامل: الشروق · ما فات · التذكير · لفّ الجمعة · الفرادة |
 | `test/features/prayer/notification_settings_test.dart` | JSON ذهابًا/إيابًا، تلف، تقييد ٣٠–٢٤٠، **وأن لا صوت مُرفق** |
+| `test/features/athary/tracker_state_test.dart` | السلسلة (وقاعدة التسامح) · الشبكة · التقليم · JSON · عبور السنة الكبيسة |
 
 ### 🔬 `adhan_engine_test.dart` — شبكة الأمان الحقيقية
 
@@ -325,7 +367,7 @@ flutter test
 |---|---|---|
 | ٢ | المواقيت: الحساب الفلكي · الموقع · المدن · الطرق · المذهب | ✅ **تم** |
 | ٣ | الإشعارات: الأذان · التذكير · تذكير الجمعة · القنوات | ✅ **تم** (الأصوات مؤجّلة لحقوق الترخيص) |
-| ٤ | الشاشة الرئيسية + الودجت الأساسي + «أثري» v1 | ⬜ `home_widget`, `shared_preferences` |
+| ٤ | الشاشة الرئيسية + الودجت الأساسي + «أثري» v1 | ✅ **تم** — `home_widget`, `shared_preferences` |
 | ٥–٨ | القرآن: Drift + FTS5 + نص عثماني + تلاوة + بحث | ⬜ `drift`, `sqlite3_flutter_libs`, `dio`, `just_audio`, `audio_service` |
 | ٩–١١ | أذكار · تسبيح · قبلة (**تصحيح الميل المغناطيسي!**) | ⬜ `flutter_compass`, `sensors_plus` |
 | ١٢–١٤ | التلميع والهجري والإطلاق | ⬜ راجع `docs/06` |
@@ -354,7 +396,32 @@ flutter test
 
 ---
 
-## ٩. المراجع
+## ٩. بناء الـ APK
+
+**أسهل طريقة (بدون تثبيت Flutter):** ادفع أي commit → تبويب **Actions** →
+نزّل `athar-apk-<sha>` من **Artifacts**. الملف موجود مسبقًا في
+`.github/workflows/build-apk.yml`.
+
+**محليًا:**
+```bash
+flutter create --platforms=android --org com.athar --project-name athar .
+./tool/setup_android.sh     # ينقل الودجت + يضبط التوقيع
+./tool/build_apk.sh --release
+```
+
+| الناتج | الاستخدام |
+|---|---|
+| `app-arm64-v8a-release.apk` | أي هاتف أندرويد حديث (٢٠١٩+) |
+| `app-debug.apk` | يعمل على الكل، أكبر حجمًا |
+| `app-release.aab` | متجر جوجل |
+
+**التوقيع:** أنشئ `android/key.properties` محليًا، أو ارفع
+`KEYSTORE_BASE64` · `KEYSTORE_PASSWORD` · `KEY_ALIAS` · `KEY_PASSWORD`
+كـ Secrets في GitHub. بدونها يبني release **غير موقّع** (للتجربة فقط).
+
+> التفاصيل الكاملة — التوقيع، `compileSdk 35`، desugaring، الأيقونة،
+> وقائمة التحقّق قبل الإطلاق — في **[`docs/08-apk-and-release.md`](../docs/08-apk-and-release.md)**.
+
 
 - `../docs/04-design-system.md` — مصدر الحقيقة للألوان والخطوط والمكوّنات
 - `../docs/05-technical-plan-flutter.md` — المعمارية، الحزم، التراخيص
