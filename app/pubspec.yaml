@@ -1,0 +1,67 @@
+name: athar
+description: >-
+  أثر — تطبيق إسلامي شامل (صلاة · قرآن · أذكار · قبلة · متتبع).
+  يعمل أوفلاين، بلا إعلانات، بثلاث لغات.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+# ═══════════════════════════════════════════════════════════════
+# ملاحظة للإصدارات: القيود هنا متعمّد إنها واسعة عشان السقالة
+# تشتغل على أوسع نطاق من إصدارات Flutter. لو حابب تثبّت أحدث
+# إصدار متاح، شغّل:
+#   flutter pub upgrade --major-versions
+# أو ثبّت واحدة واحدة:
+#   flutter pub add flutter_riverpod go_router shared_preferences google_fonts
+# ═══════════════════════════════════════════════════════════════
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # إدارة الحالة
+  flutter_riverpod: ^2.5.1
+  # التنقل + deep links + StatefulShellRoute للتبويبات
+  go_router: ^14.0.0
+  # تخزين الإعدادات محليًا
+  shared_preferences: ^2.2.3
+  # الخطوط (مؤقت للمرحلة دي — يُستبدل بخطوط مرفقة offline في أسبوع ٢)
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  # ─────────────────────────────────────────────────────────────
+  # الخطوط: المؤقت بنستخدم حزمة google_fonts (بتنزّل مرة واحدة
+  # وبتخزّنها في الكاش). للإطلاق لازم نرفق الخطوط offline
+  # (أوفلاين أولًا + تحكم كامل في رسم المصحف).
+  #
+  # لما تحط الملفات في assets/fonts/، فعّل البلوك ده:
+  #
+  #   fonts:
+  #     - family: Amiri
+  #       fonts:
+  #         - asset: assets/fonts/Amiri-Regular.ttf
+  #         - asset: assets/fonts/Amiri-Bold.ttf
+  #           weight: 700
+  #     - family: IBMPlexSansArabic
+  #       fonts:
+  #         - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
+  #         - asset: assets/fonts/IBMPlexSansArabic-Medium.ttf
+  #           weight: 500
+  #         - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
+  #           weight: 600
+  #     - family: UthmanicHafs
+  #       fonts:
+  #         - asset: assets/fonts/UthmanicHafs.ttf
+  #
+  # راجع assets/fonts/README.md لروابط التحميل والتراخيص.
+  # ─────────────────────────────────────────────────────────────

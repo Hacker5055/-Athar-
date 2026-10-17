@@ -1,0 +1,218 @@
+/// English string bundle.
+const Map<String, String> kStringsEn = {
+  // ── Identity ────────────────────────────────────────────
+  'app_name': 'Athar',
+  'tagline': 'Leave a trace of good',
+
+  // ── Greetings ───────────────────────────────────────────
+  'hi_morning': 'Good morning',
+  'hi_afternoon': 'Good afternoon',
+  'hi_evening': 'Good evening',
+  'hi_night': 'Good night',
+
+  // ── Tabs ────────────────────────────────────────────────
+  'tab_home': 'Home',
+  'tab_quran': 'Quran',
+  'tab_adhkar': 'Adhkar',
+  'tab_qibla': 'Qibla',
+  'tab_more': 'More',
+
+  // ── Prayer ──────────────────────────────────────────────
+  'next_prayer': 'Next prayer',
+  'remaining': 'remaining',
+  'today': 'Today',
+  'now': 'Now',
+  'madhab_label': 'Madhab',
+  'shafi': 'Shafi’i',
+  'hanafi': 'Hanafi',
+  'fajr': 'Fajr',
+  'sunrise': 'Sunrise',
+  'dhuhr': 'Dhuhr',
+  'asr': 'Asr',
+  'maghrib': 'Maghrib',
+  'isha': 'Isha',
+  'prayer_times': 'Prayer times',
+  'monthly_calendar': 'Monthly calendar',
+  'calc_settings': 'Calculation settings',
+  'notifications': 'Notifications',
+  'adhan_sound': 'Adhan sound',
+  'reminder_before': 'Reminder before prayer',
+
+  // ── Home ────────────────────────────────────────────────
+  'continue_reading': 'Continue reading',
+  'ayah_no': 'Ayah',
+  'wird_title': 'My daily portion',
+  'wird_sub': '30-day khatma plan',
+  'adhkar_today': 'Today’s adhkar',
+  'done': 'Completed',
+  'of': 'of',
+  'quick_actions': 'Quick actions',
+  'verse_of_day': 'Verse of the day',
+  'qa_quran': 'Quran',
+  'qa_adhkar': 'Adhkar',
+  'qa_qibla': 'Qibla',
+  'qa_tasbih': 'Tasbih',
+  'qa_duas': 'Supplications',
+  'qa_names': 'Names of Allah',
+
+  // ── Quran ───────────────────────────────────────────────
+  'quran_index': 'Surah index',
+  'search_ph': 'Search surahs & verses…',
+  'filter_all': 'All',
+  'filter_meccan': 'Meccan',
+  'filter_medinan': 'Medinan',
+  'verses': 'verses',
+  'juz': 'Juz',
+  'meccan': 'Meccan',
+  'medinan': 'Medinan',
+  'reader_settings': 'Reading settings',
+  'font_size': 'Font size',
+  'translation': 'Translation',
+  'tafsir': 'Tafsir',
+  'reciter': 'Reciter',
+  'none': 'None',
+  'play_surah': 'Listen',
+  'repeat': 'Repeat',
+  'speed': 'Speed',
+  'download_offline': 'Download for offline',
+  'save_mark': 'Save bookmark',
+  'bookmark': 'Bookmark',
+  'note': 'Note',
+  'color': 'Highlight',
+  'share': 'Share',
+  'copy': 'Copy',
+  'saved_msg': 'Saved',
+  'bookmarks': 'Saved',
+
+  // ── Adhkar ──────────────────────────────────────────────
+  'adhkar_cat': 'Adhkar categories',
+  'morning': 'Morning adhkar',
+  'evening': 'Evening adhkar',
+  'after_prayer': 'After prayer',
+  'sleep': 'Before sleep',
+  'wake': 'Waking up',
+  'food': 'Eating',
+  'mosque': 'Mosque',
+  'travel': 'Travel',
+  'anxiety': 'Anxiety & grief',
+  'rain': 'Rain',
+  'count_of': 'Count',
+  'tap_to_count': 'Tap to count',
+  'complete_all': 'Set completed',
+  'reset': 'Reset',
+  'dua_library': 'Supplications library',
+  'source': 'Source',
+
+  // ── Names ───────────────────────────────────────────────
+  'names_title': 'The 99 Names of Allah',
+  'names_sub': 'Tap a name to hear it',
+
+  // ── Qibla ───────────────────────────────────────────────
+  'qibla_title': 'Qibla direction',
+  'qibla_hint': 'Point the phone and hold steady',
+  'distance': 'Distance to Makkah',
+  'bearing': 'Qibla bearing',
+  'calibrate': 'Move the device in a ∞ to calibrate',
+  'simulate': 'Simulate device rotation',
+  'how_without': 'How to find Qibla without a compass?',
+
+  // ── Tasbih ──────────────────────────────────────────────
+  'tasbih_title': 'Tasbih',
+  'target': 'Target',
+
+  // ── Tracker ─────────────────────────────────────────────
+  'tracker_title': 'My trace',
+  'tracker_sub': 'Daily worship tracker',
+  'streak_days': 'day streak',
+  'this_week': 'This week',
+  'last_30': 'Last 30 days',
+  'habits': 'My habits',
+
+  // ── Calendar ────────────────────────────────────────────
+  'calendar_title': 'Calendar & events',
+  'hijri': 'Hijri date',
+  'gregorian': 'Gregorian date',
+  'upcoming': 'Upcoming events',
+
+  // ── More & settings ─────────────────────────────────────
+  'more_title': 'More',
+  'settings': 'Settings',
+  'settings_title': 'Settings',
+  'about': 'About Athar',
+  'share_app': 'Share the app',
+  'rate_app': 'Rate the app',
+  'general': 'General',
+  'language': 'Language',
+  'theme': 'Theme',
+  'text_size': 'Text size',
+  'backup': 'Backup',
+  'sources': 'Sources & licenses',
+  'privacy': 'Privacy',
+  'theme_light': 'Light',
+  'theme_dark': 'Dark',
+  'theme_auto': 'Auto',
+  'size_small': 'Small',
+  'size_normal': 'Normal',
+  'size_large': 'Large',
+  'size_xlarge': 'Extra large',
+  'appearance': 'Appearance & language',
+  'arabic_digits': 'Arabic-Indic digits',
+  'arabic_digits_sub': 'Show numbers as ١٢٣ instead of 123',
+  'system_default': 'Follow system',
+
+  // ── About ───────────────────────────────────────────────
+  'about_title': 'About Athar',
+  'about_body':
+      'An all-in-one Islamic app that works offline, with no ads and no data collection. Every piece of content is sourced, and prayer times are computed astronomically on your device.',
+
+  // ── Empty & generic ─────────────────────────────────────
+  'empty_bm_t': 'No bookmarks yet',
+  'empty_bm_s': 'Long-press any verse to save it here',
+  'empty_note_t': 'No notes yet',
+  'save': 'Save',
+  'cancel': 'Cancel',
+  'apply': 'Apply',
+  'ok': 'OK',
+  'retry': 'Retry',
+  'loading': 'Loading…',
+  'error_generic': 'Something went wrong',
+  'on': 'On',
+  'off': 'Off',
+  'coming_soon': 'Coming soon',
+  'demo_data': 'Demo data',
+
+  // ── Onboarding ──────────────────────────────────────────
+  'onboarding_title': 'Athar',
+  'onboarding_subtitle':
+      'One Islamic app for prayer, Quran, adhkar and Qibla — offline, with no ads.',
+  'choose_language': 'Choose your language',
+  'start': 'Get started',
+  'skip': 'Skip',
+
+  // ── Design system gallery ───────────────────────────────
+  'design_system': 'Design system',
+  'ds_colors': 'Colors',
+  'ds_typography': 'Typography',
+  'ds_spacing': 'Spacing',
+  'ds_radii': 'Radii',
+  'ds_components': 'Components',
+  'ds_buttons': 'Buttons',
+  'ds_inputs': 'Inputs',
+  'ds_feedback': 'Feedback',
+
+  // ── Scaffold screens (week 1) ───────────────────────────
+  'week1_note': 'Foundation ready: structure, design system and three languages.',
+  'coming_week2': 'Real prayer times arrive in week 2',
+  'prayer_soon_title': 'Prayer times soon',
+  'prayer_soon_body':
+      'Astronomical prayer-time calculation (10+ methods, madhab, manual offsets) is being built in week 2.',
+  'quran_soon_title': 'The Quran soon',
+  'quran_soon_body':
+      'An index of all 114 surahs plus the reader with Uthmani text, tafsir and recitation — weeks 2 and 3.',
+  'adhkar_soon_title': 'Adhkar soon',
+  'adhkar_soon_body':
+      'Ten adhkar categories with a counter per dhikr, plus a supplications library — week 3.',
+  'qibla_soon_title': 'Compass soon',
+  'qibla_soon_body':
+      'The Qibla compass with sensor fusion, calibration prompts and a sun-based fallback — week 3.',
+};
