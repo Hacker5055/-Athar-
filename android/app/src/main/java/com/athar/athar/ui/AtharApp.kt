@@ -17,12 +17,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import com.athar.athar.prayer.PrayerSettings
+import com.athar.athar.prayer.PrayerSettingsStore
 import com.athar.athar.ui.prayer.PrayerScreen
 import com.athar.athar.ui.quran.QuranScreen
 import com.athar.athar.ui.qibla.QiblaScreen
@@ -42,7 +46,8 @@ private val kTabs = listOf(
 @Composable
 fun AtharApp() {
     var selected by rememberSaveable { mutableIntStateOf(0) }
-    val settings = PrayerSettings()
+    val context = LocalContext.current
+    var settings by remember { mutableStateOf(PrayerSettingsStore.load(context)) }
 
     Scaffold(
         bottomBar = {
@@ -60,7 +65,14 @@ fun AtharApp() {
         },
     ) { innerPadding ->
         when (selected) {
-            0 -> PrayerScreen(modifier = Modifier.padding(innerPadding))
+            0 -> PrayerScreen(
+                settings = settings,
+                onSettingsChange = { newSettings ->
+                    settings = newSettings
+                    PrayerSettingsStore.save(context, newSettings)
+                },
+                modifier = Modifier.padding(innerPadding),
+            )
             1 -> QuranScreen(modifier = Modifier.padding(innerPadding))
             3 -> QiblaScreen(
                 latitude = settings.latitude,

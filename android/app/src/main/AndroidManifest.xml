@@ -9,7 +9,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-    <!-- المواقيت: الموقع التقريبي يكفي، ولا نطلب صلاحية تخزين -->
+    <!-- المواقيت: الموقع **التقريبي** يكفي. لا نطلب الدقيق لأن
+         فروق المواقيت بينهما دون الدقيقة على مسافة مدينة، ولا نطلب
+         الموقع في الخلفية أبدًا. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"

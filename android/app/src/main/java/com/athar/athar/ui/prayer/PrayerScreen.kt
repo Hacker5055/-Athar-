@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EditLocation
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -21,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,18 +40,46 @@ private val timeFormat: DateTimeFormatter =
     DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
 
 @Composable
-fun PrayerScreen(modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    var settings by remember { mutableStateOf(PrayerSettingsStore.load(context)) }
+fun PrayerScreen(
+    settings: PrayerSettings,
+    onSettingsChange: (PrayerSettings) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val today = LocalDate.now()
+    var pickingCity by remember { mutableStateOf(false) }
 
-    val day = remember(settings, today) {
-        PrayerTimesCalculator.calculate(settings, today)
+    if (pickingCity) {
+        CityPickerScreen(
+            onCityChosen = { city ->
+                onSettingsChange(
+                    settings.copy(
+                        latitude = city.latitude,
+                        longitude = city.longitude,
+                        placeName = city.nameAr,
+                    ),
+                )
+                pickingCity = false
+            },
+            onCoordinatesChosen = { lat, lng ->
+                onSettingsChange(
+                    settings.copy(
+                        latitude = lat,
+                        longitude = lng,
+                        placeName = "موقعي الحالي",
+                    ),
+                )
+                pickingCity = false
+            },
+            onDismiss = { pickingCity = false },
+            modifier = modifier,
+        )
+        return
     }
+
+    val day = remember(settings, today) { PrayerTimesCalculator.calculate(settings, today) }
     val next = remember(day) { day.nextAfter(Instant.now()) }
 
     Column(modifier = modifier.fillMaxSize()) {
-        // الصلاة القادمة
         Card(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             colors = CardDefaults.cardColors(
@@ -69,21 +99,19 @@ fun PrayerScreen(modifier: Modifier = Modifier) {
                         color = MaterialTheme.colorScheme.primary,
                     )
                 }
-                Text(text = settings.placeName, style = MaterialTheme.typography.bodySmall)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = settings.placeName, style = MaterialTheme.typography.bodySmall)
+                    TextButton(onClick = { pickingCity = true }) {
+                        Icon(Icons.Filled.EditLocation, contentDescription = null)
+                        Text("  تغيير")
+                    }
+                }
             }
         }
 
-        // اختيار الطريقة
-        LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        ) {
+        LazyRow(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
             items(PrayerMethod.entries) { method ->
-                TextButton(
-                    onClick = {
-                        settings = settings.copy(method = method)
-                        PrayerSettingsStore.save(context, settings)
-                    },
-                ) {
+                TextButton(onClick = { onSettingsChange(settings.copy(method = method)) }) {
                     Text(
                         text = method.arabicName,
                         color = if (method == settings.method) {
@@ -97,35 +125,26 @@ fun PrayerScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        // الأوقات الستة
         LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
             items(day.ordered) { (slot, instant) ->
                 val isNext = next?.first == slot
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = slot.arabicName,
                         fontWeight = if (isNext) FontWeight.Bold else null,
-                        color = if (isNext) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        },
+                        color = if (isNext) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
                         text = timeFormat.format(instant),
                         fontSize = 18.sp,
                         fontWeight = if (isNext) FontWeight.Bold else null,
-                        color = if (isNext) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        },
+                        color = if (isNext) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
