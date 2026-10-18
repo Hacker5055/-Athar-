@@ -88,9 +88,11 @@ jobs:
           PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
           [ -z "$PR" ] && PR=1
           echo "الـ PR المستهدف: #$PR"
-          # بلا || true: نريد الفشل ظاهرًا لا مكتومًا
-          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" -f body=@/tmp/why.md
-          echo "✅ نُشر التعليق"
+          # ⚠️ `gh api -f body=@file` نشر السطر الحرفي `@/tmp/why.md`
+          # ولم يقرأ الملف. الصحيح: بناء الـ JSON بـ jq ثم --input.
+          jq -Rs '{body: .}' /tmp/why.md > /tmp/payload.json
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --input /tmp/payload.json
+          echo "✅ نُشر التعليق ($(wc -c < /tmp/payload.json) بايت)"
 
       - name: حفظ اللوج كـ artifact
         if: steps.debug_apk.outcome == 'failure'
