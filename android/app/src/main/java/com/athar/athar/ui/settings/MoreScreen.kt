@@ -25,6 +25,9 @@ import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.ui.athary.TrackerScreen
 import com.athar.athar.ui.theme.Appearance
 import com.athar.athar.ui.asma.AsmaScreen
+import androidx.compose.material.icons.filled.Widgets
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextAlign
 
 /// تبويب «المزيد» — المدخل إلى ما لا يحتاج تبويبًا خاصًا به
 /// (`docs/03`: المتتبع · الإعدادات · عن التطبيق).
@@ -98,6 +101,11 @@ fun MoreScreen(
                 onClick = { section = 4 },
                 label = { Text(s.sources) },
             )
+            FilterChip(
+                selected = section == 5,
+                onClick = { section = 5 },
+                label = { Text(s.widgetAdd) },
+            )
         }
 
         // ⚠️ `weight` يعطي الشاشة الداخلية ارتفاعًا محدودًا فتعمل
@@ -115,8 +123,45 @@ fun MoreScreen(
                     appearance = appearance,
                     onChange = onAppearanceChange,
                 )
-                else -> LicensesScreen()
+                4 -> LicensesScreen()
+                else -> WidgetScreen()
             }
         }
+    }
+}
+
+/// كيف يُضاف الودجت.
+///
+/// ⚠️ الودجت لا يُضاف من داخل التطبيق — أندرويد لا يسمح بذلك. وأفضل
+/// ما نملكه أن نشرح الطريق، لا أن نترك ميزة موجودة لا أحد يعرفها.
+@Composable
+private fun WidgetScreen(modifier: Modifier = Modifier) {
+    val s = LocalStrings.current
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            Icons.Filled.Widgets,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(48.dp),
+        )
+        Text(
+            text = s.widgetAdd,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 16.dp),
+        )
+        Text(
+            text = s.widgetAddHint,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 8.dp),
+        )
     }
 }
