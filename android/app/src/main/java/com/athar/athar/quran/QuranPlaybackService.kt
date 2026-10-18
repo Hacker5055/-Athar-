@@ -18,7 +18,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 /// خدمة تشغيل التلاوة في الخلفية.
@@ -45,7 +44,7 @@ class QuranPlaybackService : Service() {
         // على شيء يعمل أصلًا يكذب على المستخدم، وصورة الإشعار يجب أن
         // تتغيّر مع كل آية في سورة تُشغَّل آية آية.
         scope.launch {
-            QuranAudioController.state.distinctUntilChanged().collect { state ->
+            QuranAudioController.state.collect { state ->
                 if (state.isActive) {
                     show(state)
                 } else {

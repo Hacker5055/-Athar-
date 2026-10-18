@@ -111,7 +111,7 @@ object QuranAudioController {
         when {
             sameTarget && current is QuranAudioState.Playing -> pause()
             sameTarget && current is QuranAudioState.Paused -> resume()
-            else -> play(reciter, surah, ayahCount)
+            else -> play(reciter, surah, ayahCount, title)
         }
     }
 
