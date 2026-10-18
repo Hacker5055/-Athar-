@@ -31,14 +31,14 @@ Daemon will be stopped at the end of the build
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest
 > Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues
+> Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -50,31 +50,32 @@ Daemon will be stopped at the end of the build
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
 > Task :app:processReleaseManifestForPackage
-> Task :app:javaPreCompileRelease
 > Task :app:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileRelease
 > Task :app:javaPreCompileReleaseUnitTest
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
-> Task :app:desugarDebugFileDependencies
 > Task :app:processReleaseResources
+> Task :app:desugarDebugFileDependencies
 > Task :app:compressDebugAssets
-> Task :app:checkDebugDuplicateClasses
 > Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
 > Task :app:compileDebugKotlin
 > Task :app:compileReleaseKotlin
 > Task :app:mergeExtDexDebug
 
-> Task :app:compileDebugKotlin
+> Task :app:compileReleaseKotlin
 w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/AtharApp.kt:43:18 'val Icons.Filled.MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook.
 w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:199:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
 w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:291:21 'fun CircularProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., strokeWidth: Dp = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
 w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/prayer/CityPickerScreen.kt:78:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
 w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/quran/QuranScreen.kt:365:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
 
-> Task :app:compileReleaseKotlin
+> Task :app:compileDebugKotlin
 w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/AtharApp.kt:43:18 'val Icons.Filled.MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook.
 w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:199:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
 w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:291:21 'fun CircularProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., strokeWidth: Dp = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
@@ -276,5 +277,5 @@ Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 
 
-BUILD FAILED in 3m 21s
-53 actionable tasks: 53 executed
+BUILD FAILED in 3m 30s
+54 actionable tasks: 54 executed
