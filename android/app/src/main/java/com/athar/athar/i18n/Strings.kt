@@ -437,6 +437,11 @@ class Strings(val locale: AppLocale) {
             "quran_downloading" to "جارٍ التنزيل…",
             "quran_download_hint" to "التنزيل متاح لمن يبثّ السورة كاملة بملف واحد",
             "quran_offline_ready" to "تُشغَّل بلا اتصال",
+            "quran_bookmarks" to "المفضلة",
+            "quran_bookmark_add" to "حفظ الآية",
+            "quran_bookmark_remove" to "إزالة من المفضلة",
+            "quran_bookmarks_empty" to "لا آيات محفوظة بعد",
+            "quran_bookmarks_empty_body" to "اضغط علامة الحفظ بجانب أي آية لتجدها هنا",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -848,6 +853,11 @@ class Strings(val locale: AppLocale) {
             "quran_downloading" to "Downloading…",
             "quran_download_hint" to "Download is available for reciters who stream the full surah as one file",
             "quran_offline_ready" to "Plays without a connection",
+            "quran_bookmarks" to "Favourites",
+            "quran_bookmark_add" to "Save verse",
+            "quran_bookmark_remove" to "Remove from favourites",
+            "quran_bookmarks_empty" to "No saved verses yet",
+            "quran_bookmarks_empty_body" to "Tap the bookmark next to any verse to find it here",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1259,6 +1269,11 @@ class Strings(val locale: AppLocale) {
             "quran_downloading" to "Téléchargement…",
             "quran_download_hint" to "Le téléchargement est disponible pour les récitateurs qui diffusent la sourate entière en un seul fichier",
             "quran_offline_ready" to "Écoute sans connexion",
+            "quran_bookmarks" to "Favoris",
+            "quran_bookmark_add" to "Enregistrer le verset",
+            "quran_bookmark_remove" to "Retirer des favoris",
+            "quran_bookmarks_empty" to "Aucun verset enregistré",
+            "quran_bookmarks_empty_body" to "Touchez le signet à côté d’un verset pour le retrouver ici",
         )
     }
 
@@ -1675,4 +1690,9 @@ class Strings(val locale: AppLocale) {
     val quranDownloading: String get() = t("quran_downloading")
     val quranDownloadHint: String get() = t("quran_download_hint")
     val quranOfflineReady: String get() = t("quran_offline_ready")
+    val quranBookmarks: String get() = t("quran_bookmarks")
+    val quranBookmarkAdd: String get() = t("quran_bookmark_add")
+    val quranBookmarkRemove: String get() = t("quran_bookmark_remove")
+    val quranBookmarksEmpty: String get() = t("quran_bookmarks_empty")
+    val quranBookmarksEmptyBody: String get() = t("quran_bookmarks_empty_body")
 }

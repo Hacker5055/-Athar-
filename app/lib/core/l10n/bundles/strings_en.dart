@@ -462,4 +462,9 @@ const Map<String, String> kStringsEn = {
   'quran_downloading': 'Downloading…',
   'quran_download_hint': 'Download is available for reciters who stream the full surah as one file',
   'quran_offline_ready': 'Plays without a connection',
+  'quran_bookmarks': 'Favourites',
+  'quran_bookmark_add': 'Save verse',
+  'quran_bookmark_remove': 'Remove from favourites',
+  'quran_bookmarks_empty': 'No saved verses yet',
+  'quran_bookmarks_empty_body': 'Tap the bookmark next to any verse to find it here',
 };

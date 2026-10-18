@@ -461,4 +461,9 @@ const Map<String, String> kStringsAr = {
   'quran_downloading': 'جارٍ التنزيل…',
   'quran_download_hint': 'التنزيل متاح لمن يبثّ السورة كاملة بملف واحد',
   'quran_offline_ready': 'تُشغَّل بلا اتصال',
+  'quran_bookmarks': 'المفضلة',
+  'quran_bookmark_add': 'حفظ الآية',
+  'quran_bookmark_remove': 'إزالة من المفضلة',
+  'quran_bookmarks_empty': 'لا آيات محفوظة بعد',
+  'quran_bookmarks_empty_body': 'اضغط علامة الحفظ بجانب أي آية لتجدها هنا',
 };

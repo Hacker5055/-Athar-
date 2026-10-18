@@ -462,4 +462,9 @@ const Map<String, String> kStringsFr = {
   'quran_downloading': 'Téléchargement…',
   'quran_download_hint': 'Le téléchargement est disponible pour les récitateurs qui diffusent la sourate entière en un seul fichier',
   'quran_offline_ready': 'Écoute sans connexion',
+  'quran_bookmarks': 'Favoris',
+  'quran_bookmark_add': 'Enregistrer le verset',
+  'quran_bookmark_remove': 'Retirer des favoris',
+  'quran_bookmarks_empty': 'Aucun verset enregistré',
+  'quran_bookmarks_empty_body': 'Touchez le signet à côté d’un verset pour le retrouver ici',
 };

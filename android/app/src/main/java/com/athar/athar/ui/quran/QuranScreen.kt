@@ -21,6 +21,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.DownloadDone
@@ -73,6 +75,8 @@ import com.athar.athar.quran.Reciter
 import com.athar.athar.quran.ReciterWithdrawalStore
 import com.athar.athar.quran.ReciterWithdrawals
 import com.athar.athar.quran.QuranAudioOffline
+import com.athar.athar.quran.QuranBookmarkStore
+import com.athar.athar.quran.QuranBookmarks
 import com.athar.athar.quran.QuranDownloader
 import com.athar.athar.quran.Reciters
 import com.athar.athar.ui.theme.ReaderPalette
@@ -119,6 +123,36 @@ fun QuranScreen(
     // يجب أن يسمعها من ملفّه لا أن يفاجأ بصمت.
     LaunchedEffect(downloaded) {
         QuranAudioController.bindOffline(context.filesDir, downloaded)
+    }
+
+    // ⚖️ المفضلة اختيارية وبسيطة: علامة على آية، تُحفظ فورًا.
+    var bookmarks by remember { mutableStateOf(QuranBookmarkStore.load(context)) }
+    var showBookmarks by remember { mutableStateOf(false) }
+    var bookmarkTexts by remember { mutableStateOf(emptyMap<String, String>()) }
+
+    // ⚠️ الحفظ **فوري** لا عند الخروج: المستخدم قد يغلق التطبيق بعد
+    // الضغطة، وضياع علامة ظنّها محفوظة أسوأ من لا مفضلة أصلًا.
+    fun setBookmarks(next: Set<String>) {
+        bookmarks = next
+        QuranBookmarkStore.save(context, next)
+    }
+
+    // ⚠️ نصّ الآيات المحفوظة يُقرأ **مرة لكل سورة** لا مرة لكل علامة:
+    // ١١٤ قراءة على الأكثر بدل مئات.
+    LaunchedEffect(showBookmarks, bookmarks) {
+        if (!showBookmarks) return@LaunchedEffect
+        val grouped = QuranBookmarks.bySurah(bookmarks)
+        bookmarkTexts = withContext(Dispatchers.IO) {
+            val repo = QuranRepository(context)
+            val out = LinkedHashMap<String, String>()
+            for ((surah, ayahs) in grouped) {
+                val list = runCatching { repo.ayahsOf(surah) }.getOrDefault(emptyList())
+                for (a in ayahs) {
+                    out[QuranBookmarks.key(surah, a)] = list.firstOrNull { it.number == a }?.text.orEmpty()
+                }
+            }
+            out
+        }
     }
 
     var withdrawn by remember { mutableStateOf(emptySet<String>()) }
@@ -220,6 +254,10 @@ fun QuranScreen(
                         downloadTick++
                     }
                 },
+                bookmarks = bookmarks,
+                onBookmarkToggle = { ayah ->
+                    setBookmarks(QuranBookmarks.toggle(bookmarks, opened!!.id, ayah))
+                },
                 audioState = audioState,
                 onPlayToggle = {
                     opened?.let { surah ->
@@ -239,6 +277,17 @@ fun QuranScreen(
                 },
                 onStop = { QuranAudioController.stop() },
             )
+            showBookmarks -> BookmarksView(
+                bookmarks = bookmarks,
+                texts = bookmarkTexts,
+                surahs = surahs ?: emptyList(),
+                onOpen = { surah, ayah ->
+                    showBookmarks = false
+                    opened = surahs?.firstOrNull { it.id == surah }
+                    openAyah = ayah
+                },
+                onBack = { showBookmarks = false },
+            )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(modifier = Modifier.fillMaxSize()) {
                 OutlinedTextField(
@@ -256,6 +305,13 @@ fun QuranScreen(
                         // الصفّ والقائمة فيه جنبًا إلى جنب — يحتاجان
                         // Column يوزّع الارتفاع بينهما.
                         Column(modifier = Modifier.fillMaxSize()) {
+                            // ⚠️ المفضلة قبل الأجزاء: من حفظ آية يريدها
+                            // في ضغطة، لا أن يمرّ بثلاثين جزءًا ليصلها.
+                            if (bookmarks.isNotEmpty()) {
+                                TextButton(onClick = { showBookmarks = true }) {
+                                    Text("${s.quranBookmarks} (${bookmarks.size})")
+                                }
+                            }
                             // ⚠️ الأجزاء قبل القائمة: من يقرأ «جزء عمّ»
                             // لا يبحث عن سورة النبأ — يبحث عن الجزء نفسه.
                             JuzRow { juz ->
@@ -428,6 +484,8 @@ private fun ReaderView(
     downloaded: Set<String>,
     downloading: Boolean,
     onDownloadToggle: () -> Unit,
+    bookmarks: Set<String>,
+    onBookmarkToggle: (Int) -> Unit,
     audioState: QuranAudioState,
     onPlayToggle: () -> Unit,
     onStop: () -> Unit,
@@ -623,14 +681,39 @@ private fun ReaderView(
             modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp),
         ) {
             items(ayahs) { ayah ->
-                Text(
-                    text = "${ayah.text} ﴿${ayah.number}﴾",
-                    // النص العثماني يحتاج مقاسًا أكبر وتباعدًا أوسع
-                    fontSize = 24.sp,
-                    lineHeight = 44.sp,
-                    textAlign = TextAlign.Justify,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                )
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "${ayah.text} ﴿${ayah.number}﴾",
+                        // النص العثماني يحتاج مقاسًا أكبر وتباعدًا أوسع
+                        fontSize = 24.sp,
+                        lineHeight = 44.sp,
+                        textAlign = TextAlign.Justify,
+                        modifier = Modifier.weight(1f).padding(vertical = 8.dp),
+                    )
+                    // ⚠️ العلامة **على السطر نفسه** لا في قائمة منبثقة:
+                    // ضغطة واحدة بدل ضغطتين، والآية أمام العين حين
+                    // يقرّر حفظها لا بعد أن ينسى أي آية كانت.
+                    val marked = QuranBookmarks.contains(bookmarks, ayah.surah, ayah.number)
+                    IconButton(onClick = { onBookmarkToggle(ayah.number) }) {
+                        Icon(
+                            imageVector = if (marked) {
+                                Icons.Filled.Bookmark
+                            } else {
+                                Icons.Filled.BookmarkBorder
+                            },
+                            contentDescription = if (marked) {
+                                s.quranBookmarkRemove
+                            } else {
+                                s.quranBookmarkAdd
+                            },
+                            tint = if (marked) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                        )
+                    }
+                }
                 // ⚠️ الترجمة **تحت** آيتها لا في صفحة أخرى: القارئ يريد
                 // المعنى أمام النصّ، لا رحلة بين شاشتين.
                 translated[QuranTranslationRepository.key(ayah.surah, ayah.number)]
@@ -683,6 +766,82 @@ private fun ReaderView(
                         .fillMaxWidth()
                         .padding(vertical = 12.dp, horizontal = 16.dp),
                 )
+            }
+        }
+    }
+}
+
+/// شاشة المفضلة — الآيات التي علّمها المستخدم.
+///
+/// ⚠️ القائمة **مرتّبة** بترتيب المصحف لا بترتيب الحفظ: من حفظ آية
+/// من البقرة ثم آية من الفاتحة يتوقّعهما في ترتيب القرآن لا في
+/// ترتيب ضغطاته.
+@Composable
+private fun BookmarksView(
+    bookmarks: Set<String>,
+    texts: Map<String, String>,
+    surahs: List<Surah>,
+    onOpen: (Int, Int) -> Unit,
+    onBack: () -> Unit,
+) {
+    val s = LocalStrings.current
+    val ordered = bookmarks.mapNotNull { key ->
+        val surah = key.substringBefore(':').toIntOrNull() ?: return@mapNotNull null
+        val ayah = key.substringAfter(':').toIntOrNull() ?: return@mapNotNull null
+        Triple(surah, ayah, key)
+    }.sortedWith(compareBy({ it.first }, { it.second }))
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        ) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
+            }
+            Text(text = s.quranBookmarks, style = MaterialTheme.typography.titleMedium)
+        }
+        if (ordered.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(text = s.quranBookmarksEmpty, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = s.quranBookmarksEmptyBody,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(ordered) { (surah, ayah, key) ->
+                    val name = surahs.firstOrNull { it.id == surah }?.nameAr ?: "$surah"
+                    TextButton(
+                        onClick = { onOpen(surah, ayah) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "$name — $ayah",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            // ⚠️ النص **كما جاء في المصحف** بلا اختصار
+                            // ولا إعادة تشكيل: الرخصة تمنع تعديل النصّ.
+                            Text(
+                                text = texts[key].orEmpty(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            )
+                        }
+                    }
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                }
             }
         }
     }

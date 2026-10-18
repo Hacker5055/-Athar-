@@ -100,6 +100,13 @@ object QuranMeta {
         return OFFSETS[surah - 1] + ayah
     }
 
+    /// عدد آيات السورة، أو ٠ إن كان الرقم خارج النطاق.
+    ///
+    /// ⚠️ صفر لا استثناء: المتصل يريد أن **يتحقق** من مفتاح قادم من
+    /// تخزين قديم، والتحقّق لا يُستثنى منه.
+    fun ayahCount(surah: Int): Int =
+        if (surah in 1..114) VERSES_IN_SURAH[surah - 1] else 0
+
     /// عكس verseId — زوج (سورة، آية)، أو (0، 0) خارج النطاق.
     fun surahAyahOf(id: Int): Pair<Int, Int> {
         if (id !in 1..TOTAL_VERSES) return 0 to 0
