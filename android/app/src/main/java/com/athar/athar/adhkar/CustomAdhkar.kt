@@ -56,4 +56,27 @@ object CustomAdhkar {
                 listOf(item.id, sanitize(item.text), item.target.coerceIn(1, 10_000))
                     .joinToString(FIELD.toString())
             }
+
+    /// هل يصلح المعرّف؟ (يُستدعى من الواجهة قبل الإنشاء)
+    fun isValidId(id: String): Boolean = ID_OK.matches(id)
+
+    // ── العدّ ────────────────────────────────────────────
+
+    /// ⚠️ العدّ **بالمعرّف** لا بالترتيب: حذف ذكر من المنتصف كان
+    /// ينقل عدّاد الذي بعده إليه، فيجد المستخدم تسبيحًا كاملاً لم
+    /// يسبّحه.
+    fun decodeDone(raw: String?): Map<String, Int> {
+        if (raw.isNullOrBlank()) return emptyMap()
+        return raw.split(REC).mapNotNull { record ->
+            val parts = record.split(FIELD)
+            val id = parts.getOrNull(0)?.takeIf { ID_OK.matches(it) } ?: return@mapNotNull null
+            val done = parts.getOrNull(1)?.toIntOrNull()?.coerceAtLeast(0) ?: return@mapNotNull null
+            id to done
+        }.toMap()
+    }
+
+    fun encodeDone(done: Map<String, Int>): String =
+        done.entries
+            .filter { it.key.isNotBlank() && it.value > 0 }
+            .joinToString(REC.toString()) { "${it.key}$FIELD${it.value.coerceAtLeast(0)}" }
 }

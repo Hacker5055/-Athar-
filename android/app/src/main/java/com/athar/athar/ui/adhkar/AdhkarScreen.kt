@@ -18,6 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.RestartAlt
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -47,6 +49,9 @@ import com.athar.athar.adhkar.AdhkarProgressStore
 import com.athar.athar.adhkar.AdhkarSections
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.adhkar.AdhkarRepository
+import com.athar.athar.adhkar.CustomAdhkar
+import com.athar.athar.adhkar.CustomAdhkarStore
+import com.athar.athar.adhkar.CustomDhikr
 import com.athar.athar.adhkar.AdhkarSection
 import com.athar.athar.adhkar.AdhkarSources
 import com.athar.athar.adhkar.Dhikr
@@ -59,8 +64,14 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
     var sections by remember { mutableStateOf<List<AdhkarSection>?>(null) }
     var query by remember { mutableStateOf("") }
     var openSection by remember { mutableStateOf<AdhkarSection?>(null) }
+    var showMine by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { sections = AdhkarRepository.load(context) }
+
+    if (showMine) {
+        CustomAdhkarScreen(onBack = { showMine = false }, modifier = modifier)
+        return
+    }
 
     val current = openSection
     if (current != null) {
@@ -113,6 +124,38 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
             }
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
+                // ⚠️ «أذكاري» **أولًا**: ما كتبه المستخدم يبحث عنه
+                // أكثر مما يبحث في الأبواب، وهو ملكه وحده.
+                if (q.isEmpty()) {
+                    item {
+                        TextButton(
+                            onClick = { showMine = true },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp),
+                            ) {
+                                Text(
+                                    text = s.adhkarMine,
+                                    fontSize = 17.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Start,
+                                )
+                                Text(
+                                    // ⚖️ التنبيه واجب لا تفضّل: ذكر بلا
+                                    // تخريج لا يجوز أن يبدو كالباقي.
+                                    text = s.adhkarMineBody,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Start,
+                                )
+                            }
+                        }
+                        HorizontalDivider()
+                    }
+                }
                 if (pinned != null) {
                     item {
                         TextButton(
@@ -316,6 +359,168 @@ private fun buzz(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         runCatching {
             vibrator.vibrate(VibrationEffect.createOneShot(25, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
+    }
+}
+
+/// أذكار يكتبها المستخدم لنفسه.
+///
+/// ⚖️ **لماذا شاشة منفصلة لا باب داخل الكتاب؟** أذكار الكتاب من حصن
+/// المسلم، وكل واحد منها بتخريجه. وذكر يكتبه المستخدم **لا تخريج له**،
+/// فوضعه في الباب نفسه يوهم أن له من السند ما لغيره.
+@Composable
+private fun CustomAdhkarScreen(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val s = LocalStrings.current
+    val context = LocalContext.current
+    var mine by remember { mutableStateOf(CustomAdhkarStore.load(context)) }
+    var done by remember { mutableStateOf(CustomAdhkarStore.done(context)) }
+    var draft by remember { mutableStateOf("") }
+    var target by remember { mutableStateOf(1) }
+
+    // ⚠️ الحفظ **فوري** عند كل تغيير: المستخدم قد يغلق التطبيق بعد
+    // الكتابة، وضياع ذكر كتبه بيده أسوأ من لا ميزة أصلًا.
+    fun commit(next: List<CustomDhikr>) {
+        mine = next
+        CustomAdhkarStore.save(context, next)
+    }
+
+    Column(modifier = modifier.fillMaxSize()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
+            }
+            Text(text = s.adhkarMine, style = MaterialTheme.typography.titleMedium)
+        }
+
+        // ⚖️ التنبيه **دائم** لا مرة واحدة: كل ذكر هنا بلا تخريج،
+        // والنصّ يزول مع التمرير، والتكرار هو ما يبقى.
+        Text(
+            text = s.adhkarMineBody,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+        ) {
+            OutlinedTextField(
+                value = draft,
+                onValueChange = { draft = it },
+                label = { Text(s.adhkarAddHint) },
+                modifier = Modifier.weight(1f),
+                maxLines = 4,
+            )
+            IconButton(
+                onClick = {
+                    val text = CustomAdhkar.sanitize(draft)
+                    if (text.isBlank()) return@IconButton
+                    // ⚠️ المعرّف من الوقت لا من الترتيب: حذف ذكر من
+                    // المنتصف كان يعيد استخدام معرّفه فينقل عدّاده.
+                    val id = "u${System.currentTimeMillis().toString(36)}"
+                    commit(mine + CustomDhikr(id, text, target))
+                    draft = ""
+                    target = 1
+                },
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = s.adhkarAdd)
+            }
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp),
+        ) {
+            Text(
+                text = s.adhkarRepeatCount,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(end = 8.dp),
+            )
+            // ⚠️ درج ثابت لا حقل حرّ: العدّ في الأذكار درجات معلومة
+            // (٣ و٧ و٣٣ و١٠٠)، وحقلٌ حرّ يفتح باب «١٧» بلا معنى.
+            for (n in listOf(1, 3, 7, 33, 100)) {
+                TextButton(onClick = { target = n }) {
+                    Text(
+                        text = "$n",
+                        fontWeight = if (target == n) FontWeight.Bold else FontWeight.Normal,
+                        color = if (target == n) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                }
+            }
+        }
+
+        if (mine.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = s.adhkarMineEmpty,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            return@Column
+        }
+
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(mine, key = { it.id }) { item ->
+                val current = done[item.id] ?: 0
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = item.text)
+                        Text(
+                            text = "$current / ${item.target}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (current >= item.target) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                        )
+                    }
+                    TextButton(
+                        onClick = {
+                            // ⚠️ الوصول إلى الهدف **يعيد العدّ إلى صفر**:
+                            // التسبيح يتكرّر، والبقاء على «٣٣/٣٣» للأبد
+                            // يجعل الذكر يُقرأ مرة واحدة ثم يُهجر.
+                            val next = if (current + 1 >= item.target) 0 else current + 1
+                            val map = if (next == 0) done - item.id else done + (item.id to next)
+                            done = map
+                            CustomAdhkarStore.saveDone(context, map)
+                        },
+                    ) {
+                        Text(text = "$current")
+                    }
+                    IconButton(
+                        onClick = {
+                            commit(mine.filter { it.id != item.id })
+                            // ⚠️ العدّاد يُحذف مع الذكر: بقايا عدّاد
+                            // لذكر محذوف تعود لو أُضيف ذكر بمعرّفه.
+                            val map = done - item.id
+                            done = map
+                            CustomAdhkarStore.saveDone(context, map)
+                        },
+                    ) {
+                        Icon(Icons.Filled.Delete, contentDescription = s.adhkarDelete)
+                    }
+                }
+                HorizontalDivider()
+            }
         }
     }
 }

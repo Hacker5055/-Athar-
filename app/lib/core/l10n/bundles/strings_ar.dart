@@ -466,4 +466,11 @@ const Map<String, String> kStringsAr = {
   'quran_bookmark_remove': 'إزالة من المفضلة',
   'quran_bookmarks_empty': 'لا آيات محفوظة بعد',
   'quran_bookmarks_empty_body': 'اضغط علامة الحفظ بجانب أي آية لتجدها هنا',
+  'adhkar_mine': 'أذكاري',
+  'adhkar_mine_body': 'أذكار تكتبها أنت — بلا تخريج، فهي من عندك لا من الكتاب',
+  'adhkar_add': 'إضافة',
+  'adhkar_add_hint': 'اكتب الذكر',
+  'adhkar_repeat_count': 'عدد المرات',
+  'adhkar_mine_empty': 'لم تكتب شيئًا بعد',
+  'adhkar_delete': 'حذف',
 };

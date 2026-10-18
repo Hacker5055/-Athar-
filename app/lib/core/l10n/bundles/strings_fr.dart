@@ -467,4 +467,11 @@ const Map<String, String> kStringsFr = {
   'quran_bookmark_remove': 'Retirer des favoris',
   'quran_bookmarks_empty': 'Aucun verset enregistré',
   'quran_bookmarks_empty_body': 'Touchez le signet à côté d’un verset pour le retrouver ici',
+  'adhkar_mine': 'Mes adhkar',
+  'adhkar_mine_body': 'Des adhkar que vous écrivez vous-mêmes — sans référence, car ils sont de vous et non du livre',
+  'adhkar_add': 'Ajouter',
+  'adhkar_add_hint': 'Écrivez le dhikr',
+  'adhkar_repeat_count': 'Répétitions',
+  'adhkar_mine_empty': 'Rien d’écrit pour l’instant',
+  'adhkar_delete': 'Supprimer',
 };

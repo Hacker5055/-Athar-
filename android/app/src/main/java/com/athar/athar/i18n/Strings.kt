@@ -442,6 +442,13 @@ class Strings(val locale: AppLocale) {
             "quran_bookmark_remove" to "إزالة من المفضلة",
             "quran_bookmarks_empty" to "لا آيات محفوظة بعد",
             "quran_bookmarks_empty_body" to "اضغط علامة الحفظ بجانب أي آية لتجدها هنا",
+            "adhkar_mine" to "أذكاري",
+            "adhkar_mine_body" to "أذكار تكتبها أنت — بلا تخريج، فهي من عندك لا من الكتاب",
+            "adhkar_add" to "إضافة",
+            "adhkar_add_hint" to "اكتب الذكر",
+            "adhkar_repeat_count" to "عدد المرات",
+            "adhkar_mine_empty" to "لم تكتب شيئًا بعد",
+            "adhkar_delete" to "حذف",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -858,6 +865,13 @@ class Strings(val locale: AppLocale) {
             "quran_bookmark_remove" to "Remove from favourites",
             "quran_bookmarks_empty" to "No saved verses yet",
             "quran_bookmarks_empty_body" to "Tap the bookmark next to any verse to find it here",
+            "adhkar_mine" to "My adhkar",
+            "adhkar_mine_body" to "Adhkar you write yourself — with no source reference, since they are yours and not from the book",
+            "adhkar_add" to "Add",
+            "adhkar_add_hint" to "Write the dhikr",
+            "adhkar_repeat_count" to "Repetitions",
+            "adhkar_mine_empty" to "Nothing written yet",
+            "adhkar_delete" to "Delete",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1274,6 +1288,13 @@ class Strings(val locale: AppLocale) {
             "quran_bookmark_remove" to "Retirer des favoris",
             "quran_bookmarks_empty" to "Aucun verset enregistré",
             "quran_bookmarks_empty_body" to "Touchez le signet à côté d’un verset pour le retrouver ici",
+            "adhkar_mine" to "Mes adhkar",
+            "adhkar_mine_body" to "Des adhkar que vous écrivez vous-mêmes — sans référence, car ils sont de vous et non du livre",
+            "adhkar_add" to "Ajouter",
+            "adhkar_add_hint" to "Écrivez le dhikr",
+            "adhkar_repeat_count" to "Répétitions",
+            "adhkar_mine_empty" to "Rien d’écrit pour l’instant",
+            "adhkar_delete" to "Supprimer",
         )
     }
 
@@ -1695,4 +1716,11 @@ class Strings(val locale: AppLocale) {
     val quranBookmarkRemove: String get() = t("quran_bookmark_remove")
     val quranBookmarksEmpty: String get() = t("quran_bookmarks_empty")
     val quranBookmarksEmptyBody: String get() = t("quran_bookmarks_empty_body")
+    val adhkarMine: String get() = t("adhkar_mine")
+    val adhkarMineBody: String get() = t("adhkar_mine_body")
+    val adhkarAdd: String get() = t("adhkar_add")
+    val adhkarAddHint: String get() = t("adhkar_add_hint")
+    val adhkarRepeatCount: String get() = t("adhkar_repeat_count")
+    val adhkarMineEmpty: String get() = t("adhkar_mine_empty")
+    val adhkarDelete: String get() = t("adhkar_delete")
 }

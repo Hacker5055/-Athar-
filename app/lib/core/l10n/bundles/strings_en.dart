@@ -467,4 +467,11 @@ const Map<String, String> kStringsEn = {
   'quran_bookmark_remove': 'Remove from favourites',
   'quran_bookmarks_empty': 'No saved verses yet',
   'quran_bookmarks_empty_body': 'Tap the bookmark next to any verse to find it here',
+  'adhkar_mine': 'My adhkar',
+  'adhkar_mine_body': 'Adhkar you write yourself — with no source reference, since they are yours and not from the book',
+  'adhkar_add': 'Add',
+  'adhkar_add_hint': 'Write the dhikr',
+  'adhkar_repeat_count': 'Repetitions',
+  'adhkar_mine_empty': 'Nothing written yet',
+  'adhkar_delete': 'Delete',
 };
