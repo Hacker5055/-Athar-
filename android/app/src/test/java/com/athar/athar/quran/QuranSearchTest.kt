@@ -63,6 +63,14 @@ class QuranSearchTest {
         assertEquals(1, QuranSearch.search("الله", surahs, ::ayahsOf, limit = 1).size)
     }
 
+    /// ⚠️ حارس أداء: المستودع يحلّل ١٫٧ ميجابايت تحليلاً كسولًا، فلو استُدعي
+    /// ayahsOf مرة لكل **آية** بدل مرة لكل **سورة** صار البحث ٣٠٠٠ تحليل.
+    @Test fun loadsEachSurahExactlyOnce() {
+        var calls = 0
+        QuranSearch.search("الله", surahs, { id -> calls++; data[id].orEmpty() })
+        assertEquals(2, calls)
+    }
+
     @Test fun carriesSurahName() {
         assertEquals("الإخلاص", QuranSearch.search("الصمد", surahs, ::ayahsOf)[0].surahNameAr)
     }

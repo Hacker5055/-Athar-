@@ -76,9 +76,12 @@ fun QuranScreen(modifier: Modifier = Modifier) {
             return@LaunchedEffect
         }
         searching = true
+        // ⚠️ مرة واحدة خارجه: لو أُنشئ داخل ayahsOf أعيد تحليل ١٫٧ ميجابايت
+        // مع كل سورة (١١٤ مرة) في كل حرف يكتبه المستخدم.
+        val repo = QuranRepository(context)
         val found = runCatching {
             withContext(Dispatchers.IO) {
-                QuranSearch.search(needle, list) { QuranRepository(context).ayahsOf(it) }
+                QuranSearch.search(needle, list) { id -> repo.ayahsOf(id) }
             }
         }.getOrDefault(emptyList())
         results = found
