@@ -76,11 +76,28 @@ jobs:
             echo "run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             echo
             echo '```'
-            grep -E 'e: |error:|FAILURE:|What went wrong|Could not|Cannot|Unresolved|Exception|Caused by|Execution failed|not found|Failed' gradle-debug.log | head -60
+            grep -E 'e: |error:|FAILURE:|What went wrong|Could not|Cannot|Unresolved|Exception|Execution failed|not found|Failed' gradle-debug.log | head -40
             echo '```'
+            echo
+            # ⚠️ تفاصيل الاختبارات لا تظهر في الأنماط السابقة — نقرأ XML
+            if ls app/build/test-results/testDebugUnitTest/*.xml >/dev/null 2>&1; then
+              echo '### نتائج الاختبارات (JUnit XML)'
+              echo '```'
+              for f in app/build/test-results/testDebugUnitTest/*.xml; do
+                echo "--- $f"
+                tr '>' '>\n' < "$f" | grep -E 'testcase |failure ' | head -30
+              done
+              echo '```'
+            fi
+            echo
+            echo '<details><summary>آخر ١٢٠ سطر خام</summary>'
+            echo
+            echo '```'
+            tail -120 gradle-debug.log
+            echo '```'
+            echo '</details>'
           } > /tmp/why.md
-          echo "--- حجم اللوج: $(wc -c < gradle-debug.log) بايت ---"
-          wc -l /tmp/why.md
+          echo "حجم الملخّص: $(wc -c < /tmp/why.md) بايت"
 
       - name: ⚠ نشر سبب الفشل تعليقًا على الـ PR
         if: steps.debug_apk.outcome == 'failure'
@@ -115,7 +132,9 @@ jobs:
           git config user.name "ci-bot"
           git config user.email "ci-bot@users.noreply.github.com"
           git fetch origin ci-logs 2>/dev/null || true
-          git checkout -B ci-logs
+          # ⚠️ `checkout -B ci-logs` ينشئ الفرع عند HEAD فيتجاهل التاريخ
+          # المُجلب، ثم يُرفض الـ push لعدم كونه fast-forward. الصح:
+          git checkout -B ci-logs origin/ci-logs 2>/dev/null || git checkout -B ci-logs
           mkdir -p logs
           cp gradle-debug.log logs/LATEST.log
           git add -f logs
