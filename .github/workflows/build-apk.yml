@@ -166,6 +166,9 @@ jobs:
           echo "❌ فشل assembleDebug — السبب في gradle-debug.log"
           exit 1
 
+      - name: ✅ تحقّق من بيانات الـ APK
+        run: python3 tool/verify_apk.py app/build/outputs/apk/debug/app-debug.apk
+
       - name: APK إصدار (غير موقّع)
         run: ./gradlew assembleRelease --no-daemon
 
