@@ -29,7 +29,7 @@ object NotificationScheduler {
             // ⚠️ نصّ الإشعار يُبنى **مرة واحدة** وقت الجدولة ويُخزَّن في
             // النظام، فلا يكفي أن نقرأ اللغة وقت العرض. المستقبلات
             // (إقلاع، تنبيه) لا تملك `Strings` فتقرؤها من المخزن.
-            text,
+            strings ?: Strings(LocaleStore.load(context)),
         )
     }
 
@@ -81,7 +81,7 @@ object NotificationScheduler {
                 at = Instant.now().plusSeconds(5),
                 prayer = null,
             ),
-            strings ?: Strings(LocaleStore.load(context)),
+            text,
         )
     }
 
