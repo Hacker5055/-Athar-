@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- أيقونة إشعار التلاوة: **قصاصة بيضاء على خلفية شفافة**.
+     ⚠️ أندرويد يعرض أيقونة الإشعار بلون واحد (أبيض) على API 21+؛
+     أيقونة التطبيق الملوّنة تظهر ككتلة بيضاء بلا معنى. ولذلك هي
+     ثلاثة أشرطة صوتية بسيطة، لا نسخة من أيقونة التطبيق. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+>
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M4 9.5h3v5h-3zM10 6h3v12h-3zM16 10h3v4h-3z" />
+</vector>

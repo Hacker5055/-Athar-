@@ -454,4 +454,6 @@ const Map<String, String> kStringsFr = {
   'reader_night': 'Nuit',
   'reader_sepia': 'Sépia',
   'font_preview': 'Aperçu de la taille du texte',
+  'notif_channel_playback': 'Récitation',
+  'notif_channel_playback_desc': 'Notification de lecture en cours et ses commandes',
 };

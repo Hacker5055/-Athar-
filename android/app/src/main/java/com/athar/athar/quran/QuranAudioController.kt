@@ -47,13 +47,23 @@ sealed class QuranAudioState {
         }
 }
 
+/// طلب تشغيل واحد — يُحفظ ليستعمله إشعار الوسائط.
+private data class PlayRequest(val reciter: Reciter, val surah: Int, val ayahCount: Int)
+
 /// مشغّل التلاوة — [MediaPlayer] المدمج بلا أيّ مكتبة خارجية.
 ///
 /// ⚠️ لماذا المدمج لا ExoPlayer: كل اعتماد جديد خطر على بناء لا
 /// نترجمه محليًّا. وبثّ ملفات mp3 متتابعة لا يحتاج ما تضيفه
 /// ExoPlayer من طوابير وتخبئة. حين نحتاج تشغيلًا في الخلفية مع
 /// إشعار، ننتقل إلى Media3 حينها لا الآن.
-class QuranAudioController {
+/// ⚠️ كائن وحيد لا `class`: لو أُنشئ داخل الشاشة لأُفلت معها عند
+/// تبديل التبويب، فتنقطع التلاوة كلما انتقل المستخدم من المصحف إلى
+/// المواقيت — وهو بالضبط ما يُفتح التطبيق لأجله: اسمع واقرأ معًا.
+///
+/// والأصل أن يبقى التشغيل في خدمة مقدَّمة (`QuranPlaybackService`)؛
+/// هذه الحالة تعمل وحدها إن تعذّرت الخدمة، فلا يتوقف الصوت كله
+/// لخلل في إشعار.
+object QuranAudioController {
 
     private val _state = MutableStateFlow<QuranAudioState>(QuranAudioState.Idle)
     val state: StateFlow<QuranAudioState> = _state.asStateFlow()
@@ -76,7 +86,24 @@ class QuranAudioController {
     ///
     /// ⚠️ التبديل بين القرّاء يقطع التشغيل الحالي ويبدأ من جديد:
     /// الاستمرار بالصوت القديم بعد اختيار قارئ آخر كذبٌ على المستخدم.
-    fun toggle(reciter: Reciter, surah: Int, ayahCount: Int) {
+    /// آخر طلب تشغيل — يحتاجه إشعار الوسائط ليوقف ويستأنف، فالإشعار
+    /// يعمل خارج الشاشة ولا يعرف ما اختاره المستخدم فيها.
+    private var lastRequest: PlayRequest? = null
+
+    /// العنوان الذي يظهر في الإشعار: اسم السورة والقارئ.
+    private var lastTitle: String = ""
+
+    /// ما يعرضه الإشعار الآن — يقرأ من الخدمة.
+    val notificationTitle: String get() = lastTitle
+
+    /// تبديل تشغيل/إيقاف لآخر ما طُلب (مستعمل من إشعار الوسائط).
+    fun toggleLast() {
+        val request = lastRequest ?: return
+        toggle(request.reciter, request.surah, request.ayahCount)
+    }
+
+    fun toggle(reciter: Reciter, surah: Int, ayahCount: Int, title: String = lastTitle) {
+        lastRequest = PlayRequest(reciter, surah, ayahCount)
         val current = _state.value
         val sameTarget =
             current.reciterIdOrNull == reciter.id && current.surahOrNull == surah
@@ -88,7 +115,7 @@ class QuranAudioController {
         }
     }
 
-    private fun play(reciter: Reciter, surah: Int, ayahCount: Int) {
+    private fun play(reciter: Reciter, surah: Int, ayahCount: Int, title: String) {
         val urls = buildQueue(reciter, surah, ayahCount)
         if (urls.isEmpty()) {
             _state.value = QuranAudioState.Error("لا تتوفّر تلاوة لهذه السورة")
@@ -97,6 +124,7 @@ class QuranAudioController {
 
         releasePlayer()
         queue = urls
+        lastTitle = title
         ayahNumbers = if (reciter.mode == ReciterMode.AYAH) (1..urls.size).toList() else emptyList()
         index = 0
         token = "${reciter.id}#$surah"
@@ -192,13 +220,17 @@ class QuranAudioController {
     /// إيقاف تامّ: يُرجع الحالة إلى [QuranAudioState.Idle].
     fun stop() {
         releasePlayer()
+        lastTitle = ""
         _state.value = QuranAudioState.Idle
     }
 
     /// ⚠️ تحرير الموارد واجب: ترك [MediaPlayer] حيًّا بعد ترك الشاشة
     /// يترك مشغّلًا يُصرَف من البطارية ولا يراه أحد.
+    /// ⚠️ لم تعد تُستدعى عند مغادرة الشاشة: ذلك كان يقطع التلاوة مع
+    /// كل تبديل تبويب. تُستدعى عند تدمير الخدمة وحدها.
     fun release() {
         releasePlayer()
+        lastTitle = ""
         _state.value = QuranAudioState.Idle
     }
 

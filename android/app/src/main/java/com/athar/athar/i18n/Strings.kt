@@ -429,6 +429,8 @@ class Strings(val locale: AppLocale) {
             "reader_night" to "ليلي",
             "reader_sepia" to "سيبيا",
             "font_preview" to "هذا نموذج لحجم الخط",
+            "notif_channel_playback" to "التلاوة",
+            "notif_channel_playback_desc" to "إشعار التشغيل الجاري والتحكّم به",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -832,6 +834,8 @@ class Strings(val locale: AppLocale) {
             "reader_night" to "Night",
             "reader_sepia" to "Sepia",
             "font_preview" to "This is a preview of the font size",
+            "notif_channel_playback" to "Recitation",
+            "notif_channel_playback_desc" to "Now-playing notification and its controls",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1235,6 +1239,8 @@ class Strings(val locale: AppLocale) {
             "reader_night" to "Nuit",
             "reader_sepia" to "Sépia",
             "font_preview" to "Aperçu de la taille du texte",
+            "notif_channel_playback" to "Récitation",
+            "notif_channel_playback_desc" to "Notification de lecture en cours et ses commandes",
         )
     }
 
@@ -1643,4 +1649,6 @@ class Strings(val locale: AppLocale) {
     val readerNight: String get() = t("reader_night")
     val readerSepia: String get() = t("reader_sepia")
     val fontPreview: String get() = t("font_preview")
+    val notifChannelPlayback: String get() = t("notif_channel_playback")
+    val notifChannelPlaybackDesc: String get() = t("notif_channel_playback_desc")
 }

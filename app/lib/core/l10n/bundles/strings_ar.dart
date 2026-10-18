@@ -453,4 +453,6 @@ const Map<String, String> kStringsAr = {
   'reader_night': 'ليلي',
   'reader_sepia': 'سيبيا',
   'font_preview': 'هذا نموذج لحجم الخط',
+  'notif_channel_playback': 'التلاوة',
+  'notif_channel_playback_desc': 'إشعار التشغيل الجاري والتحكّم به',
 };

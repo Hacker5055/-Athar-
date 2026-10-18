@@ -43,6 +43,14 @@
         </activity>
             <receiver android:name=".notification.AlertReceiver" android:exported="false" />
 
+        <!-- ⚠️ الخدمة المقدَّمة للتلاوة: `foregroundServiceType` واجب
+             على API 34+ وإلا رفض النظام بدءها، والتلاوة التي تعمل في
+             الخلفية يجب أن يُراها المستخدم. -->
+        <service
+            android:name=".quran.QuranPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
         <receiver
             android:name=".notification.BootReceiver"
             android:exported="true"

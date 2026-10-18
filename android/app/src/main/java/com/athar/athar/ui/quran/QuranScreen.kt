@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,6 +62,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.foundation.lazy.rememberLazyListState
 import com.athar.athar.quran.QuranMeta
 import com.athar.athar.quran.QuranAudioController
+import com.athar.athar.quran.QuranPlaybackService
 import com.athar.athar.quran.QuranAudioState
 import com.athar.athar.quran.Reciter
 import com.athar.athar.quran.Reciters
@@ -81,11 +88,17 @@ fun QuranScreen(
     var translated by remember { mutableStateOf(emptyMap<String, String>()) }
     var reciter by remember { mutableStateOf(Reciters.DEFAULT) }
 
-    // ⚠️ مشغّل واحد يُفلت عند مغادرة الشاشة: ترك MediaPlayer حيًّا
-    // يترك صوتًا يعمل ولا أحد يراه ليوقفه.
-    val audio = remember { QuranAudioController() }
-    DisposableEffect(Unit) { onDispose { audio.release() } }
-    val audioState by audio.state.collectAsState()
+    // ⚠️ المشغّل كائن وحيد لا يُنشأ هنا: لو أُنشئ داخل هذه الشاشة
+    // لأُفلت معها عند تبديل التبويب، فتنقطع التلاوة كلما انتقل
+    // المستخدم إلى المواقيت — وهو ما يُفتح التطبيق لأجله.
+    val audioState by QuranAudioController.state.collectAsState()
+
+    // ⚠️ إذن الإشعار **يُطلب** عند أول تشغيل لا يُفترض: الإذن كان
+    // يُفحص في الإعدادات ولا يُطلب قطّ، فعل أندرويد ١٣+ يبقى التشغيل
+    // في الخلفية بلا إشعار — أي بلا زرّ إيقاف يراه المستخدم.
+    val requestNotification = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { }
 
     // ⚠️ نسخة واحدة: التخزين المؤقت داخلها، ولو أُنشئت مع كل إعادة تركيب
     // أُعيد تحليل ميجابايت عند كل حرف
@@ -152,9 +165,22 @@ fun QuranScreen(
                 readerTheme = readerTheme,
                 audioState = audioState,
                 onPlayToggle = {
-                    opened?.let { audio.toggle(reciter, it.id, it.ayahCount) }
+                    opened?.let { surah ->
+                        val title = "${surah.nameAr} · ${reciter.nameAr}"
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                            ContextCompat.checkSelfPermission(
+                                context, Manifest.permission.POST_NOTIFICATIONS,
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            requestNotification.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                        QuranAudioController.toggle(reciter, surah.id, surah.ayahCount, title)
+                        // ⚠️ بعد الضبط لا قبله: الخدمة تقرأ الحالة
+                        // الجاهزة فلا يومض الإشعار فارغًا.
+                        QuranPlaybackService.attach(context, title)
+                    }
                 },
-                onStop = { audio.stop() },
+                onStop = { QuranAudioController.stop() },
             )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(modifier = Modifier.fillMaxSize()) {

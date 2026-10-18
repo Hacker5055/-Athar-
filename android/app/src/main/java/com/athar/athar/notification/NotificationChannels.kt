@@ -18,6 +18,9 @@ object NotificationChannels {
     const val REMINDER = "reminder"
     const val JUMUAH = "jumuah"
     const val ADHKAR = "adhkar"
+    /// ⚠️ التلاوة قناة منفصلة: هي إشعار **جارٍ** لا تنبيه، ومن يكتم
+    /// التنبيهات لا يعني أنه لا يريد رؤية ما يعمل الآن.
+    const val PLAYBACK = "playback"
 
     /// ⚠️ أسماء القنوات **مترجمة**: تظهر في إعدادات النظام نفسها، فعربي
     /// ثابت يعني أن مستخدم الفرنسية يرى «الأذان» في قائمة بلغته. وكانت
@@ -45,6 +48,13 @@ object NotificationChannels {
         create(
             manager, ADHKAR, strings.notifChannelAdhkar, strings.notifChannelAdhkarDesc,
             NotificationManager.IMPORTANCE_DEFAULT,
+        )
+        // ⚠️ IMPORTANCE_LOW لا DEFAULT: إشعار التشغيل الجاري يظهر في
+        // الشريط بلا صوت ولا اهتزاز — لو كان DEFAULT لرنّ مع كل آية
+        // تبدأ في سورة تُشغَّل آية آية.
+        create(
+            manager, PLAYBACK, strings.notifChannelPlayback,
+            strings.notifChannelPlaybackDesc, NotificationManager.IMPORTANCE_LOW,
         )
     }
 
