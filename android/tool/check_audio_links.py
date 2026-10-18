@@ -25,23 +25,24 @@ CATALOG = ROOT / "app/src/main/java/com/athar/athar/quran/Reciter.kt"
 BASE = "https://cdn.islamic.network/quran"
 
 # الجودات التي يعلنها المصدر
-BITRATES = (192, 128, 64, 48, 40, 32)
+BITRATES = (192, 128, 64)
 
 # ⚠️ ٤٠٣ قد يكون غياب الملف وقد يكون تحديدًا للمعدّل: في أول مسح أطلقنا
 # ٣١٢ طلبًا معًا فمات خمسة قرّاء دفعة واحدة، وبينهم أشهر الأسماء — وهو
 # أرجح أن يكون دفاعًا من الخادم لا صدفة. نميّزهما بتسلسل وإعادة محاولة
 # بعد مهلة، وبعامل مستخدم معلوم فلا نبدو كسكربت مجهول.
 UA = "Athar/1.0 (Islamic companion app; +https://github.com/Hacker5055/-Athar-)"
-MAX_WORKERS = 2
-RETRY_AFTER = 5
+MAX_WORKERS = 4
+RETRY_AFTER = 3
 
 # ⚠️ المساران مختلفان عند المصدر: توفّر القارئ في أحدهما لا يعني
 # توفّره في الآخر. في أول مسح كان `ar.alafasy` يبثّ السورة وحده.
 PATHS = ("audio-surah", "audio")
 
 # عيّنة صغيرة: أول القرآن وآخره. نتحقق من وجود الملف لا من كماله.
-SURAH_SAMPLE = (1, 114)
-VERSE_SAMPLE = (1, 6236)
+# ⚠️ عيّنة واحدة لا اثنتان: المسح الماضى استغرق ١٨ دقيقة بسببها
+SURAH_SAMPLE = (1,)
+VERSE_SAMPLE = (1,)
 
 
 def parse_catalog() -> list[str]:
@@ -62,7 +63,7 @@ def head_status(url: str) -> int:
     """
     import time
 
-    for attempt in (1, 2, 3):
+    for attempt in (1, 2):
         result = subprocess.run(
             [
                 "curl", "-sS", "-o", "/dev/null", "-w", "%{http_code}",
@@ -77,7 +78,7 @@ def head_status(url: str) -> int:
             code = 0
         if code in (200, 206):
             return code
-        if code in (403, 429) and attempt < 3:
+        if code in (403, 429) and attempt < 2:
             time.sleep(RETRY_AFTER * attempt)
             continue
         return code
