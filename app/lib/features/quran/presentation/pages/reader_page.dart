@@ -12,6 +12,7 @@ import '../../application/quran_settings_controller.dart';
 import '../../domain/entities/ayah.dart';
 import '../widgets/ayah_view.dart';
 import '../widgets/reading_settings_sheet.dart';
+import '../../domain/quran_settings.dart';
 
 /// ما يعرضه القارئ — سورة كاملة، أو جزء، أو صفحة مصحف.
 ///

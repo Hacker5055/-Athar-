@@ -13,6 +13,7 @@ import '../../domain/habit.dart';
 import '../../domain/tracker_state.dart';
 import '../habit_icons.dart';
 import '../widgets/athary_widgets.dart';
+import '../../../../core/l10n/app_locale.dart';
 
 /// شاشة «أثري» — متتبع العبادات اليومية (أسبوع ٤، v1).
 ///

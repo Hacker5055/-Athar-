@@ -82,7 +82,7 @@ class AppTheme {
       ),
 
       // ── البطاقات ────────────────────────────────────────
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: c.surface,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -275,7 +275,7 @@ class AppTheme {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.chipRadius),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: c.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.cardRadius),

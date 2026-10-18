@@ -5,6 +5,7 @@ import 'package:athar/core/l10n/bundles/strings_ar.dart';
 import 'package:athar/core/l10n/bundles/strings_en.dart';
 import 'package:athar/core/l10n/bundles/strings_fr.dart';
 import 'package:athar/core/l10n/strings.dart';
+import 'dart:ui';
 
 void main() {
   group('Strings', () {

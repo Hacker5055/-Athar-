@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:athar/core/theme/quran_theme.dart';
 import 'package:athar/features/quran/domain/quran_settings.dart';
+import 'package:athar/features/quran/domain/search_query.dart';
 
 void main() {
   group('QuranSettings — الافتراضي', () {

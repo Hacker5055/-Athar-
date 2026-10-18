@@ -10,6 +10,7 @@ import '../../../../core/theme/quran_theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../application/quran_providers.dart';
 import '../../application/quran_settings_controller.dart';
+import '../../domain/quran_settings.dart';
 
 /// ورقة إعدادات القراءة: حجم الخط · الثيم · الترجمة.
 ///

@@ -8,6 +8,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/arabic_numbers.dart';
 import '../../../../core/utils/prayer_time_format.dart';
 import '../../application/prayer_providers.dart';
+import '../../../../core/utils/greeting.dart';
 
 /// بطاقة الصلاة القادمة — العدّ التنازلي الحيّ في أعلى الشاشة الرئيسية.
 ///

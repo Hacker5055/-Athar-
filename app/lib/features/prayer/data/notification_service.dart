@@ -9,6 +9,7 @@ import '../domain/alert_id.dart';
 import '../domain/entities/place.dart';
 import '../domain/notification_planner.dart';
 import '../domain/notification_settings.dart';
+import '../../../core/utils/greeting.dart';
 
 /// قنوات أندرويد — ثلاث قنوات منفصلة (قرار `docs/02` A8).
 ///

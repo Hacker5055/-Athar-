@@ -9,6 +9,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../../domain/daily_record.dart';
 import '../../domain/habit.dart';
 import '../habit_icons.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// بطاقة السلسلة — أكبر رقم في الشاشة لأنه أقوى محفّز سلوكي.
 class StreakCard extends StatelessWidget {

@@ -4,7 +4,8 @@ import 'package:home_widget/home_widget.dart';
 import '../../../core/l10n/strings.dart';
 import '../../../core/settings/settings_controller.dart';
 import '../../../core/utils/arabic_numbers.dart';
-import '../../../core/utils/greeting.dart' show prayerOrderWithSunrise;
+import '../../../core/utils/greeting.dart'
+    show prayerOrderWithSunrise, PrayerNameKeyX;
 import '../../../core/utils/prayer_time_format.dart';
 import '../application/prayer_providers.dart';
 import 'timezone_service.dart';

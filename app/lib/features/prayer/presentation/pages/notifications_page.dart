@@ -11,6 +11,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../../application/notification_controller.dart';
 import '../../application/notification_settings_controller.dart';
 import '../../domain/notification_settings.dart';
+import '../prayer_icons.dart';
 
 /// شاشة الإشعارات والأذان (أسبوع ٣).
 ///
