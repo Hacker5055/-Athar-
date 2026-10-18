@@ -1,6 +1,7 @@
 package com.athar.athar.quran
 
 import android.content.Context
+import androidx.core.content.edit
 
 /// مخزن العلامات (المفضلة).
 ///
