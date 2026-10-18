@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import com.athar.athar.prayer.PrayerSettings
 import com.athar.athar.prayer.PrayerSettingsStore
+import com.athar.athar.ui.adhkar.AdhkarScreen
 import com.athar.athar.ui.prayer.PrayerScreen
 import com.athar.athar.ui.quran.QuranScreen
 import com.athar.athar.ui.qibla.QiblaScreen
@@ -74,6 +75,7 @@ fun AtharApp() {
                 modifier = Modifier.padding(innerPadding),
             )
             1 -> QuranScreen(modifier = Modifier.padding(innerPadding))
+            2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
             3 -> QiblaScreen(
                 latitude = settings.latitude,
                 longitude = settings.longitude,

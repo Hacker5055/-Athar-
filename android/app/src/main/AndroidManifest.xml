@@ -13,6 +13,8 @@
          فروق المواقيت بينهما دون الدقيقة على مسافة مدينة، ولا نطلب
          الموقع في الخلفية أبدًا. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- اهتزازة خفيفة عند إتمام عدد الذكر (docs/02 · C4) -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
