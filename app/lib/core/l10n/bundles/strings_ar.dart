@@ -432,4 +432,6 @@ const Map<String, String> kStringsAr = {
   'quran_translation_itani': 'إيتاني',
   'quran_credit_pickthall': 'معاني القرآن المجيد — محمد مارمادوك پيكثال، ١٩٣٠. ملكية عامة.',
   'quran_credit_itani': 'The Clear Quran — طلال إيتاني. CC BY-ND 4.0: يُعرض كما هو دون تعديل.',
+  'quran_juz': 'الجزء',
+  'quran_page': 'الصفحة',
 };

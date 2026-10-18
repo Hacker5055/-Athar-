@@ -45,6 +45,8 @@ import kotlinx.coroutines.withContext
 import com.athar.athar.quran.QuranTranslationRepository
 import com.athar.athar.quran.QuranTranslation
 import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.lazy.rememberLazyListState
+import com.athar.athar.quran.QuranMeta
 
 @Composable
 fun QuranScreen(modifier: Modifier = Modifier) {
@@ -58,6 +60,7 @@ fun QuranScreen(modifier: Modifier = Modifier) {
     var results by remember { mutableStateOf<List<QuranSearch.Hit>>(emptyList()) }
     var searching by remember { mutableStateOf(false) }
     var translation by remember { mutableStateOf(QuranTranslation.NONE) }
+    var openAyah by remember { mutableStateOf<Int?>(null) }
     var translated by remember { mutableStateOf(emptyMap<String, String>()) }
 
     // ⚠️ نسخة واحدة: التخزين المؤقت داخلها، ولو أُنشئت مع كل إعادة تركيب
@@ -118,6 +121,8 @@ fun QuranScreen(modifier: Modifier = Modifier) {
                 translation = translation,
                 translated = translated,
                 onTranslationChange = { translation = it },
+                openAyah = openAyah,
+                onOpened = { openAyah = null },
             )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(modifier = Modifier.fillMaxSize()) {
@@ -132,7 +137,23 @@ fun QuranScreen(modifier: Modifier = Modifier) {
                 )
                 Box(modifier = Modifier.weight(1f)) {
                     if (query.isBlank()) {
-                        SurahList(surahs!!) { opened = it }
+                        // ⚠️ Box يرصّ أبناءه فوق بعضهم، فلا يكفي وضع
+                        // الصفّ والقائمة فيه جنبًا إلى جنب — يحتاجان
+                        // Column يوزّع الارتفاع بينهما.
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            // ⚠️ الأجزاء قبل القائمة: من يقرأ «جزء عمّ»
+                            // لا يبحث عن سورة النبأ — يبحث عن الجزء نفسه.
+                            JuzRow { juz ->
+                                val (surah, ayah) = QuranMeta.startOfJuz(juz)
+                                opened = surahs!!.firstOrNull { it.id == surah }
+                                openAyah = ayah
+                            }
+                            SurahList(
+                                surahs = surahs!!,
+                                onOpen = { opened = it },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
                     } else {
                         SearchResults(
                             hits = results,
@@ -141,6 +162,26 @@ fun QuranScreen(modifier: Modifier = Modifier) {
                     }
                 }
             }
+        }
+    }
+}
+
+/// ثلاثون جزءًا في صفّ يمرّر أفقيًا.
+@Composable
+private fun JuzRow(onPick: (Int) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        (1..QuranMeta.JUZ_COUNT).forEach { juz ->
+            FilterChip(
+                selected = false,
+                onClick = { onPick(juz) },
+                label = { Text(juz.toString()) },
+            )
         }
     }
 }
@@ -202,9 +243,13 @@ private fun SearchResults(
 }
 
 @Composable
-private fun SurahList(surahs: List<Surah>, onOpen: (Surah) -> Unit) {
+private fun SurahList(
+    surahs: List<Surah>,
+    onOpen: (Surah) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val s = LocalStrings.current
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = modifier.fillMaxSize()) {
         items(surahs) { surah ->
             TextButton(
                 onClick = { onOpen(surah) },
@@ -244,6 +289,7 @@ private fun SurahList(surahs: List<Surah>, onOpen: (Surah) -> Unit) {
 }
 
 @Composable
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 private fun ReaderView(
     surah: Surah,
     ayahs: List<Ayah>,
@@ -251,8 +297,28 @@ private fun ReaderView(
     translation: QuranTranslation,
     translated: Map<String, String>,
     onTranslationChange: (QuranTranslation) -> Unit,
+    openAyah: Int?,
+    onOpened: () -> Unit,
 ) {
     val s = LocalStrings.current
+    val listState = rememberLazyListState()
+
+    // ⚠️ الانتقال إلى جزء يفتح السورة **ويمرّر** إلى آيته: فتح أولها
+    // وحده يجعل «الانتقال إلى الجزء ٣٠» يبدأ من أول سورة النبأ فقط،
+    // وهو صحيح مصادفةً لا دائمًا.
+    LaunchedEffect(openAyah) {
+        val target = openAyah
+        if (target != null && target in 1..ayahs.size) {
+            listState.scrollToItem(target - 1)
+            onOpened()
+        }
+    }
+
+    val firstVisible = listState.firstVisibleItemIndex
+    val currentAyah = ayahs.getOrNull(firstVisible)?.number ?: 1
+    val juz = QuranMeta.juzOf(surah.id, currentAyah)
+    val page = QuranMeta.pageOf(surah.id, currentAyah)
+
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp),
@@ -261,7 +327,16 @@ private fun ReaderView(
             IconButton(onClick = onBack) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
             }
-            Text(text = surah.nameAr, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = surah.nameAr, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                // ⚠️ الموضع مذكور دائمًا: بلا «الجزء / الصفحة» لا يعرف
+                // القارئ أين هو في المصحف الورقي الذي يتابع عليه.
+                Text(
+                    text = "${s.quranJuz} $juz · ${s.quranPage} $page",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
 
         // ⚠️ أفقي قابل للتمرير: ثلاث شرائح بثلاث لغات تتجاوز عرض الشاشة
@@ -283,7 +358,10 @@ private fun ReaderView(
         }
         HorizontalDivider()
 
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp)) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp),
+        ) {
             items(ayahs) { ayah ->
                 Text(
                     text = "${ayah.text} ﴿${ayah.number}﴾",

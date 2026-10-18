@@ -408,6 +408,8 @@ class Strings(val locale: AppLocale) {
             "quran_translation_itani" to "إيتاني",
             "quran_credit_pickthall" to "معاني القرآن المجيد — محمد مارمادوك پيكثال، ١٩٣٠. ملكية عامة.",
             "quran_credit_itani" to "The Clear Quran — طلال إيتاني. CC BY-ND 4.0: يُعرض كما هو دون تعديل.",
+            "quran_juz" to "الجزء",
+            "quran_page" to "الصفحة",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -790,6 +792,8 @@ class Strings(val locale: AppLocale) {
             "quran_translation_itani" to "Itani",
             "quran_credit_pickthall" to "The Meaning of the Glorious Koran — Marmaduke Pickthall, 1930. Public domain.",
             "quran_credit_itani" to "The Clear Quran — Talal Itani. CC BY-ND 4.0, shown verbatim and unmodified.",
+            "quran_juz" to "Juz’",
+            "quran_page" to "Page",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1172,6 +1176,8 @@ class Strings(val locale: AppLocale) {
             "quran_translation_itani" to "Itani",
             "quran_credit_pickthall" to "The Meaning of the Glorious Koran — Marmaduke Pickthall, 1930. Domaine public.",
             "quran_credit_itani" to "The Clear Quran — Talal Itani. CC BY-ND 4.0, affiché textuellement et sans modification.",
+            "quran_juz" to "Juz",
+            "quran_page" to "Page",
         )
     }
 
@@ -1559,4 +1565,6 @@ class Strings(val locale: AppLocale) {
     val quranTranslationItani: String get() = t("quran_translation_itani")
     val quranCreditPickthall: String get() = t("quran_credit_pickthall")
     val quranCreditItani: String get() = t("quran_credit_itani")
+    val quranJuz: String get() = t("quran_juz")
+    val quranPage: String get() = t("quran_page")
 }
