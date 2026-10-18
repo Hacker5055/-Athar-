@@ -420,6 +420,7 @@ flutter test
 | `lib/features/quran/data/import/import_payload.dart` | قراءة + **تدقيق** ملف الاستيراد |
 | `lib/features/quran/data/import/quran_importer.dart` | إدخال مجمّع في معاملة واحدة |
 | `tool/fetch_quran_data.sh` · `tool/convert_quran_json.py` | التنزيل والتحويل |
+| `convert_quran_json.py` | يتحقّق من بصمة تخطيط المصحف قبل الكتابة |
 
 **⚠️ خطوة مطلوبة قبل أول تشغيل:** ملف `app_database.g.dart` **مولّد
 وغير مُرفق** (مستثنى في `.gitignore`). شغّل:
@@ -429,8 +430,12 @@ flutter pub get
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-> التوثيق الكامل — شكل الملف، جدول الرخص، الفجوات المعروفة — في
+> التوثيق الكامل — شكل الملف، جدول الرخص، كيف حُسم تخطيط المصحف — في
 > **[`docs/09-quran-data.md`](../docs/09-quran-data.md)**.
+
+**تخطيط المصحف محسوم** (٣٠ جزء · ٦٠ حزب · ٦٠٤ صفحة · ١٥ سجدة) من
+`quran-meta` (MIT) بعد تقاطعه مع `quran-data.xml` (Tanzil, CC-BY):
+تطابق ٦٠٤/٦٠٤ صفحة و٣٠/٣٠ جزءًا و١٥/١٥ سجدة.
 
 ---
 

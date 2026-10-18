@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
-# يجلب بيانات القرآن ويحوّلها إلى ملف استيراد أثر.
+# يجلب بيانات القرآن وتخطيط المصحف ويحوّلها إلى ملف استيراد أثر.
 #
 # ⚠️ **لا يضيف أي شيء إلى المستودع.** الناتج يُكتب في مجلد مؤقت
 # (أو حيث تقوله بـ --out-dir)، لأن نص القرآن لا يُرفق بـ git — قرار
 # الترخيص والتحقق من النص مسؤولية المالك (docs/05 §3 و docs/09).
 #
 # الاستعمال:
-#   ./tool/fetch_quran_data.sh                     # النص العثماني فقط
-#   ./tool/fetch_quran_data.sh --with-translations  # + فرنسية حميد الله + إنجليزية صحيح
+#   ./tool/fetch_quran_data.sh                      # النص العثماني + التخطيط
+#   ./tool/fetch_quran_data.sh --with-translations   # + فرنسية حميد الله + إنجليزية صحيح
 #   ./tool/fetch_quran_data.sh --out-dir ~/Downloads
 set -euo pipefail
 
-REPO_URL="https://codeload.github.com/risan/quran-json/tar.gz/refs/heads/main"
+# ── المنابع (مثبّتة بإصدارها) ────────────────────────────────
+QURAN_JSON_URL="https://codeload.github.com/risan/quran-json/tar.gz/refs/heads/main"
+# quran-meta: MIT — بيانات وصفية (جزء · حزب · صفحة · سجدة)، لا نص قرآني
+QURAN_META_VERSION="7.0.0"
+QURAN_META_URL="https://registry.npmjs.org/quran-meta/-/quran-meta-${QURAN_META_VERSION}.tgz"
+
 WITH_TRANSLATIONS=0
 OUT_DIR="${TMPDIR:-/tmp}/athar-quran"
 
@@ -28,10 +33,10 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORK="$OUT_DIR/src"
 mkdir -p "$WORK"
 
-echo "→ التنزيل من risan/quran-json (أرشيف ~71 MB)"
+echo "→ (١/٣) تنزيل quran-json (النص العثماني — CC-BY 3.0)"
 TARBALL="$WORK/quran-json.tar.gz"
 if [[ ! -f "$TARBALL" ]]; then
-  curl -sSL --fail --max-time 600 -o "$TARBALL" "$REPO_URL"
+  curl -sSL --fail --max-time 600 -o "$TARBALL" "$QURAN_JSON_URL"
 fi
 
 echo "→ استخراج الملفات المطلوبة فقط"
@@ -59,7 +64,7 @@ for path in ("data/tanzil/uthmani.json", "data/tanzil/chapters.json",
              "data/quranenc/english_saheeh.json"):
     e = entries.get(path)
     if e is None:
-        print(f"  ⚠️  {path}: غير مسجّل — توقّف"); sys.exit(1)
+        continue  # قد لا يُطلب إلا النص
     status = e.get("license_status")
     mark = "✅" if status == "granted" else "⛔"
     print(f"  {mark} {path}: {status} — {e.get('license_url')}")
@@ -69,9 +74,19 @@ for path in ("data/tanzil/uthmani.json", "data/tanzil/chapters.json",
 PY
 
 echo
-echo "→ التحويل"
+echo "→ (٢/٣) تنزيل quran-meta ${QURAN_META_VERSION} (تخطيط المصحف — MIT)"
+mkdir -p "$WORK/quran-meta"
+if [[ ! -f "$WORK/quran-meta.tgz" ]]; then
+  curl -sSL --fail --max-time 300 -o "$WORK/quran-meta.tgz" "$QURAN_META_URL"
+fi
+tar xzf "$WORK/quran-meta.tgz" -C "$WORK/quran-meta"
+echo "  ✅ MIT — بيانات وصفية فقط (٣٠ جزء · ٦٠ حزب · ٦٠٤ صفحة · ١٥ سجدة)"
+
+echo
+echo "→ (٣/٣) التحويل"
 python3 "$ROOT/tool/convert_quran_json.py" \
   --src "$WORK/quran-json-main" \
+  --layout "$WORK/quran-meta/package/dist/HafsLists-*.js" \
   --out "$OUT_DIR/quran-import.json" \
   --accept-licenses \
   "${TRANSLATION_ARGS[@]+"${TRANSLATION_ARGS[@]}"}"
