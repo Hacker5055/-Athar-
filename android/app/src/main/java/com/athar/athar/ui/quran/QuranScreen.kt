@@ -65,6 +65,8 @@ import com.athar.athar.quran.QuranAudioController
 import com.athar.athar.quran.QuranPlaybackService
 import com.athar.athar.quran.QuranAudioState
 import com.athar.athar.quran.Reciter
+import com.athar.athar.quran.ReciterWithdrawalStore
+import com.athar.athar.quran.ReciterWithdrawals
 import com.athar.athar.quran.Reciters
 import com.athar.athar.ui.theme.ReaderPalette
 import com.athar.athar.ui.theme.ReaderTheme
@@ -87,6 +89,17 @@ fun QuranScreen(
     var openAyah by remember { mutableStateOf<Int?>(null) }
     var translated by remember { mutableStateOf(emptyMap<String, String>()) }
     var reciter by remember { mutableStateOf(Reciters.DEFAULT) }
+
+    // ⚖️ سحب التلاوة (القاعدة ٣ من docs/10): إن اعترض قارئ على نشر
+    // تلاوته يجب أن تتوقف فورًا لا في التحديث القادم. فالقائمة تُقرأ
+    // من ملف بعيد عند كل فتح، لا من الكتالوج المثبَّت في الكود.
+    var withdrawn by remember { mutableStateOf(emptySet<String>()) }
+    LaunchedEffect(Unit) { withdrawn = ReciterWithdrawalStore.refresh(context) }
+    LaunchedEffect(withdrawn) {
+        reciter = ReciterWithdrawals.fallback(
+            ReciterWithdrawals.apply(Reciters.ALL, withdrawn), reciter, withdrawn,
+        )
+    }
 
     // ⚠️ المشغّل كائن وحيد لا يُنشأ هنا: لو أُنشئ داخل هذه الشاشة
     // لأُفلت معها عند تبديل التبويب، فتنقطع التلاوة كلما انتقل
@@ -373,6 +386,9 @@ private fun ReaderView(
 ) {
     val s = LocalStrings.current
     val listState = rememberLazyListState()
+    // ⚠️ قد يكون القارئ المختار هو المسحوب نفسه، فتبقى الواجهة تسمّي
+    // اسمًا لا صوت له. نصحّح الاختيار إلى أول قارئ متاح.
+    val availableReciters = ReciterWithdrawals.apply(Reciters.ALL, withdrawn)
     // ⚠️ ثيم القراءة يخصّ هذه الشاشة وحدها: النصّ يُقرأ طويلًا وفي
     // ظروف إضاءة غير بقية التطبيق، فلو ألزمناه بالثيم العام لأجبرنا
     // من يقرأ ليلًا على شاشة بيضاء أو العكس.
@@ -442,70 +458,74 @@ private fun ReaderView(
 
         // ⚠️ اختيار القارئ قبل التشغيل لا داخله: من يفتح التلاوة يريد
         // صوتًا محدّدًا، لا أن يكتشف بعد التشغيل أنه يسمع غيره.
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Reciters.ALL.forEach { option ->
-                FilterChip(
-                    selected = option.id == reciter.id,
-                    onClick = { onReciterChange(option) },
-                    label = { Text(option.nameAr) },
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            val playing = audioState is QuranAudioState.Playing
-            val loading = audioState is QuranAudioState.Loading
-            val active = audioState.isActive
-
-            IconButton(onClick = onPlayToggle) {
-                Icon(
-                    // ⚠️ الأيقونة تعكس الحالة الفعلية: «تشغيل» على سورة
-                    // تعمل الآن يجعل المستخدم يضغط فيتوقّف عكس ما أراد.
-                    imageVector = if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                    contentDescription = if (playing) s.quranPause else s.quranPlay,
-                )
-            }
-            if (active) {
-                IconButton(onClick = onStop) {
-                    Icon(Icons.Filled.Stop, contentDescription = s.quranStop)
+        // ⚖️ إن سُحب كلّ القرّاء فلا تلاوة أصلًا، ولا يجوز أن يبقى
+        // زرّ تشغيل بلا شيء يعمل خلفه.
+        if (availableReciters.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                availableReciters.forEach { option ->
+                    FilterChip(
+                        selected = option.id == reciter.id,
+                        onClick = { onReciterChange(option) },
+                        label = { Text(option.nameAr) },
+                    )
                 }
             }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    // ⚠️ أثناء التشغيل نُظهر **اسم القارئ** لا «استماع
-                    // السورة»: المستخدم يعرف أنه يستمع، المهم من يستمع.
-                    // ومع قارئ يبثّ آية آية نُظهر رقمها، فيعرف أين هو
-                    // في المصحف الذي يتابع عليه.
-                    // ⚠️ كل فرع على حدة: دمج فرعين في `when` يمنع
-                    // التحويل الذكي فلا تُقرأ `ayah` أصلاً.
-                    text = when (audioState) {
-                        is QuranAudioState.Loading -> s.quranAudioLoading
-                        is QuranAudioState.Error -> s.quranAudioError
-                        is QuranAudioState.Paused -> label(reciter, s.quranResume, audioState.ayah)
-                        is QuranAudioState.Playing -> label(reciter, reciter.nameAr, audioState.ayah)
-                        else -> reciter.nameAr
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (audioState is QuranAudioState.Error) {
-                        MaterialTheme.colorScheme.error
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                )
-            }
-            if (loading) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val playing = audioState is QuranAudioState.Playing
+                val loading = audioState is QuranAudioState.Loading
+                val active = audioState.isActive
+
+                IconButton(onClick = onPlayToggle) {
+                    Icon(
+                        // ⚠️ الأيقونة تعكس الحالة الفعلية: «تشغيل» على سورة
+                        // تعمل الآن يجعل المستخدم يضغط فيتوقّف عكس ما أراد.
+                        imageVector = if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                        contentDescription = if (playing) s.quranPause else s.quranPlay,
+                    )
+                }
+                if (active) {
+                    IconButton(onClick = onStop) {
+                        Icon(Icons.Filled.Stop, contentDescription = s.quranStop)
+                    }
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        // ⚠️ أثناء التشغيل نُظهر **اسم القارئ** لا «استماع
+                        // السورة»: المستخدم يعرف أنه يستمع، المهم من يستمع.
+                        // ومع قارئ يبثّ آية آية نُظهر رقمها، فيعرف أين هو
+                        // في المصحف الذي يتابع عليه.
+                        // ⚠️ كل فرع على حدة: دمج فرعين في `when` يمنع
+                        // التحويل الذكي فلا تُقرأ `ayah` أصلاً.
+                        text = when (audioState) {
+                            is QuranAudioState.Loading -> s.quranAudioLoading
+                            is QuranAudioState.Error -> s.quranAudioError
+                            is QuranAudioState.Paused -> label(reciter, s.quranResume, audioState.ayah)
+                            is QuranAudioState.Playing -> label(reciter, reciter.nameAr, audioState.ayah)
+                            else -> reciter.nameAr
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (audioState is QuranAudioState.Error) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                }
+                if (loading) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp))
+                }
             }
         }
         HorizontalDivider(
