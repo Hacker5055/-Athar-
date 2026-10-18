@@ -67,11 +67,30 @@ jobs:
           BASE=https://raw.githubusercontent.com/risan/quran-json/main/data/tanzil
           curl -fsSL "$BASE/uthmani.json"  -o app/src/main/assets/quran/uthmani.json
           curl -fsSL "$BASE/chapters.json" -o app/src/main/assets/quran/chapters.json
+          # ⚠️ والترجمتان بالحكم نفسه: **ليستا في git**، فتُنزَّلان وقت
+          # البناء. docs/09 §1 يجمع النصّ والترجمتين في قرار واحد،
+          # ويحسب حجمها معًا (النص + ترجمتان ≈ ٤ ميجابايت).
+          # المرجع: data/meta/sources.json في المصدر نفسه.
+          TBASE=https://raw.githubusercontent.com/risan/quran-json/main/data/extra
+          mkdir -p app/src/main/assets/quran/translations
+          curl -fsSL "$TBASE/english_pickthall.json" \
+            -o app/src/main/assets/quran/translations/english_pickthall.json
+          curl -fsSL "$TBASE/english_itani.json" \
+            -o app/src/main/assets/quran/translations/english_itani.json
+
           # ⚠️ حارس: تنزيل ناقص يعني قرآنًا ناقصًا بلا رسالة خطأ واضحة
           for f in uthmani chapters; do
             size=$(wc -c < "app/src/main/assets/quran/$f.json")
             echo "$f.json = $size بايت"
             if [ "$size" -lt 50000 ]; then
+              echo "❌ $f.json صغير جدًا — فشل التنزيل"
+              exit 1
+            fi
+          done
+          for f in english_pickthall english_itani; do
+            size=$(wc -c < "app/src/main/assets/quran/translations/$f.json")
+            echo "$f.json = $size بايت"
+            if [ "$size" -lt 900000 ]; then
               echo "❌ $f.json صغير جدًا — فشل التنزيل"
               exit 1
             fi
