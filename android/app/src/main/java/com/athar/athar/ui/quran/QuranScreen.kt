@@ -175,6 +175,7 @@ fun QuranScreen(
                 onOpened = { openAyah = null },
                 reciter = reciter,
                 onReciterChange = { reciter = it },
+                availableReciters = ReciterWithdrawals.apply(Reciters.ALL, withdrawn),
                 readerTheme = readerTheme,
                 audioState = audioState,
                 onPlayToggle = {
@@ -379,6 +380,7 @@ private fun ReaderView(
     onOpened: () -> Unit,
     reciter: Reciter,
     onReciterChange: (Reciter) -> Unit,
+    availableReciters: List<Reciter>,
     readerTheme: ReaderTheme,
     audioState: QuranAudioState,
     onPlayToggle: () -> Unit,
@@ -386,9 +388,6 @@ private fun ReaderView(
 ) {
     val s = LocalStrings.current
     val listState = rememberLazyListState()
-    // ⚠️ قد يكون القارئ المختار هو المسحوب نفسه، فتبقى الواجهة تسمّي
-    // اسمًا لا صوت له. نصحّح الاختيار إلى أول قارئ متاح.
-    val availableReciters = ReciterWithdrawals.apply(Reciters.ALL, withdrawn)
     // ⚠️ ثيم القراءة يخصّ هذه الشاشة وحدها: النصّ يُقرأ طويلًا وفي
     // ظروف إضاءة غير بقية التطبيق، فلو ألزمناه بالثيم العام لأجبرنا
     // من يقرأ ليلًا على شاشة بيضاء أو العكس.
