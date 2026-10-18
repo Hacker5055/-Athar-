@@ -221,14 +221,20 @@ jobs:
         run: python3 tool/verify_apk.py app/build/outputs/apk/debug/app-debug.apk
 
       - name: APK إصدار
-        run: ./gradlew assembleRelease --no-daemon
+        id: release_apk
+        # ⚠️ tee: سطر `🔐 signing:` يُطبع في **إعداد** Gradle، وهو الدليل الوحيد
+        # على ما رآه من متغيّرات. السجل الأصلي محجوب عن القراءة.
+        run: ./gradlew assembleRelease --no-daemon 2>&1 | tee gradle-release.log
 
       # ⚠️ APK غير موقّع **لا يُثبَّت**: يرفضه الهاتف ولا يظهر له سبب
       # واضح. فالتوقيع ليس تفصيلًا في الإصدار بل شرط في أن يكون الملف
       # المرفق نافعًا أصلًا.
       - name: ⚠ تحقّق من توقيع APK الإصدار
+        id: sign_check
+        # ⚠️ defaults.working-directory = android ⇒ المسار النسبي هنا يصير
+        # android/android/... والملف «يغيب» فيبدو كأن التوقيع فشل. مطلقًا دائمًا.
         run: |
-          APK=android/app/build/outputs/apk/release/app-release.apk
+          APK=$GITHUB_WORKSPACE/android/app/build/outputs/apk/release/app-release.apk
           [ -f "$APK" ] || { echo "❌ لا وجود لـ $APK"; exit 1; }
           if unzip -l "$APK" | grep -q "META-INF/.*\.RSA"; then
             echo "✅ موقّع: $(unzip -l "$APK" | grep 'META-INF/.*\.RSA' | awk '{print $4}')"
@@ -236,6 +242,33 @@ jobs:
             echo "❌ APK الإصدار غير موقّع — لن يُثبَّت على أي جهاز"
             exit 1
           fi
+
+      - name: ⚠ نشر سبب فشل التوقيع تعليقًا
+        # ⚠️ سجلات Actions محجوبة عن القراءة؛ التعليق على الـ PR هو القناة
+        # الوحيدة التي تصل. بدونه نخمّن دورات كاملة.
+        if: steps.sign_check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo '### ⚠️ تعذّر التحقّق من توقيع APK الإصدار'
+            echo
+            echo '<details><summary>سطر توقيع Gradle + نواتج الإصدار</summary>'
+            echo
+            echo '```'
+            grep -a 'signing:' gradle-release.log || echo '(لا سطر 🔐 signing في السجل)'
+            echo '--- نواتج release/ ---'
+            ls -l "$GITHUB_WORKSPACE/android/app/build/outputs/apk/release/" || true
+            echo '--- محتويات مخرجات apk/ ---'
+            find "$GITHUB_WORKSPACE/android/app/build/outputs/apk" -name '*.apk' || true
+            echo '```'
+            echo
+            echo '</details>'
+          } > /tmp/signwhy.md
+          PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
+          [ -z "$PR" ] && PR=1
+          jq -Rs '{body: .}' /tmp/signwhy.md > /tmp/payload.json
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --input /tmp/payload.json
 
       - name: حفظ النواتج
         uses: actions/upload-artifact@v4
