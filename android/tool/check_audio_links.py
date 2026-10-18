@@ -27,6 +27,14 @@ BASE = "https://cdn.islamic.network/quran"
 # الجودات التي يعلنها المصدر
 BITRATES = (192, 128, 64, 48, 40, 32)
 
+# ⚠️ ٤٠٣ قد يكون غياب الملف وقد يكون تحديدًا للمعدّل: في أول مسح أطلقنا
+# ٣١٢ طلبًا معًا فمات خمسة قرّاء دفعة واحدة، وبينهم أشهر الأسماء — وهو
+# أرجح أن يكون دفاعًا من الخادم لا صدفة. نميّزهما بتسلسل وإعادة محاولة
+# بعد مهلة، وبعامل مستخدم معلوم فلا نبدو كسكربت مجهول.
+UA = "Athar/1.0 (Islamic companion app; +https://github.com/Hacker5055/-Athar-)"
+MAX_WORKERS = 2
+RETRY_AFTER = 5
+
 # ⚠️ المساران مختلفان عند المصدر: توفّر القارئ في أحدهما لا يعني
 # توفّره في الآخر. في أول مسح كان `ar.alafasy` يبثّ السورة وحده.
 PATHS = ("audio-surah", "audio")
@@ -46,19 +54,34 @@ def parse_catalog() -> list[str]:
 
 
 def head_status(url: str) -> int:
-    """يطلب أول بايت فقط: نتحقق من وجود الملف لا من تحميله."""
-    result = subprocess.run(
-        [
-            "curl", "-sS", "-o", "/dev/null", "-w", "%{http_code}",
-            "-r", "0-0", "--max-time", "20", url,
-        ],
-        capture_output=True,
-        text=True,
-    )
-    try:
-        return int(result.stdout.strip() or 0)
-    except ValueError:
-        return 0
+    """يطلب أول بايت فقط: نتحقق من وجود الملف لا من تحميله.
+
+    ⚠️ نعيد المحاولة على ٤٠٣ و٤٢٩ بعد مهلة: ذانك الرمزان قد يعنيان
+    «انتظر» لا «لا وجود»، وتسجيل قارئ حيّ على أنه ميت يحذفه من
+    الكتالوج ظلمًا.
+    """
+    import time
+
+    for attempt in (1, 2, 3):
+        result = subprocess.run(
+            [
+                "curl", "-sS", "-o", "/dev/null", "-w", "%{http_code}",
+                "-r", "0-0", "--max-time", "25", "-A", UA, url,
+            ],
+            capture_output=True,
+            text=True,
+        )
+        try:
+            code = int(result.stdout.strip() or 0)
+        except ValueError:
+            code = 0
+        if code in (200, 206):
+            return code
+        if code in (403, 429) and attempt < 3:
+            time.sleep(RETRY_AFTER * attempt)
+            continue
+        return code
+    return 0
 
 
 def probe(rid: str, bitrate: int, path: str, numbers: tuple[int, ...]) -> bool:
@@ -67,20 +90,37 @@ def probe(rid: str, bitrate: int, path: str, numbers: tuple[int, ...]) -> bool:
 
 
 def sweep(rid: str) -> tuple[str, list[tuple[int, str]]]:
-    """يجرب كل جودة على كل مسار، ويردّ ما نجح مرتّبًا من الأعلى جودة."""
+    """يجرب الجودات والمسارات، ويردّ ما نجح مرتّبًا من الأعلى جودة.
+
+    ⚠️ مرحلتان لا مسح كامل: المسح الكامل ٣١٢ طلبًا، ومع إعادة المحاولة
+    يتجاوز زمن المهمة. نبدأ بالجودة الغالبة (١٢٨) على المسارين، ثم
+    نُعمّق **لمن فشل فقط** — فلا ندفع ثمن البحث عن جودة نادرة لقارئ
+    وجدناه في المحاولة الأولى.
+    """
     hits: list[tuple[int, str]] = []
 
     def one(bitrate: int, path: str) -> tuple[int, str] | None:
         numbers = SURAH_SAMPLE if path == "audio-surah" else VERSE_SAMPLE
         return (bitrate, path) if probe(rid, bitrate, path, numbers) else None
 
-    tasks = [(b, p) for b in BITRATES for p in PATHS]
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-        for result in pool.map(lambda t: one(*t), tasks):
-            if result:
-                hits.append(result)
+    def run(tasks: list[tuple[int, str]]) -> None:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+            for result in pool.map(lambda t: one(*t), tasks):
+                if result and result not in hits:
+                    hits.append(result)
 
-    # الأفضل أولًا: جودة أعلى، ومسار السورة أوفر للمشغّل (ملف واحد)
+    # المرحلة الأولى: الجودة الغالبة على المسارين
+    run([(128, p) for p in PATHS])
+
+    # المرحلة الثانية: بقية الجودات إن لم نجد شيئًا
+    if not hits:
+        run([(b, p) for b in BITRATES if b != 128 for p in PATHS])
+    else:
+        # ⚠️ نبحث عن مسار السورة وحده: وجدنا آية، فالسورة أوفر للمشغّل
+        if not any(p_ == "audio-surah" for _, p_ in hits):
+            run([(b, "audio-surah") for b in BITRATES if b != 128])
+
+    # الأفضل أولًا: مسار السورة (ملف واحد) ثم أعلى جودة
     hits.sort(key=lambda h: (h[1] != "audio-surah", -h[0]))
     return rid, hits
 
@@ -92,7 +132,7 @@ def main() -> int:
     print("العيّنة: سورة ١ و١١٤ · آية ١ و٦٢٣٦\n")
 
     results: list[tuple[str, list[tuple[int, str]]]] = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
         results = list(pool.map(sweep, catalog))
 
     print(f"{'قارئ':<26} {'الأفضل':<14} كل ما يبثّ")
