@@ -82,11 +82,12 @@ fun PrayerScreen(
 
     /// ⚠️ اسم المدينة يُقرأ باللغة الحالية — «القاهرة» داخل تطبيق
     /// فرنسي بالكامل عيب لا يراه من يختبر بالعربية فقط.
-    val placeLabel = remember(settings, s) {
+    val locale = com.athar.athar.i18n.LocalAppLocale.current
+    val placeLabel = remember(settings, s, locale) {
         val city = settings.cityId?.let { id ->
             com.athar.athar.prayer.Cities.all.firstOrNull { it.id == id }
         }
-        city?.nameFor(com.athar.athar.i18n.LocalAppLocale.current)
+        city?.nameFor(locale)
             ?: settings.placeName.ifBlank { s.prayerMyLocation }
     }
 

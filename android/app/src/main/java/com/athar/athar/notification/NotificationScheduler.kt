@@ -30,7 +30,6 @@ object NotificationScheduler {
             // النظام، فلا يكفي أن نقرأ اللغة وقت العرض. المستقبلات
             // (إقلاع، تنبيه) لا تملك `Strings` فتقرؤها من المخزن.
             strings ?: Strings(LocaleStore.load(context)),
-            "",
         )
     }
 
