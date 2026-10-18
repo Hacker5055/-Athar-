@@ -1,6 +1,7 @@
 package com.athar.athar.athary
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -232,6 +233,15 @@ class TrackerStateTest {
         assertEquals(8, HabitId.entries.size)
         assertEquals(8, HabitId.entries.map { it.id }.toSet().size)
         assertEquals(8, HabitId.entries.map { it.stringKey }.toSet().size)
+    }
+
+    /// ⚠️ حارس: لو كان `id` هو `name` نفسه لأضاع أي إعادة تسمية سجل
+    /// المستخدم. الفصل بينهما ليس تحسينًا بل شرط بقاء للبيانات.
+    @Test fun idIsDecoupledFromEnumName() {
+        for (habit in HabitId.entries) {
+            assertNotEquals("id لا يجوز أن يكون name: ${habit.name}", habit.name, habit.id)
+        }
+        assertEquals("fajr", HabitId.FAJR.id)
     }
 
     @Test fun habitFromIdToleratesUnknown() {

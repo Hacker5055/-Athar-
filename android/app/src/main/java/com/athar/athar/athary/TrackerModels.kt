@@ -6,24 +6,29 @@ import java.time.LocalDate
 ///
 /// ⚠️ القائمة **ثابتة** عن قصد: التخصيص يفتح باب تصميم كبير (أهداف،
 /// أيقونات، ترتيب) وهو مؤجّل لما بعد الإطلاق.
-enum class HabitId(val stringKey: String) {
+enum class HabitId(val stringKey: String, val id: String) {
     /// أصعب واحدة، وأكثر واحدة تكسر السلسلة
-    FAJR("habit_fajr"),
-    FIVE_PRAYERS("habit_five_prayers"),
-    QURAN("habit_quran"),
-    MORNING_ADHKAR("habit_morning_adhkar"),
-    EVENING_ADHKAR("habit_evening_adhkar"),
-    DUHA("habit_duha"),
-    SADAQA("habit_sadaqa"),
-    FASTING("habit_fasting"),
+    FAJR("habit_fajr", "fajr"),
+    FIVE_PRAYERS("habit_five_prayers", "five_prayers"),
+    QURAN("habit_quran", "quran"),
+    MORNING_ADHKAR("habit_morning_adhkar", "morning_adhkar"),
+    EVENING_ADHKAR("habit_evening_adhkar", "evening_adhkar"),
+    DUHA("habit_duha", "duha"),
+    SADAQA("habit_sadaqa", "sadaqa"),
+    FASTING("habit_fasting", "fasting"),
     ;
 
-    /// ⚠️ معرّف ثابت لا يتغيّر مع إعادة التسمية — وإلا ضاع سجل المستخدم
-    val id: String get() = name
-
     companion object {
-        fun fromId(id: String?): HabitId? =
-            if (id == null) null else entries.firstOrNull { it.id == id }
+        /// ⚠️ `id` حقل منفصل عن `name`: لو كان `name` نفسه لضاع سجل
+        /// المستخدم متى أُعيدت تسمية الثابت.
+        ///
+        /// ⚠️ ويقبل الاثنين بلا حساسية لحالة الحروف: بيانات كُتبت بأيّهما
+        /// تبقى مقروءة، والمجهول يُتجاهل بدل أن يمحو اليوم كله.
+        fun fromId(id: String?): HabitId? {
+            if (id == null) return null
+            return entries.firstOrNull { it.id.equals(id, ignoreCase = true) }
+                ?: entries.firstOrNull { it.name.equals(id, ignoreCase = true) }
+        }
     }
 }
 

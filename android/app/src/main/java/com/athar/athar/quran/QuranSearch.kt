@@ -1,6 +1,6 @@
 package com.athar.athar.quran
 
-import com.athar.athar.prayer.CitySearch
+import com.athar.athar.core.ArabicText
 
 /// البحث في نصّ القرآن — **محض بالكامل** ويُختبر على JVM.
 object QuranSearch {
@@ -42,5 +42,5 @@ object QuranSearch {
     /// يجد «ٱلۡحَمۡدُ لِلَّهِ» إلا بتطبيع الطرفين. لكن الرخصة (CC BY 3.0)
     /// **تمنع تعديل النص**، فنُطبّع نسخة للمقارنة ونعرض الأصل كما هو
     /// حرفيًا — ولا نلمس `ayah.text` أبدًا.
-    private fun normalize(text: String): String = CitySearch.normalize(text)
+    private fun normalize(text: String): String = ArabicText.normalize(text)
 }

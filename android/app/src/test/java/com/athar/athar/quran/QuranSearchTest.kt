@@ -63,6 +63,13 @@ class QuranSearchTest {
         assertEquals(1, QuranSearch.search("الله", surahs, ::ayahsOf, limit = 1).size)
     }
 
+    /// ⚠️ حارس الرسم العثماني: `ۡ` (U+06E1) سكونه و`ٰ` (U+0670) الألف
+    /// الخنجرية — كلاهما **خارج** نطاق التشكيل المعتاد، وبقاؤهما يعني
+    /// أن «الحمد» لا تُوجد في «ٱلۡحَمۡدُ» أبدًا.
+    @Test fun stripsUthmaniSukunAndDaggerAlef() {
+        assertEquals(2, QuranSearch.search("العلمين", surahs, ::ayahsOf)[0].ayah.number)
+    }
+
     /// ⚠️ حارس أداء: المستودع يحلّل ١٫٧ ميجابايت تحليلاً كسولًا، فلو استُدعي
     /// ayahsOf مرة لكل **آية** بدل مرة لكل **سورة** صار البحث ٣٠٠٠ تحليل.
     @Test fun loadsEachSurahExactlyOnce() {

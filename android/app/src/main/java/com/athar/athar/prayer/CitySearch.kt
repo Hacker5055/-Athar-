@@ -1,5 +1,7 @@
 package com.athar.athar.prayer
 
+import com.athar.athar.core.ArabicText
+
 /// بحث المدن — **محض بالكامل** ويُختبر على JVM.
 ///
 /// ⚠️ لماذا التطبيع؟ لأن المستخدم يكتب «القاهره» أو «القَاهِرَة» أو
@@ -7,22 +9,7 @@ package com.athar.athar.prayer
 /// وهي موجودة — أسوأ تجربة في شاشة اختيار المدينة.
 object CitySearch {
 
-    fun normalize(input: String): String {
-        val out = StringBuilder(input.length)
-        for (ch in input) {
-            when (ch) {
-                // التشكيل العربي والتطويل — تُحذف
-                in 'ً'..'ْ', 'ـ' -> Unit
-                'أ', 'إ', 'آ', 'ٱ' -> out.append('ا')
-                'ى' -> out.append('ي')
-                'ة' -> out.append('ه')
-                'ؤ' -> out.append('و')
-                'ئ' -> out.append('ي')
-                else -> out.append(ch.lowercaseChar())
-            }
-        }
-        return out.toString()
-    }
+    fun normalize(input: String): String = ArabicText.normalize(input)
 
     /// يبحث بالعربية والإنجليزية والفرنسية — لأن أثر ثلاثي اللغة.
     fun search(query: String, cities: List<City> = Cities.all): List<City> {
