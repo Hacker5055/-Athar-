@@ -392,4 +392,32 @@ class Strings {
   String get widgetNoData => t('widget_no_data');
   String get widgetAdd => t('widget_add');
   String get widgetAddHint => t('widget_add_hint');
+  // ══ القرآن · القارئ (أسبوع ٦) ══
+  String get quranTabSurah => t('quran_tab_surah');
+  String get quranTabJuz => t('quran_tab_juz');
+  String get quranTabPage => t('quran_tab_page');
+  String get quranEmptyTitle => t('quran_empty_title');
+  String get quranEmptyBody => t('quran_empty_body');
+  String get quranImportAction => t('quran_import_action');
+  String get quranImporting => t('quran_importing');
+  String get quranImportFailed => t('quran_import_failed');
+  String get quranReaderSettings => t('quran_reader_settings');
+  String get quranFontSize => t('quran_font_size');
+  String get quranFontSmaller => t('quran_font_smaller');
+  String get quranFontBigger => t('quran_font_bigger');
+  String get quranReadingTheme => t('quran_reading_theme');
+  String get quranThemePaper => t('quran_theme_paper');
+  String get quranThemeSepia => t('quran_theme_sepia');
+  String get quranThemeNight => t('quran_theme_night');
+  String get quranShowTranslation => t('quran_show_translation');
+  String get quranNoTranslation => t('quran_no_translation');
+  String get quranEdition => t('quran_edition');
+  String get quranPageWord => t('quran_page_word');
+  String get quranSajda => t('quran_sajda');
+  String get quranSearchTitle => t('quran_search_title');
+  String get quranSearchHint => t('quran_search_hint');
+  String get quranSearchEmpty => t('quran_search_empty');
+  String get quranResultsCount => t('quran_results_count');
+  String get quranNoAyahs => t('quran_no_ayahs');
+
 }

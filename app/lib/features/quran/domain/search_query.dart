@@ -47,6 +47,19 @@ class QuranSearchQuery {
 
   bool get isEmpty => kind == QuranSearchKind.empty;
 
+  /// ⚠️ **مساواة بالقيمة مطلوبة** — `quranSearchResultsProvider` هو
+  /// `family` مفتاحه هذا الكائن. بدونها، كل ضغطة حرف تبني كائنًا جديدًا
+  /// وتُعيد الاستعلام، حتى لو كان النص المطبَّع لم يتغيّر.
+  @override
+  bool operator ==(Object other) =>
+      other is QuranSearchQuery &&
+      other.kind == kind &&
+      other.normalized == normalized &&
+      other.reference == reference;
+
+  @override
+  int get hashCode => Object.hash(kind, normalized, reference);
+
   @override
   String toString() => 'QuranSearchQuery(${kind.name}, ${tokens.length})';
 }

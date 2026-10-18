@@ -14,6 +14,8 @@ import '../features/more/presentation/pages/more_page.dart';
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../features/qibla/presentation/pages/qibla_page.dart';
 import '../features/quran/presentation/pages/quran_page.dart';
+import '../features/quran/presentation/pages/quran_search_page.dart';
+import '../features/quran/presentation/pages/reader_page.dart';
 import '../features/settings/presentation/pages/settings_page.dart';
 import '../features/shell/app_shell.dart';
 
@@ -31,6 +33,15 @@ abstract final class Routes {
   static const cityPicker = '/city-picker';
   static const notifications = '/notifications';
   static const athary = '/athary';
+  static const surah = '/quran/surah/:id';
+  static const juz = '/quran/juz/:number';
+  static const mushafPage = '/quran/page/:number';
+  static const quranSearch = '/quran/search';
+
+  /// يبني مسار سورة برقمها.
+  static String surahOf(int id) => '/quran/surah/$id';
+  static String juzOf(int n) => '/quran/juz/$n';
+  static String pageOf(int n) => '/quran/page/$n';
 }
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -132,6 +143,34 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.athary,
         name: 'athary',
         builder: (context, state) => const AtharyPage(),
+      ),
+
+      // ── القرآن (أسبوع ٦) ──────────────────────────────
+      GoRoute(
+        path: Routes.surah,
+        name: 'surah',
+        builder: (context, state) => ReaderPage(
+          args: ReaderArgs.surah(int.parse(state.pathParameters['id']!)),
+        ),
+      ),
+      GoRoute(
+        path: Routes.juz,
+        name: 'juz',
+        builder: (context, state) => ReaderPage(
+          args: ReaderArgs.juz(int.parse(state.pathParameters['number']!)),
+        ),
+      ),
+      GoRoute(
+        path: Routes.mushafPage,
+        name: 'mushaf-page',
+        builder: (context, state) => ReaderPage(
+          args: ReaderArgs.page(int.parse(state.pathParameters['number']!)),
+        ),
+      ),
+      GoRoute(
+        path: Routes.quranSearch,
+        name: 'quran-search',
+        builder: (context, state) => const QuranSearchPage(),
       ),
     ],
   );

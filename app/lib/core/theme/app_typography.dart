@@ -75,22 +75,40 @@ class AppTypography {
   /// نمط النص القرآني.
   ///
   /// [fontSize] بييجي من إعداد المستخدم (16 → 40).
+  ///
+  /// ⚠️ **لا يستخدم `google_fonts` عن قصد** — كان يستخدمه، لكن الحزمة
+  /// تنزّل الخط من الشبكة عند أول استخدام، وهذا يكسر «أوفلاين أولًا»
+  /// (`docs/05` §1) في أهم شاشة في التطبيق: القارئ.
+  ///
+  /// البديل: سلسلة بدائل من الخطوط المرفقة أو المثبّتة على الجهاز.
+  /// لو لم يتوفّر أي منها، يستخدم خط النظام العربي — ويغطّي الرسم
+  /// العثماني على كل الأجهزة الحديثة. أما «خط عثماني حقيقي» فمؤجّل
+  /// لإرفاق `UthmanicHafs` بترخيص متحقق منه (`assets/fonts/README.md`).
   static TextStyle quranStyle({
     required Color color,
     double fontSize = quranFontSize,
     double height = quranLineHeight,
-  }) {
-    final base = TextStyle(
-      color: color,
-      fontSize: fontSize,
-      height: height,
-      fontWeight: FontWeight.w400,
-      fontFamily: useGoogleFonts ? null : fontFamilyQuran,
-    );
-    if (!useGoogleFonts) return base;
-    // لحد ما نرفق خط عثماني: Amiri هو أقرب خط متاح لرسم المصحف.
-    return GoogleFonts.amiriTextStyle(textStyle: base);
-  }
+  }) =>
+      TextStyle(
+        color: color,
+        fontSize: fontSize,
+        height: height,
+        fontWeight: FontWeight.w400,
+        fontFamily: fontFamilyQuran,
+        fontFamilyFallback: _quranFallbacks,
+      );
+
+  /// خطوط النص القرآني بالترتيب — أول خط متاح على الجهاز يُستخدم.
+  static const List<String> _quranFallbacks = <String>[
+    'UthmanicHafs',
+    'me_quran',
+    'Amiri Quran',
+    'Amiri',
+    'Noto Naskh Arabic',
+    'Noto Sans Arabic',
+    'Geeza Pro',
+    'Arial',
+  ];
 
   static TextStyle _style(
     TextStyle? base,
