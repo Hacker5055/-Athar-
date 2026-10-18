@@ -32,13 +32,13 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebug
 > Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebug
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:checkReleaseAarMetadata
-> Task :app:processDebugManifestForPackage
 > Task :app:generateReleaseResValues
+> Task :app:processDebugManifestForPackage
+> Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -49,31 +49,35 @@ Daemon will be stopped at the end of the build
 > Task :app:extractDeepLinksRelease
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
+> Task :app:javaPreCompileRelease
 > Task :app:processReleaseManifestForPackage
 > Task :app:preReleaseUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileRelease
 > Task :app:javaPreCompileReleaseUnitTest
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:processReleaseResources
 > Task :app:mergeDebugAssets
 > Task :app:desugarDebugFileDependencies
-> Task :app:processReleaseResources
 > Task :app:compressDebugAssets
+> Task :app:mergeDebugJniLibFolders
 > Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
 
-> Task :app:compileDebugKotlin FAILED
+> Task :app:compileDebugKotlin
 e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/quran/QuranBookmarkStore.kt:25:29 Too many arguments for 'fun edit(): SharedPreferences.Editor!'.
 e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/quran/QuranBookmarkStore.kt:25:29 Unresolved reference 'putString'.
 e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/quran/QuranBookmarkStore.kt:25:31 Unresolved reference 'putString'.
 
-> Task :app:compileReleaseKotlin FAILED
+> Task :app:compileReleaseKotlin
 e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/quran/QuranBookmarkStore.kt:25:29 Too many arguments for 'fun edit(): SharedPreferences.Editor!'.
 e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/quran/QuranBookmarkStore.kt:25:29 Unresolved reference 'putString'.
 e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/quran/QuranBookmarkStore.kt:25:31 Unresolved reference 'putString'.
 
 > Task :app:mergeExtDexDebug
+> Task :app:compileDebugKotlin FAILED
+> Task :app:compileReleaseKotlin FAILED
 
 FAILURE: Build completed with 2 failures.
 
@@ -494,5 +498,5 @@ Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilat
 
 ==============================================================================
 
-BUILD FAILED in 2m 7s
-39 actionable tasks: 39 executed
+BUILD FAILED in 2m 13s
+41 actionable tasks: 41 executed
