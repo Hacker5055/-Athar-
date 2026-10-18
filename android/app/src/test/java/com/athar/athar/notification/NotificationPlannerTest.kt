@@ -22,9 +22,14 @@ class NotificationPlannerTest {
     private fun midnight(date: LocalDate): Instant =
         date.atStartOfDay(ZoneOffset.UTC).toInstant()
 
-    /// ست صلوات بفواصل ساعتين تبدأ ٠٤:٠٠ UTC
-    private fun day(date: LocalDate, startHours: Long = 4): PrayerDay {
-        fun at(index: Long) = midnight(date).plus(startHours + index * 2, ChronoUnit.HOURS)
+    /// ست صلوات تفصل بينها [gapMinutes] وتبدأ ٠٤:٠٠ UTC.
+    ///
+    /// ⚠️ الفاصل قابل للضبط لأن **باب الأذكار** (الفجر←الشروق) لا يمكن
+    /// تجاوزه بفاصل ساعتين وأقصى تأخير ٣٠د — فلا يُختبر التقييد إلا
+    /// بيوم قصير النهار، وهو حال الشتاء فعلًا لا حالة اصطناعية.
+    private fun day(date: LocalDate, startHours: Long = 4, gapMinutes: Long = 120): PrayerDay {
+        fun at(index: Long) =
+            midnight(date).plus(startHours * 60 + index * gapMinutes, ChronoUnit.MINUTES)
         return PrayerDay(
             date = date,
             fajr = at(0),
@@ -39,7 +44,14 @@ class NotificationPlannerTest {
     private fun week(from: LocalDate): List<PrayerDay> =
         (0 until NotificationPlanner.DEFAULT_AHEAD_DAYS).map { day(from.plusDays(it.toLong())) }
 
-    private fun noJumuah() = NotificationSettings(jumuahReminder = false)
+    /// ⚠️ الأذكار **مُفعّلة افتراضيًا**، فاختبارات الصلاة تُوقفها
+    /// صراحةً: بلا ذلك يتغيّر كل عدد في الملف بلا سبب مرئي، ويصير
+    /// الفشل لغزًا بدل أن يكون دليلًا.
+    private fun prayersOnly(): NotificationSettings = NotificationSettings(
+        jumuahReminder = false,
+        morningAdhkar = false,
+        eveningAdhkar = false,
+    )
 
     // ── الأساسيات ───────────────────────────────────────────
 
@@ -55,7 +67,7 @@ class NotificationPlannerTest {
     @Test fun defaultAdhanForEveryPrayerExceptSunrise() {
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah(),
+            settings = prayersOnly(),
             now = midnight(sunday),
         )
         val athan = plan.filter { it.kind == AlertKind.ATHAN }
@@ -67,7 +79,7 @@ class NotificationPlannerTest {
     @Test fun sunriseStaysOffEvenIfExplicitlyRequested() {
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah().withMode(PrayerSlot.SUNRISE, PrayerAlertMode.ADHAN),
+            settings = prayersOnly().withMode(PrayerSlot.SUNRISE, PrayerAlertMode.ADHAN),
             now = midnight(sunday),
         )
         assertFalse(plan.any { it.prayer == PrayerSlot.SUNRISE })
@@ -78,7 +90,7 @@ class NotificationPlannerTest {
         val now = midnight(sunday).plus(7, ChronoUnit.HOURS)
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah(),
+            settings = prayersOnly(),
             now = now,
         )
         assertFalse("الفجر فات", plan.any { it.prayer == PrayerSlot.FAJR })
@@ -90,7 +102,7 @@ class NotificationPlannerTest {
     @Test fun offModeCancelsOnlyThatPrayer() {
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah().withMode(PrayerSlot.ASR, PrayerAlertMode.OFF),
+            settings = prayersOnly().withMode(PrayerSlot.ASR, PrayerAlertMode.OFF),
             now = midnight(sunday),
         )
         assertFalse(plan.any { it.prayer == PrayerSlot.ASR })
@@ -102,7 +114,7 @@ class NotificationPlannerTest {
     @Test fun reminderIsScheduledBeforeAthn() {
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah().withReminder(PrayerSlot.FAJR, 15),
+            settings = prayersOnly().withReminder(PrayerSlot.FAJR, 15),
             now = midnight(sunday),
         )
         val reminder = plan.single { it.isReminder }
@@ -117,7 +129,7 @@ class NotificationPlannerTest {
     @Test fun zeroMinutesMeansNoReminder() {
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah(),
+            settings = prayersOnly(),
             now = midnight(sunday),
         )
         assertFalse(plan.any { it.isReminder })
@@ -128,7 +140,7 @@ class NotificationPlannerTest {
         val now = midnight(sunday).plus(3, ChronoUnit.HOURS).plus(45, ChronoUnit.MINUTES)
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah().withReminder(PrayerSlot.FAJR, 30),
+            settings = prayersOnly().withReminder(PrayerSlot.FAJR, 30),
             now = now,
         )
         assertFalse(plan.any { it.isReminder })
@@ -140,7 +152,7 @@ class NotificationPlannerTest {
     @Test fun switchedOffPrayerHasNoReminder() {
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah()
+            settings = prayersOnly()
                 .withMode(PrayerSlot.ASR, PrayerAlertMode.OFF)
                 .withReminder(PrayerSlot.ASR, 10),
             now = midnight(sunday),
@@ -152,7 +164,7 @@ class NotificationPlannerTest {
     @Test fun silentPrayerKeepsItsReminder() {
         val plan = NotificationPlanner.plan(
             days = listOf(day(sunday)),
-            settings = noJumuah()
+            settings = prayersOnly()
                 .withMode(PrayerSlot.ASR, PrayerAlertMode.SILENT)
                 .withReminder(PrayerSlot.ASR, 10),
             now = midnight(sunday),
@@ -205,7 +217,7 @@ class NotificationPlannerTest {
     @Test fun jumuahOffYieldsNone() {
         val plan = NotificationPlanner.plan(
             days = week(sunday),
-            settings = noJumuah(),
+            settings = prayersOnly(),
             now = midnight(sunday),
         )
         assertFalse(plan.any { it.kind == AlertKind.JUMUAH })
@@ -223,7 +235,7 @@ class NotificationPlannerTest {
     // ── شروط السلامة ────────────────────────────────────────
 
     @Test fun planIsOrderedWithinEachKind() {
-        val settings = PrayerSlot.entries.fold(noJumuah()) { acc, slot ->
+        val settings = PrayerSlot.entries.fold(prayersOnly()) { acc, slot ->
             acc.withReminder(slot, 10)
         }
         val plan = NotificationPlanner.plan(week(sunday), settings, midnight(sunday))
@@ -236,7 +248,7 @@ class NotificationPlannerTest {
     }
 
     @Test fun everyIdIsDecodable() {
-        val settings = PrayerSlot.entries.fold(noJumuah()) { acc, slot ->
+        val settings = PrayerSlot.entries.fold(prayersOnly()) { acc, slot ->
             acc.withReminder(slot, 20)
         }
         val plan = NotificationPlanner.plan(week(sunday), settings, midnight(sunday))
@@ -245,6 +257,106 @@ class NotificationPlannerTest {
             val decoded = AlertId.decode(alert.id)
             assertEquals("فكّ ${alert.id}", alert.kind, decoded.kind)
         }
+    }
+
+    // ── أذكار الصباح والمساء ───────────────────────────────
+
+    /// ⚠️ الجوهري: التذكير **يتبع الفجر** لا ساعة ثابتة. ساعة ثابتة
+    /// تُذكّر قبل الفجر صيفًا وبعد الشروق شتاءً — خارج الباب في الحالين.
+    @Test fun morningAdhkarFollowsFajr() {
+        val plan = NotificationPlanner.plan(
+            days = listOf(day(sunday)),
+            settings = prayersOnly().copy(morningAdhkar = true, morningAdhkarOffset = 15),
+            now = midnight(sunday),
+        )
+        val alert = plan.single { it.kind == AlertKind.MORNING_ADHKAR }
+        assertEquals(
+            "الفجر ٠٤:٠٠ + ١٥د",
+            midnight(sunday).plus(4, ChronoUnit.HOURS).plus(15, ChronoUnit.MINUTES),
+            alert.at,
+        )
+    }
+
+    @Test fun eveningAdhkarFollowsAsr() {
+        val plan = NotificationPlanner.plan(
+            days = listOf(day(sunday)),
+            settings = prayersOnly().copy(eveningAdhkar = true, eveningAdhkarOffset = 10),
+            now = midnight(sunday),
+        )
+        val alert = plan.single { it.kind == AlertKind.EVENING_ADHKAR }
+        assertEquals(
+            "العصر ١٠:٠٠ + ١٠د",
+            midnight(sunday).plus(10, ChronoUnit.HOURS).plus(10, ChronoUnit.MINUTES),
+            alert.at,
+        )
+    }
+
+    /// ⚠️ سقف الباب: تذكير بعد الشروق ليس «صباحًا». نُقيّده بالسقف
+    /// بدل إلغائه، لأن تذكيرًا متأخرًا خير من تذكير لا يأتي.
+    @Test fun morningAdhkarIsCappedAtSunrise() {
+        // يوم فاصلُه ١٥د: الفجر ٠٤:٠٠، الشروق ٠٤:١٥
+        val short = day(sunday, gapMinutes = 15)
+        val plan = NotificationPlanner.plan(
+            days = listOf(short),
+            settings = prayersOnly().copy(morningAdhkar = true, morningAdhkarOffset = 30),
+            now = midnight(sunday),
+        )
+        val alert = plan.single { it.kind == AlertKind.MORNING_ADHKAR }
+        // ٠٤:٠٠ + ٣٠د = ٠٤:٣٠، يُقيَّد إلى الشروق ٠٤:١٥
+        assertEquals(short.sunrise, alert.at)
+    }
+
+    @Test fun eveningAdhkarIsCappedAtMaghrib() {
+        // يوم فاصلُه ١٥د: العصر ٠٤:٤٥، المغرب ٠٥:٠٠
+        val short = day(sunday, gapMinutes = 15)
+        val plan = NotificationPlanner.plan(
+            days = listOf(short),
+            settings = prayersOnly().copy(eveningAdhkar = true, eveningAdhkarOffset = 30),
+            now = midnight(sunday),
+        )
+        val alert = plan.single { it.kind == AlertKind.EVENING_ADHKAR }
+        // ٠٤:٤٥ + ٣٠د = ٠٥:١٥، يُقيَّد إلى المغرب ٠٥:٠٠
+        assertEquals(short.maghrib, alert.at)
+    }
+
+    @Test fun adhkarOffYieldsNone() {
+        val plan = NotificationPlanner.plan(
+            days = week(sunday),
+            settings = prayersOnly(),
+            now = midnight(sunday),
+        )
+        assertEquals(0, plan.count { it.kind == AlertKind.MORNING_ADHKAR })
+        assertEquals(0, plan.count { it.kind == AlertKind.EVENING_ADHKAR })
+    }
+
+    /// ⚠️ بلا صلاة مرتبطة = الخانة ٠، وهو ما يجعل `cancelAll` بحاجة إلى
+    /// `null` في دورته — وإلا بقيت منبّهات ميتة لا تُوقف أبدًا.
+    @Test fun adhkarAlertsCarryNoPrayerSlot() {
+        val plan = NotificationPlanner.plan(
+            days = week(sunday),
+            settings = prayersOnly().copy(morningAdhkar = true, eveningAdhkar = true),
+            now = midnight(sunday),
+        )
+        val adhkar = plan.filter {
+            it.kind == AlertKind.MORNING_ADHKAR || it.kind == AlertKind.EVENING_ADHKAR
+        }
+        assertEquals(2, adhkar.size)
+        for (alert in adhkar) {
+            assertNull(alert.prayer)
+            assertEquals(0, AlertId.decode(alert.id).prayerSlot)
+        }
+    }
+
+    /// ⚠️ الأذكار يومية: تُجدول كل يوم في النطاق لا مرة واحدة
+    @Test fun adhkarAlertIsScheduledOncePerDay() {
+        val plan = NotificationPlanner.plan(
+            days = week(sunday),
+            settings = prayersOnly().copy(morningAdhkar = true),
+            now = midnight(sunday),
+        )
+        val morning = plan.filter { it.kind == AlertKind.MORNING_ADHKAR }
+        assertEquals(NotificationPlanner.DEFAULT_AHEAD_DAYS, morning.size)
+        assertEquals(morning.size, morning.map { it.id }.toSet().size)
     }
 
     @Test fun emptyDaysYieldEmptyPlan() {

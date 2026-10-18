@@ -418,4 +418,13 @@ const Map<String, String> kStringsEn = {
   'method_isna': 'ISNA — North America',
   'method_france': 'France 15°',
   'method_custom': 'Custom',
+  'notif_channel_adhkar': 'Adhkar',
+  'notif_channel_adhkar_desc': 'Reminder for morning and evening adhkar',
+  'notif_morning_adhkar_title': 'Morning adhkar',
+  'notif_morning_adhkar_body': 'Time for the morning adhkar',
+  'notif_evening_adhkar_title': 'Evening adhkar',
+  'notif_evening_adhkar_body': 'Time for the evening adhkar',
+  'settings_morning_adhkar': 'Morning adhkar reminder',
+  'settings_evening_adhkar': 'Evening adhkar reminder',
+  'settings_adhkar_offset': 'Minutes after the adhan',
 };

@@ -15,6 +15,12 @@ enum class AlertKind(val indexValue: Int) {
 
     /// تذكير الجمعة — أسبوعي متكرر
     JUMUAH(2),
+
+    /// تذكير أذكار الصباح — ⚠️ مرتبط **بالفجر** لا بساعة ثابتة
+    MORNING_ADHKAR(3),
+
+    /// تذكير أذكار المساء — ⚠️ مرتبط **بالعصر** لا بساعة ثابتة
+    EVENING_ADHKAR(4),
 }
 
 data class DecodedAlert(

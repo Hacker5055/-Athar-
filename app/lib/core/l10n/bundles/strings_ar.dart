@@ -417,4 +417,13 @@ const Map<String, String> kStringsAr = {
   'method_isna': 'ISNA — أمريكا الشمالية',
   'method_france': 'فرنسا ١٥°',
   'method_custom': 'مخصّص',
+  'notif_channel_adhkar': 'الأذكار',
+  'notif_channel_adhkar_desc': 'تذكير بأذكار الصباح والمساء',
+  'notif_morning_adhkar_title': 'أذكار الصباح',
+  'notif_morning_adhkar_body': 'حان وقت أذكار الصباح',
+  'notif_evening_adhkar_title': 'أذكار المساء',
+  'notif_evening_adhkar_body': 'حان وقت أذكار المساء',
+  'settings_morning_adhkar': 'تذكير أذكار الصباح',
+  'settings_evening_adhkar': 'تذكير أذكار المساء',
+  'settings_adhkar_offset': 'بعد الأذان بدقائق',
 };

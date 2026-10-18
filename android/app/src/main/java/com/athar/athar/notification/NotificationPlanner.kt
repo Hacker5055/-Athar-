@@ -72,8 +72,61 @@ object NotificationPlanner {
             }
         }
 
+        // ⚠️ الأذكار **مرتبطة بمواقيت الصلاة لا بساعة ثابتة**: تفصيله
+        // في تعليق adhkarAlert.
+        adhkarAlert(
+            days, now, AlertKind.MORNING_ADHKAR,
+            base = { it.fajr },
+            ceiling = { it.sunrise },
+            enabled = settings.morningAdhkar,
+            offset = settings.morningAdhkarOffset,
+        )?.let { alerts += it }
+
+        adhkarAlert(
+            days, now, AlertKind.EVENING_ADHKAR,
+            base = { it.asr },
+            ceiling = { it.maghrib },
+            enabled = settings.eveningAdhkar,
+            offset = settings.eveningAdhkarOffset,
+        )?.let { alerts += it }
+
         jumuahAlert(days, settings, now)?.let { alerts += it }
         return alerts
+    }
+
+    /// تذكير الأذكار — يوم واحد داخل النطاق، يومه الأول غير الفائت.
+    ///
+    /// ⚠️ **لماذا مرتبط بالفجر/العصر لا بساعة ثابتة؟** لأن باب أذكار
+    /// الصباح من طلوع الفجر إلى طلوع الشمس، وباب المساء من العصر إلى
+    /// المغرب. ساعة ثابتة (٦:٠٠ مثلًا) تُذكّر **قبل** الفجر صيفًا
+    /// و**بعد** الشروق شتاءً — أي خارج الباب في الحالين.
+    ///
+    /// ⚠️ و[ceiling] يمنع تجاوز الباب: تذكير بعد الشروق ليس «صباحًا»،
+    /// فنُقيده بسقف الباب بدل أن نلغيه — لأن التذكير المتأخر خير من
+    /// تذكير لا يأتي.
+    private fun adhkarAlert(
+        days: List<PrayerDay>,
+        now: Instant,
+        kind: AlertKind,
+        base: (PrayerDay) -> Instant,
+        ceiling: (PrayerDay) -> Instant,
+        enabled: Boolean,
+        offset: Int,
+    ): ScheduledAlert? {
+        if (!enabled) return null
+        for (day in days) {
+            var at = base(day).plus(offset.toLong(), ChronoUnit.MINUTES)
+            val limit = ceiling(day)
+            if (at.isAfter(limit)) at = limit
+            if (at.isBefore(now)) continue
+            return ScheduledAlert(
+                id = AlertId.encode(kind, day.date, null),
+                kind = kind,
+                at = at,
+                prayer = null,
+            )
+        }
+        return null
     }
 
     /// أول جمعة قادمة داخل النطاق.

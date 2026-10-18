@@ -35,7 +35,22 @@ object NotificationSettingsStore {
         })
         put("jum", settings.jumuahReminder)
         put("jumMin", settings.jumuahMinutesBefore)
+        put("mor", settings.morningAdhkar)
+        put("morOff", settings.morningAdhkarOffset)
+        put("eve", settings.eveningAdhkar)
+        put("eveOff", settings.eveningAdhkarOffset)
     }.toString()
+
+    /// ⚠️ قيمة محفوظة خارج الخيارات تُستبدل بالافتراضي لا تُحذف: ملف
+    /// كتبه إصدار أقدم لا يجوز أن يُوقف التذكير بصمت.
+    private fun adhkarOffset(root: JSONObject, key: String): Int {
+        val value = root.optInt(key, NotificationSettings.DEFAULT_ADHKAR_OFFSET)
+        return if (value in NotificationSettings.ADHKAR_OFFSET_CHOICES) {
+            value
+        } else {
+            NotificationSettings.DEFAULT_ADHKAR_OFFSET
+        }
+    }
 
     fun decode(raw: String): NotificationSettings {
         val root = JSONObject(raw)
@@ -73,6 +88,10 @@ object NotificationSettingsStore {
             jumuahReminder = root.optBoolean("jum", true),
             jumuahMinutesBefore = root.optInt("jumMin", 90)
                 .coerceIn(NotificationSettings.JUMUAH_MIN, NotificationSettings.JUMUAH_MAX),
+            morningAdhkar = root.optBoolean("mor", true),
+            morningAdhkarOffset = adhkarOffset(root, "morOff"),
+            eveningAdhkar = root.optBoolean("eve", true),
+            eveningAdhkarOffset = adhkarOffset(root, "eveOff"),
         )
     }
 }

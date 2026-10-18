@@ -393,6 +393,15 @@ class Strings(val locale: AppLocale) {
             "method_isna" to "ISNA — أمريكا الشمالية",
             "method_france" to "فرنسا ١٥°",
             "method_custom" to "مخصّص",
+            "notif_channel_adhkar" to "الأذكار",
+            "notif_channel_adhkar_desc" to "تذكير بأذكار الصباح والمساء",
+            "notif_morning_adhkar_title" to "أذكار الصباح",
+            "notif_morning_adhkar_body" to "حان وقت أذكار الصباح",
+            "notif_evening_adhkar_title" to "أذكار المساء",
+            "notif_evening_adhkar_body" to "حان وقت أذكار المساء",
+            "settings_morning_adhkar" to "تذكير أذكار الصباح",
+            "settings_evening_adhkar" to "تذكير أذكار المساء",
+            "settings_adhkar_offset" to "بعد الأذان بدقائق",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -760,6 +769,15 @@ class Strings(val locale: AppLocale) {
             "method_isna" to "ISNA — North America",
             "method_france" to "France 15°",
             "method_custom" to "Custom",
+            "notif_channel_adhkar" to "Adhkar",
+            "notif_channel_adhkar_desc" to "Reminder for morning and evening adhkar",
+            "notif_morning_adhkar_title" to "Morning adhkar",
+            "notif_morning_adhkar_body" to "Time for the morning adhkar",
+            "notif_evening_adhkar_title" to "Evening adhkar",
+            "notif_evening_adhkar_body" to "Time for the evening adhkar",
+            "settings_morning_adhkar" to "Morning adhkar reminder",
+            "settings_evening_adhkar" to "Evening adhkar reminder",
+            "settings_adhkar_offset" to "Minutes after the adhan",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1127,6 +1145,15 @@ class Strings(val locale: AppLocale) {
             "method_isna" to "ISNA — Amérique du Nord",
             "method_france" to "France 15°",
             "method_custom" to "Personnalisé",
+            "notif_channel_adhkar" to "Adhkar",
+            "notif_channel_adhkar_desc" to "Rappel des adhkar du matin et du soir",
+            "notif_morning_adhkar_title" to "Adhkar du matin",
+            "notif_morning_adhkar_body" to "C’est l’heure des adhkar du matin",
+            "notif_evening_adhkar_title" to "Adhkar du soir",
+            "notif_evening_adhkar_body" to "C’est l’heure des adhkar du soir",
+            "settings_morning_adhkar" to "Rappel des adhkar du matin",
+            "settings_evening_adhkar" to "Rappel des adhkar du soir",
+            "settings_adhkar_offset" to "Minutes après l’adhan",
         )
     }
 
@@ -1499,4 +1526,13 @@ class Strings(val locale: AppLocale) {
     val methodIsna: String get() = t("method_isna")
     val methodFrance: String get() = t("method_france")
     val methodCustom: String get() = t("method_custom")
+    val notifChannelAdhkar: String get() = t("notif_channel_adhkar")
+    val notifChannelAdhkarDesc: String get() = t("notif_channel_adhkar_desc")
+    val notifMorningAdhkarTitle: String get() = t("notif_morning_adhkar_title")
+    val notifMorningAdhkarBody: String get() = t("notif_morning_adhkar_body")
+    val notifEveningAdhkarTitle: String get() = t("notif_evening_adhkar_title")
+    val notifEveningAdhkarBody: String get() = t("notif_evening_adhkar_body")
+    val settingsMorningAdhkar: String get() = t("settings_morning_adhkar")
+    val settingsEveningAdhkar: String get() = t("settings_evening_adhkar")
+    val settingsAdhkarOffset: String get() = t("settings_adhkar_offset")
 }

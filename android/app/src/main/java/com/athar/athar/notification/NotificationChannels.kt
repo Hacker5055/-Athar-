@@ -4,6 +4,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.athar.athar.i18n.LocaleStore
+import com.athar.athar.i18n.Strings
 
 /// قنوات الإشعارات — على API ٢٦+ لا يظهر إشعار بلا قناة.
 ///
@@ -15,25 +17,46 @@ object NotificationChannels {
     const val ATHAN = "athan"
     const val REMINDER = "reminder"
     const val JUMUAH = "jumuah"
+    const val ADHKAR = "adhkar"
 
-    fun ensure(context: Context) {
+    /// ⚠️ أسماء القنوات **مترجمة**: تظهر في إعدادات النظام نفسها، فعربي
+    /// ثابت يعني أن مستخدم الفرنسية يرى «الأذان» في قائمة بلغته. وكانت
+    /// المفاتيح معرَّفة في الحزم من قبل **ولا يستعملها أحد** — عكس خطأ
+    /// `s.sunriseNoAdhan` (مفتاح مُخترع)، فهنا مفتاح موجود ومُهمَل.
+    ///
+    /// ⚠️ و`strings` له قيمة افتراضية لأن `AlertReceiver` يستقبل البثّ
+    /// بلا `Strings`، فيقرأ اللغة من المخزن كما يفعل المجدول.
+    fun ensure(context: Context, strings: Strings = Strings(LocaleStore.load(context))) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = context.getSystemService(NotificationManager::class.java) ?: return
 
-        manager.createNotificationChannel(
-            NotificationChannel(ATHAN, "الأذان", NotificationManager.IMPORTANCE_HIGH).apply {
-                description = "تنبيه عند دخول وقت الصلاة"
-            },
+        create(
+            manager, ATHAN, strings.notifChannelAthan, strings.notifChannelAthanDesc,
+            NotificationManager.IMPORTANCE_HIGH,
         )
-        manager.createNotificationChannel(
-            NotificationChannel(REMINDER, "التذكير قبل الصلاة", NotificationManager.IMPORTANCE_DEFAULT).apply {
-                description = "تنبيه قبل وقت الصلاة بدقائق"
-            },
+        create(
+            manager, REMINDER, strings.notifChannelReminder, strings.notifChannelReminderDesc,
+            NotificationManager.IMPORTANCE_DEFAULT,
         )
+        create(
+            manager, JUMUAH, strings.notifChannelJumuah, strings.notifChannelJumuahDesc,
+            NotificationManager.IMPORTANCE_DEFAULT,
+        )
+        create(
+            manager, ADHKAR, strings.notifChannelAdhkar, strings.notifChannelAdhkarDesc,
+            NotificationManager.IMPORTANCE_DEFAULT,
+        )
+    }
+
+    private fun create(
+        manager: NotificationManager,
+        id: String,
+        name: String,
+        description: String,
+        importance: Int,
+    ) {
         manager.createNotificationChannel(
-            NotificationChannel(JUMUAH, "تذكير الجمعة", NotificationManager.IMPORTANCE_DEFAULT).apply {
-                description = "سورة الكهف · الصلاة على النبي · الغُسل"
-            },
+            NotificationChannel(id, name, importance).apply { this.description = description },
         )
     }
 
@@ -43,5 +66,6 @@ object NotificationChannels {
         AlertKind.ATHAN -> ATHAN
         AlertKind.REMINDER -> REMINDER
         AlertKind.JUMUAH -> JUMUAH
+        AlertKind.MORNING_ADHKAR, AlertKind.EVENING_ADHKAR -> ADHKAR
     }
 }

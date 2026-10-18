@@ -29,7 +29,7 @@ object NotificationScheduler {
             // ⚠️ نصّ الإشعار يُبنى **مرة واحدة** وقت الجدولة ويُخزَّن في
             // النظام، فلا يكفي أن نقرأ اللغة وقت العرض. المستقبلات
             // (إقلاع، تنبيه) لا تملك `Strings` فتقرؤها من المخزن.
-            strings ?: Strings(LocaleStore.load(context)),
+            text,
         )
     }
 
@@ -39,7 +39,7 @@ object NotificationScheduler {
         settings: NotificationSettings,
         strings: Strings = Strings(LocaleStore.load(context)),
     ) {
-        NotificationChannels.ensure(context)
+        NotificationChannels.ensure(context, strings)
         cancelAll(context)
 
         // ⚠️ الإذن قد يُسحب بعد منحه. الجدولة بلا إذن تعطي منبّهات
@@ -69,7 +69,8 @@ object NotificationScheduler {
     /// يمكن للمستخدم أن يتأكد من عملها إلا بأن تصله. بلا هذا الزر
     /// يبقى كل ما سبق ادّعاءً.
     fun scheduleTest(context: Context, strings: Strings? = null) {
-        NotificationChannels.ensure(context)
+        val text = strings ?: Strings(LocaleStore.load(context))
+        NotificationChannels.ensure(context, text)
         val manager = context.getSystemService(AlarmManager::class.java) ?: return
         schedule(
             manager,
@@ -136,7 +137,10 @@ object NotificationScheduler {
         for (offset in -1..NotificationPlanner.DEFAULT_AHEAD_DAYS) {
             val date = today.plusDays(offset.toLong())
             for (kind in AlertKind.entries) {
-                for (slot in PrayerSlot.entries) {
+                // ⚠️ `null` = بلا صلاة مرتبطة (أذكار الصباح والمساء).
+                // بلا إلغائها تبقى منبّهات ميتة: تُضبط ولا تُوقف أبدًا،
+                // ويظلّ المستخدم يتلقّى تذكيرًا عطّله.
+                for (slot in listOf<PrayerSlot?>(null) + PrayerSlot.entries) {
                     val id = AlertId.encode(kind, date, slot)
                     manager.cancel(pendingIntentFor(context, id))
                 }
@@ -156,16 +160,20 @@ object NotificationScheduler {
 private fun ScheduledAlert.prayerName(strings: Strings): String =
     prayer?.let { strings.t(it.stringKey) } ?: ""
 
-/// ⚠️ نصوص التنبيه من حزمة الترجمة لا م硬كودة — وإلا بقي الأذان
+/// ⚠️ نصوص التنبيه من حزمة الترجمة لا مبرمجة فيه — وإلا بقي الأذان
 /// بالعربية داخل تطبيق فرنسي بالكامل.
 private fun ScheduledAlert.title(strings: Strings): String = when (kind) {
     AlertKind.ATHAN -> strings.tArgs("notif_athan_title", "prayer" to prayerName(strings))
     AlertKind.REMINDER -> strings.tArgs("notif_reminder_title", "prayer" to prayerName(strings))
     AlertKind.JUMUAH -> strings.notifJumuahTitle
+    AlertKind.MORNING_ADHKAR -> strings.notifMorningAdhkarTitle
+    AlertKind.EVENING_ADHKAR -> strings.notifEveningAdhkarTitle
 }
 
 private fun ScheduledAlert.body(strings: Strings, placeName: String): String = when (kind) {
     AlertKind.JUMUAH -> strings.notifJumuahBody
+    AlertKind.MORNING_ADHKAR -> strings.notifMorningAdhkarBody
+    AlertKind.EVENING_ADHKAR -> strings.notifEveningAdhkarBody
     AlertKind.REMINDER -> strings.tArgs("notif_reminder_body", "n" to reminderMinutes)
     AlertKind.ATHAN -> {
         val time = TIME_FORMAT.format(at)

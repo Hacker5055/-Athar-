@@ -175,6 +175,82 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         }
 
         item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(s.settingsMorningAdhkar, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                s.notifMorningAdhkarBody,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Switch(
+                            checked = settings.morningAdhkar,
+                            onCheckedChange = { commit(settings.copy(morningAdhkar = it)) },
+                        )
+                    }
+                    if (settings.morningAdhkar) {
+                        Text(
+                            s.settingsAdhkarOffset,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 4.dp),
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            NotificationSettings.ADHKAR_OFFSET_CHOICES.forEach { minutes ->
+                                FilterChip(
+                                    selected = settings.morningAdhkarOffset == minutes,
+                                    onClick = { commit(settings.withMorningAdhkarOffset(minutes)) },
+                                    label = { Text(s.tArgs("minutes_short", "n" to minutes)) },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(s.settingsEveningAdhkar, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                s.notifEveningAdhkarBody,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Switch(
+                            checked = settings.eveningAdhkar,
+                            onCheckedChange = { commit(settings.copy(eveningAdhkar = it)) },
+                        )
+                    }
+                    if (settings.eveningAdhkar) {
+                        Text(
+                            s.settingsAdhkarOffset,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 4.dp),
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            NotificationSettings.ADHKAR_OFFSET_CHOICES.forEach { minutes ->
+                                FilterChip(
+                                    selected = settings.eveningAdhkarOffset == minutes,
+                                    onClick = { commit(settings.withEveningAdhkarOffset(minutes)) },
+                                    label = { Text(s.tArgs("minutes_short", "n" to minutes)) },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
             Button(
                 onClick = {
                     NotificationScheduler.scheduleTest(context)
