@@ -402,6 +402,12 @@ class Strings(val locale: AppLocale) {
             "settings_morning_adhkar" to "تذكير أذكار الصباح",
             "settings_evening_adhkar" to "تذكير أذكار المساء",
             "settings_adhkar_offset" to "بعد الأذان بدقائق",
+            "quran_translation" to "الترجمة",
+            "quran_translation_none" to "النص العربي فقط",
+            "quran_translation_pickthall" to "پيكثال",
+            "quran_translation_itani" to "إيتاني",
+            "quran_credit_pickthall" to "معاني القرآن المجيد — محمد مارمادوك پيكثال، ١٩٣٠. ملكية عامة.",
+            "quran_credit_itani" to "The Clear Quran — طلال إيتاني. CC BY-ND 4.0: يُعرض كما هو دون تعديل.",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -778,6 +784,12 @@ class Strings(val locale: AppLocale) {
             "settings_morning_adhkar" to "Morning adhkar reminder",
             "settings_evening_adhkar" to "Evening adhkar reminder",
             "settings_adhkar_offset" to "Minutes after the adhan",
+            "quran_translation" to "Translation",
+            "quran_translation_none" to "Arabic only",
+            "quran_translation_pickthall" to "Pickthall",
+            "quran_translation_itani" to "Itani",
+            "quran_credit_pickthall" to "The Meaning of the Glorious Koran — Marmaduke Pickthall, 1930. Public domain.",
+            "quran_credit_itani" to "The Clear Quran — Talal Itani. CC BY-ND 4.0, shown verbatim and unmodified.",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1154,6 +1166,12 @@ class Strings(val locale: AppLocale) {
             "settings_morning_adhkar" to "Rappel des adhkar du matin",
             "settings_evening_adhkar" to "Rappel des adhkar du soir",
             "settings_adhkar_offset" to "Minutes après l’adhan",
+            "quran_translation" to "Traduction",
+            "quran_translation_none" to "Arabe seulement",
+            "quran_translation_pickthall" to "Pickthall",
+            "quran_translation_itani" to "Itani",
+            "quran_credit_pickthall" to "The Meaning of the Glorious Koran — Marmaduke Pickthall, 1930. Domaine public.",
+            "quran_credit_itani" to "The Clear Quran — Talal Itani. CC BY-ND 4.0, affiché textuellement et sans modification.",
         )
     }
 
@@ -1535,4 +1553,10 @@ class Strings(val locale: AppLocale) {
     val settingsMorningAdhkar: String get() = t("settings_morning_adhkar")
     val settingsEveningAdhkar: String get() = t("settings_evening_adhkar")
     val settingsAdhkarOffset: String get() = t("settings_adhkar_offset")
+    val quranTranslation: String get() = t("quran_translation")
+    val quranTranslationNone: String get() = t("quran_translation_none")
+    val quranTranslationPickthall: String get() = t("quran_translation_pickthall")
+    val quranTranslationItani: String get() = t("quran_translation_itani")
+    val quranCreditPickthall: String get() = t("quran_credit_pickthall")
+    val quranCreditItani: String get() = t("quran_credit_itani")
 }

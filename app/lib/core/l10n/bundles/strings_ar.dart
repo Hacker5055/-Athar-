@@ -426,4 +426,10 @@ const Map<String, String> kStringsAr = {
   'settings_morning_adhkar': 'تذكير أذكار الصباح',
   'settings_evening_adhkar': 'تذكير أذكار المساء',
   'settings_adhkar_offset': 'بعد الأذان بدقائق',
+  'quran_translation': 'الترجمة',
+  'quran_translation_none': 'النص العربي فقط',
+  'quran_translation_pickthall': 'پيكثال',
+  'quran_translation_itani': 'إيتاني',
+  'quran_credit_pickthall': 'معاني القرآن المجيد — محمد مارمادوك پيكثال، ١٩٣٠. ملكية عامة.',
+  'quran_credit_itani': 'The Clear Quran — طلال إيتاني. CC BY-ND 4.0: يُعرض كما هو دون تعديل.',
 };

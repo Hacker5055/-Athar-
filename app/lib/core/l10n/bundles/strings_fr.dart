@@ -427,4 +427,10 @@ const Map<String, String> kStringsFr = {
   'settings_morning_adhkar': 'Rappel des adhkar du matin',
   'settings_evening_adhkar': 'Rappel des adhkar du soir',
   'settings_adhkar_offset': 'Minutes après l’adhan',
+  'quran_translation': 'Traduction',
+  'quran_translation_none': 'Arabe seulement',
+  'quran_translation_pickthall': 'Pickthall',
+  'quran_translation_itani': 'Itani',
+  'quran_credit_pickthall': 'The Meaning of the Glorious Koran — Marmaduke Pickthall, 1930. Domaine public.',
+  'quran_credit_itani': 'The Clear Quran — Talal Itani. CC BY-ND 4.0, affiché textuellement et sans modification.',
 };

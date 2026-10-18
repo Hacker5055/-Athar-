@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -40,6 +42,9 @@ import com.athar.athar.quran.QuranSearch
 import com.athar.athar.quran.Surah
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+com.athar.athar.quran.QuranTranslationRepository
+com.athar.athar.quran.QuranTranslation
+androidx.compose.material3.FilterChip
 
 @Composable
 fun QuranScreen(modifier: Modifier = Modifier) {
@@ -52,6 +57,12 @@ fun QuranScreen(modifier: Modifier = Modifier) {
     var query by remember { mutableStateOf("") }
     var results by remember { mutableStateOf<List<QuranSearch.Hit>>(emptyList()) }
     var searching by remember { mutableStateOf(false) }
+    var translation by remember { mutableStateOf(QuranTranslation.NONE) }
+    var translated by remember { mutableStateOf(emptyMap<String, String>()) }
+
+    // ⚠️ نسخة واحدة: التخزين المؤقت داخلها، ولو أُنشئت مع كل إعادة تركيب
+    // أُعيد تحليل ميجابايت عند كل حرف
+    val translationRepo = remember { QuranTranslationRepository(context) }
 
     LaunchedEffect(Unit) {
         runCatching {
@@ -67,6 +78,11 @@ fun QuranScreen(modifier: Modifier = Modifier) {
     }
 
     // ⚠️ البحث على `Dispatchers.IO`: ٦٢٣٦ آية، والنصّ ١٫٧ ميجابايت
+    // ⚠️ على IO لا على الواجهة: ميجابايت من الجسون يجمّد الإطار
+    LaunchedEffect(translation) {
+        translated = withContext(Dispatchers.IO) { translationRepo.textFor(translation) }
+    }
+
     LaunchedEffect(query, surahs) {
         val list = surahs ?: return@LaunchedEffect
         val needle = query.trim()
@@ -99,6 +115,9 @@ fun QuranScreen(modifier: Modifier = Modifier) {
                 surah = opened!!,
                 ayahs = ayahs,
                 onBack = { opened = null },
+                translation = translation,
+                translated = translated,
+                onTranslationChange = { translation = it },
             )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(modifier = Modifier.fillMaxSize()) {
@@ -225,7 +244,14 @@ private fun SurahList(surahs: List<Surah>, onOpen: (Surah) -> Unit) {
 }
 
 @Composable
-private fun ReaderView(surah: Surah, ayahs: List<Ayah>, onBack: () -> Unit) {
+private fun ReaderView(
+    surah: Surah,
+    ayahs: List<Ayah>,
+    onBack: () -> Unit,
+    translation: QuranTranslation,
+    translated: Map<String, String>,
+    onTranslationChange: (QuranTranslation) -> Unit,
+) {
     val s = LocalStrings.current
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -236,6 +262,24 @@ private fun ReaderView(surah: Surah, ayahs: List<Ayah>, onBack: () -> Unit) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
             }
             Text(text = surah.nameAr, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        }
+
+        // ⚠️ أفقي قابل للتمرير: ثلاث شرائح بثلاث لغات تتجاوز عرض الشاشة
+        // على الأجهزة الصغيرة، والقصّ الصامت أسوأ من التمرير.
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            QuranTranslation.entries.forEach { option ->
+                FilterChip(
+                    selected = option == translation,
+                    onClick = { onTranslationChange(option) },
+                    label = { Text(s.t(option.nameKey)) },
+                )
+            }
         }
         HorizontalDivider()
 
@@ -249,6 +293,36 @@ private fun ReaderView(surah: Surah, ayahs: List<Ayah>, onBack: () -> Unit) {
                     textAlign = TextAlign.Justify,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 )
+                // ⚠️ الترجمة **تحت** آيتها لا في صفحة أخرى: القارئ يريد
+                // المعنى أمام النصّ، لا رحلة بين شاشتين.
+                translated[QuranTranslationRepository.key(ayah.surah, ayah.number)]
+                    ?.let { meaning ->
+                        Text(
+                            text = meaning,
+                            fontSize = 15.sp,
+                            lineHeight = 24.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 14.dp),
+                        )
+                    }
+                HorizontalDivider()
+            }
+            if (translation != QuranTranslation.NONE) {
+                item {
+                    // ⚠️ الإسناد واجب (docs/09) وشرط الرخصة — لا «من مصادر عامة»
+                    Text(
+                        text = s.t(translation.creditKey),
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp, horizontal = 16.dp),
+                    )
+                }
             }
         }
     }
