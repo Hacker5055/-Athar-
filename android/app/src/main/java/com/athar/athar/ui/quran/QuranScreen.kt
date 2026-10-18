@@ -518,14 +518,19 @@ private fun ReaderView(
                             },
                             fontSize = 15.sp,
                             lineHeight = 24.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 14.dp),
                         )
                     }
-                HorizontalDivider()
+                HorizontalDivider(
+                    color = if (palette.isCustom) {
+                        palette.divider
+                    } else {
+                        MaterialTheme.colorScheme.outlineVariant
+                    },
+                )
             }
             if (translation != QuranTranslation.NONE) {
                 item {
