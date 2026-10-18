@@ -155,8 +155,16 @@ class QuranAudioController {
             }
             mp.setOnErrorListener { _, _, _ ->
                 if (token == mine) {
-                    _state.value =
-                        QuranAudioState.Error("تعذّر تشغيل التلاوة — تحقّق من الاتصال")
+                    // ⚠️ نتجاوز الآية الفاشلة ولا نوقف السورة: بعض
+                    // القرّاء ينقصهم ملف آية واحدة (docs/10 §٤)،
+                    // والتوقّف عندها يُسكت سورة كاملة من أجل ثانية
+                    // ناقصة. نكمل، ونُبلغ فقط إن تعذّر كل شيء.
+                    if (at + 1 in queue.indices) {
+                        startAt(reciter, surah, at + 1)
+                    } else {
+                        _state.value =
+                            QuranAudioState.Error("تعذّر تشغيل التلاوة — تحقّق من الاتصال")
+                    }
                 }
                 true
             }
