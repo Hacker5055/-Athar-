@@ -1,5 +1,6 @@
 package com.athar.athar.prayer
 
+import com.athar.athar.i18n.Strings
 import com.batoulapps.adhan.CalculationMethod
 import com.batoulapps.adhan.CalculationParameters
 
@@ -12,14 +13,19 @@ import com.batoulapps.adhan.CalculationParameters
 ///
 /// ⚠️ [FRANCE_15] **غير موجودة** في المكتبة — بنيناها يدويًا بزاويتَي
 /// ١٥/١٥. وكذلك [HighLatitudeRule] فيه ثلاث قيم فقط ولا يحتوي `NONE`.
-enum class PrayerMethod(val arabicName: String) {
-    EGYPTIAN("الهيئة المصرية للمساحة"),
-    UMM_AL_QURA("أم القرى — مكة"),
-    MUSLIM_WORLD_LEAGUE("رابطة العالم الإسلامي"),
-    NORTH_AMERICA("ISNA — أمريكا الشمالية"),
-    FRANCE_15("فرنسا ١٥°"),
-    OTHER("مخصّص"),
+enum class PrayerMethod(val nameKey: String) {
+    EGYPTIAN("method_egyptian"),
+    UMM_AL_QURA("method_umm_al_qura"),
+    MUSLIM_WORLD_LEAGUE("method_mwl"),
+    NORTH_AMERICA("method_isna"),
+    FRANCE_15("method_france"),
+    OTHER("method_custom"),
     ;
+
+    /// ⚠️ الاسم يتبع لغة الواجهة. كان نصًّا عربيًا ثابتًا (`arabicName`)
+    /// فظهر «الهيئة المصرية للمساحة» عربيًّا لمن يقرأ الفرنسية — وهو
+    /// الخطأ نفسه الذي أصلحناه في أسماء الصلوات بـ `stringKey`.
+    fun name(strings: Strings): String = strings.t(nameKey)
 
     fun parameters(): CalculationParameters = when (this) {
         EGYPTIAN -> CalculationMethod.EGYPTIAN.parameters

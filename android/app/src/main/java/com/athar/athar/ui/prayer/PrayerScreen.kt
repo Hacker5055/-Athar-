@@ -129,7 +129,7 @@ fun PrayerScreen(
             items(PrayerMethod.entries) { method ->
                 TextButton(onClick = { onSettingsChange(settings.copy(method = method)) }) {
                     Text(
-                        text = method.arabicName,
+                        text = method.name(s),
                         color = if (method == settings.method) {
                             MaterialTheme.colorScheme.primary
                         } else {

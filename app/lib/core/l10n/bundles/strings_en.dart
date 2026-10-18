@@ -406,4 +406,16 @@ const Map<String, String> kStringsEn = {
   'habit_fasting': 'Fasting',
   'tracker_today_empty': 'Nothing logged today — start with one',
   'tracker_days': 'days',
-};
+'more_asma': 'The 99 Names',
+}
+  'asma_search_hint': 'Search by name or meaning',
+  'asma_count': '99 names',
+  'asma_empty': 'Nothing matches your search',
+  'asma_note': 'Names and meanings are from Saeed al-Qahtani’s book on the Beautiful Names. Meanings are Arabic-only: we found no licensed source for translations, and we will not author religious text ourselves.',
+  'method_egyptian': 'Egyptian Survey Authority',
+  'method_umm_al_qura': 'Umm al-Qura — Makkah',
+  'method_mwl': 'Muslim World League',
+  'method_isna': 'ISNA — North America',
+  'method_france': 'France 15°',
+  'method_custom': 'Custom',
+;

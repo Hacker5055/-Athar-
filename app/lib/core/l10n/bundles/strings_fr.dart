@@ -406,4 +406,16 @@ const Map<String, String> kStringsFr = {
   'habit_fasting': 'Jeûne',
   'tracker_today_empty': 'Rien aujourd’hui — commencez par une',
   'tracker_days': 'jours',
-};
+'more_asma': 'Les 99 Noms',
+}
+  'asma_search_hint': 'Rechercher par nom ou sens',
+  'asma_count': '99 noms',
+  'asma_empty': 'Aucun résultat',
+  'asma_note': 'Les noms et leurs sens proviennent du livre de Saeed al-Qahtani sur les Beaux Noms. Les sens sont en arabe uniquement : nous n’avons trouvé aucune source sous licence pour les traductions, et nous n’écrirons pas nous-mêmes un texte religieux.',
+  'method_egyptian': 'Autorité égyptienne du cadastre',
+  'method_umm_al_qura': 'Umm al-Qura — La Mecque',
+  'method_mwl': 'Ligue islamique mondiale',
+  'method_isna': 'ISNA — Amérique du Nord',
+  'method_france': 'France 15°',
+  'method_custom': 'Personnalisé',
+;

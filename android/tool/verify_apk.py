@@ -19,6 +19,7 @@ REQUIRED = {
     "assets/adhkar/hisn.json": 100_000,
     "assets/quran/uthmani.json": 1_000_000,
     "assets/quran/chapters.json": 50_000,
+    "assets/asma/names.json": 10_000,
 }
 
 

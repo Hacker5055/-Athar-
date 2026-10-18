@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.ui.athary.TrackerScreen
+import com.athar.athar.ui.asma.AsmaScreen
 
 /// تبويب «المزيد» — المدخل إلى ما لا يحتاج تبويبًا خاصًا به
 /// (`docs/03`: المتتبع · الإعدادات · عن التطبيق).
@@ -72,6 +73,11 @@ fun MoreScreen(
                 onClick = { section = 1 },
                 label = { Text(s.notifications) },
             )
+            FilterChip(
+                selected = section == 2,
+                onClick = { section = 2 },
+                label = { Text(s.moreAsma) },
+            )
         }
 
         // ⚠️ `weight` يعطي الشاشة الداخلية ارتفاعًا محدودًا فتعمل
@@ -83,7 +89,8 @@ fun MoreScreen(
         ) {
             when (section) {
                 0 -> TrackerScreen()
-                else -> SettingsScreen()
+                1 -> SettingsScreen()
+                else -> AsmaScreen()
             }
         }
     }

@@ -381,6 +381,17 @@ class Strings(val locale: AppLocale) {
             "habit_fasting" to "صيام",
             "tracker_today_empty" to "ما سجّلت شيء اليوم — ابدأ بواحدة",
             "tracker_days" to "يوم",
+            "more_asma" to "أسماء الله الحسنى",
+            "asma_search_hint" to "ابحث بالاسم أو المعنى",
+            "asma_count" to "٩٩ اسمًا",
+            "asma_empty" to "لا شيء يطابق بحثك",
+            "asma_note" to "الأسماء ومعانيها من كتاب «الأنوار الساطعة في شرح أسماء الله الحسنى» (سعيد القحطاني). المعاني بالعربية وحدها: لم نجد مصدرًا مرخّصًا لترجمتها، ولن ننشئ نصًا دينيًا من عندنا.",
+            "method_egyptian" to "الهيئة المصرية للمساحة",
+            "method_umm_al_qura" to "أم القرى — مكة",
+            "method_mwl" to "رابطة العالم الإسلامي",
+            "method_isna" to "ISNA — أمريكا الشمالية",
+            "method_france" to "فرنسا ١٥°",
+            "method_custom" to "مخصّص",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -736,6 +747,17 @@ class Strings(val locale: AppLocale) {
             "habit_fasting" to "Fasting",
             "tracker_today_empty" to "Nothing logged today — start with one",
             "tracker_days" to "days",
+            "more_asma" to "The 99 Names",
+            "asma_search_hint" to "Search by name or meaning",
+            "asma_count" to "99 names",
+            "asma_empty" to "Nothing matches your search",
+            "asma_note" to "Names and meanings are from Saeed al-Qahtani’s book on the Beautiful Names. Meanings are Arabic-only: we found no licensed source for translations, and we will not author religious text ourselves.",
+            "method_egyptian" to "Egyptian Survey Authority",
+            "method_umm_al_qura" to "Umm al-Qura — Makkah",
+            "method_mwl" to "Muslim World League",
+            "method_isna" to "ISNA — North America",
+            "method_france" to "France 15°",
+            "method_custom" to "Custom",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1091,6 +1113,17 @@ class Strings(val locale: AppLocale) {
             "habit_fasting" to "Jeûne",
             "tracker_today_empty" to "Rien aujourd’hui — commencez par une",
             "tracker_days" to "jours",
+            "more_asma" to "Les 99 Noms",
+            "asma_search_hint" to "Rechercher par nom ou sens",
+            "asma_count" to "99 noms",
+            "asma_empty" to "Aucun résultat",
+            "asma_note" to "Les noms et leurs sens proviennent du livre de Saeed al-Qahtani sur les Beaux Noms. Les sens sont en arabe uniquement : nous n’avons trouvé aucune source sous licence pour les traductions, et nous n’écrirons pas nous-mêmes un texte religieux.",
+            "method_egyptian" to "Autorité égyptienne du cadastre",
+            "method_umm_al_qura" to "Umm al-Qura — La Mecque",
+            "method_mwl" to "Ligue islamique mondiale",
+            "method_isna" to "ISNA — Amérique du Nord",
+            "method_france" to "France 15°",
+            "method_custom" to "Personnalisé",
         )
     }
 
@@ -1451,4 +1484,15 @@ class Strings(val locale: AppLocale) {
     val habitFasting: String get() = t("habit_fasting")
     val trackerTodayEmpty: String get() = t("tracker_today_empty")
     val trackerDays: String get() = t("tracker_days")
+    val moreAsma: String get() = t("more_asma")
+    val asmaSearchHint: String get() = t("asma_search_hint")
+    val asmaCount: String get() = t("asma_count")
+    val asmaEmpty: String get() = t("asma_empty")
+    val asmaNote: String get() = t("asma_note")
+    val methodEgyptian: String get() = t("method_egyptian")
+    val methodUmmAlQura: String get() = t("method_umm_al_qura")
+    val methodMwl: String get() = t("method_mwl")
+    val methodIsna: String get() = t("method_isna")
+    val methodFrance: String get() = t("method_france")
+    val methodCustom: String get() = t("method_custom")
 }

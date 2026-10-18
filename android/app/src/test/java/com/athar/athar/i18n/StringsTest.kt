@@ -1,5 +1,6 @@
 package com.athar.athar.i18n
 
+import com.athar.athar.prayer.PrayerMethod
 import com.athar.athar.prayer.PrayerSlot
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -88,6 +89,21 @@ class StringsTest {
                     "${slot.name} بلا ترجمة في ${strings.locale}",
                     slot.stringKey,
                     value,
+                )
+            }
+        }
+    }
+
+    /// ⚠️ طرق الحساب كانت **آخر نصّ عربي ثابت** في الواجهة. و`t()` يرجع
+    /// المفتاح نفسه عند النقص، فالتوقّع «القيمة ≠ المفتاح» يكشف أي مفتاح
+    /// مخترع — وهو بالضبط خطأ `s.sunriseNoAdhan` الذي لم يمسكه مترجم.
+    @Test fun everyPrayerMethodHasAKeyInEveryLocale() {
+        for (method in PrayerMethod.entries) {
+            for (strings in listOf(ar, en, fr)) {
+                assertNotEquals(
+                    "${method.name} بلا ترجمة في ${strings.locale}",
+                    method.nameKey,
+                    strings.t(method.nameKey),
                 )
             }
         }
