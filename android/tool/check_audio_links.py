@@ -1,8 +1,12 @@
-"""يتحقّق أن كل قارئ في الكتالوج يبثّ فعلًا من المصدر.
+"""يمسح توفّر التلاوة على المصدر: قارئ × جودة × مسار.
 
 ⚠️ لماذا أداة منفصلة لا اختبار وحدة: الاختبار يجب أن يمرّ بلا شبكة،
 وهذا الفحص **هو** شبكة. نفصلهما فلا يصير جناح الاختبارات هشًّا كلما
 تعثّر خادم المصدر.
+
+⚠️ لماذا مسح لا فحص واحد: الجرعة الأولى أثبتت أن الفشل قد يكون
+**جودةً لا قارئًا**. من اكتفى بمسح واحد يخرج بقائمة مخطئين وهمية
+ويحذف قرّاء يعملون على جودة أخرى.
 
 يقرأ الكتالوج من `Reciter.kt` نفسه لا من نسخة مكرّرة: نسخة ثانية
 تصدق يوم تُكتب وتكذب بعد أول تعديل.
@@ -20,28 +24,25 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "app/src/main/java/com/athar/athar/quran/Reciter.kt"
 BASE = "https://cdn.islamic.network/quran"
 
-# ⚠️ نفحص سورة الفاتحة وسورة الناس: الأولى ملف صغير والثانية آخر
-# ملف في المصحف — سورة واحدة قد تنجح مصادفةً وغيرها مفقود.
-PROBE_SURAHS = (1, 114)
+# الجودات التي يعلنها المصدر
+BITRATES = (192, 128, 64, 48, 40, 32)
 
-# ⚠️ المساران مختلفان عند المصدر، وتوفّر القارئ في أحدهما لا يعني
-# توفّره في الآخر: ١٢ قارئًا من ١٣ ردّوا ٤٠٣ على `audio-surah` حين
-# كان `ar.alafasy` يعمل. نفحص الاثنين ونقرأ المصفوفة قبل أن نبني
-# المشغّل على مسار يبدو في التوثيق أنه العام.
+# ⚠️ المساران مختلفان عند المصدر: توفّر القارئ في أحدهما لا يعني
+# توفّره في الآخر. في أول مسح كان `ar.alafasy` يبثّ السورة وحده.
 PATHS = ("audio-surah", "audio")
 
-# آية كونية للفحص: ١ أول القرآن، ٦٢٣٦ آخره
-PROBE_VERSES = (1, 6236)
+# عيّنة صغيرة: أول القرآن وآخره. نتحقق من وجود الملف لا من كماله.
+SURAH_SAMPLE = (1, 114)
+VERSE_SAMPLE = (1, 6236)
 
 
-def parse_catalog() -> list[tuple[str, int]]:
-    """يستخرج (المعرّف، الجودة) من سطور `Reciter(...)`."""
+def parse_catalog() -> list[str]:
+    """يستخرج مُعرّفات القرّاء من سطور `Reciter(...)`."""
     text = CATALOG.read_text(encoding="utf-8")
-    pattern = re.compile(r'Reciter\(\s*"([^"]+)"\s*,.*?(\d{2,3})\s*\)')
-    found = pattern.findall(text)
+    found = re.findall(r'Reciter\(\s*"([^"]+)"', text)
     if not found:
         raise SystemExit("لم يُعثر على أيّ قارئ في Reciter.kt — تغيّر الشكل؟")
-    return [(rid, int(bit)) for rid, bit in found]
+    return found
 
 
 def head_status(url: str) -> int:
@@ -60,52 +61,68 @@ def head_status(url: str) -> int:
         return 0
 
 
-def check(reciter: tuple[str, int]) -> tuple[str, int, list[tuple[str, int]]]:
-    """يجرب مسار السورة ومسار الآية ويردّ (المسار، الرمز) لكل محاولة."""
-    rid, bitrate = reciter
-    out: list[tuple[str, int]] = []
-    for surah in PROBE_SURAHS:
-        out.append((f"surah/{surah}", head_status(f"{BASE}/audio-surah/{bitrate}/{rid}/{surah}.mp3")))
-    for verse in PROBE_VERSES:
-        out.append((f"ayah/{verse}", head_status(f"{BASE}/audio/{bitrate}/{rid}/{verse}.mp3")))
-    return rid, bitrate, out
+def probe(rid: str, bitrate: int, path: str, numbers: tuple[int, ...]) -> bool:
+    codes = [head_status(f"{BASE}/{path}/{bitrate}/{rid}/{n}.mp3") for n in numbers]
+    return all(c in (200, 206) for c in codes)
+
+
+def sweep(rid: str) -> tuple[str, list[tuple[int, str]]]:
+    """يجرب كل جودة على كل مسار، ويردّ ما نجح مرتّبًا من الأعلى جودة."""
+    hits: list[tuple[int, str]] = []
+
+    def one(bitrate: int, path: str) -> tuple[int, str] | None:
+        numbers = SURAH_SAMPLE if path == "audio-surah" else VERSE_SAMPLE
+        return (bitrate, path) if probe(rid, bitrate, path, numbers) else None
+
+    tasks = [(b, p) for b in BITRATES for p in PATHS]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+        for result in pool.map(lambda t: one(*t), tasks):
+            if result:
+                hits.append(result)
+
+    # الأفضل أولًا: جودة أعلى، ومسار السورة أوفر للمشغّل (ملف واحد)
+    hits.sort(key=lambda h: (h[1] != "audio-surah", -h[0]))
+    return rid, hits
 
 
 def main() -> int:
     catalog = parse_catalog()
-    print(f"الكتالوج: {len(catalog)} قارئًا، فحص السور {list(PROBE_SURAHS)}\n")
+    print(f"الكتالوج: {len(catalog)} قارئًا")
+    print(f"الجودات: {list(BITRATES)} · المسارات: {list(PATHS)}")
+    print("العيّنة: سورة ١ و١١٤ · آية ١ و٦٢٣٦\n")
 
-    # ⚠️ المخرجات مصفوفة لا حكم ثنائي: نحن نقيس توفّر المصدر، وقرار
-    # أيّ مسار نبني عليه المشغّل يحتاج الصورة كلها لا قائمة المخطئين.
-    rows: list[tuple[str, int, list[tuple[str, int]]]] = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-        rows = list(pool.map(check, catalog))
+    results: list[tuple[str, list[tuple[int, str]]]] = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
+        results = list(pool.map(sweep, catalog))
 
-    def ok(code: int) -> bool:
-        return code in (200, 206)
+    print(f"{'قارئ':<26} {'الأفضل':<14} كل ما يبثّ")
+    print("-" * 96)
+    dead: list[str] = []
+    for rid, hits in results:
+        if not hits:
+            dead.append(rid)
+            print(f"{rid:<26} {'—':<14} لا شيء يبثّ")
+            continue
+        best = f"{hits[0][0]}·{hits[0][1]}"
+        rest = ", ".join(f"{b}·{p}" for b, p in hits)
+        print(f"{rid:<26} {best:<14} {rest}")
 
-    def cell(code: int) -> str:
-        return "OK " if ok(code) else str(code)
-
-    header = "".join(f"{label:>12}" for label, _ in rows[0][2])
-    print(f"{'قارئ':<26}{'kbps':>6}{header}")
-    for rid, bitrate, probes in rows:
-        line = "".join(f"{cell(c):>12}" for _, c in probes)
-        print(f"{rid:<26}{bitrate:>6}{line}")
-
-    surah_ok = [rid for rid, _, pr in rows if all(ok(c) for l, c in pr if l.startswith("surah"))]
-    ayah_ok = [rid for rid, _, pr in rows if all(ok(c) for l, c in pr if l.startswith("ayah"))]
+    alive = len(results) - len(dead)
     print()
-    print(f"يبثّ السورة كاملة: {len(surah_ok)}/{len(rows)}")
-    print(f"يبثّ الآية مفردة: {len(ayah_ok)}/{len(rows)}")
+    print(f"يبثّ: {alive}/{len(results)}")
+    surah_ready = [r for r, h in results if any(p == "audio-surah" for _, p in h)]
+    print(f"يبثّ السورة كاملة: {len(surah_ready)}")
+    ayah_ready = [r for r, h in results if any(p == "audio" for _, p in h)]
+    print(f"يبثّ الآية مفردة: {len(ayah_ready)}")
 
-    broken = [rid for rid in (r[0] for r in rows) if rid not in surah_ok and rid not in ayah_ok]
-    if broken:
+    if dead:
         print()
-        print(f"❌ لا يبثّ لا سورة ولا آية: {', '.join(broken)}")
-        print("أخرِجهم من الكتالوج: زرّ يعمل ولا يسمع صوتًا أسوأ من غيابه.")
+        print(f"❌ لا يبثّ بأيّ جودة: {', '.join(dead)}")
+        print("هؤلاء يُحذفون من الكتالوج: زرّ يعمل ولا يخرج صوتًا أسوأ من غيابه.")
         return 1
-    print("✅ كل قارئ يبثّ على مسار واحد على الأقل.")
+
+    print("\n✅ كل قارئ يبثّ على جودة واحدة على الأقل.")
+    print("حدّث `Reciter.kt` بالجودة المثبتة هنا، لا بالمنسوبة في التوثيق.")
     return 0
 
 

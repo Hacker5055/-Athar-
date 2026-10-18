@@ -150,7 +150,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          jq -Rs '{body: ("### مصفوفة توفّر التلاوة\n\n```\n" + . + "\n```")}' audio-links.log > /tmp/p.json
+          jq -Rs '{body: ("### مسح توفّر التلاوة (قارئ × جودة × مسار)\n\n```\n" + . + "\n```")}' audio-links.log > /tmp/p.json
           PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
           [ -z "$PR" ] && PR=1
           gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --input /tmp/p.json
