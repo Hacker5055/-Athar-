@@ -131,11 +131,37 @@ object QuranAudioController {
         startAt(reciter, surah, 0)
     }
 
+    /// ما حُفظ على الجهاز — تُضبطه الواجهة فلا يحتاج المشغّل سياقًا.
+    private var filesDir: java.io.File? = null
+    private var downloaded: Set<String> = emptySet()
+
+    /// يربط المشغّل بالتلاوات المحفوظة.
+    ///
+    /// ⚠️ المشغّل كائن وحيد بلا سياق، والواجهة تعرف المحفوظات؛ فتمرّرها
+    /// إليه. ولو قرأها من التخزين بنفسه لصار يعتمد على `Context`، ويُقرأ
+    /// من قرص في طريق التشغيل.
+    fun bindOffline(filesDir: java.io.File?, downloaded: Set<String>) {
+        this.filesDir = filesDir
+        this.downloaded = downloaded
+    }
+
     /// ⚠️ الطابور يُبنى من وضع القارئ لا من رغبتنا: من يبثّ السورة
     /// كاملة نأخذها منه، ومن لا يبثّ إلا آية آية نصفّ آيات السورة.
+    ///
+    /// ⚠️ والمحفوظ على الجهاز **أولًا**: من نزّل سورة ليسمعها في
+    /// الطائرة ثم فتحها بلا اتصال، يجب أن يسمعها من ملفّه لا أن
+    /// يفاجأ بصمت.
     private fun buildQueue(reciter: Reciter, surah: Int, ayahCount: Int): List<String> {
         return when (reciter.mode) {
-            ReciterMode.SURAH -> listOfNotNull(QuranAudio.surahUrl(reciter, surah))
+            ReciterMode.SURAH -> {
+                val dir = filesDir
+                val local = if (dir != null) {
+                    QuranAudioOffline.sourceFor(dir, reciter, surah, downloaded)
+                } else {
+                    null
+                }
+                listOfNotNull(local ?: QuranAudio.surahUrl(reciter, surah))
+            }
             ReciterMode.AYAH -> (1..ayahCount).mapNotNull { ayah ->
                 QuranAudio.ayahUrl(reciter, surah, ayah)
             }

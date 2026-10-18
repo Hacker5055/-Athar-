@@ -21,6 +21,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.CircularProgressIndicator
@@ -55,6 +58,7 @@ import com.athar.athar.quran.QuranSources
 import com.athar.athar.quran.QuranSearch
 import com.athar.athar.quran.Surah
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import com.athar.athar.quran.QuranTranslationRepository
 import com.athar.athar.quran.QuranTranslation
@@ -67,6 +71,8 @@ import com.athar.athar.quran.QuranAudioState
 import com.athar.athar.quran.Reciter
 import com.athar.athar.quran.ReciterWithdrawalStore
 import com.athar.athar.quran.ReciterWithdrawals
+import com.athar.athar.quran.QuranAudioOffline
+import com.athar.athar.quran.QuranDownloader
 import com.athar.athar.quran.Reciters
 import com.athar.athar.ui.theme.ReaderPalette
 import com.athar.athar.ui.theme.ReaderTheme
@@ -93,6 +99,27 @@ fun QuranScreen(
     // ⚖️ سحب التلاوة (القاعدة ٣ من docs/10): إن اعترض قارئ على نشر
     // تلاوته يجب أن تتوقف فورًا لا في التحديث القادم. فالقائمة تُقرأ
     // من ملف بعيد عند كل فتح، لا من الكتالوج المثبَّت في الكود.
+    // ⚖️ التنزيل اختياري لا تلقائي: لا نملأ جهاز المستخدم بمئات
+    // الميجابايت دون أن يطلب.
+    var downloaded by remember { mutableStateOf(QuranDownloader.loaded(context)) }
+    var downloadTick by remember { mutableIntStateOf(0) }
+
+    // ⚠️ استقراء حال التنزيل كل ثانيتين **ما دام هناك تنزيل جارٍ**
+    // لا دائمًا: حلقة توقّف نفسها عند الانتهاء فلا تستهلك بطارية.
+    LaunchedEffect(downloadTick) {
+        downloaded = QuranDownloader.settle(context)
+        while (QuranDownloader.pending(context).isNotEmpty()) {
+            delay(2000)
+            downloaded = QuranDownloader.settle(context)
+        }
+    }
+
+    // ⚠️ المحفوظ على الجهاز أولًا: من نزّل سورة ليسمعها بلا اتصال
+    // يجب أن يسمعها من ملفّه لا أن يفاجأ بصمت.
+    LaunchedEffect(downloaded) {
+        QuranAudioController.bindOffline(context.filesDir, downloaded)
+    }
+
     var withdrawn by remember { mutableStateOf(emptySet<String>()) }
     LaunchedEffect(Unit) { withdrawn = ReciterWithdrawalStore.refresh(context) }
     LaunchedEffect(withdrawn) {
@@ -177,6 +204,21 @@ fun QuranScreen(
                 onReciterChange = { reciter = it },
                 availableReciters = ReciterWithdrawals.apply(Reciters.ALL, withdrawn),
                 readerTheme = readerTheme,
+                downloaded = downloaded,
+                downloading = QuranDownloader.pending(context).any {
+                    it.key == QuranAudioOffline.key(reciter.id, opened!!.id)
+                },
+                onDownloadToggle = {
+                    opened?.let { surah ->
+                        if (QuranAudioOffline.key(reciter.id, surah.id) in downloaded) {
+                            QuranDownloader.remove(context, reciter, surah.id)
+                            downloaded = QuranDownloader.loaded(context)
+                        } else {
+                            QuranDownloader.enqueue(context, reciter, surah.id, surah.nameAr)
+                        }
+                        downloadTick++
+                    }
+                },
                 audioState = audioState,
                 onPlayToggle = {
                     opened?.let { surah ->
@@ -382,6 +424,9 @@ private fun ReaderView(
     onReciterChange: (Reciter) -> Unit,
     availableReciters: List<Reciter>,
     readerTheme: ReaderTheme,
+    downloaded: Set<String>,
+    downloading: Boolean,
+    onDownloadToggle: () -> Unit,
     audioState: QuranAudioState,
     onPlayToggle: () -> Unit,
     onStop: () -> Unit,
@@ -485,6 +530,7 @@ private fun ReaderView(
                 val playing = audioState is QuranAudioState.Playing
                 val loading = audioState is QuranAudioState.Loading
                 val active = audioState.isActive
+                val isSaved = QuranAudioOffline.key(reciter.id, surah.id) in downloaded
 
                 IconButton(onClick = onPlayToggle) {
                     Icon(
@@ -507,11 +553,17 @@ private fun ReaderView(
                         // في المصحف الذي يتابع عليه.
                         // ⚠️ كل فرع على حدة: دمج فرعين في `when` يمنع
                         // التحويل الذكي فلا تُقرأ `ayah` أصلاً.
-                        text = when (audioState) {
-                            is QuranAudioState.Loading -> s.quranAudioLoading
-                            is QuranAudioState.Error -> s.quranAudioError
-                            is QuranAudioState.Paused -> label(reciter, s.quranResume, audioState.ayah)
-                            is QuranAudioState.Playing -> label(reciter, reciter.nameAr, audioState.ayah)
+                        // ⚠️ حين تكون السورة محفوظة يُذكر ذلك صريحًا:
+                        // المستخدم نزّلها ليعرف أنها تعمل بلا اتصال،
+                        // وإخفاء ذلك يُفقد التنزيل معناه.
+                        text = when {
+                            audioState is QuranAudioState.Loading -> s.quranAudioLoading
+                            audioState is QuranAudioState.Error -> s.quranAudioError
+                            audioState is QuranAudioState.Paused ->
+                                label(reciter, s.quranResume, audioState.ayah)
+                            audioState is QuranAudioState.Playing ->
+                                label(reciter, reciter.nameAr, audioState.ayah)
+                            isSaved -> "${reciter.nameAr} · ${s.quranOfflineReady}"
                             else -> reciter.nameAr
                         },
                         style = MaterialTheme.typography.bodySmall,
@@ -521,6 +573,34 @@ private fun ReaderView(
                             MaterialTheme.colorScheme.onSurfaceVariant
                         },
                     )
+                }
+                // ⚖️ التنزيل اختياري، ومتاح لمن يبثّ السورة كاملة
+                // بملف واحد. والقيد **مذكور** لا مخفيّ: زرّ تنزيل
+                // لا يعمل أسوأ من غيابه.
+                if (QuranAudioOffline.canDownload(reciter)) {
+                    if (downloading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                    } else {
+                    IconButton(onClick = onDownloadToggle) {
+                        Icon(
+                            imageVector = when {
+                                downloading -> Icons.Filled.Download
+                                isSaved -> Icons.Filled.Delete
+                                else -> Icons.Filled.DownloadDone
+                            },
+                            contentDescription = when {
+                                downloading -> s.quranDownloading
+                                isSaved -> s.quranDeleteDownload
+                                else -> s.quranDownload
+                            },
+                            tint = if (isSaved) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                        )
+                    }
+                    }
                 }
                 if (loading) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp))

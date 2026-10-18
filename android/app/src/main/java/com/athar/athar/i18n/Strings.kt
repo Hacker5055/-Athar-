@@ -431,6 +431,12 @@ class Strings(val locale: AppLocale) {
             "font_preview" to "هذا نموذج لحجم الخط",
             "notif_channel_playback" to "التلاوة",
             "notif_channel_playback_desc" to "إشعار التشغيل الجاري والتحكّم به",
+            "quran_download" to "تنزيل",
+            "quran_download_done" to "محفوظة على الجهاز",
+            "quran_delete_download" to "حذف التنزيل",
+            "quran_downloading" to "جارٍ التنزيل…",
+            "quran_download_hint" to "التنزيل متاح لمن يبثّ السورة كاملة بملف واحد",
+            "quran_offline_ready" to "تُشغَّل بلا اتصال",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -836,6 +842,12 @@ class Strings(val locale: AppLocale) {
             "font_preview" to "This is a preview of the font size",
             "notif_channel_playback" to "Recitation",
             "notif_channel_playback_desc" to "Now-playing notification and its controls",
+            "quran_download" to "Download",
+            "quran_download_done" to "Saved on device",
+            "quran_delete_download" to "Delete download",
+            "quran_downloading" to "Downloading…",
+            "quran_download_hint" to "Download is available for reciters who stream the full surah as one file",
+            "quran_offline_ready" to "Plays without a connection",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1241,6 +1253,12 @@ class Strings(val locale: AppLocale) {
             "font_preview" to "Aperçu de la taille du texte",
             "notif_channel_playback" to "Récitation",
             "notif_channel_playback_desc" to "Notification de lecture en cours et ses commandes",
+            "quran_download" to "Télécharger",
+            "quran_download_done" to "Enregistré sur l’appareil",
+            "quran_delete_download" to "Supprimer le téléchargement",
+            "quran_downloading" to "Téléchargement…",
+            "quran_download_hint" to "Le téléchargement est disponible pour les récitateurs qui diffusent la sourate entière en un seul fichier",
+            "quran_offline_ready" to "Écoute sans connexion",
         )
     }
 
@@ -1651,4 +1669,10 @@ class Strings(val locale: AppLocale) {
     val fontPreview: String get() = t("font_preview")
     val notifChannelPlayback: String get() = t("notif_channel_playback")
     val notifChannelPlaybackDesc: String get() = t("notif_channel_playback_desc")
+    val quranDownload: String get() = t("quran_download")
+    val quranDownloadDone: String get() = t("quran_download_done")
+    val quranDeleteDownload: String get() = t("quran_delete_download")
+    val quranDownloading: String get() = t("quran_downloading")
+    val quranDownloadHint: String get() = t("quran_download_hint")
+    val quranOfflineReady: String get() = t("quran_offline_ready")
 }

@@ -456,4 +456,10 @@ const Map<String, String> kStringsEn = {
   'font_preview': 'This is a preview of the font size',
   'notif_channel_playback': 'Recitation',
   'notif_channel_playback_desc': 'Now-playing notification and its controls',
+  'quran_download': 'Download',
+  'quran_download_done': 'Saved on device',
+  'quran_delete_download': 'Delete download',
+  'quran_downloading': 'Downloading…',
+  'quran_download_hint': 'Download is available for reciters who stream the full surah as one file',
+  'quran_offline_ready': 'Plays without a connection',
 };

@@ -455,4 +455,10 @@ const Map<String, String> kStringsAr = {
   'font_preview': 'هذا نموذج لحجم الخط',
   'notif_channel_playback': 'التلاوة',
   'notif_channel_playback_desc': 'إشعار التشغيل الجاري والتحكّم به',
+  'quran_download': 'تنزيل',
+  'quran_download_done': 'محفوظة على الجهاز',
+  'quran_delete_download': 'حذف التنزيل',
+  'quran_downloading': 'جارٍ التنزيل…',
+  'quran_download_hint': 'التنزيل متاح لمن يبثّ السورة كاملة بملف واحد',
+  'quran_offline_ready': 'تُشغَّل بلا اتصال',
 };

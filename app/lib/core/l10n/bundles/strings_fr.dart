@@ -456,4 +456,10 @@ const Map<String, String> kStringsFr = {
   'font_preview': 'Aperçu de la taille du texte',
   'notif_channel_playback': 'Récitation',
   'notif_channel_playback_desc': 'Notification de lecture en cours et ses commandes',
+  'quran_download': 'Télécharger',
+  'quran_download_done': 'Enregistré sur l’appareil',
+  'quran_delete_download': 'Supprimer le téléchargement',
+  'quran_downloading': 'Téléchargement…',
+  'quran_download_hint': 'Le téléchargement est disponible pour les récitateurs qui diffusent la sourate entière en un seul fichier',
+  'quran_offline_ready': 'Écoute sans connexion',
 };
