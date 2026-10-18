@@ -410,6 +410,14 @@ class Strings(val locale: AppLocale) {
             "quran_credit_itani" to "The Clear Quran — طلال إيتاني. CC BY-ND 4.0: يُعرض كما هو دون تعديل.",
             "quran_juz" to "الجزء",
             "quran_page" to "الصفحة",
+            "quran_reciter" to "القارئ",
+            "quran_play" to "استماع السورة",
+            "quran_pause" to "إيقاف مؤقت",
+            "quran_resume" to "متابعة",
+            "quran_stop" to "إيقاف",
+            "quran_audio_credit" to "التلاوة: islamic.network (alquran.cloud) — حق التلاوة لقارئها.",
+            "quran_audio_error" to "تعذّر تشغيل التلاوة — تحقّق من الاتصال.",
+            "quran_audio_loading" to "جارٍ تحميل التلاوة…",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -794,6 +802,14 @@ class Strings(val locale: AppLocale) {
             "quran_credit_itani" to "The Clear Quran — Talal Itani. CC BY-ND 4.0, shown verbatim and unmodified.",
             "quran_juz" to "Juz’",
             "quran_page" to "Page",
+            "quran_reciter" to "Reciter",
+            "quran_play" to "Play surah",
+            "quran_pause" to "Pause",
+            "quran_resume" to "Resume",
+            "quran_stop" to "Stop",
+            "quran_audio_credit" to "Recitation: islamic.network (alquran.cloud) — rights belong to each reciter.",
+            "quran_audio_error" to "Could not play the recitation — check your connection.",
+            "quran_audio_loading" to "Loading recitation…",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1178,6 +1194,14 @@ class Strings(val locale: AppLocale) {
             "quran_credit_itani" to "The Clear Quran — Talal Itani. CC BY-ND 4.0, affiché textuellement et sans modification.",
             "quran_juz" to "Juz",
             "quran_page" to "Page",
+            "quran_reciter" to "Récitateur",
+            "quran_play" to "Écouter la sourate",
+            "quran_pause" to "Pause",
+            "quran_resume" to "Reprendre",
+            "quran_stop" to "Arrêter",
+            "quran_audio_credit" to "Récitation : islamic.network (alquran.cloud) — les droits appartiennent à chaque récitateur.",
+            "quran_audio_error" to "Lecture impossible — vérifiez votre connexion.",
+            "quran_audio_loading" to "Chargement de la récitation…",
         )
     }
 
@@ -1567,4 +1591,12 @@ class Strings(val locale: AppLocale) {
     val quranCreditItani: String get() = t("quran_credit_itani")
     val quranJuz: String get() = t("quran_juz")
     val quranPage: String get() = t("quran_page")
+    val quranReciter: String get() = t("quran_reciter")
+    val quranPlay: String get() = t("quran_play")
+    val quranPause: String get() = t("quran_pause")
+    val quranResume: String get() = t("quran_resume")
+    val quranStop: String get() = t("quran_stop")
+    val quranAudioCredit: String get() = t("quran_audio_credit")
+    val quranAudioError: String get() = t("quran_audio_error")
+    val quranAudioLoading: String get() = t("quran_audio_loading")
 }

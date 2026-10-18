@@ -435,4 +435,12 @@ const Map<String, String> kStringsFr = {
   'quran_credit_itani': 'The Clear Quran — Talal Itani. CC BY-ND 4.0, affiché textuellement et sans modification.',
   'quran_juz': 'Juz',
   'quran_page': 'Page',
+  'quran_reciter': 'Récitateur',
+  'quran_play': 'Écouter la sourate',
+  'quran_pause': 'Pause',
+  'quran_resume': 'Reprendre',
+  'quran_stop': 'Arrêter',
+  'quran_audio_credit': 'Récitation : islamic.network (alquran.cloud) — les droits appartiennent à chaque récitateur.',
+  'quran_audio_error': 'Lecture impossible — vérifiez votre connexion.',
+  'quran_audio_loading': 'Chargement de la récitation…',
 };

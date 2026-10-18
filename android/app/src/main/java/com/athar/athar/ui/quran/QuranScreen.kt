@@ -2,6 +2,7 @@ package com.athar.athar.ui.quran
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -22,7 +27,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +54,10 @@ import com.athar.athar.quran.QuranTranslation
 import androidx.compose.material3.FilterChip
 import androidx.compose.foundation.lazy.rememberLazyListState
 import com.athar.athar.quran.QuranMeta
+import com.athar.athar.quran.QuranAudioController
+import com.athar.athar.quran.QuranAudioState
+import com.athar.athar.quran.Reciter
+import com.athar.athar.quran.Reciters
 
 @Composable
 fun QuranScreen(modifier: Modifier = Modifier) {
@@ -62,6 +73,13 @@ fun QuranScreen(modifier: Modifier = Modifier) {
     var translation by remember { mutableStateOf(QuranTranslation.NONE) }
     var openAyah by remember { mutableStateOf<Int?>(null) }
     var translated by remember { mutableStateOf(emptyMap<String, String>()) }
+    var reciter by remember { mutableStateOf(Reciters.DEFAULT) }
+
+    // ⚠️ مشغّل واحد يُفلت عند مغادرة الشاشة: ترك MediaPlayer حيًّا
+    // يترك صوتًا يعمل ولا أحد يراه ليوقفه.
+    val audio = remember { QuranAudioController() }
+    DisposableEffect(Unit) { onDispose { audio.release() } }
+    val audioState by audio.state.collectAsState()
 
     // ⚠️ نسخة واحدة: التخزين المؤقت داخلها، ولو أُنشئت مع كل إعادة تركيب
     // أُعيد تحليل ميجابايت عند كل حرف
@@ -123,6 +141,11 @@ fun QuranScreen(modifier: Modifier = Modifier) {
                 onTranslationChange = { translation = it },
                 openAyah = openAyah,
                 onOpened = { openAyah = null },
+                reciter = reciter,
+                onReciterChange = { reciter = it },
+                audioState = audioState,
+                onPlayToggle = { audio.toggle(reciter, opened!!.id) },
+                onStop = { audio.stop() },
             )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(modifier = Modifier.fillMaxSize()) {
@@ -299,6 +322,11 @@ private fun ReaderView(
     onTranslationChange: (QuranTranslation) -> Unit,
     openAyah: Int?,
     onOpened: () -> Unit,
+    reciter: Reciter,
+    onReciterChange: (Reciter) -> Unit,
+    audioState: QuranAudioState,
+    onPlayToggle: () -> Unit,
+    onStop: () -> Unit,
 ) {
     val s = LocalStrings.current
     val listState = rememberLazyListState()
@@ -356,6 +384,71 @@ private fun ReaderView(
                 )
             }
         }
+
+        // ⚠️ اختيار القارئ قبل التشغيل لا داخله: من يفتح التلاوة يريد
+        // صوتًا محدّدًا، لا أن يكتشف بعد التشغيل أنه يسمع غيره.
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Reciters.ALL.forEach { option ->
+                FilterChip(
+                    selected = option.id == reciter.id,
+                    onClick = { onReciterChange(option) },
+                    label = { Text(option.nameAr) },
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            val playing = audioState is QuranAudioState.Playing
+            val loading = audioState is QuranAudioState.Loading
+            val active = audioState.isActive
+
+            IconButton(onClick = onPlayToggle) {
+                Icon(
+                    // ⚠️ الأيقونة تعكس الحالة الفعلية: «تشغيل» على سورة
+                    // تعمل الآن يجعل المستخدم يضغط فيتوقّف عكس ما أراد.
+                    imageVector = if (playing) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                    contentDescription = if (playing) s.quranPause else s.quranPlay,
+                )
+            }
+            if (active) {
+                IconButton(onClick = onStop) {
+                    Icon(Icons.Filled.Stop, contentDescription = s.quranStop)
+                }
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    // ⚠️ أثناء التشغيل نُظهر **اسم القارئ** لا «استماع
+                    // السورة»: المستخدم يعرف أنه يستمع، المهم من يستمع.
+                    text = when (audioState) {
+                        is QuranAudioState.Loading -> s.quranAudioLoading
+                        is QuranAudioState.Playing -> reciter.nameAr
+                        is QuranAudioState.Paused -> s.quranResume
+                        is QuranAudioState.Error -> s.quranAudioError
+                        else -> reciter.nameAr
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (audioState is QuranAudioState.Error) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                )
+            }
+            if (loading) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp))
+            }
+        }
         HorizontalDivider()
 
         LazyColumn(
@@ -401,6 +494,18 @@ private fun ReaderView(
                             .padding(vertical = 20.dp, horizontal = 16.dp),
                     )
                 }
+            }
+            item {
+                // ⚖️ حق التلاوة لقارئها: النسبة واجبة كما في النصّ
+                Text(
+                    text = Reciters.CREDIT,
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp, horizontal = 16.dp),
+                )
             }
         }
     }

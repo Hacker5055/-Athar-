@@ -434,4 +434,12 @@ const Map<String, String> kStringsAr = {
   'quran_credit_itani': 'The Clear Quran — طلال إيتاني. CC BY-ND 4.0: يُعرض كما هو دون تعديل.',
   'quran_juz': 'الجزء',
   'quran_page': 'الصفحة',
+  'quran_reciter': 'القارئ',
+  'quran_play': 'استماع السورة',
+  'quran_pause': 'إيقاف مؤقت',
+  'quran_resume': 'متابعة',
+  'quran_stop': 'إيقاف',
+  'quran_audio_credit': 'التلاوة: islamic.network (alquran.cloud) — حق التلاوة لقارئها.',
+  'quran_audio_error': 'تعذّر تشغيل التلاوة — تحقّق من الاتصال.',
+  'quran_audio_loading': 'جارٍ تحميل التلاوة…',
 };

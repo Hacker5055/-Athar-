@@ -435,4 +435,12 @@ const Map<String, String> kStringsEn = {
   'quran_credit_itani': 'The Clear Quran — Talal Itani. CC BY-ND 4.0, shown verbatim and unmodified.',
   'quran_juz': 'Juz’',
   'quran_page': 'Page',
+  'quran_reciter': 'Reciter',
+  'quran_play': 'Play surah',
+  'quran_pause': 'Pause',
+  'quran_resume': 'Resume',
+  'quran_stop': 'Stop',
+  'quran_audio_credit': 'Recitation: islamic.network (alquran.cloud) — rights belong to each reciter.',
+  'quran_audio_error': 'Could not play the recitation — check your connection.',
+  'quran_audio_loading': 'Loading recitation…',
 };
