@@ -98,9 +98,15 @@ class StringsTest {
         assertEquals(AppLocale.FR, AppLocale.fromCode("fr"))
         assertEquals(AppLocale.AR, AppLocale.fromCode(null))
         assertEquals(AppLocale.AR, AppLocale.fromCode("zz"))
-        assertEquals(AppLocale.EN, AppLocale.fromTags(listOf("fr-CA", "en-US")))
+        // ⚠️ القائمة مرتّبة حسب **تفضيل المستخدم**: الأولى هي المفضّلة.
+        // كتبتُ هذا التوقّع أول مرة مقلوبًا (ظننتها ترجع الإنجليزية من
+        // ["fr-CA","en-US"]) ففشل البناء — وكان الكود على صواب وأنا
+        // المخطئ: من يضع الفرنسية أولًا يريد الفرنسية فعلًا.
+        assertEquals(AppLocale.FR, AppLocale.fromTags(listOf("fr-CA", "en-US")))
+        assertEquals(AppLocale.EN, AppLocale.fromTags(listOf("en-US", "fr-CA")))
         assertEquals(AppLocale.FR, AppLocale.fromTags(listOf("fr-FR")))
         assertEquals(AppLocale.AR, AppLocale.fromTags(emptyList()))
+        assertEquals(AppLocale.AR, AppLocale.fromTags(listOf("de-DE", "zh-CN")))
     }
 
     @Test fun onlyArabicIsRightToLeft() {
