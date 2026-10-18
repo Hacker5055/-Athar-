@@ -103,6 +103,28 @@ jobs:
               || echo "⚠️ تعذّر النشر: لا PR ولا صلاحية Issue"
           fi
 
+      # ⚠️ القناة المضمونة: لوجات GitHub محجوبة عن بيئة التطوير،
+      # والتعليق على الـ PR لم ينجح مرتين بلا سبب نعرفه. فندفع اللوج
+      # إلى فرع `ci-logs` ونقرأه لاحقًا بـ:
+      #   gh api repos/.../contents/android/logs/LATEST.log?ref=ci-logs
+      - name: ⚠ دفع اللوج إلى فرع ci-logs
+        if: steps.debug_apk.outcome == 'failure'
+        working-directory: ${{ github.workspace }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd android
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@users.noreply.github.com"
+          git fetch origin ci-logs 2>/dev/null || true
+          git checkout -B ci-logs 2>/dev/null || git checkout ci-logs
+          mkdir -p logs
+          cp gradle-debug.log logs/LATEST.log
+          cp gradle-debug.log "logs/debug-${GITHUB_SHA::8}.log"
+          git add -f logs
+          git commit -m "ci: لوج فشل بناء ${GITHUB_SHA::8}" 2>/dev/null || echo "لا جديد"
+          git push -f origin ci-logs 2>&1 | tail -3 || echo "⚠️ تعذّر الدفع"
+
       - name: إيقاف البناء عند الفشل
         if: steps.debug_apk.outcome == 'failure'
         run: |
