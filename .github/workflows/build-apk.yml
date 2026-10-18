@@ -96,6 +96,38 @@ jobs:
             fi
           done
 
+      - name: تجهيز مفتاح التوقيع
+        env:
+          SECRET_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          SECRET_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          SECRET_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          SECRET_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$SECRET_KEYSTORE" ]; then
+            echo "🔐 أسرار توقيع رسمية موجودة"
+            echo "$SECRET_KEYSTORE" | base64 -d > app/athar.jks
+            {
+              echo "ATHAR_KEYSTORE=app/athar.jks"
+              echo "ATHAR_STORE_PASSWORD=$SECRET_STORE_PASSWORD"
+              echo "ATHAR_KEY_ALIAS=$SECRET_ALIAS"
+              echo "ATHAR_KEY_PASSWORD=$SECRET_KEY_PASSWORD"
+            } >> "$GITHUB_ENV"
+          else
+            # ⚠️ بلا أسرار: APK غير الموقّع **لا يُثبَّت**، فنولّد مفتاحًا
+            # هنا ليكون الملف المرفق قابلًا للتثبيت فعلًا. مفتاحه معلوم،
+            # فليس للإصدارات الرسمية — لإصدار رسمي أضف الأسرار الأربعة.
+            echo "⚠️ لا أسرار توقيع — مفتاح CI مؤقت (قابل للتثبيت، لا للتوزيع الرسمي)"
+            keytool -genkeypair -v -keystore app/athar.jks -keyalg RSA -keysize 2048 \
+              -validity 10000 -alias athar -storepass android -keypass android \
+              -dname "CN=Athar, OU=Athar, O=Athar, L=Cairo, S=Cairo, C=EG"
+            {
+              echo "ATHAR_KEYSTORE=app/athar.jks"
+              echo "ATHAR_STORE_PASSWORD=android"
+              echo "ATHAR_KEY_ALIAS=athar"
+              echo "ATHAR_KEY_PASSWORD=android"
+            } >> "$GITHUB_ENV"
+          fi
+
       - name: اختبارات + APK تصحيح
         id: debug_apk
         continue-on-error: true
@@ -188,8 +220,22 @@ jobs:
       - name: ✅ تحقّق من بيانات الـ APK
         run: python3 tool/verify_apk.py app/build/outputs/apk/debug/app-debug.apk
 
-      - name: APK إصدار (غير موقّع)
+      - name: APK إصدار
         run: ./gradlew assembleRelease --no-daemon
+
+      # ⚠️ APK غير موقّع **لا يُثبَّت**: يرفضه الهاتف ولا يظهر له سبب
+      # واضح. فالتوقيع ليس تفصيلًا في الإصدار بل شرط في أن يكون الملف
+      # المرفق نافعًا أصلًا.
+      - name: ⚠ تحقّق من توقيع APK الإصدار
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          [ -f "$APK" ] || { echo "❌ لا وجود لـ $APK"; exit 1; }
+          if unzip -l "$APK" | grep -q "META-INF/.*\.RSA"; then
+            echo "✅ موقّع: $(unzip -l "$APK" | grep 'META-INF/.*\.RSA' | awk '{print $4}')"
+          else
+            echo "❌ APK الإصدار غير موقّع — لن يُثبَّت على أي جهاز"
+            exit 1
+          fi
 
       - name: حفظ النواتج
         uses: actions/upload-artifact@v4

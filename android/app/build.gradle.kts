@@ -18,10 +18,39 @@ android {
         versionName = "0.14.0"
     }
 
+    // ⚠️ لماذا التوقيع مشروط؟ لأن APK غير موقّع **لا يُثبَّت أصلًا**،
+    // وأسرار التوقيع الرسمية لا يملكها أحد بعد. فنوقّع بها إن وُجدت،
+    // ونولّد مفتاحًا في CI إن لم توجد — فيصير الـ APK قابلًا للتثبيت
+    // اليوم، بلا أن نلتزم مفتاحًا مؤقتًا إلى الأبد.
+    //
+    // ⚠️ ومفتاح CI **ليس للإصدارات الرسمية**: مفتاحه وكلمة سرّه
+    // معلومتان، فلا يحمي نسبة التحديث. لإصدار رسمي أضف أربعة أسرار:
+    // ANDROID_KEYSTORE_BASE64 · ANDROID_KEYSTORE_PASSWORD ·
+    // ANDROID_KEY_ALIAS · ANDROID_KEY_PASSWORD.
+    signingConfigs {
+        val keystore = System.getenv("ATHAR_KEYSTORE")
+        val storePass = System.getenv("ATHAR_STORE_PASSWORD")
+        val alias = System.getenv("ATHAR_KEY_ALIAS")
+        val keyPass = System.getenv("ATHAR_KEY_PASSWORD")
+        if (keystore != null && file(keystore).exists() &&
+            storePass != null && alias != null && keyPass != null
+        ) {
+            create("release") {
+                storeFile = file(keystore)
+                storePassword = storePass
+                keyAlias = alias
+                keyPassword = keyPass
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // ⚠️ findByName لا getByName: بلا أسرار لا يوجد «release»
+            // في signingConfigs، وgetByName يرمي استثناءً يوقف البناء.
+            signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
 
