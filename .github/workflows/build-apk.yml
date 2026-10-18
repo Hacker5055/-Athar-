@@ -1,13 +1,15 @@
-name: Build APK
+name: Build Android APK
 
 # ═══════════════════════════════════════════════════════════════
-# يبني APK جاهزًا للتنزيل على كل push وكل tag.
+# يبني APK لأثر (Kotlin + Jetpack Compose) على كل push.
 #
-# · debug APK       → دائمًا (بدون أي سرّ)
-# · release APK/AAB → يُوقّع تلقائيًا لو الـ ٤ Secrets موجودة، وإلا
-#                     يبني release غير موقّع ويكمل (ما يفشلش البناء).
+# ⚠️ لماذا لا يوجد ملف gradle-wrapper.jar في المستودع؟
+# لأنه ملف ثنائي، ولا نريد رفع ثنائيات إلى git. فنولّد الـ wrapper
+# داخل CI (`gradle wrapper`) ثم نستخدمه. لهذا توجد خطوة صريحة لذلك.
 #
-# هذا هو المسار المقصود للحصول على ملف APK بدون تثبيت Flutter محليًا.
+# ⚠️ لا نثبّت إصدار Gradle على الأمل: AGP 8.7.3 يتطلّب Gradle 8.9.
+# الإصداران مذكوران معًا في android/build.gradle.kts — لا ترفع أحدهما
+# بمفرده.
 # ═══════════════════════════════════════════════════════════════
 
 on:
@@ -18,52 +20,17 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: build-apk-${{ github.ref }}
+  group: android-apk-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  verify:
-    name: تحليل + اختبارات
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
-    steps:
-      - uses: actions/checkout@v4
-
-      # ⚠️ لا نثبّت رقم إصدار: حزم pub.dev اليوم (drift و drift_dev
-      # 2.35) تتطلّب Dart ≥3.10، وتثبيت 3.24.5 (= Dart 3.5) يجعل
-      # `flutter pub get` يفشل في حلّ الإصدارات. نأخذ أحدث stable.
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
-
-      - name: إصدارات الأدوات
-        run: |
-          flutter --version
-          dart --version
-
-      - name: تثبيت الحزم
-        run: flutter pub get
-
-      # app_database.g.dart غير مُرفق بالمستودع (ملف مولّد)
-      - name: توليد كود Drift
-        run: dart run build_runner build --delete-conflicting-outputs
-
-      - name: تحليل
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
-
-      - name: اختبارات
-        run: flutter test
-
   build:
     name: بناء APK
-    needs: verify
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: app
+        working-directory: android
+
     steps:
       - uses: actions/checkout@v4
 
@@ -72,92 +39,30 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      # ⚠️ لا نثبّت رقم إصدار: حزم pub.dev اليوم (drift و drift_dev
-      # 2.35) تتطلّب Dart ≥3.10، وتثبيت 3.24.5 (= Dart 3.5) يجعل
-      # `flutter pub get` يفشل في حلّ الإصدارات. نأخذ أحدث stable.
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
-
-      - name: تثبيت الحزم
-        run: flutter pub get
-
-      - name: توليد كود Drift
-        run: dart run build_runner build --delete-conflicting-outputs
-
-      # مجلد android/ غير مُرفق في المستودع (يُولّد محليًا)،
-      # فنولّده هنا في CI قبل البناء.
-      - name: توليد مجلد android/
-        run: flutter create --platforms=android --org com.athar --project-name athar .
-
-      - name: ⚠ حارس — تأكد إن flutter create لم يلمس lib/
+      - name: إصدارات الأدوات
         run: |
-          CHANGED="$(git status --porcelain -- app/lib app/pubspec.yaml | wc -l)"
-          if [ "$CHANGED" != "0" ]; then
-            echo "❌ flutter create عدّل lib/ أو pubspec.yaml:"
-            git status --porcelain -- app/lib app/pubspec.yaml
-            echo "أصلح بـ: git checkout -- app/lib app/pubspec.yaml"
-            exit 1
-          fi
-          echo "✓ lib/ سليم"
+          java -version
+          gradle --version
 
-      - name: نقل ملفات الودجت الأصلية
-        run: chmod +x tool/setup_android.sh && ./tool/setup_android.sh
+      # لا نرفع gradle-wrapper.jar (ثنائي) إلى git — نولّده هنا
+      - name: تهيئة Gradle wrapper
+        run: gradle wrapper --gradle-version 8.9 --distribution-type bin
 
-      - name: لصق مستقبل الودجت في المانيفست
-        run: |
-          python3 - <<'PY'
-          import re, sys
-          path = "android/app/src/main/AndroidManifest.xml"
-          src = open(path, encoding="utf-8").read()
-          if "AtharWidgetProvider" in src:
-              print("موجود مسبقًا"); sys.exit(0)
-          snippet = open("native/android/AndroidManifest.snippet.xml", encoding="utf-8").read()
-          inner = re.sub(r"<!--.*?-->", "", snippet, flags=re.S).strip()
-          out, n = re.subn(r"(\s*)(</application>)", f"\\1{inner}\\1\\2", src, count=1)
-          if n != 1:
-              print("لم أجد </application>"); sys.exit(1)
-          open(path, "w", encoding="utf-8").write(out)
-          print("تم")
-          PY
+      - name: صلاحيات التنفيذ
+        run: chmod +x gradlew
 
-      - name: إعداد التوقيع (إن وُجدت الأسرار)
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          if [ -z "$KEYSTORE_BASE64" ]; then
-            echo "⚠ لا توجد أسرار توقيع → release APK غير موقّع (صالح للتجربة فقط)"
-            exit 0
-          fi
-          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/athar-release.jks
-          cat > android/key.properties <<EOF
-          storeFile=../app/athar-release.jks
-          storePassword=$KEYSTORE_PASSWORD
-          keyAlias=$KEY_ALIAS
-          keyPassword=$KEY_PASSWORD
-          EOF
-          echo "✓ التوقيع جاهز"
+      # lint قد يفشل البناء على تحذيرات لا نملك رف Geistها محليًا
+      - name: APK تصحيح
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: release APK (split per ABI)
-        run: flutter build apk --release --split-per-abi
-
-      - name: release AAB (متجر جوجل)
-        run: flutter build appbundle --release
-
-      - name: debug APK
-        run: flutter build apk --debug
+      - name: APK إصدار (غير موقّع)
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: حفظ النواتج
         uses: actions/upload-artifact@v4
         with:
           name: athar-apk-${{ github.sha }}
-          path: |
-            app/build/app/outputs/flutter-apk/*.apk
-            app/build/app/outputs/bundle/release/*.aab
+          path: android/app/build/outputs/apk/**/*.apk
           if-no-files-found: error
           retention-days: 30
 
@@ -165,8 +70,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            app/build/app/outputs/flutter-apk/*.apk
-            app/build/app/outputs/bundle/release/*.aab
+          files: android/app/build/outputs/apk/**/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
