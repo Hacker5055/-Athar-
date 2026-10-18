@@ -81,7 +81,7 @@ fun QuranScreen(modifier: Modifier = Modifier) {
         val repo = QuranRepository(context)
         val found = runCatching {
             withContext(Dispatchers.IO) {
-                QuranSearch.search(needle, list) { id -> repo.ayahsOf(id) }
+                QuranSearch.search(needle, list, { id -> repo.ayahsOf(id) })
             }
         }.getOrDefault(emptyList())
         results = found
