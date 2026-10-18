@@ -77,7 +77,8 @@ class QuranAudioTest {
         // ⚖️ الجودة **مقيسة** لا منقولة: المنشاوي الممجود يبثّ ٦٤ لا ١٢٨
         val mujawwad = Reciters.byId("ar.minshawimujawwad")!!
         assertEquals(64, mujawwad.bitrate)
-        assertEquals(64, Reciters.byId("ar.parhizgar")!!.bitrate)
+        // ⚠️ ٤٨ لا ٦٤: پرهیزگار لا يبثّ إلا بها — هكذا قِيس لا هكذا يُتوقّع
+        assertEquals(48, Reciters.byId("ar.parhizgar")!!.bitrate)
         assertEquals(128, Reciters.byId("ar.husary")!!.bitrate)
     }
 
