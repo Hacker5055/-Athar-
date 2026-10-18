@@ -74,21 +74,21 @@ object NotificationPlanner {
 
         // ⚠️ الأذكار **مرتبطة بمواقيت الصلاة لا بساعة ثابتة**: تفصيله
         // في تعليق adhkarAlert.
-        adhkarAlert(
+        alerts += adhkarAlerts(
             days, now, AlertKind.MORNING_ADHKAR,
             base = { it.fajr },
             ceiling = { it.sunrise },
             enabled = settings.morningAdhkar,
             offset = settings.morningAdhkarOffset,
-        )?.let { alerts += it }
+        )
 
-        adhkarAlert(
+        alerts += adhkarAlerts(
             days, now, AlertKind.EVENING_ADHKAR,
             base = { it.asr },
             ceiling = { it.maghrib },
             enabled = settings.eveningAdhkar,
             offset = settings.eveningAdhkarOffset,
-        )?.let { alerts += it }
+        )
 
         jumuahAlert(days, settings, now)?.let { alerts += it }
         return alerts
@@ -104,7 +104,11 @@ object NotificationPlanner {
     /// ⚠️ و[ceiling] يمنع تجاوز الباب: تذكير بعد الشروق ليس «صباحًا»،
     /// فنُقيده بسقف الباب بدل أن نلغيه — لأن التذكير المتأخر خير من
     /// تذكير لا يأتي.
-    private fun adhkarAlert(
+    ///
+    /// ⚠️ **منبّه لكل يوم، لا منبّه واحد**: الأذكار يومية، فمن يعود
+    /// بعد أول يوم يُذكَّر مرة واحدة ثم لا شيء طول الأسبوع — وهو بالضبط
+    /// ما فعله الإصدار الأول من هذه الدالة (كانت تُرجع أول يوم وتخرج).
+    private fun adhkarAlerts(
         days: List<PrayerDay>,
         now: Instant,
         kind: AlertKind,
@@ -112,21 +116,22 @@ object NotificationPlanner {
         ceiling: (PrayerDay) -> Instant,
         enabled: Boolean,
         offset: Int,
-    ): ScheduledAlert? {
-        if (!enabled) return null
+    ): List<ScheduledAlert> {
+        if (!enabled) return emptyList()
+        val out = mutableListOf<ScheduledAlert>()
         for (day in days) {
             var at = base(day).plus(offset.toLong(), ChronoUnit.MINUTES)
             val limit = ceiling(day)
             if (at.isAfter(limit)) at = limit
             if (at.isBefore(now)) continue
-            return ScheduledAlert(
+            out += ScheduledAlert(
                 id = AlertId.encode(kind, day.date, null),
                 kind = kind,
                 at = at,
                 prayer = null,
             )
         }
-        return null
+        return out
     }
 
     /// أول جمعة قادمة داخل النطاق.

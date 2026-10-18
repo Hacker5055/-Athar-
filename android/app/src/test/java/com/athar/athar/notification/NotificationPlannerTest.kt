@@ -333,7 +333,7 @@ class NotificationPlannerTest {
     /// `null` في دورته — وإلا بقيت منبّهات ميتة لا تُوقف أبدًا.
     @Test fun adhkarAlertsCarryNoPrayerSlot() {
         val plan = NotificationPlanner.plan(
-            days = week(sunday),
+            days = listOf(day(sunday)),
             settings = prayersOnly().copy(morningAdhkar = true, eveningAdhkar = true),
             now = midnight(sunday),
         )
