@@ -382,6 +382,7 @@ class Strings(val locale: AppLocale) {
             "tracker_today_empty" to "ما سجّلت شيء اليوم — ابدأ بواحدة",
             "tracker_days" to "يوم",
             "more_asma" to "أسماء الله الحسنى",
+            "adhkar_after_prayer" to "أذكار بعد الصلاة",
             "asma_search_hint" to "ابحث بالاسم أو المعنى",
             "asma_count" to "٩٩ اسمًا",
             "asma_empty" to "لا شيء يطابق بحثك",
@@ -748,6 +749,7 @@ class Strings(val locale: AppLocale) {
             "tracker_today_empty" to "Nothing logged today — start with one",
             "tracker_days" to "days",
             "more_asma" to "The 99 Names",
+            "adhkar_after_prayer" to "Adhkar after prayer",
             "asma_search_hint" to "Search by name or meaning",
             "asma_count" to "99 names",
             "asma_empty" to "Nothing matches your search",
@@ -1114,6 +1116,7 @@ class Strings(val locale: AppLocale) {
             "tracker_today_empty" to "Rien aujourd’hui — commencez par une",
             "tracker_days" to "jours",
             "more_asma" to "Les 99 Noms",
+            "adhkar_after_prayer" to "Adhkar après la prière",
             "asma_search_hint" to "Rechercher par nom ou sens",
             "asma_count" to "99 noms",
             "asma_empty" to "Aucun résultat",
@@ -1485,6 +1488,7 @@ class Strings(val locale: AppLocale) {
     val trackerTodayEmpty: String get() = t("tracker_today_empty")
     val trackerDays: String get() = t("tracker_days")
     val moreAsma: String get() = t("more_asma")
+    val adhkarAfterPrayer: String get() = t("adhkar_after_prayer")
     val asmaSearchHint: String get() = t("asma_search_hint")
     val asmaCount: String get() = t("asma_count")
     val asmaEmpty: String get() = t("asma_empty")

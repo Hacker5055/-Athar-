@@ -407,7 +407,7 @@ const Map<String, String> kStringsFr = {
   'tracker_today_empty': 'Rien aujourd’hui — commencez par une',
   'tracker_days': 'jours',
 'more_asma': 'Les 99 Noms',
-}
+  'adhkar_after_prayer': 'Adhkar après la prière',
   'asma_search_hint': 'Rechercher par nom ou sens',
   'asma_count': '99 noms',
   'asma_empty': 'Aucun résultat',
@@ -418,4 +418,4 @@ const Map<String, String> kStringsFr = {
   'method_isna': 'ISNA — Amérique du Nord',
   'method_france': 'France 15°',
   'method_custom': 'Personnalisé',
-;
+};

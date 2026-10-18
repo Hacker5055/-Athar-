@@ -406,7 +406,7 @@ const Map<String, String> kStringsAr = {
   'tracker_today_empty': 'ما سجّلت شيء اليوم — ابدأ بواحدة',
   'tracker_days': 'يوم',
 'more_asma': 'أسماء الله الحسنى',
-}
+  'adhkar_after_prayer': 'أذكار بعد الصلاة',
   'asma_search_hint': 'ابحث بالاسم أو المعنى',
   'asma_count': '٩٩ اسمًا',
   'asma_empty': 'لا شيء يطابق بحثك',
@@ -417,4 +417,4 @@ const Map<String, String> kStringsAr = {
   'method_isna': 'ISNA — أمريكا الشمالية',
   'method_france': 'فرنسا ١٥°',
   'method_custom': 'مخصّص',
-;
+};

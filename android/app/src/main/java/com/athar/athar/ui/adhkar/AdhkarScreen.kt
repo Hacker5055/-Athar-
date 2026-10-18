@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.athar.athar.adhkar.AdhkarProgressStore
+import com.athar.athar.adhkar.AdhkarSections
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.adhkar.AdhkarRepository
 import com.athar.athar.adhkar.AdhkarSection
@@ -105,8 +106,42 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
                 }
             }
 
+            // ⚠️ أذكار بعد الصلاة مثبّتة في الأعلى: تُقرأ خمس مرات يوميًّا،
+            // ف tapping إضافي في كل مرة عبء متكرّر لا مرة واحدة.
+            val pinned = remember(q, list) {
+                if (q.isEmpty()) AdhkarSections.postPrayer(list) else null
+            }
+
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(filtered) { section ->
+                if (pinned != null) {
+                    item {
+                        TextButton(
+                            onClick = { openSection = pinned },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp),
+                            ) {
+                                Text(
+                                    text = s.adhkarAfterPrayer,
+                                    fontSize = 17.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Start,
+                                )
+                                Text(
+                                    text = s.tArgs("adhkar_items_count", "n" to pinned.items.size),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Start,
+                                )
+                            }
+                        }
+                        HorizontalDivider()
+                    }
+                }
+                items(filtered.filter { it.title != pinned?.title }) { section ->
                     TextButton(
                         onClick = { openSection = section },
                         modifier = Modifier.fillMaxWidth(),
