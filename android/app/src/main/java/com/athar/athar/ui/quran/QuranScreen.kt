@@ -42,9 +42,9 @@ import com.athar.athar.quran.QuranSearch
 import com.athar.athar.quran.Surah
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-com.athar.athar.quran.QuranTranslationRepository
-com.athar.athar.quran.QuranTranslation
-androidx.compose.material3.FilterChip
+import com.athar.athar.quran.QuranTranslationRepository
+import com.athar.athar.quran.QuranTranslation
+import androidx.compose.material3.FilterChip
 
 @Composable
 fun QuranScreen(modifier: Modifier = Modifier) {
