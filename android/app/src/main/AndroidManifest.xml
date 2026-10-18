@@ -13,6 +13,13 @@
          فروق المواقيت بينهما دون الدقيقة على مسافة مدينة، ولا نطلب
          الموقع في الخلفية أبدًا. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- الإشعارات: POST_NOTIFICATIONS إذن وقت التشغيل على API 33+،
+         وSCHEDULE_EXACT_ALARM يلزم لضبط الأذان في ثانيته بالضبط. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- ⚠️ بلا مستقبل الإقلاع يصمت التطبيق بعد أول إعادة تشغيل -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <!-- اهتزازة خفيفة عند إتمام عدد الذكر (docs/02 · C4) -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -34,5 +41,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+            <receiver android:name=".notification.AlertReceiver" android:exported="false" />
+
+        <receiver
+            android:name=".notification.BootReceiver"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
