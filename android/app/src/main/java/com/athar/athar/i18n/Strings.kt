@@ -418,6 +418,17 @@ class Strings(val locale: AppLocale) {
             "quran_audio_credit" to "التلاوة: islamic.network (alquran.cloud) — حق التلاوة لقارئها.",
             "quran_audio_error" to "تعذّر تشغيل التلاوة — تحقّق من الاتصال.",
             "quran_audio_loading" to "جارٍ تحميل التلاوة…",
+            "theme_mode" to "الثيم",
+            "theme_system" to "تلقائي (حسب النظام)",
+            "font_small" to "صغير",
+            "font_normal" to "متوسط",
+            "font_large" to "كبير",
+            "font_huge" to "كبير جدًا",
+            "reader_theme" to "ثيم القراءة",
+            "reader_normal" to "عادي",
+            "reader_night" to "ليلي",
+            "reader_sepia" to "سيبيا",
+            "font_preview" to "هذا نموذج لحجم الخط",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -810,6 +821,17 @@ class Strings(val locale: AppLocale) {
             "quran_audio_credit" to "Recitation: islamic.network (alquran.cloud) — rights belong to each reciter.",
             "quran_audio_error" to "Could not play the recitation — check your connection.",
             "quran_audio_loading" to "Loading recitation…",
+            "theme_mode" to "Theme",
+            "theme_system" to "Automatic (follow system)",
+            "font_small" to "Small",
+            "font_normal" to "Normal",
+            "font_large" to "Large",
+            "font_huge" to "Very large",
+            "reader_theme" to "Reading theme",
+            "reader_normal" to "Normal",
+            "reader_night" to "Night",
+            "reader_sepia" to "Sepia",
+            "font_preview" to "This is a preview of the font size",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1202,6 +1224,17 @@ class Strings(val locale: AppLocale) {
             "quran_audio_credit" to "Récitation : islamic.network (alquran.cloud) — les droits appartiennent à chaque récitateur.",
             "quran_audio_error" to "Lecture impossible — vérifiez votre connexion.",
             "quran_audio_loading" to "Chargement de la récitation…",
+            "theme_mode" to "Thème",
+            "theme_system" to "Automatique (système)",
+            "font_small" to "Petite",
+            "font_normal" to "Moyenne",
+            "font_large" to "Grande",
+            "font_huge" to "Très grande",
+            "reader_theme" to "Thème de lecture",
+            "reader_normal" to "Normal",
+            "reader_night" to "Nuit",
+            "reader_sepia" to "Sépia",
+            "font_preview" to "Aperçu de la taille du texte",
         )
     }
 
@@ -1599,4 +1632,15 @@ class Strings(val locale: AppLocale) {
     val quranAudioCredit: String get() = t("quran_audio_credit")
     val quranAudioError: String get() = t("quran_audio_error")
     val quranAudioLoading: String get() = t("quran_audio_loading")
+    val themeMode: String get() = t("theme_mode")
+    val themeSystem: String get() = t("theme_system")
+    val fontSmall: String get() = t("font_small")
+    val fontNormal: String get() = t("font_normal")
+    val fontLarge: String get() = t("font_large")
+    val fontHuge: String get() = t("font_huge")
+    val readerTheme: String get() = t("reader_theme")
+    val readerNormal: String get() = t("reader_normal")
+    val readerNight: String get() = t("reader_night")
+    val readerSepia: String get() = t("reader_sepia")
+    val fontPreview: String get() = t("font_preview")
 }

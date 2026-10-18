@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.ui.athary.TrackerScreen
+import com.athar.athar.ui.theme.Appearance
 import com.athar.athar.ui.asma.AsmaScreen
 
 /// تبويب «المزيد» — المدخل إلى ما لا يحتاج تبويبًا خاصًا به
@@ -31,7 +32,9 @@ import com.athar.athar.ui.asma.AsmaScreen
 @Composable
 fun MoreScreen(
     locale: AppLocale,
+    appearance: Appearance,
     onLocaleChange: (AppLocale) -> Unit,
+    onAppearanceChange: (Appearance) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val s = LocalStrings.current
@@ -78,6 +81,11 @@ fun MoreScreen(
                 onClick = { section = 2 },
                 label = { Text(s.moreAsma) },
             )
+            FilterChip(
+                selected = section == 3,
+                onClick = { section = 3 },
+                label = { Text(s.appearance) },
+            )
         }
 
         // ⚠️ `weight` يعطي الشاشة الداخلية ارتفاعًا محدودًا فتعمل
@@ -90,7 +98,11 @@ fun MoreScreen(
             when (section) {
                 0 -> TrackerScreen()
                 1 -> SettingsScreen()
-                else -> AsmaScreen()
+                2 -> AsmaScreen()
+                else -> AppearanceScreen(
+                    appearance = appearance,
+                    onChange = onAppearanceChange,
+                )
             }
         }
     }

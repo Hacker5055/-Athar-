@@ -15,6 +15,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -25,7 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.i18n.LocaleStore
@@ -37,6 +40,9 @@ import com.athar.athar.ui.prayer.PrayerScreen
 import com.athar.athar.ui.qibla.QiblaScreen
 import com.athar.athar.ui.quran.QuranScreen
 import com.athar.athar.ui.settings.MoreScreen
+import com.athar.athar.ui.theme.Appearance
+import com.athar.athar.ui.theme.AppearanceStore
+import com.athar.athar.ui.theme.AtharTheme
 
 private val kTabIcons: List<ImageVector> = listOf(
     Icons.Filled.Home,
@@ -52,25 +58,48 @@ private val kTabIcons: List<ImageVector> = listOf(
 fun AtharApp() {
     val context = LocalContext.current
     var locale by remember { mutableStateOf(LocaleStore.load(context)) }
+    var appearance by remember { mutableStateOf(AppearanceStore.load(context)) }
 
     ProvideStrings(locale) {
-        AppShell(
-            locale = locale,
-            onLocaleChange = { next ->
-                locale = next
-                LocaleStore.save(context, next)
-                // ⚠️ نصوص التنبيهات المجدولة مخزّنة في النظام، فتبقى
-                // بلغتها القديمة إن لم نُجدولها من جديد
-                NotificationScheduler.rescheduleFromStored(context)
-            },
-        )
+        // ⚠️ الثيم هنا لا في MainActivity: اللغة والمظهر يُقرآن من
+        // التخزين عند التشغيل لا مرة واحدة عند إنشاء النشاط، وحتى
+        // يتغيّرا فورًا بلا إعادة إنشاء.
+        AtharTheme(appearance) {
+            // ⚠️ نضاعف `fontScale` لا نستبدله: إعداد الخط في أندرويد
+            // نفسه يبقى محترمًا، ومقاس التطبيق يُضاف إليه. من ضبط
+            // خطّ النظام كبيرًا ثم اختار «صغير» في أثر يرى نصًّا
+            // كبيرًا قليلًا لا صغيرًا مطلقًا.
+            val density = LocalDensity.current
+            val scaled = remember(density, appearance.fontScale) {
+                Density(density.density, density.fontScale * appearance.fontScale.scale)
+            }
+            CompositionLocalProvider(LocalDensity provides scaled) {
+                AppShell(
+                    locale = locale,
+                    appearance = appearance,
+                    onLocaleChange = { next ->
+                        locale = next
+                        LocaleStore.save(context, next)
+                        // ⚠️ نصوص التنبيهات المجدولة مخزّنة في النظام، فتبقى
+                        // بلغتها القديمة إن لم نُجدولها من جديد
+                        NotificationScheduler.rescheduleFromStored(context)
+                    },
+                    onAppearanceChange = { next ->
+                        appearance = next
+                        AppearanceStore.save(context, next)
+                    },
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun AppShell(
     locale: AppLocale,
+    appearance: Appearance,
     onLocaleChange: (AppLocale) -> Unit,
+    onAppearanceChange: (Appearance) -> Unit,
 ) {
     val s = LocalStrings.current
     val context = LocalContext.current
@@ -108,7 +137,10 @@ private fun AppShell(
                 },
                 modifier = Modifier.padding(innerPadding),
             )
-            1 -> QuranScreen(modifier = Modifier.padding(innerPadding))
+            1 -> QuranScreen(
+                readerTheme = appearance.readerTheme,
+                modifier = Modifier.padding(innerPadding),
+            )
             2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
             3 -> QiblaScreen(
                 latitude = settings.latitude,
@@ -117,7 +149,9 @@ private fun AppShell(
             )
             4 -> MoreScreen(
                 locale = locale,
+                appearance = appearance,
                 onLocaleChange = onLocaleChange,
+                onAppearanceChange = onAppearanceChange,
                 modifier = Modifier.padding(innerPadding),
             )
             else -> Box(

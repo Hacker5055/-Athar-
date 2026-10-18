@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -58,9 +59,14 @@ import com.athar.athar.quran.QuranAudioController
 import com.athar.athar.quran.QuranAudioState
 import com.athar.athar.quran.Reciter
 import com.athar.athar.quran.Reciters
+import com.athar.athar.ui.theme.ReaderPalette
+import com.athar.athar.ui.theme.ReaderTheme
 
 @Composable
-fun QuranScreen(modifier: Modifier = Modifier) {
+fun QuranScreen(
+    readerTheme: ReaderTheme = ReaderTheme.NORMAL,
+    modifier: Modifier = Modifier,
+) {
     val s = LocalStrings.current
     val context = LocalContext.current
     var surahs by remember { mutableStateOf<List<Surah>?>(null) }
@@ -143,6 +149,7 @@ fun QuranScreen(modifier: Modifier = Modifier) {
                 onOpened = { openAyah = null },
                 reciter = reciter,
                 onReciterChange = { reciter = it },
+                readerTheme = readerTheme,
                 audioState = audioState,
                 onPlayToggle = {
                     opened?.let { audio.toggle(reciter, it.id, it.ayahCount) }
@@ -333,12 +340,17 @@ private fun ReaderView(
     onOpened: () -> Unit,
     reciter: Reciter,
     onReciterChange: (Reciter) -> Unit,
+    readerTheme: ReaderTheme,
     audioState: QuranAudioState,
     onPlayToggle: () -> Unit,
     onStop: () -> Unit,
 ) {
     val s = LocalStrings.current
     val listState = rememberLazyListState()
+    // ⚠️ ثيم القراءة يخصّ هذه الشاشة وحدها: النصّ يُقرأ طويلًا وفي
+    // ظروف إضاءة غير بقية التطبيق، فلو ألزمناه بالثيم العام لأجبرنا
+    // من يقرأ ليلًا على شاشة بيضاء أو العكس.
+    val palette = ReaderPalette.of(readerTheme)
 
     // ⚠️ الانتقال إلى جزء يفتح السورة **ويمرّر** إلى آيته: فتح أولها
     // وحده يجعل «الانتقال إلى الجزء ٣٠» يبدأ من أول سورة النبأ فقط،
@@ -356,7 +368,11 @@ private fun ReaderView(
     val juz = QuranMeta.juzOf(surah.id, currentAyah)
     val page = QuranMeta.pageOf(surah.id, currentAyah)
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(if (palette.isCustom) Modifier.background(palette.background) else Modifier),
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -371,7 +387,11 @@ private fun ReaderView(
                 Text(
                     text = "${s.quranJuz} $juz · ${s.quranPage} $page",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (palette.isCustom) {
+                        palette.onBackground.copy(alpha = 0.72f)
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                 )
             }
         }
@@ -462,7 +482,15 @@ private fun ReaderView(
                 CircularProgressIndicator(modifier = Modifier.size(20.dp))
             }
         }
-        HorizontalDivider()
+        HorizontalDivider(
+            // ⚠️ نمرّر اللون صريحًا: الفاصل بلون الثيم العام على خلفية
+            // سيبيا يظهر خطًّا رماديًّا غريبًا، وعلى الليلي يكاد يضيع.
+            color = if (palette.isCustom) {
+                palette.divider
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            },
+        )
 
         LazyColumn(
             state = listState,
@@ -483,6 +511,11 @@ private fun ReaderView(
                     ?.let { meaning ->
                         Text(
                             text = meaning,
+                            color = if (palette.isCustom) {
+                                palette.onBackground.copy(alpha = 0.72f)
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
                             fontSize = 15.sp,
                             lineHeight = 24.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
