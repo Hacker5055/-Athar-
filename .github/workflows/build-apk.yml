@@ -31,11 +31,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ⚠️ لا نثبّت رقم إصدار: حزم pub.dev اليوم (drift و drift_dev
+      # 2.35) تتطلّب Dart ≥3.10، وتثبيت 3.24.5 (= Dart 3.5) يجعل
+      # `flutter pub get` يفشل في حلّ الإصدارات. نأخذ أحدث stable.
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
           channel: 'stable'
           cache: true
+
+      - name: إصدارات الأدوات
+        run: |
+          flutter --version
+          dart --version
 
       - name: تثبيت الحزم
         run: flutter pub get
@@ -65,9 +72,11 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
+      # ⚠️ لا نثبّت رقم إصدار: حزم pub.dev اليوم (drift و drift_dev
+      # 2.35) تتطلّب Dart ≥3.10، وتثبيت 3.24.5 (= Dart 3.5) يجعل
+      # `flutter pub get` يفشل في حلّ الإصدارات. نأخذ أحدث stable.
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
           channel: 'stable'
           cache: true
 

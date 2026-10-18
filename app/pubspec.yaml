@@ -86,7 +86,9 @@ dev_dependencies:
   # ويُولّد بهذين الحزمتين. شغّل:
   #   dart run build_runner build --delete-conflicting-outputs
   build_runner: ^2.4.11
-  drift_dev: ^2.35.2
+  # ⚠️ ٢.٣٥.١ لا ٢.٣٥.٢: أحدث إصدار منشور على pub.dev هو ٢.٣٥.١.
+  # drift_dev لا يمشي حتمًا في نفس رقم drift — لا تنسخ الرقم بينهما.
+  drift_dev: ^2.35.1
 
 flutter:
   uses-material-design: true
