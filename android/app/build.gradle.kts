@@ -36,6 +36,9 @@ android {
             storePass != null && alias != null && keyPass != null
         ) {
             create("release") {
+                // ⚠️ يُطبع في سجل CI: لو أخطأ المسار رأينا السبب بدل
+                // أن نرى APK غير موقّع بلا تفسير.
+                println("🔐 توقيع الإصدار من: ${file(keystore).absolutePath}")
                 storeFile = file(keystore)
                 storePassword = storePass
                 keyAlias = alias

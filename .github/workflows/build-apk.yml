@@ -107,7 +107,7 @@ jobs:
             echo "🔐 أسرار توقيع رسمية موجودة"
             echo "$SECRET_KEYSTORE" | base64 -d > app/athar.jks
             {
-              echo "ATHAR_KEYSTORE=app/athar.jks"
+              echo "ATHAR_KEYSTORE=$GITHUB_WORKSPACE/android/app/athar.jks"
               echo "ATHAR_STORE_PASSWORD=$SECRET_STORE_PASSWORD"
               echo "ATHAR_KEY_ALIAS=$SECRET_ALIAS"
               echo "ATHAR_KEY_PASSWORD=$SECRET_KEY_PASSWORD"
@@ -121,7 +121,7 @@ jobs:
               -validity 10000 -alias athar -storepass android -keypass android \
               -dname "CN=Athar, OU=Athar, O=Athar, L=Cairo, S=Cairo, C=EG"
             {
-              echo "ATHAR_KEYSTORE=app/athar.jks"
+              echo "ATHAR_KEYSTORE=$GITHUB_WORKSPACE/android/app/athar.jks"
               echo "ATHAR_STORE_PASSWORD=android"
               echo "ATHAR_KEY_ALIAS=athar"
               echo "ATHAR_KEY_PASSWORD=android"
