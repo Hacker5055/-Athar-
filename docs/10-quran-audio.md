@@ -129,14 +129,28 @@
 
 ```
 app/lib/features/quran/
-├─ domain/audio/
-│  ├─ reciter.dart          # Reciter + AudioLicenseStatus + نص النسبة
-│  └─ audio_license.dart    # السياسة المحضة: canOffer / canDownload / takedown
+├─ domain/audio/              ← كله محض وقابل للاختبار بلا محاكي
+│  ├─ reciter.dart             # Reciter + AudioLicenseStatus + نص النسبة
+│  ├─ audio_license.dart       # السياسة: canOffer / canDownload / takedown
+│  ├─ audio_track.dart         # AudioTrack + QuranAudioPlan
+│  ├─ quran_audio_source.dart  # أنماط العناوين + QuranAyahIndex
+│  └─ quran_audio_plan.dart    # المخطّط: سورة/آية/نطاق → مسارات
 └─ data/audio/
-   ├─ quran_audio_source.dart  # أنماط العناوين + QuranAyahIndex
-   └─ reciter_catalog.dart     # الكتالوج (٥) + offerableReciters
-app/test/features/quran/audio_license_test.dart
+   ├─ reciter_catalog.dart      # الكتالوج (٥) + offerableReciters
+   ├─ audio_store.dart          # التخزين + التنزيل (dio)
+   └─ quran_audio_handler.dart  # just_audio + audio_service (الخلفية)
+app/test/features/quran/{audio_license_test,quran_audio_plan_test}.dart
 ```
+
+### ملاحظة معمارية: `quran_audio_source.dart` في domain لا data
+أنماط العناوين وترقيم الآيات **حقائق ثابتة بلا إدخال/إخراج**، والنطاق
+يحتاجها لحساب المسارات. وضعها في `data/` كان سيُجبر النطاق على استيراد
+طبقة البيانات — وهو انتهاك للطبقات اكتشفناه قبل أن يستفحل.
+
+### المانيفست (أندرويد)
+راجع `app/native/android/AndroidManifest.snippet.xml`. أهم سطر:
+**`INTERNET`** — Flutter يضيفها تلقائيًا في بناء Debug و**لا يفعل في
+Release**. بدونها يعمل التطبيق محليًا ثم يموت عند أول بثّ.
 
 ---
 

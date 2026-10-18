@@ -420,4 +420,30 @@ class Strings {
   String get quranResultsCount => t('quran_results_count');
   String get quranNoAyahs => t('quran_no_ayahs');
 
+  // ── الأسبوع ٧: التلاوة الصوتية ────────────────────────
+  String get audioListen => t('audio_listen');
+  String get audioStop => t('audio_stop');
+  String get audioReciter => t('audio_reciter');
+  String get audioChooseReciter => t('audio_choose_reciter');
+  String get audioReciterDefault => t('audio_reciter_default');
+  String get audioDownload => t('audio_download');
+  String get audioDownloadSurah => t('audio_download_surah');
+  String get audioDownloadJuz => t('audio_download_juz');
+  String get audioDownloadAll => t('audio_download_all');
+  String get audioDownloaded => t('audio_downloaded');
+  String get audioDeleteDownload => t('audio_delete_download');
+  String get audioDownloading => t('audio_downloading');
+  String get audioDownloadProgress => t('audio_download_progress');
+  String get audioSizeEstimate => t('audio_size_estimate');
+  String get audioNeedsInternet => t('audio_needs_internet');
+  String get audioPlaybackFailed => t('audio_playback_failed');
+  String get audioSpeed => t('audio_speed');
+  String get audioRepeatAyah => t('audio_repeat_ayah');
+  String get audioSources => t('audio_sources');
+  String get audioRightsNote => t('audio_rights_note');
+  String get audioLicensedNoncommercial => t('audio_licensed_noncommercial');
+  String get audioNoBundledAudio => t('audio_no_bundled_audio');
+  String get audioCancel => t('audio_cancel');
+  String get audioDeleteConfirm => t('audio_delete_confirm');
+  String get audioStorageUsed => t('audio_storage_used');
 }

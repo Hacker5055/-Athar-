@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:athar/features/quran/data/audio/quran_audio_source.dart';
+import 'package:athar/features/quran/domain/audio/quran_audio_source.dart';
 import 'package:athar/features/quran/data/audio/reciter_catalog.dart';
 import 'package:athar/features/quran/domain/audio/audio_license.dart';
 import 'package:athar/features/quran/domain/audio/reciter.dart';
