@@ -46,6 +46,14 @@ dependencies {
     // صغيرة فقط: Home و Star تعمل، أما MenuBook و Explore و MoreHoriz
     // ففي `extended` وحدها. نستخدم extended الآن ونقلم الحجم لاحقًا.
     implementation("androidx.compose.material:material-icons-extended")
+
+    // ── المواقيت ──────────────────────────────────────────
+    // مكتبة Adhan الرسمية (نفس خوارزمية adhan_dart). مكتبة Java نقية
+    // بلا اعتماد على أندرويد — لذا تُختبر على JVM بلا محاكي.
+    implementation("com.batoulapps.adhan:adhan:1.2.1")
+
+    // ⚠️ اختبارات على JVM: تتحقق من صحة المواقيت بلا جهاز
+    testImplementation("junit:junit:4.13.2")
     implementation("androidx.navigation:navigation-compose:2.8.5")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

@@ -58,18 +58,20 @@ jobs:
       - name: صلاحيات التنفيذ
         run: chmod +x gradlew
 
-      - name: APK تصحيح
+      - name: اختبارات + APK تصحيح
         id: debug_apk
         continue-on-error: true
         run: |
           set -o pipefail
-          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle-debug.log
+          # ⚠️ `test` قبل البناء: اختبارات JVM تتحقق من **صحة** المواقيت
+          # بلا محاكي. البناء وحده يثبت أن الكود يُترجم لا أنه صحيح.
+          ./gradlew test assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle-debug.log
 
       - name: ⚠ تجهيز ملخّص الخطأ
         if: steps.debug_apk.outcome == 'failure'
         run: |
           {
-            echo "## ❌ فشل بناء APK (تصحيح)"
+            echo "## ❌ فشل الاختبارات أو البناء"
             echo
             echo "run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             echo

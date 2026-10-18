@@ -22,6 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.athar.athar.prayer.PrayerSettings
+import com.athar.athar.ui.prayer.PrayerScreen
+import com.athar.athar.ui.qibla.QiblaScreen
 
 private data class TabSpec(val icon: ImageVector, val label: String)
 
@@ -33,14 +36,12 @@ private val kTabs = listOf(
     TabSpec(Icons.Filled.MoreHoriz, "المزيد"),
 )
 
-/// الهيكل الأساسي: خمس تبويبات (docs/04) — المحتوى يأتي تدريجيًا.
-///
-/// ⚠️ هذه الشاشة قصدُها أن تكون **أول APK قابل للتثبيت**، لا الواجهة
-/// النهائية. الغرض أن نملك بناءً أخضر من اليوم الأول بدل سبعة أسابيع
-/// بلا مترجم.
+/// الهيكل: خمس تبويبات. المواقيت على «الرئيسية» لأنها أكثر ما يُفتح
+/// يوميًا (قرار docs/02).
 @Composable
 fun AtharApp() {
     var selected by rememberSaveable { mutableIntStateOf(0) }
+    val settings = PrayerSettings()
 
     Scaffold(
         bottomBar = {
@@ -57,11 +58,19 @@ fun AtharApp() {
             }
         },
     ) { innerPadding ->
-        Box(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(text = kTabs[selected].label)
+        when (selected) {
+            0 -> PrayerScreen(modifier = Modifier.padding(innerPadding))
+            3 -> QiblaScreen(
+                latitude = settings.latitude,
+                longitude = settings.longitude,
+                modifier = Modifier.padding(innerPadding),
+            )
+            else -> Box(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = kTabs[selected].label)
+            }
         }
     }
 }
