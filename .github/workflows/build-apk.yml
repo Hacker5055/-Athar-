@@ -19,6 +19,14 @@ on:
   pull_request:
   workflow_dispatch:
 
+# ⚠️ بدون هذا، GITHUB_TOKEN قد يكون للقراءة فقط، فيفشل التعليق على
+# الـ PR ودفع فرع ci-logs **بصمت** — وهو ما حدث مرتين.
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: write
+
 concurrency:
   group: android-apk-${{ github.ref }}
   cancel-in-progress: true
@@ -57,6 +65,33 @@ jobs:
           set -o pipefail
           ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle-debug.log
 
+      - name: ⚠ تجهيز ملخّص الخطأ
+        if: steps.debug_apk.outcome == 'failure'
+        run: |
+          {
+            echo "## ❌ فشل بناء APK (تصحيح)"
+            echo
+            echo "run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo
+            echo '```'
+            grep -E 'e: |error:|FAILURE:|What went wrong|Could not|Cannot|Unresolved|Exception|Caused by|Execution failed|not found|Failed' gradle-debug.log | head -60
+            echo '```'
+          } > /tmp/why.md
+          echo "--- حجم اللوج: $(wc -c < gradle-debug.log) بايت ---"
+          wc -l /tmp/why.md
+
+      - name: ⚠ نشر سبب الفشل تعليقًا على الـ PR
+        if: steps.debug_apk.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
+          [ -z "$PR" ] && PR=1
+          echo "الـ PR المستهدف: #$PR"
+          # بلا || true: نريد الفشل ظاهرًا لا مكتومًا
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" -f body=@/tmp/why.md
+          echo "✅ نُشر التعليق"
+
       - name: حفظ اللوج كـ artifact
         if: steps.debug_apk.outcome == 'failure'
         uses: actions/upload-artifact@v4
@@ -66,47 +101,6 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-      # ⚠️ نقرأ السبب هنا لا في لوج GitHub: النطاق محجوب عن بيئة
-      # التطوير. gh CLI يحلّ رقم الـ PR بنفسه (بحث REST بـ head فشل)،
-      # وإن لم يوجد PR ننشئ Issue.
-      - name: ⚠ نشر سبب الفشل
-        if: steps.debug_apk.outcome == 'failure'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: ${{ github.ref_name }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          {
-            echo "## ❌ فشل بناء APK (تصحيح)"
-            echo
-            echo "run: $RUN_URL"
-            echo
-            echo '```'
-            grep -E 'e: |error:|FAILURE:|What went wrong|Could not|Cannot|Unresolved|Exception|Caused by|Execution failed' gradle-debug.log \
-              | head -60 || echo '(لم يطابق شيء — آخر ٦٠ سطر)'
-            echo '```'
-            echo
-            echo '<details><summary>آخر ٨٠ سطر خام</summary>'
-            echo
-            echo '```'
-            tail -80 gradle-debug.log
-            echo '```'
-            echo '</details>'
-          } > /tmp/why.md
-
-          PR=$(gh pr list --state open --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || true)
-          if [ -n "$PR" ]; then
-            gh pr comment "$PR" --body-file /tmp/why.md
-            echo "✅ نُشر على PR #$PR"
-          else
-            gh issue create --title "❌ فشل بناء APK — $BRANCH" --body-file /tmp/why.md --label bug 2>/dev/null \
-              || echo "⚠️ تعذّر النشر: لا PR ولا صلاحية Issue"
-          fi
-
-      # ⚠️ القناة المضمونة: لوجات GitHub محجوبة عن بيئة التطوير،
-      # والتعليق على الـ PR لم ينجح مرتين بلا سبب نعرفه. فندفع اللوج
-      # إلى فرع `ci-logs` ونقرأه لاحقًا بـ:
-      #   gh api repos/.../contents/android/logs/LATEST.log?ref=ci-logs
       - name: ⚠ دفع اللوج إلى فرع ci-logs
         if: steps.debug_apk.outcome == 'failure'
         working-directory: ${{ github.workspace }}
@@ -117,13 +111,12 @@ jobs:
           git config user.name "ci-bot"
           git config user.email "ci-bot@users.noreply.github.com"
           git fetch origin ci-logs 2>/dev/null || true
-          git checkout -B ci-logs 2>/dev/null || git checkout ci-logs
+          git checkout -B ci-logs
           mkdir -p logs
           cp gradle-debug.log logs/LATEST.log
-          cp gradle-debug.log "logs/debug-${GITHUB_SHA::8}.log"
           git add -f logs
-          git commit -m "ci: لوج فشل بناء ${GITHUB_SHA::8}" 2>/dev/null || echo "لا جديد"
-          git push -f origin ci-logs 2>&1 | tail -3 || echo "⚠️ تعذّر الدفع"
+          git commit -m "ci: لوج فشل بناء ${GITHUB_SHA::8}" || echo "لا جديد للتثبيت"
+          git push origin ci-logs   # بلا كتم: نريد رؤية الفشل
 
       - name: إيقاف البناء عند الفشل
         if: steps.debug_apk.outcome == 'failure'
