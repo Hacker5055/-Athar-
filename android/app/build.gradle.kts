@@ -27,18 +27,24 @@ android {
     // معلومتان، فلا يحمي نسبة التحديث. لإصدار رسمي أضف أربعة أسرار:
     // ANDROID_KEYSTORE_BASE64 · ANDROID_KEYSTORE_PASSWORD ·
     // ANDROID_KEY_ALIAS · ANDROID_KEY_PASSWORD.
+    // ⚠️ تشخيص في السجل قبل أي قرار: حين يسقط التوقيع بصمت نرى أيّ
+    // متغيّر ناقص وأيّ مسار خاطئ، بدل APK غير موقّع بلا تفسير.
+    val keystore = System.getenv("ATHAR_KEYSTORE")
+    val storePass = System.getenv("ATHAR_STORE_PASSWORD")
+    val alias = System.getenv("ATHAR_KEY_ALIAS")
+    val keyPass = System.getenv("ATHAR_KEY_PASSWORD")
+    println(
+        "🔐 signing: keystore=$keystore exists=${keystore?.let { file(it).exists() } ?: false} " +
+            "storePass=${storePass != null} alias=$alias keyPass=${keyPass != null}",
+    )
+
     signingConfigs {
-        val keystore = System.getenv("ATHAR_KEYSTORE")
-        val storePass = System.getenv("ATHAR_STORE_PASSWORD")
-        val alias = System.getenv("ATHAR_KEY_ALIAS")
-        val keyPass = System.getenv("ATHAR_KEY_PASSWORD")
-        if (keystore != null && file(keystore).exists() &&
-            storePass != null && alias != null && keyPass != null
-        ) {
+        if (keystore != null && storePass != null && alias != null && keyPass != null) {
+            // ⚠️ متغيّر موجود والملف غائب = إعداد مكسور، لا «توقيع اختياري».
+            // نرمي استثناءً: البديل أن يخرج APK غير قابل للتثبيت ويبدو
+            // كل شيء ناجحًا.
+            require(file(keystore).exists()) { "مفتاح التوقيع غير موجود: ${file(keystore).absolutePath}" }
             create("release") {
-                // ⚠️ يُطبع في سجل CI: لو أخطأ المسار رأينا السبب بدل
-                // أن نرى APK غير موقّع بلا تفسير.
-                println("🔐 توقيع الإصدار من: ${file(keystore).absolutePath}")
                 storeFile = file(keystore)
                 storePassword = storePass
                 keyAlias = alias
