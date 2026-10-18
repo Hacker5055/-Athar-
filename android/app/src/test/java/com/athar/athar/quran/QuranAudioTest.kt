@@ -74,13 +74,60 @@ class QuranAudioTest {
 
     @Test
     fun differentRecitersGetTheirOwnBitrate() {
-        // ⚖️ الجودة من بيان المصدر لكل قارئ: المنشاوي الممجود ٦٤ لا ١٢٨
+        // ⚖️ الجودة **مقيسة** لا منقولة: المنشاوي الممجود يبثّ ٦٤ لا ١٢٨
         val mujawwad = Reciters.byId("ar.minshawimujawwad")!!
         assertEquals(64, mujawwad.bitrate)
+        assertEquals(64, Reciters.byId("ar.parhizgar")!!.bitrate)
+        assertEquals(128, Reciters.byId("ar.husary")!!.bitrate)
+    }
+
+    @Test
+    fun ayahModeRecitersBuildAyahUrls() {
+        // ⚠️ قارئ لا يبثّ السورة كاملة يُشغَّل آية آية، فالرابط يُبنى
+        // على مسار الآية لا مسار السورة — خلطهما يخرج ٤٠٣ صامتًا.
+        val husary = Reciters.byId("ar.husary")!!
+        assertEquals(ReciterMode.AYAH, husary.mode)
         assertEquals(
-            "https://cdn.islamic.network/quran/audio-surah/64/ar.minshawimujawwad/114.mp3",
-            QuranAudio.surahUrl(mujawwad, 114),
+            "https://cdn.islamic.network/quran/audio/128/ar.husary/1.mp3",
+            QuranAudio.ayahUrl(husary, 1, 1),
         )
+    }
+
+    @Test
+    fun surahModeRecitersBuildSurahUrls() {
+        val alafasy = Reciters.byId("ar.alafasy")!!
+        assertEquals(ReciterMode.SURAH, alafasy.mode)
+        assertEquals(
+            "https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/114.mp3",
+            QuranAudio.surahUrl(alafasy, 114),
+        )
+    }
+
+    /// ⚠️ الكتالوج ثمرة قياس لا نقل: كل جودة فيه ردّت صحيحًا في مسح
+    /// فعلي. هذا الاختبار يمنع العودة إلى «ما يقوله التوثيق».
+    @Test
+    fun everyReciterUsesAMeasuredBitrate() {
+        val measured = mapOf(
+            "ar.alafasy" to 128,
+            "ar.abdulbasitmujawwad" to 128,
+            "ar.husary" to 128,
+            "ar.minshawi" to 128,
+            "ar.hudhaify" to 128,
+            "ar.muhammadjibreel" to 128,
+            "ar.minshawimujawwad" to 64,
+            "ar.parhizgar" to 48,
+        )
+        assertEquals(measured.keys, Reciters.ALL.map { it.id }.toSet())
+        Reciters.ALL.forEach {
+            assertEquals(it.id, measured[it.id], it.bitrate)
+        }
+    }
+
+    @Test
+    fun bothModesAreRepresented() {
+        val modes = Reciters.ALL.map { it.mode }.toSet()
+        assertTrue("وضع السورة غائب", ReciterMode.SURAH in modes)
+        assertTrue("وضع الآية غائب", ReciterMode.AYAH in modes)
     }
 
     // ── الكتالوج ───────────────────────────────────────────
@@ -103,6 +150,7 @@ class QuranAudioTest {
     fun bitratesAreOnesTheCdnServes() {
         // الجودات التي يعلنها المصدر: 192, 128, 64, 48, 40, 32
         val allowed = setOf(192, 128, 64, 48, 40, 32)
+        // ⚠️ ٤٨ لازم: الحصري «معلّم» لا يبثّ إلا بها
         Reciters.ALL.forEach {
             assertTrue("جودة غير مدعومة: ${it.id} = ${it.bitrate}", it.bitrate in allowed)
         }

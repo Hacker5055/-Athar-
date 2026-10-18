@@ -144,7 +144,9 @@ fun QuranScreen(modifier: Modifier = Modifier) {
                 reciter = reciter,
                 onReciterChange = { reciter = it },
                 audioState = audioState,
-                onPlayToggle = { audio.toggle(reciter, opened!!.id) },
+                onPlayToggle = {
+                    opened?.let { audio.toggle(reciter, it.id, it.ayahCount) }
+                },
                 onStop = { audio.stop() },
             )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -188,6 +190,13 @@ fun QuranScreen(modifier: Modifier = Modifier) {
         }
     }
 }
+
+/// اسم القارئ متبوعًا برقم الآية إن كان يبثّ آية آية.
+///
+/// ⚠️ الرقم يظهر للمستخدم: من يتابع على مصحف يريد أن يعرف أين وصل،
+/// والتلاوة التي تبثّ آية آية بلا موضع تُفقده الصفحة.
+private fun label(reciter: Reciter, prefix: String, ayah: Int?): String =
+    if (ayah != null) "$prefix · آية $ayah" else prefix
 
 /// ثلاثون جزءًا في صفّ يمرّر أفقيًا.
 @Composable
@@ -430,11 +439,15 @@ private fun ReaderView(
                 Text(
                     // ⚠️ أثناء التشغيل نُظهر **اسم القارئ** لا «استماع
                     // السورة»: المستخدم يعرف أنه يستمع، المهم من يستمع.
+                    // ومع قارئ يبثّ آية آية نُظهر رقمها، فيعرف أين هو
+                    // في المصحف الذي يتابع عليه.
+                    // ⚠️ كل فرع على حدة: دمج فرعين في `when` يمنع
+                    // التحويل الذكي فلا تُقرأ `ayah` أصلاً.
                     text = when (audioState) {
                         is QuranAudioState.Loading -> s.quranAudioLoading
-                        is QuranAudioState.Playing -> reciter.nameAr
-                        is QuranAudioState.Paused -> s.quranResume
                         is QuranAudioState.Error -> s.quranAudioError
+                        is QuranAudioState.Paused -> label(reciter, s.quranResume, audioState.ayah)
+                        is QuranAudioState.Playing -> label(reciter, reciter.nameAr, audioState.ayah)
                         else -> reciter.nameAr
                     },
                     style = MaterialTheme.typography.bodySmall,
