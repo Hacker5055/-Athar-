@@ -1,0 +1,106 @@
+package com.athar.athar.notification
+
+import com.athar.athar.prayer.PrayerDay
+import com.athar.athar.prayer.PrayerSlot
+import java.time.DayOfWeek
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+
+/// تنبيه مجدول — **متى** فقط.
+///
+/// ⚠️ فصلنا «متى» (هنا، محض وقابل للاختبار بالكامل) عن «ماذا» (نصّ
+/// الإشعار وصوته، يبنيهما المجدول وقت التنفيذ). الفصل هو ما يجعل
+/// أصعب ما في الميزة — المنطق الزمني — قابلًا للاختبار على JVM.
+data class ScheduledAlert(
+    val id: Int,
+    val kind: AlertKind,
+    val at: Instant,
+    val prayer: PrayerSlot?,
+    val weekly: Boolean = false,
+    val reminderMinutes: Int = 0,
+) {
+    val isReminder: Boolean get() = kind == AlertKind.REMINDER
+}
+
+/// يبني خطة الجدولة من مواقيت الأيام القادمة + إعدادات المستخدم.
+///
+/// **محض تمامًا** — لا أندرويد ولا منصّة.
+object NotificationPlanner {
+
+    /// أسبوع كامل يكفي لأن إعادة الجدولة تحصل عند فتح التطبيق وعند أي
+    /// تغيير في الإعدادات، وفي الوقت نفسه يُبقي عدد الإشعارات المعلّقة
+    /// صغيرًا (النظام يحدّها بـ ٥٠٠).
+    const val DEFAULT_AHEAD_DAYS = 7
+
+    fun plan(
+        days: List<PrayerDay>,
+        settings: NotificationSettings,
+        now: Instant,
+    ): List<ScheduledAlert> {
+        if (!settings.masterEnabled) return emptyList()
+
+        val alerts = mutableListOf<ScheduledAlert>()
+
+        for (day in days) {
+            for ((slot, at) in day.ordered) {
+                val mode = settings.modeFor(slot)
+
+                // ١) أذان الصلاة — نتخطّى ما فات وقته
+                if (mode.isEnabled && !at.isBefore(now)) {
+                    alerts += ScheduledAlert(
+                        id = AlertId.encode(AlertKind.ATHAN, day.date, slot),
+                        kind = AlertKind.ATHAN,
+                        at = at,
+                        prayer = slot,
+                    )
+                }
+
+                // ٢) تذكير قبلها — لا تذكير لصلاة أوقف المستخدم أذانها
+                val reminder = settings.reminderFor(slot)
+                if (reminder > 0 && mode.isEnabled) {
+                    val reminderAt = at.minus(reminder.toLong(), ChronoUnit.MINUTES)
+                    if (!reminderAt.isBefore(now)) {
+                        alerts += ScheduledAlert(
+                            id = AlertId.encode(AlertKind.REMINDER, day.date, slot),
+                            kind = AlertKind.REMINDER,
+                            at = reminderAt,
+                            prayer = slot,
+                            reminderMinutes = reminder,
+                        )
+                    }
+                }
+            }
+        }
+
+        jumuahAlert(days, settings, now)?.let { alerts += it }
+        return alerts
+    }
+
+    /// أول جمعة قادمة داخل النطاق.
+    private fun jumuahAlert(
+        days: List<PrayerDay>,
+        settings: NotificationSettings,
+        now: Instant,
+    ): ScheduledAlert? {
+        if (!settings.jumuahReminder) return null
+
+        for (day in days) {
+            if (day.date.dayOfWeek != DayOfWeek.FRIDAY) continue
+
+            var at = day.dhuhr.minus(settings.jumuahMinutesBefore.toLong(), ChronoUnit.MINUTES)
+            // ⚠️ لو فات معادها، التكرار الأسبوعي سيوافق الجمعة القادمة
+            if (at.isBefore(now)) {
+                at = at.plus(7, ChronoUnit.DAYS)
+            }
+
+            return ScheduledAlert(
+                id = AlertId.encode(AlertKind.JUMUAH, day.date, PrayerSlot.DHUHR),
+                kind = AlertKind.JUMUAH,
+                at = at,
+                prayer = PrayerSlot.DHUHR,
+                weekly = true,
+            )
+        }
+        return null
+    }
+}
