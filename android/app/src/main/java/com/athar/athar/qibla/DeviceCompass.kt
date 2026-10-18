@@ -9,7 +9,6 @@ import android.hardware.SensorManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.math.toDegrees
 
 /// قراءة اتجاه الهاتف من المستشعرات.
 ///
@@ -100,7 +99,7 @@ class DeviceCompass(context: Context) : SensorEventListener {
     /// الانحراف لتصير من الشمال الجغرافي حيث تُقاس زاوية القبلة.
     private fun publish() {
         SensorManager.getOrientation(rotationMatrix, orientation)
-        val magnetic = QiblaMath.normalize(toDegrees(orientation[0].toDouble()))
+        val magnetic = QiblaMath.normalize(Math.toDegrees(orientation[0].toDouble()))
         _azimuth.value = QiblaMath.trueAzimuth(magnetic, declination.toDouble()).toFloat()
     }
 }
