@@ -3,3 +3,6 @@ build/
 local.properties
 .idea/
 *.jks
+
+# ⚠️ نص القرآن يُنزَّل وقت البناء في CI — لا يُرفع إلى git أبدًا
+/app/src/main/assets/quran/

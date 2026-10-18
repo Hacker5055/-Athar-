@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.athar.athar.prayer.PrayerSettings
 import com.athar.athar.ui.prayer.PrayerScreen
+import com.athar.athar.ui.quran.QuranScreen
 import com.athar.athar.ui.qibla.QiblaScreen
 
 private data class TabSpec(val icon: ImageVector, val label: String)
@@ -60,6 +61,7 @@ fun AtharApp() {
     ) { innerPadding ->
         when (selected) {
             0 -> PrayerScreen(modifier = Modifier.padding(innerPadding))
+            1 -> QuranScreen(modifier = Modifier.padding(innerPadding))
             3 -> QiblaScreen(
                 latitude = settings.latitude,
                 longitude = settings.longitude,

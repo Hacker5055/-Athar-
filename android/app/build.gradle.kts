@@ -54,6 +54,12 @@ dependencies {
 
     // ⚠️ اختبارات على JVM: تتحقق من صحة المواقيت بلا جهاز
     testImplementation("junit:junit:4.13.2")
+    // org.json مدمج في أندرويد لكنه غير متاح في اختبارات JVM
+    // (android.jar يعيد قيمًا افتراضية) — فنضيفه للاختبارات فقط
+    testImplementation("org.json:json:20240303")
+
+    // قراءة أصول القرآن بلا تعليق الواجهة
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("androidx.navigation:navigation-compose:2.8.5")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

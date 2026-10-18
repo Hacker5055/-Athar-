@@ -58,6 +58,25 @@ jobs:
       - name: صلاحيات التنفيذ
         run: chmod +x gradlew
 
+      # ⚠️ كيف نوفّق بين «النص ليس في git» و«أوفلاين أولًا»؟
+      # ننزّله **وقت البناء** في CI ونضعه في assets/، فيصير جوه الـ APK
+      # وبلا وجود في المستودع. المصدر: tanzil (CC BY 3.0).
+      - name: تنزيل نص القرآن (لا يُرفع إلى git)
+        run: |
+          mkdir -p app/src/main/assets/quran
+          BASE=https://raw.githubusercontent.com/risan/quran-json/main/data/tanzil
+          curl -fsSL "$BASE/uthmani.json"  -o app/src/main/assets/quran/uthmani.json
+          curl -fsSL "$BASE/chapters.json" -o app/src/main/assets/quran/chapters.json
+          # ⚠️ حارس: تنزيل ناقص يعني قرآنًا ناقصًا بلا رسالة خطأ واضحة
+          for f in uthmani chapters; do
+            size=$(wc -c < "app/src/main/assets/quran/$f.json")
+            echo "$f.json = $size بايت"
+            if [ "$size" -lt 50000 ]; then
+              echo "❌ $f.json صغير جدًا — فشل التنزيل"
+              exit 1
+            fi
+          done
+
       - name: اختبارات + APK تصحيح
         id: debug_apk
         continue-on-error: true
