@@ -394,4 +394,16 @@ const Map<String, String> kStringsFr = {
   'quran_load_failed': 'Échec du chargement du Coran',
   'quran_uthmani_source': 'Texte othmanien : {source}',
   'minutes_short': '{n} min',
+
+  // ── عبادات «أثري» ──
+  'habit_fajr': 'Fajr à l’heure',
+  'habit_five_prayers': 'Cinq prières',
+  'habit_quran': 'Part de Coran',
+  'habit_morning_adhkar': 'Invocations du matin',
+  'habit_evening_adhkar': 'Invocations du soir',
+  'habit_duha': 'Prière de Doha',
+  'habit_sadaqa': 'Aumône',
+  'habit_fasting': 'Jeûne',
+  'tracker_today_empty': 'Rien aujourd’hui — commencez par une',
+  'tracker_days': 'jours',
 };

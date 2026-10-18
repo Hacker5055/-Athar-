@@ -371,6 +371,16 @@ class Strings(val locale: AppLocale) {
             "quran_load_failed" to "تعذّر تحميل القرآن",
             "quran_uthmani_source" to "النص العثماني: {source}",
             "minutes_short" to "{n} د",
+            "habit_fajr" to "صلاة الفجر في وقتها",
+            "habit_five_prayers" to "الصلوات الخمس",
+            "habit_quran" to "ورد قرآني",
+            "habit_morning_adhkar" to "أذكار الصباح",
+            "habit_evening_adhkar" to "أذكار المساء",
+            "habit_duha" to "صلاة الضحى",
+            "habit_sadaqa" to "صدقة",
+            "habit_fasting" to "صيام",
+            "tracker_today_empty" to "ما سجّلت شيء اليوم — ابدأ بواحدة",
+            "tracker_days" to "يوم",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -716,6 +726,16 @@ class Strings(val locale: AppLocale) {
             "quran_load_failed" to "Failed to load the Quran",
             "quran_uthmani_source" to "Uthmani text: {source}",
             "minutes_short" to "{n} min",
+            "habit_fajr" to "Fajr on time",
+            "habit_five_prayers" to "Five daily prayers",
+            "habit_quran" to "Quran portion",
+            "habit_morning_adhkar" to "Morning adhkar",
+            "habit_evening_adhkar" to "Evening adhkar",
+            "habit_duha" to "Duha prayer",
+            "habit_sadaqa" to "Charity",
+            "habit_fasting" to "Fasting",
+            "tracker_today_empty" to "Nothing logged today — start with one",
+            "tracker_days" to "days",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1061,6 +1081,16 @@ class Strings(val locale: AppLocale) {
             "quran_load_failed" to "Échec du chargement du Coran",
             "quran_uthmani_source" to "Texte othmanien : {source}",
             "minutes_short" to "{n} min",
+            "habit_fajr" to "Fajr à l’heure",
+            "habit_five_prayers" to "Cinq prières",
+            "habit_quran" to "Part de Coran",
+            "habit_morning_adhkar" to "Invocations du matin",
+            "habit_evening_adhkar" to "Invocations du soir",
+            "habit_duha" to "Prière de Doha",
+            "habit_sadaqa" to "Aumône",
+            "habit_fasting" to "Jeûne",
+            "tracker_today_empty" to "Rien aujourd’hui — commencez par une",
+            "tracker_days" to "jours",
         )
     }
 
@@ -1411,4 +1441,14 @@ class Strings(val locale: AppLocale) {
     val quranLoadFailed: String get() = t("quran_load_failed")
     val quranUthmaniSource: String get() = t("quran_uthmani_source")
     val minutesShort: String get() = t("minutes_short")
+    val habitFajr: String get() = t("habit_fajr")
+    val habitFivePrayers: String get() = t("habit_five_prayers")
+    val habitQuran: String get() = t("habit_quran")
+    val habitMorningAdhkar: String get() = t("habit_morning_adhkar")
+    val habitEveningAdhkar: String get() = t("habit_evening_adhkar")
+    val habitDuha: String get() = t("habit_duha")
+    val habitSadaqa: String get() = t("habit_sadaqa")
+    val habitFasting: String get() = t("habit_fasting")
+    val trackerTodayEmpty: String get() = t("tracker_today_empty")
+    val trackerDays: String get() = t("tracker_days")
 }

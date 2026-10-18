@@ -394,4 +394,16 @@ const Map<String, String> kStringsEn = {
   'quran_load_failed': 'Failed to load the Quran',
   'quran_uthmani_source': 'Uthmani text: {source}',
   'minutes_short': '{n} min',
+
+  // ── عبادات «أثري» ──
+  'habit_fajr': 'Fajr on time',
+  'habit_five_prayers': 'Five daily prayers',
+  'habit_quran': 'Quran portion',
+  'habit_morning_adhkar': 'Morning adhkar',
+  'habit_evening_adhkar': 'Evening adhkar',
+  'habit_duha': 'Duha prayer',
+  'habit_sadaqa': 'Charity',
+  'habit_fasting': 'Fasting',
+  'tracker_today_empty': 'Nothing logged today — start with one',
+  'tracker_days': 'days',
 };

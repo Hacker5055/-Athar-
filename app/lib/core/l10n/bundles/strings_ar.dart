@@ -393,4 +393,16 @@ const Map<String, String> kStringsAr = {
   'quran_load_failed': 'تعذّر تحميل القرآن',
   'quran_uthmani_source': 'النص العثماني: {source}',
   'minutes_short': '{n} د',
+
+  // ── عبادات «أثري» ──
+  'habit_fajr': 'صلاة الفجر في وقتها',
+  'habit_five_prayers': 'الصلوات الخمس',
+  'habit_quran': 'ورد قرآني',
+  'habit_morning_adhkar': 'أذكار الصباح',
+  'habit_evening_adhkar': 'أذكار المساء',
+  'habit_duha': 'صلاة الضحى',
+  'habit_sadaqa': 'صدقة',
+  'habit_fasting': 'صيام',
+  'tracker_today_empty': 'ما سجّلت شيء اليوم — ابدأ بواحدة',
+  'tracker_days': 'يوم',
 };

@@ -69,11 +69,7 @@ private val kModes = listOf(
 )
 
 @Composable
-fun SettingsScreen(
-    locale: AppLocale,
-    onLocaleChange: (AppLocale) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun SettingsScreen(modifier: Modifier = Modifier) {
     val s = LocalStrings.current
     val context = LocalContext.current
     var settings by remember { mutableStateOf(NotificationSettingsStore.load(context)) }
@@ -106,51 +102,6 @@ fun SettingsScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 8.dp),
             )
-        }
-
-        item {
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(14.dp)) {
-                    Text(s.language, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-                    Text(
-                        s.chooseLanguage,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        AppLocale.entries.forEach { option ->
-                            FilterChip(
-                                selected = locale == option,
-                                onClick = { onLocaleChange(option) },
-                                label = { Text(option.nativeName) },
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        if (needsPermission) {
-            item {
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            s.notificationsPermissionNeeded,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Button(
-                            onClick = {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                    permissionLauncher.launch(
-                                        Manifest.permission.POST_NOTIFICATIONS,
-                                    )
-                                }
-                            },
-                            modifier = Modifier.padding(top = 8.dp),
-                        ) { Text(s.notificationsPermissionAction) }
-                    }
-                }
-            }
         }
 
         item {

@@ -36,7 +36,7 @@ import com.athar.athar.ui.adhkar.AdhkarScreen
 import com.athar.athar.ui.prayer.PrayerScreen
 import com.athar.athar.ui.qibla.QiblaScreen
 import com.athar.athar.ui.quran.QuranScreen
-import com.athar.athar.ui.settings.SettingsScreen
+import com.athar.athar.ui.settings.MoreScreen
 
 private val kTabIcons: List<ImageVector> = listOf(
     Icons.Filled.Home,
@@ -115,7 +115,7 @@ private fun AppShell(
                 longitude = settings.longitude,
                 modifier = Modifier.padding(innerPadding),
             )
-            4 -> SettingsScreen(
+            4 -> MoreScreen(
                 locale = locale,
                 onLocaleChange = onLocaleChange,
                 modifier = Modifier.padding(innerPadding),

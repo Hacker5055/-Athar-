@@ -1,0 +1,85 @@
+package com.athar.athar.athary
+
+import java.time.LocalDate
+
+/// العبادات اليومية الثمانية.
+///
+/// ⚠️ القائمة **ثابتة** عن قصد: التخصيص يفتح باب تصميم كبير (أهداف،
+/// أيقونات، ترتيب) وهو مؤجّل لما بعد الإطلاق.
+enum class HabitId(val stringKey: String) {
+    /// أصعب واحدة، وأكثر واحدة تكسر السلسلة
+    FAJR("habit_fajr"),
+    FIVE_PRAYERS("habit_five_prayers"),
+    QURAN("habit_quran"),
+    MORNING_ADHKAR("habit_morning_adhkar"),
+    EVENING_ADHKAR("habit_evening_adhkar"),
+    DUHA("habit_duha"),
+    SADAQA("habit_sadaqa"),
+    FASTING("habit_fasting"),
+    ;
+
+    /// ⚠️ معرّف ثابت لا يتغيّر مع إعادة التسمية — وإلا ضاع سجل المستخدم
+    val id: String get() = name
+
+    companion object {
+        fun fromId(id: String?): HabitId? =
+            if (id == null) null else entries.firstOrNull { it.id == id }
+    }
+}
+
+/// كثافة اليوم — لتلوين شبكة الثلاثين يومًا.
+///
+/// ⚠️ اللون **ليس** الإشارة الوحيدة أبدًا: الشبكة مصحوبة بعدّاد نصّي
+/// دائمًا، احترامًا لإمكانية الوصول (`docs/04` §أ).
+enum class DayLevel { NONE, LOW, MID, HIGH, FULL }
+
+/// يوم واحد في المتتبع.
+///
+/// ⚠️ **اليوم هنا يوم مدني محلي** (منتصف الليل لمنتصف الليل بتوقيت
+/// الجهاز)، لا اليوم العبادي الذي يبدأ من المغرب. تبسيط مقصود لـ v1:
+/// اليوم العبادي يفتح أسئلة صعبة (صيام، قيام، فجر قبل المغرب أم بعده؟).
+data class DailyRecord(
+    val day: LocalDate,
+    val done: Set<HabitId> = emptySet(),
+) {
+    val count: Int get() = done.size
+    val isEmpty: Boolean get() = done.isEmpty()
+    val key: String get() = dayKey(day)
+    val level: DayLevel get() = levelFor(count)
+
+    fun has(habit: HabitId): Boolean = habit in done
+
+    fun toggle(habit: HabitId): DailyRecord =
+        copy(done = if (habit in done) done - habit else done + habit)
+
+    companion object {
+        fun levelFor(count: Int): DayLevel = when (count) {
+            0 -> DayLevel.NONE
+            1, 2 -> DayLevel.LOW
+            3, 4 -> DayLevel.MID
+            5, 6 -> DayLevel.HIGH
+            else -> DayLevel.FULL
+        }
+    }
+}
+
+/// مفتاح اليوم `YYYY-MM-DD` — ثابت الطول، ويُرتّب معجميًا زمنيًا.
+fun dayKey(day: LocalDate): String = day.toString()
+
+/// اليوم السابق.
+///
+/// ⚠️ `LocalDate.minusDays(1)` يوم مدني صحيح، بخلاف طرح ٢٤ ساعة الذي
+/// يخطئ في أيام التوقيت الصيفي (٢٣ أو ٢٥ ساعة).
+fun previousDay(day: LocalDate): LocalDate = day.minusDays(1)
+
+/// فكّ `YYYY-MM-DD`. `null` إن كانت الصيغة خاطئة أو التاريخ غير موجود.
+fun dayFromKey(key: String): LocalDate? {
+    val parts = key.split('-')
+    if (parts.size != 3) return null
+    val year = parts[0].toIntOrNull() ?: return null
+    val month = parts[1].toIntOrNull() ?: return null
+    val dayOfMonth = parts[2].toIntOrNull() ?: return null
+    if (month !in 1..12 || dayOfMonth !in 1..31) return null
+    // ⚠️ ٢٠٢٦-٠٢-٣٠ يمرّ الفحص أعلاه وهو تاريخ غير موجود
+    return runCatching { LocalDate.of(year, month, dayOfMonth) }.getOrNull()
+}

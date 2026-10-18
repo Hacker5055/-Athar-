@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +36,7 @@ import com.athar.athar.quran.Ayah
 import com.athar.athar.quran.QuranRepository
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.quran.QuranSources
+import com.athar.athar.quran.QuranSearch
 import com.athar.athar.quran.Surah
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -47,6 +49,9 @@ fun QuranScreen(modifier: Modifier = Modifier) {
     var opened by remember { mutableStateOf<Surah?>(null) }
     var ayahs by remember { mutableStateOf<List<Ayah>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
+    var query by remember { mutableStateOf("") }
+    var results by remember { mutableStateOf<List<QuranSearch.Hit>>(emptyList()) }
+    var searching by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         runCatching {
@@ -59,6 +64,25 @@ fun QuranScreen(modifier: Modifier = Modifier) {
         runCatching {
             withContext(Dispatchers.IO) { QuranRepository(context).ayahsOf(target.id) }
         }.onSuccess { ayahs = it }.onFailure { error = it.message }
+    }
+
+    // ⚠️ البحث على `Dispatchers.IO`: ٦٢٣٦ آية، والنصّ ١٫٧ ميجابايت
+    LaunchedEffect(query, surahs) {
+        val list = surahs ?: return@LaunchedEffect
+        val needle = query.trim()
+        if (needle.isEmpty()) {
+            results = emptyList()
+            searching = false
+            return@LaunchedEffect
+        }
+        searching = true
+        val found = runCatching {
+            withContext(Dispatchers.IO) {
+                QuranSearch.search(needle, list) { QuranRepository(context).ayahsOf(it) }
+            }
+        }.getOrDefault(emptyList())
+        results = found
+        searching = false
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -74,7 +98,83 @@ fun QuranScreen(modifier: Modifier = Modifier) {
                 onBack = { opened = null },
             )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            else -> SurahList(surahs!!) { opened = it }
+            else -> Column(modifier = Modifier.fillMaxSize()) {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { query = it },
+                    label = { Text(s.quranSearchHint) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    singleLine = true,
+                )
+                Box(modifier = Modifier.weight(1f)) {
+                    if (query.isBlank()) {
+                        SurahList(surahs!!) { opened = it }
+                    } else {
+                        SearchResults(
+                            hits = results,
+                            searching = searching,
+                        ) { hit -> opened = surahs!!.firstOrNull { it.id == hit.ayah.surah } }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SearchResults(
+    hits: List<QuranSearch.Hit>,
+    searching: Boolean,
+    onOpen: (QuranSearch.Hit) -> Unit,
+) {
+    val s = LocalStrings.current
+    if (searching) {
+        CircularProgressIndicator(modifier = Modifier.padding(24.dp))
+        return
+    }
+    if (hits.isEmpty()) {
+        Text(
+            text = s.quranSearchEmpty,
+            modifier = Modifier.padding(24.dp),
+            textAlign = TextAlign.Center,
+        )
+        return
+    }
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        item {
+            Text(
+                text = s.tArgs("quran_results_count", "n" to hits.size),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+        }
+        items(hits) { hit ->
+            TextButton(onClick = { onOpen(hit) }, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text(hit.surahNameAr, style = MaterialTheme.typography.bodySmall)
+                        Text(
+                            "${hit.ayah.surah}:${hit.ayah.number}",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                    Text(
+                        // ⚠️ النص **كما هو** بلا أي تعديل — شرط الرخصة
+                        text = hit.ayah.text,
+                        fontSize = 18.sp,
+                        lineHeight = 30.sp,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
+            }
+            HorizontalDivider()
         }
     }
 }
