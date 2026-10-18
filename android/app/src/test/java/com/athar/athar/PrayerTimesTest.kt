@@ -24,6 +24,12 @@ class PrayerTimesTest {
     private val utcFmt: DateTimeFormatter =
         DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneOffset.UTC)
 
+    /// ⚠️ مكتبة Adhan تصفّر الثواني في `CalendarUtil.roundedMinute`
+    /// ولا تصفّر المللي ثانية، فتترك ضجيجًا تحت الثانية (رأيناه ١٨ms
+    /// بين نداءين متطابقين). المواقيت دقّةُها الدقيقة، فنقارن على
+    /// الدقيقة لا على النانو ثانية.
+    private fun Instant.toMinute(): Instant = truncatedTo(java.time.temporal.ChronoUnit.MINUTES)
+
     private fun minutesOf(day: PrayerDay): List<Int> =
         day.ordered.map { (_, time) ->
             val z = time.atZone(ZoneOffset.UTC)
@@ -107,12 +113,13 @@ class PrayerTimesTest {
             PrayerSettings(madhab = Madhab.HANAFI), date,
         )
 
-        assertEquals(shafi.fajr, hanafi.fajr)
-        assertEquals(shafi.dhuhr, hanafi.dhuhr)
-        assertEquals(shafi.maghrib, hanafi.maghrib)
+        assertEquals(shafi.fajr.toMinute(), hanafi.fajr.toMinute())
+        assertEquals(shafi.dhuhr.toMinute(), hanafi.dhuhr.toMinute())
+        assertEquals(shafi.maghrib.toMinute(), hanafi.maghrib.toMinute())
+        assertEquals(shafi.isha.toMinute(), hanafi.isha.toMinute())
         assertTrue(
             "العصر الحنفي يتأخر عن الشافعي (${shafi.asr} مقابل ${hanafi.asr})",
-            hanafi.asr.isAfter(shafi.asr),
+            hanafi.asr.toMinute().isAfter(shafi.asr.toMinute()),
         )
     }
 }
