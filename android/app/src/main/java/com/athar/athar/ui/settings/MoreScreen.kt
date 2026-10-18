@@ -3,8 +3,10 @@ package com.athar.athar.ui.settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -63,7 +65,12 @@ fun MoreScreen(
         HorizontalDivider()
 
         androidx.compose.foundation.layout.Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            // ⚠️ قابل للتمرير أفقيًا: خمس شرائح بثلاث لغات تتجاوز عرض
+            // الشاشة على الأجهزة الصغيرة، والقصّ الصامت أسوأ من التمرير.
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             FilterChip(
@@ -86,6 +93,11 @@ fun MoreScreen(
                 onClick = { section = 3 },
                 label = { Text(s.appearance) },
             )
+            FilterChip(
+                selected = section == 4,
+                onClick = { section = 4 },
+                label = { Text(s.sources) },
+            )
         }
 
         // ⚠️ `weight` يعطي الشاشة الداخلية ارتفاعًا محدودًا فتعمل
@@ -99,10 +111,11 @@ fun MoreScreen(
                 0 -> TrackerScreen()
                 1 -> SettingsScreen()
                 2 -> AsmaScreen()
-                else -> AppearanceScreen(
+                3 -> AppearanceScreen(
                     appearance = appearance,
                     onChange = onAppearanceChange,
                 )
+                else -> LicensesScreen()
             }
         }
     }
