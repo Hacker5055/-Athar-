@@ -128,6 +128,30 @@ jobs:
             } >> "$GITHUB_ENV"
           fi
 
+      - name: تحقّق من روابط التلاوة
+        # ⚠️ CI هي شبكتنا الوحيدة: الحقل المحجوب يمنعنا من الوصول إلى
+        # المصدر من هنا. فحص يقرأ الكتالوج من الكود ويتأكد أن كل قارئ
+        # يبثّ فعلًا — زرّ يعمل ولا يخرج صوتًا أسوأ من غيابه.
+        id: audio_links
+        run: |
+          python3 tool/check_audio_links.py 2>&1 | tee audio-links.log
+          if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+            echo "⟳ محاولة ثانية: قد تكون عطفة شبكة لا قارئًا مفقودًا"
+            sleep 10
+            python3 tool/check_audio_links.py 2>&1 | tee audio-links.log
+            if [ "${PIPESTATUS[0]}" -ne 0 ]; then exit 1; fi
+          fi
+
+      - name: نشر نتيجة فحص التلاوة
+        if: always() && steps.audio_links.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          jq -Rs '{body: ("### روابط التلاوة — قارئ لا يبثّ\n\n```\n" + . + "\n```")}' audio-links.log > /tmp/p.json
+          PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
+          [ -z "$PR" ] && PR=1
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --input /tmp/p.json
+
       - name: اختبارات + APK تصحيح
         id: debug_apk
         continue-on-error: true
@@ -235,12 +259,27 @@ jobs:
         # android/android/... والملف «يغيب» فيبدو كأن التوقيع فشل. مطلقًا دائمًا.
         run: |
           APK=$GITHUB_WORKSPACE/android/app/build/outputs/apk/release/app-release.apk
-          echo "🔐 what Gradle saw: $(grep -a 'signing:' gradle-release.log || echo '(لا سطر)')"
+          echo "what Gradle saw: $(grep -a 'signing:' gradle-release.log || echo '(لا سطر)')"
           [ -f "$APK" ] || { echo "❌ لا وجود لـ $APK"; exit 1; }
-          if unzip -l "$APK" | grep -q "META-INF/.*\.RSA"; then
-            echo "✅ موقّع: $(unzip -l "$APK" | grep 'META-INF/.*\.RSA' | awk '{print $4}')"
+          echo "الحجم: $(wc -c < "$APK") بايت"
+
+          # ⚠️ كان الحارس يطلب META-INF/*.RSA وحده، فأخطأ على APK موقّع
+          # صحيحًا: تلك الملفات تخصّ **توقيع v1** فقط، وأندرويد الحديث
+          # يوقّع بـ v2/v3 فيوقّع الملف كلّه بلا أيّ ملف META-INF.
+          # الحكم عندها لبرنامج التوقيع نفسه، لا لوجود ملف بعينه.
+          echo "--- META-INF (توقيع v1 — قد يغيب وهو صحيح) ---"
+          unzip -l "$APK" 2>&1 | grep -i 'META-INF' || echo '(لا ملفات META-INF: توقيع v2/v3)'
+
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner 2>/dev/null | tail -1 || true)
+          if [ -z "$APKSIGNER" ]; then
+            echo "❌ لم يُعثر على apksigner تحت ANDROID_HOME=$ANDROID_HOME"
+            exit 1
+          fi
+          echo "apksigner: $APKSIGNER"
+          if "$APKSIGNER" verify --print-certs -v "$APK"; then
+            echo "✅ APK الإصدار موقّع وتُحقَّق صحّته"
           else
-            echo "❌ APK الإصدار غير موقّع — لن يُثبَّت على أي جهاز"
+            echo "❌ APK الإصدار غير موقّع أو توقيعه فاسد — لن يُثبَّت"
             exit 1
           fi
 
