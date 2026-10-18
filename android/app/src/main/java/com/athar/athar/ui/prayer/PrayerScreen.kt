@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.prayer.PrayerMethod
 import com.athar.athar.prayer.PrayerSettings
 import com.athar.athar.prayer.PrayerSettingsStore
@@ -45,6 +46,7 @@ fun PrayerScreen(
     onSettingsChange: (PrayerSettings) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val s = LocalStrings.current
     val today = LocalDate.now()
     var pickingCity by remember { mutableStateOf(false) }
 
@@ -55,7 +57,8 @@ fun PrayerScreen(
                     settings.copy(
                         latitude = city.latitude,
                         longitude = city.longitude,
-                        placeName = city.nameAr,
+                        cityId = city.id,
+                        placeName = "",
                     ),
                 )
                 pickingCity = false
@@ -65,7 +68,8 @@ fun PrayerScreen(
                     settings.copy(
                         latitude = lat,
                         longitude = lng,
-                        placeName = "موقعي الحالي",
+                        cityId = null,
+                        placeName = "",
                     ),
                 )
                 pickingCity = false
@@ -74,6 +78,16 @@ fun PrayerScreen(
             modifier = modifier,
         )
         return
+    }
+
+    /// ⚠️ اسم المدينة يُقرأ باللغة الحالية — «القاهرة» داخل تطبيق
+    /// فرنسي بالكامل عيب لا يراه من يختبر بالعربية فقط.
+    val placeLabel = remember(settings, s) {
+        val city = settings.cityId?.let { id ->
+            com.athar.athar.prayer.Cities.all.firstOrNull { it.id == id }
+        }
+        city?.nameFor(com.athar.athar.i18n.LocalAppLocale.current)
+            ?: settings.placeName.ifBlank { s.prayerMyLocation }
     }
 
     val day = remember(settings, today) { PrayerTimesCalculator.calculate(settings, today) }
@@ -88,7 +102,8 @@ fun PrayerScreen(
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(
-                    text = next?.let { "القادمة: ${it.first.arabicName}" } ?: "انتهت صلوات اليوم",
+                    text = next?.let { "${s.prayerUpcoming}: ${s.t(it.first.stringKey)}" }
+                        ?: s.prayerNoneLeft,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -100,10 +115,10 @@ fun PrayerScreen(
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = settings.placeName, style = MaterialTheme.typography.bodySmall)
+                    Text(text = placeLabel, style = MaterialTheme.typography.bodySmall)
                     TextButton(onClick = { pickingCity = true }) {
                         Icon(Icons.Filled.EditLocation, contentDescription = null)
-                        Text("  تغيير")
+                        Text("  " + s.change)
                     }
                 }
             }
@@ -134,7 +149,7 @@ fun PrayerScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = slot.arabicName,
+                        text = s.t(slot.stringKey),
                         fontWeight = if (isNext) FontWeight.Bold else null,
                         color = if (isNext) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurface,

@@ -20,7 +20,8 @@ object PrayerSettingsStore {
                 .getOrDefault(Madhab.SHAFI),
             latitude = p.getFloat("lat", 30.0444f).toDouble(),
             longitude = p.getFloat("lng", 31.2357f).toDouble(),
-            placeName = p.getString("place", "القاهرة") ?: "القاهرة",
+            cityId = p.getString("cityId", "cairo"),
+            placeName = p.getString("place", "") ?: "",
         )
     }
 
@@ -30,6 +31,7 @@ object PrayerSettingsStore {
             .putString("madhab", settings.madhab.name)
             .putFloat("lat", settings.latitude.toFloat())
             .putFloat("lng", settings.longitude.toFloat())
+            .putString("cityId", settings.cityId)
             .putString("place", settings.placeName)
             .apply()
     }

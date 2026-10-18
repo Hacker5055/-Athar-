@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.athar.athar.quran.Ayah
 import com.athar.athar.quran.QuranRepository
+import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.quran.QuranSources
 import com.athar.athar.quran.Surah
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun QuranScreen(modifier: Modifier = Modifier) {
+    val s = LocalStrings.current
     val context = LocalContext.current
     var surahs by remember { mutableStateOf<List<Surah>?>(null) }
     var opened by remember { mutableStateOf<Surah?>(null) }
@@ -62,7 +64,7 @@ fun QuranScreen(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         when {
             error != null -> Text(
-                text = "تعذّر تحميل القرآن: $error",
+                text = "${s.quranLoadFailed}: $error",
                 modifier = Modifier.align(Alignment.Center).padding(24.dp),
                 textAlign = TextAlign.Center,
             )
@@ -79,6 +81,7 @@ fun QuranScreen(modifier: Modifier = Modifier) {
 
 @Composable
 private fun SurahList(surahs: List<Surah>, onOpen: (Surah) -> Unit) {
+    val s = LocalStrings.current
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(surahs) { surah ->
             TextButton(
@@ -93,7 +96,7 @@ private fun SurahList(surahs: List<Surah>, onOpen: (Surah) -> Unit) {
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
                         Text(text = surah.nameAr, fontSize = 19.sp, fontWeight = FontWeight.Medium)
                         Text(
-                            text = "${surah.ayahCount} آية · ${if (surah.isMeccan) "مكية" else "مدنية"}",
+                            text = "${surah.ayahCount} ${s.verses} · ${if (surah.isMeccan) s.meccan else s.medinan}",
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
@@ -109,7 +112,7 @@ private fun SurahList(surahs: List<Surah>, onOpen: (Surah) -> Unit) {
         item {
             // ⚖️ النسبة شرط الرخصة
             Text(
-                text = "النص العثماني: ${QuranSources.TEXT_SOURCE}",
+                text = s.tArgs("quran_uthmani_source", "source" to QuranSources.TEXT_SOURCE),
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(16.dp),
                 textAlign = TextAlign.Center,
@@ -120,13 +123,14 @@ private fun SurahList(surahs: List<Surah>, onOpen: (Surah) -> Unit) {
 
 @Composable
 private fun ReaderView(surah: Surah, ayahs: List<Ayah>, onBack: () -> Unit) {
+    val s = LocalStrings.current
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = onBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "رجوع")
+                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
             }
             Text(text = surah.nameAr, fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }

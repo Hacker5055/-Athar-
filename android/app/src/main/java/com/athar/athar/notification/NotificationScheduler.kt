@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
+import com.athar.athar.i18n.LocaleStore
+import com.athar.athar.i18n.Strings
 import com.athar.athar.prayer.PrayerSettings
 import com.athar.athar.prayer.PrayerSettingsStore
 import com.athar.athar.prayer.PrayerSlot
@@ -19,11 +21,16 @@ import java.time.LocalDate
 /// **ترجمة فقط** إلى `AlarmManager` — لا قرار زمني واحد.
 object NotificationScheduler {
 
-    fun rescheduleFromStored(context: Context) {
+    fun rescheduleFromStored(context: Context, strings: Strings? = null) {
         reschedule(
             context,
             PrayerSettingsStore.load(context),
             NotificationSettingsStore.load(context),
+            // ⚠️ نصّ الإشعار يُبنى **مرة واحدة** وقت الجدولة ويُخزَّن في
+            // النظام، فلا يكفي أن نقرأ اللغة وقت العرض. المستقبلات
+            // (إقلاع، تنبيه) لا تملك `Strings` فتقرؤها من المخزن.
+            strings ?: Strings(LocaleStore.load(context)),
+            "",
         )
     }
 
@@ -31,6 +38,7 @@ object NotificationScheduler {
         context: Context,
         prayerSettings: PrayerSettings,
         settings: NotificationSettings,
+        strings: Strings = Strings(LocaleStore.load(context)),
     ) {
         NotificationChannels.ensure(context)
         cancelAll(context)
@@ -47,15 +55,21 @@ object NotificationScheduler {
             PrayerTimesCalculator.calculate(prayerSettings, today.plusDays(offset.toLong()))
         }
 
+        val placeName = prayerSettings.cityId
+            ?.let { id -> com.athar.athar.prayer.Cities.all.firstOrNull { it.id == id } }
+            ?.nameFor(strings.locale)
+            ?.takeIf { it.isNotBlank() }
+            ?: prayerSettings.placeName
+
         for (alert in NotificationPlanner.plan(days, settings, now)) {
-            schedule(manager, context, alert)
+            schedule(manager, context, alert, strings, placeName)
         }
     }
 
     /// ⚠️ زر «اختبر» — لأن جدولة تعمل في الخلفية ولا تظهر في شاشة لا
     /// يمكن للمستخدم أن يتأكد من عملها إلا بأن تصله. بلا هذا الزر
     /// يبقى كل ما سبق ادّعاءً.
-    fun scheduleTest(context: Context) {
+    fun scheduleTest(context: Context, strings: Strings? = null) {
         NotificationChannels.ensure(context)
         val manager = context.getSystemService(AlarmManager::class.java) ?: return
         schedule(
@@ -67,11 +81,18 @@ object NotificationScheduler {
                 at = Instant.now().plusSeconds(5),
                 prayer = null,
             ),
+            strings ?: Strings(LocaleStore.load(context)),
         )
     }
 
-    private fun schedule(manager: AlarmManager, context: Context, alert: ScheduledAlert) {
-        val intent = alertIntent(context, alert)
+    private fun schedule(
+        manager: AlarmManager,
+        context: Context,
+        alert: ScheduledAlert,
+        strings: Strings,
+        placeName: String = "",
+    ) {
+        val intent = alertIntent(context, alert, strings, placeName)
         val pending = PendingIntent.getBroadcast(
             context,
             alert.id,
@@ -96,11 +117,16 @@ object NotificationScheduler {
             true
         }
 
-    private fun alertIntent(context: Context, alert: ScheduledAlert): Intent =
+    private fun alertIntent(
+        context: Context,
+        alert: ScheduledAlert,
+        strings: Strings,
+        placeName: String,
+    ): Intent =
         Intent(context, AlertReceiver::class.java)
             .putExtra(AlertReceiver.EXTRA_ID, alert.id)
-            .putExtra(AlertReceiver.EXTRA_TITLE, alert.title())
-            .putExtra(AlertReceiver.EXTRA_BODY, alert.body())
+            .putExtra(AlertReceiver.EXTRA_TITLE, alert.title(strings))
+            .putExtra(AlertReceiver.EXTRA_BODY, alert.body(strings, placeName))
             .putExtra(AlertReceiver.EXTRA_CHANNEL, NotificationChannels.forKind(alert.kind))
 
     /// ⚠️ نُخبر النظام بكل ما عسانا نكون جدولناه — المعرّفات حتمية،
@@ -128,14 +154,28 @@ object NotificationScheduler {
         )
 }
 
-private fun ScheduledAlert.title(): String = when (kind) {
-    AlertKind.ATHAN -> "حان وقت ${prayer?.arabicName ?: "الصلاة"}"
-    AlertKind.REMINDER -> "بقي $reminderMinutes دقيقة على ${prayer?.arabicName ?: "الصلاة"}"
-    AlertKind.JUMUAH -> "الجمعة — سورة الكهف والصلاة على النبي"
+private fun ScheduledAlert.prayerName(strings: Strings): String =
+    prayer?.let { strings.t(it.stringKey) } ?: ""
+
+/// ⚠️ نصوص التنبيه من حزمة الترجمة لا م硬كودة — وإلا بقي الأذان
+/// بالعربية داخل تطبيق فرنسي بالكامل.
+private fun ScheduledAlert.title(strings: Strings): String = when (kind) {
+    AlertKind.ATHAN -> strings.tArgs("notif_athan_title", "prayer" to prayerName(strings))
+    AlertKind.REMINDER -> strings.tArgs("notif_reminder_title", "prayer" to prayerName(strings))
+    AlertKind.JUMUAH -> strings.notifJumuahTitle
 }
 
-private fun ScheduledAlert.body(): String = when (kind) {
-    AlertKind.ATHAN -> "حيّ على الصلاة"
-    AlertKind.REMINDER -> "تهيّأ للصلاة"
-    AlertKind.JUMUAH -> "الغُسل، والكهف، والإكثار من الصلاة على النبي ﷺ"
+private fun ScheduledAlert.body(strings: Strings, placeName: String): String = when (kind) {
+    AlertKind.JUMUAH -> strings.notifJumuahBody
+    AlertKind.REMINDER -> strings.tArgs("notif_reminder_body", "n" to reminderMinutes)
+    AlertKind.ATHAN -> {
+        val time = TIME_FORMAT.format(at)
+        strings.tArgs("notif_athan_body", "time" to time, "place" to placeName)
+            .trim(' ', '—')
+    }
 }
+
+private val TIME_FORMAT: java.time.format.DateTimeFormatter =
+    java.time.format.DateTimeFormatter
+        .ofPattern("HH:mm")
+        .withZone(java.time.ZoneId.systemDefault())

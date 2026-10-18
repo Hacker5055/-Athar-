@@ -1,0 +1,1414 @@
+package com.athar.athar.i18n
+
+/// ⚠️ **ملف مولَّد** — لا تُعدّله يدويًا.
+/// أعِد توليده بـ `python3 android/tool/gen_strings.py`.
+/// المصدر: `app/lib/core/l10n/bundles/` (٣٢١ مفتاحًا × ٣ لغات).
+///
+/// ⚠️ أي مفتاح ناقص في لغة **يرجع للعربية** لا إلى المفتاح نفسه:
+/// نصّ خاطئ بالإنجليزية في تطبيق قرآني أسوأ من نصّ عربي صحيح.
+@Suppress("TooManyFunctions", "LongParameterList")
+class Strings(val locale: AppLocale) {
+
+    /// Lookup بمفتاح حر (للحالات الديناميكية).
+    fun t(key: String): String =
+        bundle()[key] ?: kStringsAr[key] ?: key
+
+    /// Lookup مع استبدال متغيّرات على شكل `{name}`.
+    fun tArgs(key: String, vararg pairs: Pair<String, Any>): String {
+        var value = t(key)
+        for ((name, arg) in pairs) value = value.replace("{$name}", "$arg")
+        return value
+    }
+
+    private fun bundle(): Map<String, String> = when (locale) {
+        AppLocale.AR -> kStringsAr
+        AppLocale.EN -> kStringsEn
+        AppLocale.FR -> kStringsFr
+    }
+
+    companion object {
+
+        val kStringsAr: Map<String, String> = mapOf(
+            "app_name" to "أثر",
+            "tagline" to "خلّي أثرك باقي",
+            "hi_morning" to "صباح النور",
+            "hi_afternoon" to "يوم مبارك",
+            "hi_evening" to "مساء الخير",
+            "hi_night" to "ليلة طيبة",
+            "tab_home" to "الرئيسية",
+            "tab_quran" to "القرآن",
+            "tab_adhkar" to "الأذكار",
+            "tab_qibla" to "القبلة",
+            "tab_more" to "المزيد",
+            "next_prayer" to "الصلاة القادمة",
+            "remaining" to "يتبقّى",
+            "today" to "اليوم",
+            "now" to "الآن",
+            "madhab_label" to "المذهب",
+            "shafi" to "شافعي",
+            "hanafi" to "حنفي",
+            "fajr" to "الفجر",
+            "sunrise" to "الشروق",
+            "sunrise_no_adhan" to "الشروق: لا أذان — ليست صلاة",
+            "dhuhr" to "الظهر",
+            "asr" to "العصر",
+            "maghrib" to "المغرب",
+            "isha" to "العشاء",
+            "prayer_times" to "المواقيت",
+            "monthly_calendar" to "التقويم الشهري",
+            "calc_settings" to "إعدادات الحساب",
+            "notifications" to "الإشعارات",
+            "adhan_sound" to "صوت الأذان",
+            "reminder_before" to "تذكير قبل الصلاة",
+            "continue_reading" to "تابع القراءة",
+            "ayah_no" to "آية",
+            "wird_title" to "وردي اليوم",
+            "wird_sub" to "خطة ختمة ٣٠ يومًا",
+            "adhkar_today" to "أذكاري اليوم",
+            "done" to "أكملت",
+            "of" to "من",
+            "quick_actions" to "إجراءات سريعة",
+            "verse_of_day" to "آية اليوم",
+            "qa_quran" to "القرآن",
+            "qa_adhkar" to "أذكار",
+            "qa_qibla" to "القبلة",
+            "qa_tasbih" to "السبحة",
+            "qa_duas" to "أدعية",
+            "qa_names" to "أسماء الله",
+            "quran_index" to "فهرس السور",
+            "search_ph" to "ابحث في السور والآيات…",
+            "filter_all" to "الكل",
+            "filter_meccan" to "مكية",
+            "filter_medinan" to "مدنية",
+            "verses" to "آية",
+            "juz" to "الجزء",
+            "meccan" to "مكية",
+            "medinan" to "مدنية",
+            "reader_settings" to "إعدادات القراءة",
+            "font_size" to "حجم الخط",
+            "translation" to "الترجمة",
+            "tafsir" to "التفسير",
+            "reciter" to "القارئ",
+            "none" to "بدون",
+            "play_surah" to "استماع",
+            "repeat" to "تكرار",
+            "speed" to "السرعة",
+            "download_offline" to "تحميل للاستماع أوفلاين",
+            "save_mark" to "حفظ العلامة",
+            "bookmark" to "علامة",
+            "note" to "ملاحظة",
+            "color" to "تلوين",
+            "share" to "مشاركة",
+            "copy" to "نسخ",
+            "saved_msg" to "تم الحفظ",
+            "bookmarks" to "المحفوظات",
+            "adhkar_cat" to "تصنيفات الأذكار",
+            "morning" to "أذكار الصباح",
+            "evening" to "أذكار المساء",
+            "after_prayer" to "بعد الصلاة",
+            "sleep" to "أذكار النوم",
+            "wake" to "الاستيقاظ",
+            "food" to "الطعام",
+            "mosque" to "المسجد",
+            "travel" to "السفر",
+            "anxiety" to "الهمّ والحزن",
+            "rain" to "المطر",
+            "count_of" to "عدد",
+            "tap_to_count" to "اضغط للتسبيح",
+            "complete_all" to "أكملت المجموعة",
+            "reset" to "تصفير",
+            "dua_library" to "مكتبة الأدعية",
+            "source" to "المصدر",
+            "names_title" to "أسماء الله الحسنى",
+            "names_sub" to "اضغط على أي اسم لسماع النطق",
+            "qibla_title" to "اتجاه القبلة",
+            "qibla_hint" to "وجّه الهاتف وانتظر ثبات القراءة",
+            "distance" to "المسافة إلى مكة",
+            "bearing" to "زاوية القبلة",
+            "calibrate" to "حرّك الجهاز على شكل ∞ للمعايرة",
+            "simulate" to "محاكاة دوران الجهاز",
+            "how_without" to "كيف أعرف القبلة بدون بوصلة؟",
+            "tasbih_title" to "السبحة",
+            "target" to "الهدف",
+            "tracker_title" to "أثري",
+            "tracker_sub" to "متتبع العبادات اليومية",
+            "streak_days" to "يوم متصل",
+            "this_week" to "هذا الأسبوع",
+            "last_30" to "آخر ٣٠ يومًا",
+            "habits" to "عباداتي",
+            "calendar_title" to "التاريخ والمناسبات",
+            "hijri" to "التاريخ الهجري",
+            "gregorian" to "التاريخ الميلادي",
+            "upcoming" to "المناسبات القادمة",
+            "more_title" to "المزيد",
+            "settings" to "الإعدادات",
+            "settings_title" to "الإعدادات",
+            "about" to "عن أثر",
+            "share_app" to "شارك التطبيق",
+            "rate_app" to "قيّم التطبيق",
+            "general" to "عام",
+            "language" to "اللغة",
+            "theme" to "المظهر",
+            "text_size" to "حجم النص",
+            "backup" to "نسخة احتياطية",
+            "sources" to "المصادر والتراخيص",
+            "privacy" to "الخصوصية",
+            "theme_light" to "فاتح",
+            "theme_dark" to "داكن",
+            "theme_auto" to "تلقائي",
+            "size_small" to "صغير",
+            "size_normal" to "متوسط",
+            "size_large" to "كبير",
+            "size_xlarge" to "كبير جدًا",
+            "appearance" to "المظهر واللغة",
+            "arabic_digits" to "الأرقام العربية",
+            "arabic_digits_sub" to "عرض الأرقام بصيغة ١٢٣ بدل 123",
+            "system_default" to "حسب النظام",
+            "about_title" to "عن أثر",
+            "about_body" to "تطبيق إسلامي شامل، يعمل أوفلاين، بلا إعلانات ولا جمع بيانات. كل المحتوى موثّق المصدر، والمواقيت محسوبة فلكيًا محليًا على جهازك.",
+            "empty_bm_t" to "لا توجد علامات بعد",
+            "empty_bm_s" to "اضغط مطوّلًا على أي آية لحفظها هنا",
+            "empty_note_t" to "لا توجد ملاحظات",
+            "save" to "حفظ",
+            "cancel" to "إلغاء",
+            "apply" to "تطبيق",
+            "ok" to "حسنًا",
+            "retry" to "إعادة المحاولة",
+            "loading" to "جارٍ التحميل…",
+            "error_generic" to "حدث خطأ ما",
+            "on" to "مفعّل",
+            "off" to "معطّل",
+            "coming_soon" to "قريبًا",
+            "demo_data" to "بيانات تجريبية",
+            "onboarding_title" to "أثر",
+            "onboarding_subtitle" to "تطبيق إسلامي واحد للصلاة والقرآن والأذكار والقبلة — شغال أوفلاين وبلا إعلانات.",
+            "choose_language" to "اختر لغتك",
+            "start" to "ابدأ",
+            "skip" to "تخطّي",
+            "design_system" to "نظام التصميم",
+            "ds_colors" to "الألوان",
+            "ds_typography" to "الخطوط",
+            "ds_spacing" to "المسافات",
+            "ds_radii" to "الحواف",
+            "ds_components" to "المكوّنات",
+            "ds_buttons" to "الأزرار",
+            "ds_inputs" to "حقول الإدخال",
+            "ds_feedback" to "التغذية الراجعة",
+            "week1_note" to "الأساس جاهز: الهيكل، نظام التصميم، وثلاث لغات.",
+            "coming_week2" to "المواقيت الحقيقية هتيجي في أسبوع ٢",
+            "prayer_soon_title" to "المواقيت قريبًا",
+            "prayer_soon_body" to "الحساب الفلكي للمواقيت (١٠+ طرق حساب، مذهب، تعديل يدوي) بيتبني دلوقتي في أسبوع ٢.",
+            "quran_soon_title" to "المصحف قريبًا",
+            "quran_soon_body" to "فهرس ١١٤ سورة والقارئ بالنص العثماني والتفسير والتلاوة — أسبوع ٢ و٣.",
+            "adhkar_soon_title" to "الأذكار قريبًا",
+            "adhkar_soon_body" to "١٠ تصنيفات أذكار بعدّاد لكل ذكر، ومكتبة أدعية — أسبوع ٣.",
+            "qibla_soon_title" to "البوصلة قريبًا",
+            "qibla_soon_body" to "بوصلة القبلة بدمج المستشعرات وتنبيه المعايرة وبديل الشمس — أسبوع ٣.",
+            "prayer_settings_title" to "إعدادات المواقيت",
+            "prayer_times_title" to "المواقيت",
+            "prayer_settings_open" to "المواقيت",
+            "prayer_engine_credit" to "الحساب الفلكي: Adhan Dart",
+            "prayer_location" to "الموقع",
+            "prayer_choose_city" to "اختيار المدينة",
+            "prayer_use_my_location" to "تحديد موقعي تلقائيًا",
+            "prayer_location_rationale" to "محتاج إذن الموقع عشان نحسب المواقيت بدقة. مش بنخزّن موقعك ولا بنرسله لأي حد.",
+            "prayer_location_updated" to "تم تحديث الموقع",
+            "prayer_location_denied" to "مافيش إذن للوصول للموقع — تقدر تختار مدينة يدويًا.",
+            "prayer_location_denied_forever" to "الإذن مرفوض نهائيًا. افتح إعدادات التطبيق لتفعيله.",
+            "prayer_location_service_off" to "خدمة الموقع مقفولة من الجهاز.",
+            "prayer_location_timeout" to "ماقدرناش نحدد الموقع. جرّب تاني أو اختار مدينة.",
+            "prayer_location_unknown" to "حصلت مشكلة غير متوقعة في تحديد الموقع.",
+            "prayer_open_settings" to "فتح الإعدادات",
+            "prayer_method" to "طريقة الحساب",
+            "prayer_madhab" to "المذهب",
+            "prayer_madhab_sub" to "بيأثر على وقت العصر فقط (طول الظل).",
+            "prayer_high_latitude" to "خطوط العرض العالية",
+            "prayer_high_latitude_sub" to "للمناطق اللي الفجر أو العشاء فيها ما بيظهرش بوضوح (أوروبا وأمريكا الشمالية).",
+            "prayer_adjustments" to "تعديل يدوي",
+            "prayer_adjustments_sub" to "زوّد أو قلّل دقائق عن الحساب لو مواقيت مسجدك مختلفة.",
+            "prayer_adjusted_notice" to "المواقيت معدّلة يدويًا — مش الحساب الفلكي المباشر.",
+            "prayer_clear_adjustments" to "مسح كل التعديلات",
+            "prayer_next_label" to "الصلاة القادمة",
+            "prayer_tomorrow_fajr" to "فجر الغد",
+            "prayer_now" to "الآن",
+            "prayer_upcoming" to "القادمة",
+            "prayer_unavailable" to "تعذّر حساب المواقيت",
+            "city_search_hint" to "ابحث عن مدينة…",
+            "city_no_results" to "مفيش نتائج",
+            "city_no_results_hint" to "جرّب كتابة الاسم بالعربية أو الإنجليزية أو الفرنسية.",
+            "time_am" to "ص",
+            "time_pm" to "م",
+            "home_week2_note" to "المواقيت دلوقتي محسوبة فلكيًا على جهازك (بدون إنترنت). الورد والأذكار والمتتبع لسه في الطريق.",
+            "notif_athan_title" to "حان وقت {prayer}",
+            "notif_athan_body" to "{time} — {place}",
+            "notif_reminder_title" to "{prayer} قريبًا",
+            "notif_reminder_body" to "فاضل {n} دقيقة على الأذان",
+            "notif_jumuah_title" to "يوم الجمعة",
+            "notif_jumuah_body" to "سورة الكهف · الصلاة على النبي · الاغتسال",
+            "notif_channel_athan" to "الأذان",
+            "notif_channel_athan_desc" to "الأذان في وقت كل صلاة",
+            "notif_channel_reminder" to "تذكير قبل الصلاة",
+            "notif_channel_reminder_desc" to "تنبيه هادئ قبل الأذان بدقائق",
+            "notif_channel_jumuah" to "تذكير الجمعة",
+            "notif_channel_jumuah_desc" to "تذكير أسبوعي بيوم الجمعة",
+            "notifications_test_title" to "إشعار تجريبي",
+            "notifications_test_body" to "لو شُفت الرسالة دي يبقى الإشعارات شغالة تمام.",
+            "notifications_master" to "تشغيل الإشعارات",
+            "notifications_master_desc" to "لو مقفولة، أثر مش هيبعت أي تنبيه خالص",
+            "notifications_test" to "جرّب إشعار دلوقتي",
+            "notifications_test_queued" to "هيوصلك إشعار تجريبي بعد ٥ ثواني",
+            "notifications_off_hint" to "الإشعارات مقفولة — فعّلها عشان تسمع الأذان في وقته",
+            "notifications_permission_needed" to "محتاج إذن الإشعارات من النظام",
+            "notifications_permission_action" to "فعّل الإشعارات",
+            "notifications_exact_needed" to "عشان الأذان يكون في ثانيته بالظبط، فعّل «المنبهات والتذكيرات»",
+            "notifications_exact_needed_short" to "الجدولة الدقيقة مقفولة — ممكن يتأخر الأذان دقايق",
+            "notifications_exact_action" to "فتح الإعدادات",
+            "notifications_per_prayer" to "الأذان لكل صلاة",
+            "notifications_per_prayer_hint" to "اختار لكل صلاة أذان ولا اهتزاز ولا صامت",
+            "notifications_reminder" to "تذكير قبل الأذان",
+            "notifications_reminder_desc" to "إشعار على الشاشة بدون صوت",
+            "notifications_reminder_minutes" to "قبل الأذان بـ",
+            "notifications_minutes_off" to "بدون تذكير",
+            "notifications_jumuah" to "تذكير الجمعة",
+            "notifications_jumuah_desc" to "سورة الكهف · الصلاة على النبي · الاغتسال",
+            "notifications_jumuah_before" to "قبل صلاة الجمعة بـ",
+            "notifications_sound" to "صوت الأذان",
+            "notifications_sound_desc" to "كل الأصوات موقوفة مؤقتًا لحين التأكد من حقوقها",
+            "notifications_mode_adhan" to "أذان",
+            "notifications_mode_beep" to "نغمة",
+            "notifications_mode_vibrate" to "اهتزاز",
+            "notifications_mode_silent" to "صامت",
+            "notifications_mode_off" to "مقفول",
+            "notifications_scheduled" to "إشعار مجدول",
+            "notifications_scheduled_many" to "إشعارات مجدولة",
+            "notifications_mode_short_adhan" to "أذان مختصر",
+            "notifications_minutes_value" to "{n} دقيقة",
+            "notifications_scheduled_none" to "مفيش تنبيهات مجدولة",
+            "athary_open" to "فتح أثري",
+            "athary_best" to "أفضل",
+            "athary_less" to "أقل",
+            "athary_more" to "أكثر",
+            "athary_next" to "اللي فاضلك",
+            "athary_reset" to "مسح السجل",
+            "athary_reset_confirm" to "همسح كل سجل «أثري» نهائيًا. مفيش رجوع.",
+            "athary_future_note" to "في الإصدار الكامل: ملخص أسبوعي، أهداف مخصصة، ويوم راحة واحد أسبوعيًا يحافظ على السلسلة.",
+            "home_week4_note" to "المواقيت والإشعارات شغالين فعلًا، و«أثري» بيحسب سلسلتك محليًا على جهازك. الورد القرآني والأذكار لسه في الطريق (أسابيع ٥–١١).",
+            "widget_label" to "ودجت أثر",
+            "widget_description" to "الصلاة القادمة ومواقيت اليوم على الشاشة الرئيسية",
+            "widget_next_prayer" to "القادمة",
+            "widget_in" to "بعد",
+            "widget_no_data" to "افتح أثر لحساب المواقيت",
+            "widget_add" to "إضافة الودجت",
+            "widget_add_hint" to "اضغط مطوّلًا على الشاشة الرئيسية ← ودجت ← أثر",
+            "quran_tab_surah" to "السور",
+            "quran_tab_juz" to "الأجزاء",
+            "quran_tab_page" to "الصفحات",
+            "quran_empty_title" to "القرآن ليس محمّلًا على جهازك",
+            "quran_empty_body" to "نص القرآن لا يُرفق مع التطبيق — قرار متعمّد لحماية حقوق النص والتحقّق منه. استورد ملفًا واحدًا مرة واحدة، وبعدها يشتغل بلا إنترنت تمامًا.",
+            "quran_import_action" to "استيراد ملف القرآن",
+            "quran_importing" to "جاري الاستيراد…",
+            "quran_import_failed" to "لم يتم الاستيراد",
+            "quran_reader_settings" to "إعدادات القراءة",
+            "quran_font_size" to "حجم الخط",
+            "quran_font_smaller" to "أصغر",
+            "quran_font_bigger" to "أكبر",
+            "quran_reading_theme" to "ثيم القراءة",
+            "quran_theme_paper" to "ورق",
+            "quran_theme_sepia" to "Sepia",
+            "quran_theme_night" to "ليلي",
+            "quran_show_translation" to "إظهار الترجمة",
+            "quran_no_translation" to "لا توجد ترجمة محمّلة",
+            "quran_edition" to "الترجمة",
+            "quran_page_word" to "صفحة",
+            "quran_sajda" to "سجدة",
+            "quran_search_title" to "البحث في القرآن",
+            "quran_search_hint" to "اكتب كلمة، أو رقم آية (2:255)، أو «ص ٤٢»",
+            "quran_search_empty" to "لا توجد نتائج",
+            "quran_results_count" to "{n} نتيجة",
+            "quran_no_ayahs" to "لا توجد آيات",
+            "audio_listen" to "اسمع",
+            "audio_stop" to "إيقاف",
+            "audio_reciter" to "القارئ",
+            "audio_choose_reciter" to "اختيار القارئ",
+            "audio_reciter_default" to "الافتراضي",
+            "audio_download" to "تنزيل",
+            "audio_download_surah" to "تنزيل السورة",
+            "audio_download_juz" to "تنزيل الجزء",
+            "audio_download_all" to "تنزيل القرآن كاملًا",
+            "audio_downloaded" to "منزّل",
+            "audio_delete_download" to "حذف التنزيل",
+            "audio_downloading" to "جارٍ التنزيل…",
+            "audio_download_progress" to "{done} من {total}",
+            "audio_size_estimate" to "≈ {size}",
+            "audio_needs_internet" to "التشغيل الأول يحتاج اتصالًا بالإنترنت",
+            "audio_playback_failed" to "تعذّر تشغيل التلاوة",
+            "audio_speed" to "سرعة التلاوة",
+            "audio_repeat_ayah" to "تكرار الآية",
+            "audio_sources" to "المصادر والتراخيص",
+            "audio_rights_note" to "حقوق كل تلاوة محفوظة لقارئها",
+            "audio_licensed_noncommercial" to "مسموح للاستخدام غير التجاري",
+            "audio_no_bundled_audio" to "لا يحتوي التطبيق على أي ملف صوتي — كل التلاوات تُبثّ أو تُنزّل عند الطلب",
+            "audio_cancel" to "إلغاء",
+            "audio_delete_confirm" to "حذف تلاوة {name} من الجهاز؟",
+            "audio_storage_used" to "المساحة المستخدمة: {size}",
+            "back" to "رجوع",
+            "change" to "تغيير",
+            "north" to "شمال",
+            "south" to "جنوب",
+            "east" to "شرق",
+            "west" to "غرب",
+            "adhkar_search_hint" to "ابحث في الأقسام",
+            "adhkar_items_count" to "{n} أذكار",
+            "prayer_my_location" to "موقعي الحالي",
+            "prayer_none_left" to "انتهت صلوات اليوم",
+            "qibla_no_sensor" to "هذا الجهاز لا يحتوي على بوصلة",
+            "qibla_bearing_from_north" to "زاوية القبلة من الشمال: {deg}°",
+            "qibla_device_direction" to "اتجاه الهاتف",
+            "qibla_aligned" to "أنت باتجاه القبلة ✓",
+            "qibla_turn_right" to "أدر الهاتف يمينًا {deg}°",
+            "qibla_turn_left" to "أدر الهاتف يسارًا {deg}°",
+            "qibla_bearing_geo" to "القبلة على {deg}° من الشمال الجغرافي",
+            "quran_load_failed" to "تعذّر تحميل القرآن",
+            "quran_uthmani_source" to "النص العثماني: {source}",
+            "minutes_short" to "{n} د",
+        )
+
+        val kStringsEn: Map<String, String> = mapOf(
+            "app_name" to "Athar",
+            "tagline" to "Leave a trace of good",
+            "hi_morning" to "Good morning",
+            "hi_afternoon" to "Good afternoon",
+            "hi_evening" to "Good evening",
+            "hi_night" to "Good night",
+            "tab_home" to "Home",
+            "tab_quran" to "Quran",
+            "tab_adhkar" to "Adhkar",
+            "tab_qibla" to "Qibla",
+            "tab_more" to "More",
+            "next_prayer" to "Next prayer",
+            "remaining" to "remaining",
+            "today" to "Today",
+            "now" to "Now",
+            "madhab_label" to "Madhab",
+            "shafi" to "Shafi’i",
+            "hanafi" to "Hanafi",
+            "fajr" to "Fajr",
+            "sunrise" to "Sunrise",
+            "sunrise_no_adhan" to "Sunrise: no adhan — it is not a prayer",
+            "dhuhr" to "Dhuhr",
+            "asr" to "Asr",
+            "maghrib" to "Maghrib",
+            "isha" to "Isha",
+            "prayer_times" to "Prayer times",
+            "monthly_calendar" to "Monthly calendar",
+            "calc_settings" to "Calculation settings",
+            "notifications" to "Notifications",
+            "adhan_sound" to "Adhan sound",
+            "reminder_before" to "Reminder before prayer",
+            "continue_reading" to "Continue reading",
+            "ayah_no" to "Ayah",
+            "wird_title" to "My daily portion",
+            "wird_sub" to "30-day khatma plan",
+            "adhkar_today" to "Today’s adhkar",
+            "done" to "Completed",
+            "of" to "of",
+            "quick_actions" to "Quick actions",
+            "verse_of_day" to "Verse of the day",
+            "qa_quran" to "Quran",
+            "qa_adhkar" to "Adhkar",
+            "qa_qibla" to "Qibla",
+            "qa_tasbih" to "Tasbih",
+            "qa_duas" to "Supplications",
+            "qa_names" to "Names of Allah",
+            "quran_index" to "Surah index",
+            "search_ph" to "Search surahs & verses…",
+            "filter_all" to "All",
+            "filter_meccan" to "Meccan",
+            "filter_medinan" to "Medinan",
+            "verses" to "verses",
+            "juz" to "Juz",
+            "meccan" to "Meccan",
+            "medinan" to "Medinan",
+            "reader_settings" to "Reading settings",
+            "font_size" to "Font size",
+            "translation" to "Translation",
+            "tafsir" to "Tafsir",
+            "reciter" to "Reciter",
+            "none" to "None",
+            "play_surah" to "Listen",
+            "repeat" to "Repeat",
+            "speed" to "Speed",
+            "download_offline" to "Download for offline",
+            "save_mark" to "Save bookmark",
+            "bookmark" to "Bookmark",
+            "note" to "Note",
+            "color" to "Highlight",
+            "share" to "Share",
+            "copy" to "Copy",
+            "saved_msg" to "Saved",
+            "bookmarks" to "Saved",
+            "adhkar_cat" to "Adhkar categories",
+            "morning" to "Morning adhkar",
+            "evening" to "Evening adhkar",
+            "after_prayer" to "After prayer",
+            "sleep" to "Before sleep",
+            "wake" to "Waking up",
+            "food" to "Eating",
+            "mosque" to "Mosque",
+            "travel" to "Travel",
+            "anxiety" to "Anxiety & grief",
+            "rain" to "Rain",
+            "count_of" to "Count",
+            "tap_to_count" to "Tap to count",
+            "complete_all" to "Set completed",
+            "reset" to "Reset",
+            "dua_library" to "Supplications library",
+            "source" to "Source",
+            "names_title" to "The 99 Names of Allah",
+            "names_sub" to "Tap a name to hear it",
+            "qibla_title" to "Qibla direction",
+            "qibla_hint" to "Point the phone and hold steady",
+            "distance" to "Distance to Makkah",
+            "bearing" to "Qibla bearing",
+            "calibrate" to "Move the device in a ∞ to calibrate",
+            "simulate" to "Simulate device rotation",
+            "how_without" to "How to find Qibla without a compass?",
+            "tasbih_title" to "Tasbih",
+            "target" to "Target",
+            "tracker_title" to "My trace",
+            "tracker_sub" to "Daily worship tracker",
+            "streak_days" to "day streak",
+            "this_week" to "This week",
+            "last_30" to "Last 30 days",
+            "habits" to "My habits",
+            "calendar_title" to "Calendar & events",
+            "hijri" to "Hijri date",
+            "gregorian" to "Gregorian date",
+            "upcoming" to "Upcoming events",
+            "more_title" to "More",
+            "settings" to "Settings",
+            "settings_title" to "Settings",
+            "about" to "About Athar",
+            "share_app" to "Share the app",
+            "rate_app" to "Rate the app",
+            "general" to "General",
+            "language" to "Language",
+            "theme" to "Theme",
+            "text_size" to "Text size",
+            "backup" to "Backup",
+            "sources" to "Sources & licenses",
+            "privacy" to "Privacy",
+            "theme_light" to "Light",
+            "theme_dark" to "Dark",
+            "theme_auto" to "Auto",
+            "size_small" to "Small",
+            "size_normal" to "Normal",
+            "size_large" to "Large",
+            "size_xlarge" to "Extra large",
+            "appearance" to "Appearance & language",
+            "arabic_digits" to "Arabic-Indic digits",
+            "arabic_digits_sub" to "Show numbers as ١٢٣ instead of 123",
+            "system_default" to "Follow system",
+            "about_title" to "About Athar",
+            "about_body" to "An all-in-one Islamic app that works offline, with no ads and no data collection. Every piece of content is sourced, and prayer times are computed astronomically on your device.",
+            "empty_bm_t" to "No bookmarks yet",
+            "empty_bm_s" to "Long-press any verse to save it here",
+            "empty_note_t" to "No notes yet",
+            "save" to "Save",
+            "cancel" to "Cancel",
+            "apply" to "Apply",
+            "ok" to "OK",
+            "retry" to "Retry",
+            "loading" to "Loading…",
+            "error_generic" to "Something went wrong",
+            "on" to "On",
+            "off" to "Off",
+            "coming_soon" to "Coming soon",
+            "demo_data" to "Demo data",
+            "onboarding_title" to "Athar",
+            "onboarding_subtitle" to "One Islamic app for prayer, Quran, adhkar and Qibla — offline, with no ads.",
+            "choose_language" to "Choose your language",
+            "start" to "Get started",
+            "skip" to "Skip",
+            "design_system" to "Design system",
+            "ds_colors" to "Colors",
+            "ds_typography" to "Typography",
+            "ds_spacing" to "Spacing",
+            "ds_radii" to "Radii",
+            "ds_components" to "Components",
+            "ds_buttons" to "Buttons",
+            "ds_inputs" to "Inputs",
+            "ds_feedback" to "Feedback",
+            "week1_note" to "Foundation ready: structure, design system and three languages.",
+            "coming_week2" to "Real prayer times arrive in week 2",
+            "prayer_soon_title" to "Prayer times soon",
+            "prayer_soon_body" to "Astronomical prayer-time calculation (10+ methods, madhab, manual offsets) is being built in week 2.",
+            "quran_soon_title" to "The Quran soon",
+            "quran_soon_body" to "An index of all 114 surahs plus the reader with Uthmani text, tafsir and recitation — weeks 2 and 3.",
+            "adhkar_soon_title" to "Adhkar soon",
+            "adhkar_soon_body" to "Ten adhkar categories with a counter per dhikr, plus a supplications library — week 3.",
+            "qibla_soon_title" to "Compass soon",
+            "qibla_soon_body" to "The Qibla compass with sensor fusion, calibration prompts and a sun-based fallback — week 3.",
+            "prayer_settings_title" to "Prayer times settings",
+            "prayer_times_title" to "Prayer times",
+            "prayer_settings_open" to "Prayer times",
+            "prayer_engine_credit" to "Astronomical calculation: Adhan Dart",
+            "prayer_location" to "Location",
+            "prayer_choose_city" to "Choose a city",
+            "prayer_use_my_location" to "Use my location",
+            "prayer_location_rationale" to "Location permission is needed for accurate times. We never store or send your location.",
+            "prayer_location_updated" to "Location updated",
+            "prayer_location_denied" to "Location permission denied — you can pick a city manually.",
+            "prayer_location_denied_forever" to "Permission permanently denied. Open app settings to enable it.",
+            "prayer_location_service_off" to "Location services are turned off on this device.",
+            "prayer_location_timeout" to "Could not determine your location. Try again or pick a city.",
+            "prayer_location_unknown" to "An unexpected error occurred while getting your location.",
+            "prayer_open_settings" to "Open settings",
+            "prayer_method" to "Calculation method",
+            "prayer_madhab" to "Madhab",
+            "prayer_madhab_sub" to "Affects the Asr time only (shadow length).",
+            "prayer_high_latitude" to "High latitude rule",
+            "prayer_high_latitude_sub" to "For regions where Fajr or Isha are not clearly defined (Europe, North America).",
+            "prayer_adjustments" to "Manual adjustment",
+            "prayer_adjustments_sub" to "Add or subtract minutes if your local mosque differs from the calculation.",
+            "prayer_adjusted_notice" to "Times are manually adjusted — not the raw astronomical calculation.",
+            "prayer_clear_adjustments" to "Clear all adjustments",
+            "prayer_next_label" to "Next prayer",
+            "prayer_tomorrow_fajr" to "Fajr tomorrow",
+            "prayer_now" to "Now",
+            "prayer_upcoming" to "Next",
+            "prayer_unavailable" to "Could not calculate prayer times",
+            "city_search_hint" to "Search for a city…",
+            "city_no_results" to "No results",
+            "city_no_results_hint" to "Try typing the name in Arabic, English or French.",
+            "time_am" to "AM",
+            "time_pm" to "PM",
+            "home_week2_note" to "Prayer times are now calculated astronomically on your device, offline. The wird, adhkar and tracker are still on the way.",
+            "notif_athan_title" to "Time for {prayer}",
+            "notif_athan_body" to "{time} — {place}",
+            "notif_reminder_title" to "{prayer} soon",
+            "notif_reminder_body" to "{n} minutes until adhan",
+            "notif_jumuah_title" to "Friday",
+            "notif_jumuah_body" to "Surah Al-Kahf · Blessings on the Prophet · Ghusl",
+            "notif_channel_athan" to "Adhan",
+            "notif_channel_athan_desc" to "Adhan at the start of each prayer",
+            "notif_channel_reminder" to "Pre-prayer reminder",
+            "notif_channel_reminder_desc" to "A silent reminder a few minutes before adhan",
+            "notif_channel_jumuah" to "Friday reminder",
+            "notif_channel_jumuah_desc" to "A weekly reminder on Friday",
+            "notifications_test_title" to "Test notification",
+            "notifications_test_body" to "If you can see this, notifications are working.",
+            "notifications_master" to "Enable notifications",
+            "notifications_master_desc" to "When off, Athar sends nothing at all",
+            "notifications_test" to "Send a test notification",
+            "notifications_test_queued" to "A test notification will arrive in 5 seconds",
+            "notifications_off_hint" to "Notifications are off — turn them on to hear the adhan on time",
+            "notifications_permission_needed" to "Athar needs the system notification permission",
+            "notifications_permission_action" to "Enable notifications",
+            "notifications_exact_needed" to "For adhan at the exact second, enable “Alarms & reminders”",
+            "notifications_exact_needed_short" to "Exact scheduling is off — adhan may be a few minutes late",
+            "notifications_exact_action" to "Open settings",
+            "notifications_per_prayer" to "Adhan for each prayer",
+            "notifications_per_prayer_hint" to "Pick adhan, vibrate or silent for each prayer",
+            "notifications_reminder" to "Reminder before adhan",
+            "notifications_reminder_desc" to "A silent on-screen reminder",
+            "notifications_reminder_minutes" to "Before adhan by",
+            "notifications_minutes_off" to "No reminder",
+            "notifications_jumuah" to "Friday reminder",
+            "notifications_jumuah_desc" to "Surah Al-Kahf · Blessings on the Prophet · Ghusl",
+            "notifications_jumuah_before" to "Before Friday prayer by",
+            "notifications_sound" to "Adhan sound",
+            "notifications_sound_desc" to "All sounds are paused until their licensing is verified",
+            "notifications_mode_adhan" to "Adhan",
+            "notifications_mode_beep" to "Beep",
+            "notifications_mode_vibrate" to "Vibrate",
+            "notifications_mode_silent" to "Silent",
+            "notifications_mode_off" to "Off",
+            "notifications_scheduled" to "notification scheduled",
+            "notifications_scheduled_many" to "notifications scheduled",
+            "notifications_mode_short_adhan" to "Short adhan",
+            "notifications_minutes_value" to "{n} min",
+            "notifications_scheduled_none" to "No notifications scheduled",
+            "athary_open" to "Open Athary",
+            "athary_best" to "Best",
+            "athary_less" to "Less",
+            "athary_more" to "More",
+            "athary_next" to "Still ahead of you",
+            "athary_reset" to "Clear history",
+            "athary_reset_confirm" to "This erases your entire Athary history. There is no undo.",
+            "athary_future_note" to "In the full version: a weekly summary, custom goals, and one weekly rest day that preserves your streak.",
+            "home_week4_note" to "Prayer times and notifications are live, and Athary tracks your streak locally on your device. The Quran portion and adhkar are still on the way (weeks 5–11).",
+            "widget_label" to "Athar widget",
+            "widget_description" to "The next prayer and today’s times on your home screen",
+            "widget_next_prayer" to "Next",
+            "widget_in" to "in",
+            "widget_no_data" to "Open Athar to calculate prayer times",
+            "widget_add" to "Add the widget",
+            "widget_add_hint" to "Long-press your home screen → Widgets → Athar",
+            "quran_tab_surah" to "Surahs",
+            "quran_tab_juz" to "Juz",
+            "quran_tab_page" to "Pages",
+            "quran_empty_title" to "The Quran is not on your device yet",
+            "quran_empty_body" to "The Quranic text is not bundled with the app — a deliberate choice to protect and verify the text. Import one file once, and it works fully offline afterwards.",
+            "quran_import_action" to "Import Quran file",
+            "quran_importing" to "Importing…",
+            "quran_import_failed" to "Import failed",
+            "quran_reader_settings" to "Reading settings",
+            "quran_font_size" to "Font size",
+            "quran_font_smaller" to "Smaller",
+            "quran_font_bigger" to "Bigger",
+            "quran_reading_theme" to "Reading theme",
+            "quran_theme_paper" to "Paper",
+            "quran_theme_sepia" to "Sepia",
+            "quran_theme_night" to "Night",
+            "quran_show_translation" to "Show translation",
+            "quran_no_translation" to "No translation loaded",
+            "quran_edition" to "Translation",
+            "quran_page_word" to "Page",
+            "quran_sajda" to "Prostration",
+            "quran_search_title" to "Search the Quran",
+            "quran_search_hint" to "Type a word, a verse (2:255), or “p. 42”",
+            "quran_search_empty" to "No results",
+            "quran_results_count" to "{n} results",
+            "quran_no_ayahs" to "No verses",
+            "audio_listen" to "Listen",
+            "audio_stop" to "Stop",
+            "audio_reciter" to "Reciter",
+            "audio_choose_reciter" to "Choose reciter",
+            "audio_reciter_default" to "Default",
+            "audio_download" to "Download",
+            "audio_download_surah" to "Download surah",
+            "audio_download_juz" to "Download juz",
+            "audio_download_all" to "Download the whole Quran",
+            "audio_downloaded" to "Downloaded",
+            "audio_delete_download" to "Delete download",
+            "audio_downloading" to "Downloading…",
+            "audio_download_progress" to "{done} of {total}",
+            "audio_size_estimate" to "≈ {size}",
+            "audio_needs_internet" to "First playback needs internet",
+            "audio_playback_failed" to "Playback failed",
+            "audio_speed" to "Recitation speed",
+            "audio_repeat_ayah" to "Repeat ayah",
+            "audio_sources" to "Sources & licenses",
+            "audio_rights_note" to "Each recitation’s rights belong to its reciter",
+            "audio_licensed_noncommercial" to "Permitted for non-commercial use",
+            "audio_no_bundled_audio" to "The app ships no audio — recitations stream or download on demand",
+            "audio_cancel" to "Cancel",
+            "audio_delete_confirm" to "Delete {name}’s recitation from this device?",
+            "audio_storage_used" to "Storage used: {size}",
+            "back" to "Back",
+            "change" to "Change",
+            "north" to "North",
+            "south" to "South",
+            "east" to "East",
+            "west" to "West",
+            "adhkar_search_hint" to "Search categories",
+            "adhkar_items_count" to "{n} adhkar",
+            "prayer_my_location" to "My location",
+            "prayer_none_left" to "No more prayers today",
+            "qibla_no_sensor" to "This device has no compass",
+            "qibla_bearing_from_north" to "Qibla bearing from north: {deg}°",
+            "qibla_device_direction" to "Phone direction",
+            "qibla_aligned" to "You are facing the Qibla ✓",
+            "qibla_turn_right" to "Turn the phone right {deg}°",
+            "qibla_turn_left" to "Turn the phone left {deg}°",
+            "qibla_bearing_geo" to "Qibla is at {deg}° from true north",
+            "quran_load_failed" to "Failed to load the Quran",
+            "quran_uthmani_source" to "Uthmani text: {source}",
+            "minutes_short" to "{n} min",
+        )
+
+        val kStringsFr: Map<String, String> = mapOf(
+            "app_name" to "Athar",
+            "tagline" to "Laisse une trace de bien",
+            "hi_morning" to "Bonjour",
+            "hi_afternoon" to "Bon après-midi",
+            "hi_evening" to "Bonsoir",
+            "hi_night" to "Bonne nuit",
+            "tab_home" to "Accueil",
+            "tab_quran" to "Coran",
+            "tab_adhkar" to "Invocations",
+            "tab_qibla" to "Qibla",
+            "tab_more" to "Plus",
+            "next_prayer" to "Prochaine prière",
+            "remaining" to "restant",
+            "today" to "Aujourd’hui",
+            "now" to "Maintenant",
+            "madhab_label" to "Madhab",
+            "shafi" to "Chaféite",
+            "hanafi" to "Hanafite",
+            "fajr" to "Fajr",
+            "sunrise" to "Lever",
+            "sunrise_no_adhan" to "Lever du soleil : pas d’adhan — ce n’est pas une prière",
+            "dhuhr" to "Dohr",
+            "asr" to "Asr",
+            "maghrib" to "Maghreb",
+            "isha" to "Icha",
+            "prayer_times" to "Horaires",
+            "monthly_calendar" to "Calendrier mensuel",
+            "calc_settings" to "Paramètres de calcul",
+            "notifications" to "Notifications",
+            "adhan_sound" to "Son de l’adhan",
+            "reminder_before" to "Rappel avant la prière",
+            "continue_reading" to "Continuer la lecture",
+            "ayah_no" to "Verset",
+            "wird_title" to "Ma part du jour",
+            "wird_sub" to "Plan de khatma sur 30 jours",
+            "adhkar_today" to "Invocations du jour",
+            "done" to "Terminé",
+            "of" to "sur",
+            "quick_actions" to "Actions rapides",
+            "verse_of_day" to "Verset du jour",
+            "qa_quran" to "Coran",
+            "qa_adhkar" to "Invocations",
+            "qa_qibla" to "Qibla",
+            "qa_tasbih" to "Tasbih",
+            "qa_duas" to "Douas",
+            "qa_names" to "Noms d’Allah",
+            "quran_index" to "Index des sourates",
+            "search_ph" to "Rechercher sourates & versets…",
+            "filter_all" to "Tous",
+            "filter_meccan" to "Mecquoises",
+            "filter_medinan" to "Médinoises",
+            "verses" to "versets",
+            "juz" to "Juz",
+            "meccan" to "Mecquoise",
+            "medinan" to "Médinoise",
+            "reader_settings" to "Paramètres de lecture",
+            "font_size" to "Taille du texte",
+            "translation" to "Traduction",
+            "tafsir" to "Tafsir",
+            "reciter" to "Récitateur",
+            "none" to "Aucune",
+            "play_surah" to "Écouter",
+            "repeat" to "Répéter",
+            "speed" to "Vitesse",
+            "download_offline" to "Télécharger hors ligne",
+            "save_mark" to "Enregistrer",
+            "bookmark" to "Marque-page",
+            "note" to "Note",
+            "color" to "Surligner",
+            "share" to "Partager",
+            "copy" to "Copier",
+            "saved_msg" to "Enregistré",
+            "bookmarks" to "Enregistrés",
+            "adhkar_cat" to "Catégories",
+            "morning" to "Invocations du matin",
+            "evening" to "Invocations du soir",
+            "after_prayer" to "Après la prière",
+            "sleep" to "Avant le sommeil",
+            "wake" to "Au réveil",
+            "food" to "Repas",
+            "mosque" to "Mosquée",
+            "travel" to "Voyage",
+            "anxiety" to "Angoisse & tristesse",
+            "rain" to "Pluie",
+            "count_of" to "Nombre",
+            "tap_to_count" to "Appuyez pour compter",
+            "complete_all" to "Série terminée",
+            "reset" to "Réinitialiser",
+            "dua_library" to "Bibliothèque de douas",
+            "source" to "Source",
+            "names_title" to "Les 99 Noms d’Allah",
+            "names_sub" to "Touchez un nom pour l’écouter",
+            "qibla_title" to "Direction de la Qibla",
+            "qibla_hint" to "Orientez le téléphone et attendez",
+            "distance" to "Distance vers La Mecque",
+            "bearing" to "Azimut de la Qibla",
+            "calibrate" to "Bougez l’appareil en ∞ pour calibrer",
+            "simulate" to "Simuler la rotation",
+            "how_without" to "Trouver la Qibla sans boussole ?",
+            "tasbih_title" to "Tasbih",
+            "target" to "Objectif",
+            "tracker_title" to "Ma trace",
+            "tracker_sub" to "Suivi des adorations",
+            "streak_days" to "jours consécutifs",
+            "this_week" to "Cette semaine",
+            "last_30" to "30 derniers jours",
+            "habits" to "Mes habitudes",
+            "calendar_title" to "Calendrier & événements",
+            "hijri" to "Date hégirienne",
+            "gregorian" to "Date grégorienne",
+            "upcoming" to "Événements à venir",
+            "more_title" to "Plus",
+            "settings" to "Paramètres",
+            "settings_title" to "Paramètres",
+            "about" to "À propos",
+            "share_app" to "Partager l’app",
+            "rate_app" to "Noter l’app",
+            "general" to "Général",
+            "language" to "Langue",
+            "theme" to "Thème",
+            "text_size" to "Taille du texte",
+            "backup" to "Sauvegarde",
+            "sources" to "Sources & licences",
+            "privacy" to "Confidentialité",
+            "theme_light" to "Clair",
+            "theme_dark" to "Sombre",
+            "theme_auto" to "Auto",
+            "size_small" to "Petit",
+            "size_normal" to "Normal",
+            "size_large" to "Grand",
+            "size_xlarge" to "Très grand",
+            "appearance" to "Apparence & langue",
+            "arabic_digits" to "Chiffres arabo-indiens",
+            "arabic_digits_sub" to "Afficher les nombres ١٢٣ au lieu de 123",
+            "system_default" to "Selon le système",
+            "about_title" to "À propos d’Athar",
+            "about_body" to "Une application islamique complète, hors ligne, sans publicité ni collecte de données. Tout le contenu est sourcé, et les horaires sont calculés astronomiquement sur votre appareil.",
+            "empty_bm_t" to "Aucun marque-page",
+            "empty_bm_s" to "Appui long sur un verset pour l’enregistrer",
+            "empty_note_t" to "Aucune note",
+            "save" to "Enregistrer",
+            "cancel" to "Annuler",
+            "apply" to "Appliquer",
+            "ok" to "OK",
+            "retry" to "Réessayer",
+            "loading" to "Chargement…",
+            "error_generic" to "Une erreur est survenue",
+            "on" to "Activé",
+            "off" to "Désactivé",
+            "coming_soon" to "Bientôt",
+            "demo_data" to "Données de démo",
+            "onboarding_title" to "Athar",
+            "onboarding_subtitle" to "Une seule application islamique pour la prière, le Coran, les invocations et la Qibla — hors ligne et sans publicité.",
+            "choose_language" to "Choisissez votre langue",
+            "start" to "Commencer",
+            "skip" to "Passer",
+            "design_system" to "Design system",
+            "ds_colors" to "Couleurs",
+            "ds_typography" to "Typographie",
+            "ds_spacing" to "Espacements",
+            "ds_radii" to "Rayons",
+            "ds_components" to "Composants",
+            "ds_buttons" to "Boutons",
+            "ds_inputs" to "Champs",
+            "ds_feedback" to "Retours",
+            "week1_note" to "Les bases sont prêtes : structure, design system et trois langues.",
+            "coming_week2" to "Les vrais horaires arrivent en semaine 2",
+            "prayer_soon_title" to "Horaires bientôt",
+            "prayer_soon_body" to "Le calcul astronomique des horaires (10+ méthodes, madhab, ajustements manuels) est en cours en semaine 2.",
+            "quran_soon_title" to "Le Coran bientôt",
+            "quran_soon_body" to "L’index des 114 sourates et le lecteur en texte othmani, avec tafsir et récitation — semaines 2 et 3.",
+            "adhkar_soon_title" to "Invocations bientôt",
+            "adhkar_soon_body" to "Dix catégories d’invocations avec compteur par dhikr, et une bibliothèque de douas — semaine 3.",
+            "qibla_soon_title" to "Boussole bientôt",
+            "qibla_soon_body" to "La boussole Qibla avec fusion de capteurs, calibration et méthode solaire de secours — semaine 3.",
+            "prayer_settings_title" to "Paramètres des horaires de prière",
+            "prayer_times_title" to "Horaires de prière",
+            "prayer_settings_open" to "Horaires de prière",
+            "prayer_engine_credit" to "Calcul astronomique : Adhan Dart",
+            "prayer_location" to "Localisation",
+            "prayer_choose_city" to "Choisir une ville",
+            "prayer_use_my_location" to "Utiliser ma position",
+            "prayer_location_rationale" to "L’autorisation de localisation est nécessaire pour des horaires précis. Votre position n’est jamais stockée ni envoyée.",
+            "prayer_location_updated" to "Position mise à jour",
+            "prayer_location_denied" to "Autorisation de localisation refusée — vous pouvez choisir une ville manuellement.",
+            "prayer_location_denied_forever" to "Autorisation refusée définitivement. Ouvrez les paramètres de l’application pour l’activer.",
+            "prayer_location_service_off" to "Le service de localisation est désactivé sur cet appareil.",
+            "prayer_location_timeout" to "Impossible de déterminer votre position. Réessayez ou choisissez une ville.",
+            "prayer_location_unknown" to "Une erreur inattendue est survenue lors de la localisation.",
+            "prayer_open_settings" to "Ouvrir les paramètres",
+            "prayer_method" to "Méthode de calcul",
+            "prayer_madhab" to "Madhab",
+            "prayer_madhab_sub" to "N’affecte que l’horaire du Asr (longueur de l’ombre).",
+            "prayer_high_latitude" to "Règle des hautes latitudes",
+            "prayer_high_latitude_sub" to "Pour les régions où le Fajr ou l’Icha ne sont pas clairement définis (Europe, Amérique du Nord).",
+            "prayer_adjustments" to "Ajustement manuel",
+            "prayer_adjustments_sub" to "Ajoutez ou retirez des minutes si votre mosquée locale diffère du calcul.",
+            "prayer_adjusted_notice" to "Les horaires sont ajustés manuellement — ce n’est pas le calcul astronomique brut.",
+            "prayer_clear_adjustments" to "Effacer tous les ajustements",
+            "prayer_next_label" to "Prochaine prière",
+            "prayer_tomorrow_fajr" to "Fajr demain",
+            "prayer_now" to "Maintenant",
+            "prayer_upcoming" to "Prochaine",
+            "prayer_unavailable" to "Impossible de calculer les horaires de prière",
+            "city_search_hint" to "Rechercher une ville…",
+            "city_no_results" to "Aucun résultat",
+            "city_no_results_hint" to "Essayez le nom en arabe, en anglais ou en français.",
+            "time_am" to "AM",
+            "time_pm" to "PM",
+            "home_week2_note" to "Les horaires sont désormais calculés astronomiquement sur votre appareil, hors ligne. Le wird, les invocations et le suivi arrivent ensuite.",
+            "notif_athan_title" to "C'est l'heure de {prayer}",
+            "notif_athan_body" to "{time} — {place}",
+            "notif_reminder_title" to "{prayer} bientôt",
+            "notif_reminder_body" to "{n} minutes avant l’adhan",
+            "notif_jumuah_title" to "Vendredi",
+            "notif_jumuah_body" to "Sourate Al-Kahf · Prière sur le Prophète · Ghusl",
+            "notif_channel_athan" to "Adhan",
+            "notif_channel_athan_desc" to "Adhan au début de chaque prière",
+            "notif_channel_reminder" to "Rappel avant la prière",
+            "notif_channel_reminder_desc" to "Un rappel silencieux quelques minutes avant l’adhan",
+            "notif_channel_jumuah" to "Rappel du vendredi",
+            "notif_channel_jumuah_desc" to "Un rappel hebdomadaire le vendredi",
+            "notifications_test_title" to "Notification de test",
+            "notifications_test_body" to "Si vous voyez ceci, les notifications fonctionnent.",
+            "notifications_master" to "Activer les notifications",
+            "notifications_master_desc" to "Si désactivé, Athar n’envoie rien du tout",
+            "notifications_test" to "Envoyer une notification de test",
+            "notifications_test_queued" to "Une notification de test arrivera dans 5 secondes",
+            "notifications_off_hint" to "Notifications désactivées — activez-les pour entendre l’adhan à l’heure",
+            "notifications_permission_needed" to "Athar a besoin de l’autorisation système",
+            "notifications_permission_action" to "Activer les notifications",
+            "notifications_exact_needed" to "Pour un adhan à la seconde près, activez « Alarmes et rappels »",
+            "notifications_exact_needed_short" to "Planification exacte désactivée — l’adhan peut avoir quelques minutes de retard",
+            "notifications_exact_action" to "Ouvrir les paramètres",
+            "notifications_per_prayer" to "Adhan pour chaque prière",
+            "notifications_per_prayer_hint" to "Choisissez adhan, vibreur ou silencieux pour chaque prière",
+            "notifications_reminder" to "Rappel avant l’adhan",
+            "notifications_reminder_desc" to "Un rappel silencieux à l’écran",
+            "notifications_reminder_minutes" to "Avant l’adhan de",
+            "notifications_minutes_off" to "Aucun rappel",
+            "notifications_jumuah" to "Rappel du vendredi",
+            "notifications_jumuah_desc" to "Sourate Al-Kahf · Prière sur le Prophète · Ghusl",
+            "notifications_jumuah_before" to "Avant la prière du vendredi de",
+            "notifications_sound" to "Son de l’adhan",
+            "notifications_sound_desc" to "Tous les sons sont suspendus jusqu’à vérification de leurs licences",
+            "notifications_mode_adhan" to "Adhan",
+            "notifications_mode_beep" to "Bip",
+            "notifications_mode_vibrate" to "Vibreur",
+            "notifications_mode_silent" to "Silencieux",
+            "notifications_mode_off" to "Désactivé",
+            "notifications_scheduled" to "notification planifiée",
+            "notifications_scheduled_many" to "notifications planifiées",
+            "notifications_mode_short_adhan" to "Adhan court",
+            "notifications_minutes_value" to "{n} min",
+            "notifications_scheduled_none" to "Aucune notification planifiée",
+            "athary_open" to "Ouvrir Athary",
+            "athary_best" to "Record",
+            "athary_less" to "Moins",
+            "athary_more" to "Plus",
+            "athary_next" to "Il vous reste",
+            "athary_reset" to "Effacer l’historique",
+            "athary_reset_confirm" to "Ceci efface tout votre historique Athary. Aucun retour possible.",
+            "athary_future_note" to "Dans la version complète : un résumé hebdomadaire, des objectifs personnalisés, et un jour de repos par semaine qui préserve votre série.",
+            "home_week4_note" to "Les horaires et les notifications sont actifs, et Athary suit votre série localement sur votre appareil. La part de Coran et les invocations arrivent plus tard (semaines 5–11).",
+            "widget_label" to "Widget Athar",
+            "widget_description" to "La prochaine prière et les horaires du jour sur votre écran d’accueil",
+            "widget_next_prayer" to "Prochaine",
+            "widget_in" to "dans",
+            "widget_no_data" to "Ouvrez Athar pour calculer les horaires",
+            "widget_add" to "Ajouter le widget",
+            "widget_add_hint" to "Appui long sur l’écran d’accueil → Widgets → Athar",
+            "quran_tab_surah" to "Sourates",
+            "quran_tab_juz" to "Juz",
+            "quran_tab_page" to "Pages",
+            "quran_empty_title" to "Le Coran n’est pas encore sur votre appareil",
+            "quran_empty_body" to "Le texte coranique n’est pas fourni avec l’application — un choix délibéré pour protéger et vérifier le texte. Importez un fichier une seule fois, puis tout fonctionne hors ligne.",
+            "quran_import_action" to "Importer le fichier Coran",
+            "quran_importing" to "Importation…",
+            "quran_import_failed" to "Échec de l’import",
+            "quran_reader_settings" to "Paramètres de lecture",
+            "quran_font_size" to "Taille du texte",
+            "quran_font_smaller" to "Plus petit",
+            "quran_font_bigger" to "Plus grand",
+            "quran_reading_theme" to "Thème de lecture",
+            "quran_theme_paper" to "Papier",
+            "quran_theme_sepia" to "Sépia",
+            "quran_theme_night" to "Nuit",
+            "quran_show_translation" to "Afficher la traduction",
+            "quran_no_translation" to "Aucune traduction chargée",
+            "quran_edition" to "Traduction",
+            "quran_page_word" to "Page",
+            "quran_sajda" to "Prosternation",
+            "quran_search_title" to "Rechercher dans le Coran",
+            "quran_search_hint" to "Tapez un mot, un verset (2:255) ou « p. 42 »",
+            "quran_search_empty" to "Aucun résultat",
+            "quran_results_count" to "{n} résultats",
+            "quran_no_ayahs" to "Aucun verset",
+            "audio_listen" to "Écouter",
+            "audio_stop" to "Arrêter",
+            "audio_reciter" to "Récitateur",
+            "audio_choose_reciter" to "Choisir le récitateur",
+            "audio_reciter_default" to "Par défaut",
+            "audio_download" to "Télécharger",
+            "audio_download_surah" to "Télécharger la sourate",
+            "audio_download_juz" to "Télécharger le juz",
+            "audio_download_all" to "Télécharger tout le Coran",
+            "audio_downloaded" to "Téléchargé",
+            "audio_delete_download" to "Supprimer le téléchargement",
+            "audio_downloading" to "Téléchargement…",
+            "audio_download_progress" to "{done} sur {total}",
+            "audio_size_estimate" to "≈ {size}",
+            "audio_needs_internet" to "La première écoute nécessite Internet",
+            "audio_playback_failed" to "Échec de la lecture",
+            "audio_speed" to "Vitesse de récitation",
+            "audio_repeat_ayah" to "Répéter le verset",
+            "audio_sources" to "Sources et licences",
+            "audio_rights_note" to "Les droits de chaque récitation appartiennent à son récitateur",
+            "audio_licensed_noncommercial" to "Autorisé pour un usage non commercial",
+            "audio_no_bundled_audio" to "L’application n’intègre aucun audio",
+            "audio_cancel" to "Annuler",
+            "audio_delete_confirm" to "Supprimer la récitation de {name} ?",
+            "audio_storage_used" to "Espace utilisé : {size}",
+            "back" to "Retour",
+            "change" to "Changer",
+            "north" to "Nord",
+            "south" to "Sud",
+            "east" to "Est",
+            "west" to "Ouest",
+            "adhkar_search_hint" to "Rechercher une catégorie",
+            "adhkar_items_count" to "{n} invocations",
+            "prayer_my_location" to "Ma position",
+            "prayer_none_left" to "Plus de prières aujourd’hui",
+            "qibla_no_sensor" to "Cet appareil n’a pas de boussole",
+            "qibla_bearing_from_north" to "Direction depuis le nord : {deg}°",
+            "qibla_device_direction" to "Direction du téléphone",
+            "qibla_aligned" to "Vous êtes face à la Qibla ✓",
+            "qibla_turn_right" to "Tournez le téléphone à droite de {deg}°",
+            "qibla_turn_left" to "Tournez le téléphone à gauche de {deg}°",
+            "qibla_bearing_geo" to "La Qibla est à {deg}° du nord géographique",
+            "quran_load_failed" to "Échec du chargement du Coran",
+            "quran_uthmani_source" to "Texte othmanien : {source}",
+            "minutes_short" to "{n} min",
+        )
+    }
+
+    // ══════════════════════════════════════════════
+    // الوصول المكتوب النوع — خطأ في الاسم يظهر وقت
+    // التجميع لا وقت التشغيل
+    // ══════════════════════════════════════════════
+
+    val appName: String get() = t("app_name")
+    val tagline: String get() = t("tagline")
+    val hiMorning: String get() = t("hi_morning")
+    val hiAfternoon: String get() = t("hi_afternoon")
+    val hiEvening: String get() = t("hi_evening")
+    val hiNight: String get() = t("hi_night")
+    val tabHome: String get() = t("tab_home")
+    val tabQuran: String get() = t("tab_quran")
+    val tabAdhkar: String get() = t("tab_adhkar")
+    val tabQibla: String get() = t("tab_qibla")
+    val tabMore: String get() = t("tab_more")
+    val nextPrayer: String get() = t("next_prayer")
+    val remaining: String get() = t("remaining")
+    val today: String get() = t("today")
+    val now: String get() = t("now")
+    val madhabLabel: String get() = t("madhab_label")
+    val shafi: String get() = t("shafi")
+    val hanafi: String get() = t("hanafi")
+    val fajr: String get() = t("fajr")
+    val sunrise: String get() = t("sunrise")
+    val sunriseNoAdhan: String get() = t("sunrise_no_adhan")
+    val dhuhr: String get() = t("dhuhr")
+    val asr: String get() = t("asr")
+    val maghrib: String get() = t("maghrib")
+    val isha: String get() = t("isha")
+    val prayerTimes: String get() = t("prayer_times")
+    val monthlyCalendar: String get() = t("monthly_calendar")
+    val calcSettings: String get() = t("calc_settings")
+    val notifications: String get() = t("notifications")
+    val adhanSound: String get() = t("adhan_sound")
+    val reminderBefore: String get() = t("reminder_before")
+    val continueReading: String get() = t("continue_reading")
+    val ayahNo: String get() = t("ayah_no")
+    val wirdTitle: String get() = t("wird_title")
+    val wirdSub: String get() = t("wird_sub")
+    val adhkarToday: String get() = t("adhkar_today")
+    val done: String get() = t("done")
+    val of: String get() = t("of")
+    val quickActions: String get() = t("quick_actions")
+    val verseOfDay: String get() = t("verse_of_day")
+    val qaQuran: String get() = t("qa_quran")
+    val qaAdhkar: String get() = t("qa_adhkar")
+    val qaQibla: String get() = t("qa_qibla")
+    val qaTasbih: String get() = t("qa_tasbih")
+    val qaDuas: String get() = t("qa_duas")
+    val qaNames: String get() = t("qa_names")
+    val quranIndex: String get() = t("quran_index")
+    val searchPh: String get() = t("search_ph")
+    val filterAll: String get() = t("filter_all")
+    val filterMeccan: String get() = t("filter_meccan")
+    val filterMedinan: String get() = t("filter_medinan")
+    val verses: String get() = t("verses")
+    val juz: String get() = t("juz")
+    val meccan: String get() = t("meccan")
+    val medinan: String get() = t("medinan")
+    val readerSettings: String get() = t("reader_settings")
+    val fontSize: String get() = t("font_size")
+    val translation: String get() = t("translation")
+    val tafsir: String get() = t("tafsir")
+    val reciter: String get() = t("reciter")
+    val none: String get() = t("none")
+    val playSurah: String get() = t("play_surah")
+    val repeat: String get() = t("repeat")
+    val speed: String get() = t("speed")
+    val downloadOffline: String get() = t("download_offline")
+    val saveMark: String get() = t("save_mark")
+    val bookmark: String get() = t("bookmark")
+    val note: String get() = t("note")
+    val color: String get() = t("color")
+    val share: String get() = t("share")
+    val copy: String get() = t("copy")
+    val savedMsg: String get() = t("saved_msg")
+    val bookmarks: String get() = t("bookmarks")
+    val adhkarCat: String get() = t("adhkar_cat")
+    val morning: String get() = t("morning")
+    val evening: String get() = t("evening")
+    val afterPrayer: String get() = t("after_prayer")
+    val sleep: String get() = t("sleep")
+    val wake: String get() = t("wake")
+    val food: String get() = t("food")
+    val mosque: String get() = t("mosque")
+    val travel: String get() = t("travel")
+    val anxiety: String get() = t("anxiety")
+    val rain: String get() = t("rain")
+    val countOf: String get() = t("count_of")
+    val tapToCount: String get() = t("tap_to_count")
+    val completeAll: String get() = t("complete_all")
+    val reset: String get() = t("reset")
+    val duaLibrary: String get() = t("dua_library")
+    val source: String get() = t("source")
+    val namesTitle: String get() = t("names_title")
+    val namesSub: String get() = t("names_sub")
+    val qiblaTitle: String get() = t("qibla_title")
+    val qiblaHint: String get() = t("qibla_hint")
+    val distance: String get() = t("distance")
+    val bearing: String get() = t("bearing")
+    val calibrate: String get() = t("calibrate")
+    val simulate: String get() = t("simulate")
+    val howWithout: String get() = t("how_without")
+    val tasbihTitle: String get() = t("tasbih_title")
+    val target: String get() = t("target")
+    val trackerTitle: String get() = t("tracker_title")
+    val trackerSub: String get() = t("tracker_sub")
+    val streakDays: String get() = t("streak_days")
+    val thisWeek: String get() = t("this_week")
+    val last30: String get() = t("last_30")
+    val habits: String get() = t("habits")
+    val calendarTitle: String get() = t("calendar_title")
+    val hijri: String get() = t("hijri")
+    val gregorian: String get() = t("gregorian")
+    val upcoming: String get() = t("upcoming")
+    val moreTitle: String get() = t("more_title")
+    val settings: String get() = t("settings")
+    val settingsTitle: String get() = t("settings_title")
+    val about: String get() = t("about")
+    val shareApp: String get() = t("share_app")
+    val rateApp: String get() = t("rate_app")
+    val general: String get() = t("general")
+    val language: String get() = t("language")
+    val theme: String get() = t("theme")
+    val textSize: String get() = t("text_size")
+    val backup: String get() = t("backup")
+    val sources: String get() = t("sources")
+    val privacy: String get() = t("privacy")
+    val themeLight: String get() = t("theme_light")
+    val themeDark: String get() = t("theme_dark")
+    val themeAuto: String get() = t("theme_auto")
+    val sizeSmall: String get() = t("size_small")
+    val sizeNormal: String get() = t("size_normal")
+    val sizeLarge: String get() = t("size_large")
+    val sizeXlarge: String get() = t("size_xlarge")
+    val appearance: String get() = t("appearance")
+    val arabicDigits: String get() = t("arabic_digits")
+    val arabicDigitsSub: String get() = t("arabic_digits_sub")
+    val systemDefault: String get() = t("system_default")
+    val aboutTitle: String get() = t("about_title")
+    val aboutBody: String get() = t("about_body")
+    val emptyBmT: String get() = t("empty_bm_t")
+    val emptyBmS: String get() = t("empty_bm_s")
+    val emptyNoteT: String get() = t("empty_note_t")
+    val save: String get() = t("save")
+    val cancel: String get() = t("cancel")
+    val apply: String get() = t("apply")
+    val ok: String get() = t("ok")
+    val retry: String get() = t("retry")
+    val loading: String get() = t("loading")
+    val errorGeneric: String get() = t("error_generic")
+    val on: String get() = t("on")
+    val off: String get() = t("off")
+    val comingSoon: String get() = t("coming_soon")
+    val demoData: String get() = t("demo_data")
+    val onboardingTitle: String get() = t("onboarding_title")
+    val onboardingSubtitle: String get() = t("onboarding_subtitle")
+    val chooseLanguage: String get() = t("choose_language")
+    val start: String get() = t("start")
+    val skip: String get() = t("skip")
+    val designSystem: String get() = t("design_system")
+    val dsColors: String get() = t("ds_colors")
+    val dsTypography: String get() = t("ds_typography")
+    val dsSpacing: String get() = t("ds_spacing")
+    val dsRadii: String get() = t("ds_radii")
+    val dsComponents: String get() = t("ds_components")
+    val dsButtons: String get() = t("ds_buttons")
+    val dsInputs: String get() = t("ds_inputs")
+    val dsFeedback: String get() = t("ds_feedback")
+    val week1Note: String get() = t("week1_note")
+    val comingWeek2: String get() = t("coming_week2")
+    val prayerSoonTitle: String get() = t("prayer_soon_title")
+    val prayerSoonBody: String get() = t("prayer_soon_body")
+    val quranSoonTitle: String get() = t("quran_soon_title")
+    val quranSoonBody: String get() = t("quran_soon_body")
+    val adhkarSoonTitle: String get() = t("adhkar_soon_title")
+    val adhkarSoonBody: String get() = t("adhkar_soon_body")
+    val qiblaSoonTitle: String get() = t("qibla_soon_title")
+    val qiblaSoonBody: String get() = t("qibla_soon_body")
+    val prayerSettingsTitle: String get() = t("prayer_settings_title")
+    val prayerTimesTitle: String get() = t("prayer_times_title")
+    val prayerSettingsOpen: String get() = t("prayer_settings_open")
+    val prayerEngineCredit: String get() = t("prayer_engine_credit")
+    val prayerLocation: String get() = t("prayer_location")
+    val prayerChooseCity: String get() = t("prayer_choose_city")
+    val prayerUseMyLocation: String get() = t("prayer_use_my_location")
+    val prayerLocationRationale: String get() = t("prayer_location_rationale")
+    val prayerLocationUpdated: String get() = t("prayer_location_updated")
+    val prayerLocationDenied: String get() = t("prayer_location_denied")
+    val prayerLocationDeniedForever: String get() = t("prayer_location_denied_forever")
+    val prayerLocationServiceOff: String get() = t("prayer_location_service_off")
+    val prayerLocationTimeout: String get() = t("prayer_location_timeout")
+    val prayerLocationUnknown: String get() = t("prayer_location_unknown")
+    val prayerOpenSettings: String get() = t("prayer_open_settings")
+    val prayerMethod: String get() = t("prayer_method")
+    val prayerMadhab: String get() = t("prayer_madhab")
+    val prayerMadhabSub: String get() = t("prayer_madhab_sub")
+    val prayerHighLatitude: String get() = t("prayer_high_latitude")
+    val prayerHighLatitudeSub: String get() = t("prayer_high_latitude_sub")
+    val prayerAdjustments: String get() = t("prayer_adjustments")
+    val prayerAdjustmentsSub: String get() = t("prayer_adjustments_sub")
+    val prayerAdjustedNotice: String get() = t("prayer_adjusted_notice")
+    val prayerClearAdjustments: String get() = t("prayer_clear_adjustments")
+    val prayerNextLabel: String get() = t("prayer_next_label")
+    val prayerTomorrowFajr: String get() = t("prayer_tomorrow_fajr")
+    val prayerNow: String get() = t("prayer_now")
+    val prayerUpcoming: String get() = t("prayer_upcoming")
+    val prayerUnavailable: String get() = t("prayer_unavailable")
+    val citySearchHint: String get() = t("city_search_hint")
+    val cityNoResults: String get() = t("city_no_results")
+    val cityNoResultsHint: String get() = t("city_no_results_hint")
+    val timeAm: String get() = t("time_am")
+    val timePm: String get() = t("time_pm")
+    val homeWeek2Note: String get() = t("home_week2_note")
+    val notifAthanTitle: String get() = t("notif_athan_title")
+    val notifAthanBody: String get() = t("notif_athan_body")
+    val notifReminderTitle: String get() = t("notif_reminder_title")
+    val notifReminderBody: String get() = t("notif_reminder_body")
+    val notifJumuahTitle: String get() = t("notif_jumuah_title")
+    val notifJumuahBody: String get() = t("notif_jumuah_body")
+    val notifChannelAthan: String get() = t("notif_channel_athan")
+    val notifChannelAthanDesc: String get() = t("notif_channel_athan_desc")
+    val notifChannelReminder: String get() = t("notif_channel_reminder")
+    val notifChannelReminderDesc: String get() = t("notif_channel_reminder_desc")
+    val notifChannelJumuah: String get() = t("notif_channel_jumuah")
+    val notifChannelJumuahDesc: String get() = t("notif_channel_jumuah_desc")
+    val notificationsTestTitle: String get() = t("notifications_test_title")
+    val notificationsTestBody: String get() = t("notifications_test_body")
+    val notificationsMaster: String get() = t("notifications_master")
+    val notificationsMasterDesc: String get() = t("notifications_master_desc")
+    val notificationsTest: String get() = t("notifications_test")
+    val notificationsTestQueued: String get() = t("notifications_test_queued")
+    val notificationsOffHint: String get() = t("notifications_off_hint")
+    val notificationsPermissionNeeded: String get() = t("notifications_permission_needed")
+    val notificationsPermissionAction: String get() = t("notifications_permission_action")
+    val notificationsExactNeeded: String get() = t("notifications_exact_needed")
+    val notificationsExactNeededShort: String get() = t("notifications_exact_needed_short")
+    val notificationsExactAction: String get() = t("notifications_exact_action")
+    val notificationsPerPrayer: String get() = t("notifications_per_prayer")
+    val notificationsPerPrayerHint: String get() = t("notifications_per_prayer_hint")
+    val notificationsReminder: String get() = t("notifications_reminder")
+    val notificationsReminderDesc: String get() = t("notifications_reminder_desc")
+    val notificationsReminderMinutes: String get() = t("notifications_reminder_minutes")
+    val notificationsMinutesOff: String get() = t("notifications_minutes_off")
+    val notificationsJumuah: String get() = t("notifications_jumuah")
+    val notificationsJumuahDesc: String get() = t("notifications_jumuah_desc")
+    val notificationsJumuahBefore: String get() = t("notifications_jumuah_before")
+    val notificationsSound: String get() = t("notifications_sound")
+    val notificationsSoundDesc: String get() = t("notifications_sound_desc")
+    val notificationsModeAdhan: String get() = t("notifications_mode_adhan")
+    val notificationsModeBeep: String get() = t("notifications_mode_beep")
+    val notificationsModeVibrate: String get() = t("notifications_mode_vibrate")
+    val notificationsModeSilent: String get() = t("notifications_mode_silent")
+    val notificationsModeOff: String get() = t("notifications_mode_off")
+    val notificationsScheduled: String get() = t("notifications_scheduled")
+    val notificationsScheduledMany: String get() = t("notifications_scheduled_many")
+    val notificationsModeShortAdhan: String get() = t("notifications_mode_short_adhan")
+    val notificationsMinutesValue: String get() = t("notifications_minutes_value")
+    val notificationsScheduledNone: String get() = t("notifications_scheduled_none")
+    val atharyOpen: String get() = t("athary_open")
+    val atharyBest: String get() = t("athary_best")
+    val atharyLess: String get() = t("athary_less")
+    val atharyMore: String get() = t("athary_more")
+    val atharyNext: String get() = t("athary_next")
+    val atharyReset: String get() = t("athary_reset")
+    val atharyResetConfirm: String get() = t("athary_reset_confirm")
+    val atharyFutureNote: String get() = t("athary_future_note")
+    val homeWeek4Note: String get() = t("home_week4_note")
+    val widgetLabel: String get() = t("widget_label")
+    val widgetDescription: String get() = t("widget_description")
+    val widgetNextPrayer: String get() = t("widget_next_prayer")
+    val widgetIn: String get() = t("widget_in")
+    val widgetNoData: String get() = t("widget_no_data")
+    val widgetAdd: String get() = t("widget_add")
+    val widgetAddHint: String get() = t("widget_add_hint")
+    val quranTabSurah: String get() = t("quran_tab_surah")
+    val quranTabJuz: String get() = t("quran_tab_juz")
+    val quranTabPage: String get() = t("quran_tab_page")
+    val quranEmptyTitle: String get() = t("quran_empty_title")
+    val quranEmptyBody: String get() = t("quran_empty_body")
+    val quranImportAction: String get() = t("quran_import_action")
+    val quranImporting: String get() = t("quran_importing")
+    val quranImportFailed: String get() = t("quran_import_failed")
+    val quranReaderSettings: String get() = t("quran_reader_settings")
+    val quranFontSize: String get() = t("quran_font_size")
+    val quranFontSmaller: String get() = t("quran_font_smaller")
+    val quranFontBigger: String get() = t("quran_font_bigger")
+    val quranReadingTheme: String get() = t("quran_reading_theme")
+    val quranThemePaper: String get() = t("quran_theme_paper")
+    val quranThemeSepia: String get() = t("quran_theme_sepia")
+    val quranThemeNight: String get() = t("quran_theme_night")
+    val quranShowTranslation: String get() = t("quran_show_translation")
+    val quranNoTranslation: String get() = t("quran_no_translation")
+    val quranEdition: String get() = t("quran_edition")
+    val quranPageWord: String get() = t("quran_page_word")
+    val quranSajda: String get() = t("quran_sajda")
+    val quranSearchTitle: String get() = t("quran_search_title")
+    val quranSearchHint: String get() = t("quran_search_hint")
+    val quranSearchEmpty: String get() = t("quran_search_empty")
+    val quranResultsCount: String get() = t("quran_results_count")
+    val quranNoAyahs: String get() = t("quran_no_ayahs")
+    val audioListen: String get() = t("audio_listen")
+    val audioStop: String get() = t("audio_stop")
+    val audioReciter: String get() = t("audio_reciter")
+    val audioChooseReciter: String get() = t("audio_choose_reciter")
+    val audioReciterDefault: String get() = t("audio_reciter_default")
+    val audioDownload: String get() = t("audio_download")
+    val audioDownloadSurah: String get() = t("audio_download_surah")
+    val audioDownloadJuz: String get() = t("audio_download_juz")
+    val audioDownloadAll: String get() = t("audio_download_all")
+    val audioDownloaded: String get() = t("audio_downloaded")
+    val audioDeleteDownload: String get() = t("audio_delete_download")
+    val audioDownloading: String get() = t("audio_downloading")
+    val audioDownloadProgress: String get() = t("audio_download_progress")
+    val audioSizeEstimate: String get() = t("audio_size_estimate")
+    val audioNeedsInternet: String get() = t("audio_needs_internet")
+    val audioPlaybackFailed: String get() = t("audio_playback_failed")
+    val audioSpeed: String get() = t("audio_speed")
+    val audioRepeatAyah: String get() = t("audio_repeat_ayah")
+    val audioSources: String get() = t("audio_sources")
+    val audioRightsNote: String get() = t("audio_rights_note")
+    val audioLicensedNoncommercial: String get() = t("audio_licensed_noncommercial")
+    val audioNoBundledAudio: String get() = t("audio_no_bundled_audio")
+    val audioCancel: String get() = t("audio_cancel")
+    val audioDeleteConfirm: String get() = t("audio_delete_confirm")
+    val audioStorageUsed: String get() = t("audio_storage_used")
+    val back: String get() = t("back")
+    val change: String get() = t("change")
+    val north: String get() = t("north")
+    val south: String get() = t("south")
+    val east: String get() = t("east")
+    val west: String get() = t("west")
+    val adhkarSearchHint: String get() = t("adhkar_search_hint")
+    val adhkarItemsCount: String get() = t("adhkar_items_count")
+    val prayerMyLocation: String get() = t("prayer_my_location")
+    val prayerNoneLeft: String get() = t("prayer_none_left")
+    val qiblaNoSensor: String get() = t("qibla_no_sensor")
+    val qiblaBearingFromNorth: String get() = t("qibla_bearing_from_north")
+    val qiblaDeviceDirection: String get() = t("qibla_device_direction")
+    val qiblaAligned: String get() = t("qibla_aligned")
+    val qiblaTurnRight: String get() = t("qibla_turn_right")
+    val qiblaTurnLeft: String get() = t("qibla_turn_left")
+    val qiblaBearingGeo: String get() = t("qibla_bearing_geo")
+    val quranLoadFailed: String get() = t("quran_load_failed")
+    val quranUthmaniSource: String get() = t("quran_uthmani_source")
+    val minutesShort: String get() = t("minutes_short")
+}

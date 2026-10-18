@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.prayer.Cities
 import com.athar.athar.prayer.City
 import com.athar.athar.prayer.CitySearch
@@ -47,6 +48,7 @@ fun CityPickerScreen(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val s = LocalStrings.current
     val context = LocalContext.current
     var query by remember { mutableStateOf("") }
     var notice by remember { mutableStateOf<String?>(null) }
@@ -59,23 +61,23 @@ fun CityPickerScreen(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
         if (!granted) {
-            notice = "لم تُمنح صلاحية الموقع — اختر مدينة من القائمة"
+            notice = s.prayerLocationDenied
             return@rememberLauncherForActivityResult
         }
         val coords = lastKnownCoordinates(context)
         if (coords != null) {
             onCoordinatesChosen(coords.first, coords.second)
         } else {
-            notice = "تعذّر تحديد الموقع الآن — اختر مدينة من القائمة"
+            notice = s.prayerLocationTimeout
         }
     }
 
     Column(modifier = modifier.fillMaxSize()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onDismiss) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "رجوع")
+                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
             }
-            Text("المدينة", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(s.prayerChooseCity, fontSize = 20.sp, fontWeight = FontWeight.Bold)
         }
         HorizontalDivider()
 
@@ -85,7 +87,7 @@ fun CityPickerScreen(
                     PackageManager.PERMISSION_GRANTED -> {
                         val coords = lastKnownCoordinates(context)
                         if (coords != null) onCoordinatesChosen(coords.first, coords.second)
-                        else notice = "تعذّر تحديد الموقع الآن — اختر مدينة من القائمة"
+                        else notice = s.prayerLocationTimeout
                     }
                     else -> permissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
                 }
@@ -93,7 +95,7 @@ fun CityPickerScreen(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
         ) {
             Icon(Icons.Filled.MyLocation, contentDescription = null)
-            Text("  استخدام موقعي الحالي")
+            Text("  " + s.prayerUseMyLocation)
         }
 
         if (notice != null) {
@@ -108,7 +110,7 @@ fun CityPickerScreen(
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
-            label = { Text("ابحث بالعربية أو الإنجليزية أو الفرنسية") },
+            label = { Text(s.citySearchHint) },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
             singleLine = true,
         )

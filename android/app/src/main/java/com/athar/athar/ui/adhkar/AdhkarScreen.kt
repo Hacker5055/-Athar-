@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.athar.athar.adhkar.AdhkarProgressStore
+import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.adhkar.AdhkarRepository
 import com.athar.athar.adhkar.AdhkarSection
 import com.athar.athar.adhkar.AdhkarSources
@@ -52,6 +53,7 @@ import com.athar.athar.prayer.CitySearch
 
 @Composable
 fun AdhkarScreen(modifier: Modifier = Modifier) {
+    val s = LocalStrings.current
     val context = LocalContext.current
     var sections by remember { mutableStateOf<List<AdhkarSection>?>(null) }
     var query by remember { mutableStateOf("") }
@@ -72,7 +74,7 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
     val list = sections
     Column(modifier = modifier.fillMaxSize()) {
         Text(
-            text = "الأذكار",
+            text = s.tabAdhkar,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(16.dp),
@@ -86,7 +88,7 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
-                label = { Text("ابحث في الأقسام") },
+                label = { Text(s.adhkarSearchHint) },
                 leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -120,7 +122,7 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
                                 textAlign = TextAlign.Start,
                             )
                             Text(
-                                text = "${section.items.size} أذكار",
+                                text = s.tArgs("adhkar_items_count", "n" to section.items.size),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -150,6 +152,7 @@ private fun SectionScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val s = LocalStrings.current
     val context = LocalContext.current
     var counts by remember(section.title) {
         mutableStateOf(AdhkarProgressStore.load(context, section.title, section.items.size))
@@ -158,7 +161,7 @@ private fun SectionScreen(
     Column(modifier = modifier.fillMaxSize()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = "رجوع")
+                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
             }
             Text(
                 text = section.title,
@@ -171,7 +174,7 @@ private fun SectionScreen(
                     counts = List(section.items.size) { 0 }
                     AdhkarProgressStore.reset(context, section.title)
                 }) {
-                    Icon(Icons.Filled.RestartAlt, contentDescription = "إعادة العدّ")
+                    Icon(Icons.Filled.RestartAlt, contentDescription = s.reset)
                 }
             }
         }

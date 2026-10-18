@@ -31,11 +31,16 @@ data class PrayerDay(
             .minByOrNull { (_, time) -> time }
 }
 
-enum class PrayerSlot(val arabicName: String) {
-    FAJR("الفجر"),
-    SUNRISE("الشروق"),
-    DHUHR("الظهر"),
-    ASR("العصر"),
-    MAGHRIB("المغرب"),
-    ISHA("العشاء"),
+enum class PrayerSlot(
+    /// ⚠️ `arabicName` للاستخدامات التي لا تملك لغة (التشخيص،
+    /// الاختبارات). الواجهة تستخدم `stringKey` مع `Strings.t()`.
+    val arabicName: String,
+    val stringKey: String,
+) {
+    FAJR("الفجر", "fajr"),
+    SUNRISE("الشروق", "sunrise"),
+    DHUHR("الظهر", "dhuhr"),
+    ASR("العصر", "asr"),
+    MAGHRIB("المغرب", "maghrib"),
+    ISHA("العشاء", "isha"),
 }

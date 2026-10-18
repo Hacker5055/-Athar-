@@ -1,6 +1,14 @@
 package com.athar.athar.prayer
 
 /// مدينة واحدة — تُبنى مع التطبيق (أوفلاين أولًا).
+/// ⚠️ اسم المدينة **بيانات لا واجهة**: يُترجم حسب اللغة، وإلا
+/// ظهرت «القاهرة» بالعربية داخل تطبيق فرنسي بالكامل.
+fun nameFor(locale: com.athar.athar.i18n.AppLocale): String = when (locale) {
+    com.athar.athar.i18n.AppLocale.AR -> nameAr
+    com.athar.athar.i18n.AppLocale.EN -> nameEn
+    com.athar.athar.i18n.AppLocale.FR -> nameFr
+}
+
 data class City(
     val id: String,
     val latitude: Double,

@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.qibla.DeviceCompass
 import com.athar.athar.qibla.QiblaMath
 import com.batoulapps.adhan.Coordinates
@@ -51,6 +52,7 @@ fun QiblaScreen(
     val bearing = remember(latitude, longitude) {
         Qibla(Coordinates(latitude, longitude)).direction
     }
+    val s = LocalStrings.current
     val compass = rememberDeviceCompass()
     LaunchedEffect(latitude, longitude) { compass.setLocation(latitude, longitude) }
 
@@ -65,11 +67,11 @@ fun QiblaScreen(
         when {
             !compass.isAvailable -> {
                 Text(
-                    text = "هذا الجهاز لا يحتوي على بوصلة",
+                    text = s.qiblaNoSensor,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "زاوية القبلة من الشمال: ${bearing.toInt()}°",
+                    text = s.tArgs("qibla_bearing_from_north", "deg" to bearing.toInt()),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 8.dp),
                 )
@@ -77,7 +79,7 @@ fun QiblaScreen(
             azimuth == null -> {
                 CircularProgressIndicator()
                 Text(
-                    text = "جارٍ قراءة البوصلة…",
+                    text = s.loading,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(top = 12.dp),
                 )
@@ -96,7 +98,7 @@ fun QiblaScreen(
                     // سهم ثابت: هذا ما يشير إليه أعلى الهاتف
                     Icon(
                         imageVector = Icons.Filled.Navigation,
-                        contentDescription = "اتجاه الهاتف",
+                        contentDescription = s.qiblaDeviceDirection,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .align(Alignment.TopCenter)
@@ -107,16 +109,16 @@ fun QiblaScreen(
 
                 Text(
                     text = when {
-                        degrees <= 2 -> "أنت باتجاه القبلة ✓"
-                        offset > 0 -> "أدر الهاتف يمينًا $degrees°"
-                        else -> "أدر الهاتف يسارًا $degrees°"
+                        degrees <= 2 -> s.qiblaAligned
+                        offset > 0 -> s.tArgs("qibla_turn_right", "deg" to degrees)
+                        else -> s.tArgs("qibla_turn_left", "deg" to degrees)
                     },
                     fontSize = 19.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 20.dp),
                 )
                 Text(
-                    text = "القبلة على ${bearing.toInt()}° من الشمال الجغرافي",
+                    text = s.tArgs("qibla_bearing_geo", "deg" to bearing.toInt()),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp),
@@ -125,7 +127,7 @@ fun QiblaScreen(
                     accuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW
                 ) {
                     Text(
-                        text = "البوصلة تحتاج معايرة — حرّك الهاتف على شكل ٨",
+                        text = s.calibrate,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(top = 12.dp),
@@ -153,6 +155,7 @@ private fun CompassRose(
     deviceAzimuth: Double,
     modifier: Modifier = Modifier,
 ) {
+    val s = LocalStrings.current
     val ringColor = MaterialTheme.colorScheme.outline
     val tickColor = MaterialTheme.colorScheme.onSurfaceVariant
     val accent = MaterialTheme.colorScheme.primary
@@ -195,13 +198,13 @@ private fun CompassRose(
 
         // ⚠️ ندير كل لقبلة بعكس دوران الوردة ليبقى النصّ معتدلًا
         val upright = deviceAzimuth.toFloat()
-        Text("شمال", fontSize = 13.sp, fontWeight = FontWeight.Bold,
+        Text(s.north, fontSize = 13.sp, fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.TopCenter).rotate(upright))
-        Text("جنوب", fontSize = 13.sp,
+        Text(s.south, fontSize = 13.sp,
             modifier = Modifier.align(Alignment.BottomCenter).rotate(upright))
-        Text("شرق", fontSize = 13.sp,
+        Text(s.east, fontSize = 13.sp,
             modifier = Modifier.align(Alignment.CenterEnd).rotate(upright))
-        Text("غرب", fontSize = 13.sp,
+        Text(s.west, fontSize = 13.sp,
             modifier = Modifier.align(Alignment.CenterStart).rotate(upright))
     }
 }

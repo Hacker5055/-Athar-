@@ -37,6 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.athar.athar.i18n.AppLocale
+import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.i18n.LocaleStore
 import com.athar.athar.notification.NotificationScheduler
 import com.athar.athar.notification.NotificationSettings
 import com.athar.athar.notification.NotificationSettingsStore
@@ -53,18 +56,25 @@ private val kPrayers = listOf(
     PrayerSlot.ISHA,
 )
 
-private data class ModeOption(val mode: PrayerAlertMode, val label: String)
+private data class ModeOption(val mode: PrayerAlertMode, val labelKey: String)
 
+/// ⚠️ التسمية **مفتاح ترجمة** لا نصًّا: القائمة تُبنى مرة واحدة عند
+/// الإقلاع، فلو حملت نصًّا لظلّت عربية بعد تغيير اللغة حتى إعادة التشغيل.
 private val kModes = listOf(
-    ModeOption(PrayerAlertMode.ADHAN, "أذان"),
-    ModeOption(PrayerAlertMode.BEEP, "نغمة"),
-    ModeOption(PrayerAlertMode.VIBRATE, "اهتزاز"),
-    ModeOption(PrayerAlertMode.SILENT, "صامت"),
-    ModeOption(PrayerAlertMode.OFF, "موقوف"),
+    ModeOption(PrayerAlertMode.ADHAN, "notifications_mode_adhan"),
+    ModeOption(PrayerAlertMode.BEEP, "notifications_mode_beep"),
+    ModeOption(PrayerAlertMode.VIBRATE, "notifications_mode_vibrate"),
+    ModeOption(PrayerAlertMode.SILENT, "notifications_mode_silent"),
+    ModeOption(PrayerAlertMode.OFF, "notifications_mode_off"),
 )
 
 @Composable
-fun NotificationsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen(
+    locale: AppLocale,
+    onLocaleChange: (AppLocale) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val s = LocalStrings.current
     val context = LocalContext.current
     var settings by remember { mutableStateOf(NotificationSettingsStore.load(context)) }
     var needsPermission by remember { mutableStateOf(false) }
@@ -91,11 +101,33 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
     ) {
         item {
             Text(
-                "التنبيهات",
+                s.notifications,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 8.dp),
             )
+        }
+
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(s.language, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        s.chooseLanguage,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        AppLocale.entries.forEach { option ->
+                            FilterChip(
+                                selected = locale == option,
+                                onClick = { onLocaleChange(option) },
+                                label = { Text(option.nativeName) },
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         if (needsPermission) {
@@ -103,7 +135,7 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            "يحتاج أثر إلى إذن الإشعارات ليوقظك على الصلاة",
+                            s.notificationsPermissionNeeded,
                             fontWeight = FontWeight.Bold,
                         )
                         Button(
@@ -115,7 +147,7 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
                                 }
                             },
                             modifier = Modifier.padding(top = 8.dp),
-                        ) { Text("منح الإذن") }
+                        ) { Text(s.notificationsPermissionAction) }
                     }
                 }
             }
@@ -127,9 +159,9 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("التنبيهات مفعّلة", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text(s.notificationsMaster, fontSize = 17.sp, fontWeight = FontWeight.Bold)
                     Text(
-                        "المفتاح الرئيسي — أوقفه للسفر أو الصمت",
+                        s.notificationsMasterDesc,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -141,7 +173,7 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
             }
             HorizontalDivider()
             Text(
-                "الشروق: لا أذان — ليست صلاة",
+                s.sunriseNoAdhan,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 4.dp),
@@ -162,9 +194,9 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
                 Column(modifier = Modifier.padding(14.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text("تذكير الجمعة", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                            Text(s.notifChannelJumuah, fontSize = 17.sp, fontWeight = FontWeight.Bold)
                             Text(
-                                "الكهف · الصلاة على النبي · الغُسل",
+                                s.notifJumuahBody,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -182,7 +214,7 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
                                     onClick = {
                                         commit(settings.copy(jumuahMinutesBefore = minutes))
                                     },
-                                    label = { Text("$minutes د") },
+                                    label = { Text(s.tArgs("minutes_short", "n" to minutes)) },
                                 )
                             }
                         }
@@ -200,11 +232,11 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Icon(Icons.Filled.NotificationsActive, contentDescription = null)
-                Text("  أرسل إشعارًا تجريبيًا بعد ٥ ثوان")
+                Text("  " + s.notificationsTest)
             }
             if (testSent) {
                 Text(
-                    "إن لم يصل: الإذن مرفوض، أو النظام يقيّد عمل التطبيق في الخلفية",
+                    s.notificationsOffHint,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(vertical = 8.dp),
@@ -221,16 +253,20 @@ private fun PrayerCard(
     onMode: (PrayerAlertMode) -> Unit,
     onReminder: (Int) -> Unit,
 ) {
+    /// ⚠️ `s` **ليس** في نطاق `SettingsScreen` — هذه دالة منفصلة، لا
+    /// lambda داخلي. إعادة قراءة `LocalStrings` هنا لا في تمريره،
+    /// لأن ما يُمرَّر قديمًا يظلّ قديمًا بعد تغيير اللغة.
+    val s = LocalStrings.current
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(14.dp)) {
-            Text(slot.arabicName, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            Text(s.t(slot.stringKey), fontSize = 17.sp, fontWeight = FontWeight.Bold)
 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 kModes.forEach { option ->
                     FilterChip(
                         selected = settings.modeFor(slot) == option.mode,
                         onClick = { onMode(option.mode) },
-                        label = { Text(option.label) },
+                        label = { Text(s.t(option.labelKey)) },
                     )
                 }
             }
@@ -241,7 +277,7 @@ private fun PrayerCard(
                     FilterChip(
                         selected = current == minutes,
                         onClick = { onReminder(minutes) },
-                        label = { Text(if (minutes == 0) "بلا" else "$minutes د") },
+                        label = { Text(if (minutes == 0) s.none else s.tArgs("minutes_short", "n" to minutes)) },
                     )
                 }
             }
