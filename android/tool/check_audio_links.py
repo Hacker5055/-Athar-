@@ -24,6 +24,15 @@ BASE = "https://cdn.islamic.network/quran"
 # ملف في المصحف — سورة واحدة قد تنجح مصادفةً وغيرها مفقود.
 PROBE_SURAHS = (1, 114)
 
+# ⚠️ المساران مختلفان عند المصدر، وتوفّر القارئ في أحدهما لا يعني
+# توفّره في الآخر: ١٢ قارئًا من ١٣ ردّوا ٤٠٣ على `audio-surah` حين
+# كان `ar.alafasy` يعمل. نفحص الاثنين ونقرأ المصفوفة قبل أن نبني
+# المشغّل على مسار يبدو في التوثيق أنه العام.
+PATHS = ("audio-surah", "audio")
+
+# آية كونية للفحص: ١ أول القرآن، ٦٢٣٦ آخره
+PROBE_VERSES = (1, 6236)
+
 
 def parse_catalog() -> list[tuple[str, int]]:
     """يستخرج (المعرّف، الجودة) من سطور `Reciter(...)`."""
@@ -51,34 +60,52 @@ def head_status(url: str) -> int:
         return 0
 
 
-def check(reciter: tuple[str, int]) -> tuple[str, int, list[int]]:
+def check(reciter: tuple[str, int]) -> tuple[str, int, list[tuple[str, int]]]:
+    """يجرب مسار السورة ومسار الآية ويردّ (المسار، الرمز) لكل محاولة."""
     rid, bitrate = reciter
-    codes = []
+    out: list[tuple[str, int]] = []
     for surah in PROBE_SURAHS:
-        url = f"{BASE}/audio-surah/{bitrate}/{rid}/{surah}.mp3"
-        codes.append(head_status(url))
-    return rid, bitrate, codes
+        out.append((f"surah/{surah}", head_status(f"{BASE}/audio-surah/{bitrate}/{rid}/{surah}.mp3")))
+    for verse in PROBE_VERSES:
+        out.append((f"ayah/{verse}", head_status(f"{BASE}/audio/{bitrate}/{rid}/{verse}.mp3")))
+    return rid, bitrate, out
 
 
 def main() -> int:
     catalog = parse_catalog()
     print(f"الكتالوج: {len(catalog)} قارئًا، فحص السور {list(PROBE_SURAHS)}\n")
 
-    broken: list[str] = []
+    # ⚠️ المخرجات مصفوفة لا حكم ثنائي: نحن نقيس توفّر المصدر، وقرار
+    # أيّ مسار نبني عليه المشغّل يحتاج الصورة كلها لا قائمة المخطئين.
+    rows: list[tuple[str, int, list[tuple[str, int]]]] = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-        for rid, bitrate, codes in pool.map(check, catalog):
-            ok = all(c == 200 or c == 206 for c in codes)
-            mark = "✅" if ok else "❌"
-            print(f"{mark} {rid:<26} {bitrate} kbps → {codes}")
-            if not ok:
-                broken.append(rid)
+        rows = list(pool.map(check, catalog))
 
+    def ok(code: int) -> bool:
+        return code in (200, 206)
+
+    def cell(code: int) -> str:
+        return "OK " if ok(code) else str(code)
+
+    header = "".join(f"{label:>12}" for label, _ in rows[0][2])
+    print(f"{'قارئ':<26}{'kbps':>6}{header}")
+    for rid, bitrate, probes in rows:
+        line = "".join(f"{cell(c):>12}" for _, c in probes)
+        print(f"{rid:<26}{bitrate:>6}{line}")
+
+    surah_ok = [rid for rid, _, pr in rows if all(ok(c) for l, c in pr if l.startswith("surah"))]
+    ayah_ok = [rid for rid, _, pr in rows if all(ok(c) for l, c in pr if l.startswith("ayah"))]
     print()
+    print(f"يبثّ السورة كاملة: {len(surah_ok)}/{len(rows)}")
+    print(f"يبثّ الآية مفردة: {len(ayah_ok)}/{len(rows)}")
+
+    broken = [rid for rid in (r[0] for r in rows) if rid not in surah_ok and rid not in ayah_ok]
     if broken:
-        print(f"❌ {len(broken)} قارئ لا يبثّ: {', '.join(broken)}")
+        print()
+        print(f"❌ لا يبثّ لا سورة ولا آية: {', '.join(broken)}")
         print("أخرِجهم من الكتالوج: زرّ يعمل ولا يسمع صوتًا أسوأ من غيابه.")
         return 1
-    print(f"✅ كل القرّاء ({len(catalog)}) يبثّون.")
+    print("✅ كل قارئ يبثّ على مسار واحد على الأقل.")
     return 0
 
 

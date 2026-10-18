@@ -143,11 +143,14 @@ jobs:
           fi
 
       - name: نشر نتيجة فحص التلاوة
-        if: always() && steps.audio_links.outcome == 'failure'
+        # ⚠️ ننشر المصفوفة دائمًا (لا عند الفشل وحده): نحن نقيس توفّر
+        # المصدر لنقرّر أيّ مسار يبني عليه المشغّل، والنجاح نفسه معلومة
+        # نحتاجها. نُزال هذا النشر حين يستقرّ التصميم.
+        if: always() && steps.audio_links.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          jq -Rs '{body: ("### روابط التلاوة — قارئ لا يبثّ\n\n```\n" + . + "\n```")}' audio-links.log > /tmp/p.json
+          jq -Rs '{body: ("### مصفوفة توفّر التلاوة\n\n```\n" + . + "\n```")}' audio-links.log > /tmp/p.json
           PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
           [ -z "$PR" ] && PR=1
           gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --input /tmp/p.json
