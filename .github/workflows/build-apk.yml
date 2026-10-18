@@ -3,13 +3,13 @@ name: Build Android APK
 # ═══════════════════════════════════════════════════════════════
 # يبني APK لأثر (Kotlin + Jetpack Compose) على كل push.
 #
-# ⚠️ لماذا لا يوجد ملف gradle-wrapper.jar في المستودع؟
-# لأنه ملف ثنائي، ولا نريد رفع ثنائيات إلى git. فنولّد الـ wrapper
-# داخل CI (`gradle wrapper`) ثم نستخدمه. لهذا توجد خطوة صريحة لذلك.
+# ⚠️ لا يوجد gradle-wrapper.jar في المستودع (ملف ثنائي)، فنولّده
+# داخل CI بـ `gradle wrapper --gradle-version 8.9` ثم نستخدمه.
+# AGP 8.7.3 يتطلّب Gradle 8.9 — مذكوران معًا في android/build.gradle.kts.
 #
-# ⚠️ لا نثبّت إصدار Gradle على الأمل: AGP 8.7.3 يتطلّب Gradle 8.9.
-# الإصداران مذكوران معًا في android/build.gradle.kts — لا ترفع أحدهما
-# بمفرده.
+# ⚠️ خطوة «نشر سبب الفشل» ليست تجميلًا: لوجات GitHub لا تُقرأ من
+# بيئة التطوير هنا (النطاق محجوب)، فننقل سبب الفشل إلى تعليق على
+# الـ PR لنتمكن من الإصلاح دون نقل يدوي.
 # ═══════════════════════════════════════════════════════════════
 
 on:
@@ -44,16 +44,66 @@ jobs:
           java -version
           gradle --version
 
-      # لا نرفع gradle-wrapper.jar (ثنائي) إلى git — نولّده هنا
       - name: تهيئة Gradle wrapper
         run: gradle wrapper --gradle-version 8.9 --distribution-type bin
 
       - name: صلاحيات التنفيذ
         run: chmod +x gradlew
 
-      # lint قد يفشل البناء على تحذيرات لا نملك رف Geistها محليًا
       - name: APK تصحيح
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        id: debug_apk
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle-debug.log
+
+      - name: ⚠ نشر سبب الفشل في تعليق على الـ PR
+        if: steps.debug_apk.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let log = '';
+            try { log = fs.readFileSync('gradle-debug.log', 'utf8'); }
+            catch (e) { log = '(لا يوجد لوج)'; }
+            const lines = log.split('\n');
+            const keep = lines.filter(l =>
+              /e: |w: |error:|FAILURE:|What went wrong|Could not|Cannot|Unresolved|Exception|Caused by|Deprecated/i.test(l)
+            );
+            const interesting = (keep.length ? keep : lines).slice(-70).join('\n');
+            const body = [
+              '## ❌ فشل بناء APK (تصحيح)',
+              '',
+              'run: ' + context.serverUrl + '/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId,
+              '',
+              '```',
+              interesting.slice(0, 60000),
+              '```',
+            ].join('\n');
+            const branch = (context.ref || '').replace('refs/heads/', '');
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: context.repo.owner + ':' + branch,
+              state: 'open',
+            });
+            if (prs.data.length) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prs.data[0].number,
+                body: body,
+              });
+              core.info('نُشر التعليق على PR #' + prs.data[0].number);
+            } else {
+              core.warning('لا يوجد PR مفتوح للفرع: ' + branch);
+            }
+
+      - name: إيقاف البناء عند الفشل
+        if: steps.debug_apk.outcome == 'failure'
+        run: |
+          echo "❌ فشل assembleDebug — السبب في gradle-debug.log"
+          exit 1
 
       - name: APK إصدار (غير موقّع)
         run: ./gradlew assembleRelease --no-daemon
