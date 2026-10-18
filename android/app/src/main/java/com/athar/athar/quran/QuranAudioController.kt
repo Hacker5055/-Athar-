@@ -126,26 +126,19 @@ class QuranAudioController {
         val currentAyah = ayahNumbers.getOrNull(at)
         _state.value = QuranAudioState.Loading(reciter.id, surah, currentAyah)
 
-        val mp = (player ?: MediaPlayer()).apply {
-            // ⚠️ إعادة استخدام المشغّل بعد reset: إنشاء مشغّل جديد مع
-            // كل آية يكدّس كائنات غير محرّرة طوال سورة من ٢٨٦ آية.
-            if (player == null) {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build(),
-                )
-            }
-            reset()
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build(),
-            )
-            player = this
-        }
+        // ⚠️ إعادة استخدام المشغّل بعد `reset()`: إنشاء مشغّل جديد مع
+        // كل آية يكدّس كائنات غير محرّرة طوال سورة من ٢٨٦ آية.
+        val mp = player ?: MediaPlayer()
+        player = mp
+        mp.reset()
+        // ⚠️ `reset()` يمسح سمات الصوت فتُعاد بعده لا قبله — تعيين
+        // يسبق الـ reset لغو لا أثر له.
+        mp.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build(),
+        )
 
         try {
             mp.setDataSource(queue[at])
