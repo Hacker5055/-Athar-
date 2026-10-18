@@ -298,7 +298,7 @@ class AppTheme {
 /// فبنستخدم [Color.value] + [Color.fromRGBO] الاتنين مستقرّين من زمن طويل.
 extension AtharColorAlphaX on Color {
   /// يرجّع نفس اللون بشفافية [opacity] (٠..١).
-  Color alpha(double opacity) => Color.fromRGBO(
+  Color fade(double opacity) => Color.fromRGBO(
         (value >> 16) & 0xFF,
         (value >> 8) & 0xFF,
         value & 0xFF,

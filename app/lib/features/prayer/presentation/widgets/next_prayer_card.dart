@@ -70,7 +70,7 @@ class NextPrayerCard extends ConsumerWidget {
             Text(
               next.isTomorrow ? s.prayerTomorrowFajr : s.prayerNextLabel,
               style: context.textStyles.bodySmall?.copyWith(
-                color: c.onPrimary.alpha(0.8),
+                color: c.onPrimary.fade(0.8),
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -104,7 +104,7 @@ class NextPrayerCard extends ConsumerWidget {
                 Icon(
                   Icons.hourglass_bottom,
                   size: 16,
-                  color: c.onPrimary.alpha(0.75),
+                  color: c.onPrimary.fade(0.75),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
@@ -121,14 +121,14 @@ class NextPrayerCard extends ConsumerWidget {
                 Icon(
                   Icons.location_on_outlined,
                   size: 14,
-                  color: c.onPrimary.alpha(0.7),
+                  color: c.onPrimary.fade(0.7),
                 ),
                 const SizedBox(width: 4),
                 Flexible(
                   child: Text(
                     day.place.nameFor(locale),
                     style: context.textStyles.bodySmall?.copyWith(
-                      color: c.onPrimary.alpha(0.8),
+                      color: c.onPrimary.fade(0.8),
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),

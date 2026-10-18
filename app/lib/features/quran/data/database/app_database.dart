@@ -44,7 +44,7 @@ class TranslationRows extends Table {
   TextColumn get edition => text()();
   IntColumn get surahId => integer()();
   IntColumn get ayah => integer()();
-  TextColumn get text => text()();
+  TextColumn get content => text().named('text')();
   TextColumn get textNormalized => text().withDefault(const Constant(''))();
 
   @override

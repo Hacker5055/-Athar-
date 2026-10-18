@@ -81,7 +81,7 @@ class _PrayerRow extends StatelessWidget {
     final isSunrise = prayer == PrayerNameKey.sunrise;
 
     final highlight = isNext && !isSunrise;
-    final bg = highlight ? c.primary.alpha(0.08) : Colors.transparent;
+    final bg = highlight ? c.primary.fade(0.08) : Colors.transparent;
     final fg = highlight ? c.primary : c.ink;
 
     return InkWell(
@@ -120,7 +120,7 @@ class _PrayerRow extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: c.accent.alpha(0.15),
+                    color: c.accent.fade(0.15),
                     borderRadius: AppRadius.chipRadius,
                   ),
                   child: Text(

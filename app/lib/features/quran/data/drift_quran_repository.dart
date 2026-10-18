@@ -148,7 +148,7 @@ class DriftQuranRepository implements QuranRepository {
     final byKey = <String, String>{
       for (final t in translations)
         if (keys.contains('${t.surahId}:${t.ayah}'))
-          '${t.surahId}:${t.ayah}': t.text,
+          '${t.surahId}:${t.ayah}': t.content,
     };
     return rows
         .map((r) => _toAyah(r, translation: byKey['${r.surahId}:${r.ayah}']))

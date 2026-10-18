@@ -45,7 +45,7 @@ class SurahTile extends ConsumerWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: c.primary100,
-              borderRadius: BorderRadius.circular(AppSpacing.chip),
+              borderRadius: BorderRadius.circular(AppRadius.chip),
             ),
             child: Text(
               ArabicNumbers.format(surah.id, useArabicDigits: arabic),

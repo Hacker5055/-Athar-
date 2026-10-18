@@ -156,7 +156,7 @@ class _ReaderBody extends ConsumerWidget {
       itemCount: ayahs.length,
       separatorBuilder: (_, __) => Divider(
         height: 1,
-        color: colors.markerBorder.alpha(0.6),
+        color: colors.markerBorder.fade(0.6),
       ),
       itemBuilder: (context, index) {
         final ayah = ayahs[index];

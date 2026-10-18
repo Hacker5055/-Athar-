@@ -64,9 +64,9 @@ class QuranEmptyState extends ConsumerWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: c.danger.alpha(0.10),
-                  borderRadius: BorderRadius.circular(AppSpacing.chip),
-                  border: Border.all(color: c.danger.alpha(0.35)),
+                  color: c.danger.fade(0.10),
+                  borderRadius: BorderRadius.circular(AppRadius.chip),
+                  border: Border.all(color: c.danger.fade(0.35)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

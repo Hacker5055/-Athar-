@@ -102,15 +102,15 @@ class AyahView extends ConsumerWidget {
                   vertical: AppSpacing.sm,
                 ),
                 decoration: BoxDecoration(
-                  color: colors.markerBorder.alpha(0.35),
-                  borderRadius: BorderRadius.circular(AppSpacing.chip),
+                  color: colors.markerBorder.fade(0.35),
+                  borderRadius: BorderRadius.circular(AppRadius.chip),
                 ),
                 child: Text(
                   ayah.translation!,
                   // الترجمات لاتينية الاتجاه؛ العربي يُفرض RTL دائمًا.
                   textDirection: _direction(ayah.translation!),
                   style: context.textStyles.bodyMedium?.copyWith(
-                    color: colors.text.alpha(0.75),
+                    color: colors.text.fade(0.75),
                     height: 1.6,
                   ),
                 ),
@@ -145,9 +145,9 @@ class _AyahNumberMarker extends StatelessWidget {
         height: _size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: colors.markerBorder.alpha(0.5),
+          color: colors.markerBorder.fade(0.5),
           borderRadius: BorderRadius.circular(_size / 2),
-          border: Border.all(color: colors.accent.alpha(0.35), width: 1),
+          border: Border.all(color: colors.accent.fade(0.35), width: 1),
         ),
         child: FittedBox(
           child: Text(
@@ -174,9 +174,9 @@ class _SajdaBadge extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(
-            color: colors.accent.alpha(0.16),
-            borderRadius: BorderRadius.circular(AppSpacing.chip),
-            border: Border.all(color: colors.accent.alpha(0.4)),
+            color: colors.accent.fade(0.16),
+            borderRadius: BorderRadius.circular(AppRadius.chip),
+            border: Border.all(color: colors.accent.fade(0.4)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -218,8 +218,8 @@ class _SurahBanner extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: colors.markerBorder.alpha(0.4),
-          borderRadius: BorderRadius.circular(AppSpacing.chip),
+          color: colors.markerBorder.fade(0.4),
+          borderRadius: BorderRadius.circular(AppRadius.chip),
         ),
         child: Center(
           child: Text(

@@ -97,7 +97,7 @@ class _ReadingSettingsBody extends ConsumerWidget {
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: settings.pageTheme.colors.background,
-              borderRadius: BorderRadius.circular(AppSpacing.chip),
+              borderRadius: BorderRadius.circular(AppRadius.chip),
               border: Border.all(color: c.border),
             ),
             child: Text(

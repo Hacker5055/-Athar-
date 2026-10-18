@@ -178,8 +178,8 @@ class DaysGrid extends StatelessWidget {
   Color _colorFor(DayLevel level, AppColorSet c) => switch (level) {
         DayLevel.none => c.surface2,
         DayLevel.low => c.primary200,
-        DayLevel.mid => c.primary.alpha(0.55),
-        DayLevel.high => c.primary.alpha(0.8),
+        DayLevel.mid => c.primary.fade(0.55),
+        DayLevel.high => c.primary.fade(0.8),
         DayLevel.full => c.primary,
       };
 }

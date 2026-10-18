@@ -137,6 +137,7 @@ class QuranAudioHandler extends BaseAudioHandler
       );
 
   /// سرعة التلاوة (١.٠ = الأصل).
+  @override
   Future<void> setSpeed(double speed) =>
       _player.setSpeed(speed.clamp(0.5, 2.0));
 
@@ -173,15 +174,13 @@ class QuranAudioHandler extends BaseAudioHandler
         switch (repeatMode) {
           AudioServiceRepeatMode.one => LoopMode.one,
           AudioServiceRepeatMode.all => LoopMode.all,
+          AudioServiceRepeatMode.group => LoopMode.all,
           AudioServiceRepeatMode.none => LoopMode.off,
         },
       );
 
-  @override
-  Future<void> dispose() async {
-    await _player.dispose();
-    return super.dispose();
-  }
+  /// ⚠️ BaseAudioHandler لا يعرّف dispose — لا نستخدم @override هنا.
+  Future<void> shutdown() async => _player.dispose();
 }
 
 /// إعداد تشغيل الخلفية.

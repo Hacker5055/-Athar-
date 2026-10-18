@@ -139,7 +139,7 @@ class QuranImporter {
                     edition: edition,
                     surahId: t.surah,
                     ayah: t.ayah,
-                    text: t.text,
+                    content: t.text,
                     textNormalized: Value(QuranText.normalizeLatin(t.text)),
                   ),
                 ),
