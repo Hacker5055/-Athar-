@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.adhkar.AdhkarSectionsTest" tests="8" skipped="0" failures="2" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.011">
+<testsuite name="com.athar.athar.adhkar.AdhkarSectionsTest" tests="8" skipped="0" failures="2" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.012">
   <properties/>
-  <testcase name="dailyMatchesVocalisedTitles" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.001"/>
+  <testcase name="dailyMatchesVocalisedTitles" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.0"/>
   <testcase name="findsPostPrayerDespiteFullDiacritics" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.0"/>
-  <testcase name="dailySkipsAbsentSections" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.006">
+  <testcase name="dailySkipsAbsentSections" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.009">
     <failure message="java.lang.AssertionError: expected:&lt;[AdhkarSection(title=أَذْكَارُ الصَّبَاحِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)])]&gt; but was:&lt;[AdhkarSection(title=أَذْكَارُ الصَّبَاحِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)]), AdhkarSection(title=أَذْكَارُ المَسَاءِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)])]&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;[AdhkarSection(title=أَذْكَارُ الصَّبَاحِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)])]&gt; but was:&lt;[AdhkarSection(title=أَذْكَارُ الصَّبَاحِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)]), AdhkarSection(title=أَذْكَارُ المَسَاءِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)])]&gt;
 	at org.junit.Assert.fail(Assert.java:89)
 	at org.junit.Assert.failNotEquals(Assert.java:835)
@@ -57,7 +57,7 @@
   </testcase>
   <testcase name="worksWhenSourceHasNoDiacritics" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.0"/>
   <testcase name="returnsNullWhenTheSectionIsAbsent" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.001"/>
-  <testcase name="dailyDoesNotMatchAnotherSection" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.0">
+  <testcase name="dailyDoesNotMatchAnotherSection" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.001">
     <failure message="java.lang.AssertionError" type="java.lang.AssertionError">java.lang.AssertionError
 	at org.junit.Assert.fail(Assert.java:87)
 	at org.junit.Assert.assertTrue(Assert.java:42)
@@ -108,8 +108,8 @@
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="dailyKeepsTheDeclaredOrder" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.002"/>
-  <testcase name="doesNotMatchTheSectionBeforeTasleem" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.001"/>
+  <testcase name="dailyKeepsTheDeclaredOrder" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.0"/>
+  <testcase name="doesNotMatchTheSectionBeforeTasleem" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

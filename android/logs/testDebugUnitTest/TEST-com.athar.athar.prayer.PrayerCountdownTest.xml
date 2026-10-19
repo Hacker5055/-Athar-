@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.prayer.PrayerCountdownTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.004">
+<testsuite name="com.athar.athar.prayer.PrayerCountdownTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.007">
   <properties/>
   <testcase name="anHourAndTwentyMinutesAndThirtySeconds" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.001"/>
-  <testcase name="arabicUsesEasternDigits" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.001"/>
+  <testcase name="arabicUsesEasternDigits" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.002"/>
   <testcase name="theCountdownLosesExactlyOneSecondEachSecond" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
   <testcase name="exactlyAMinute" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
-  <testcase name="theTotalIsTheSumOfItsParts" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.001"/>
-  <testcase name="theSecondsAreAlwaysTwoDigits" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
+  <testcase name="theTotalIsTheSumOfItsParts" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
+  <testcase name="theSecondsAreAlwaysTwoDigits" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.001"/>
   <testcase name="aWholeDayIsTwentyFourHours" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
   <testcase name="englishAndFrenchUseLatinDigits" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
-  <testcase name="exactlyAnHour" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
+  <testcase name="exactlyAnHour" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.001"/>
   <testcase name="theCountdownIsNotRounded" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
   <testcase name="theMomentItselfIsNotElapsed" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
   <testcase name="theRemainingIsNeverNegative" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
-  <testcase name="withoutHoursOnlyMinutesAndSeconds" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
+  <testcase name="withoutHoursOnlyMinutesAndSeconds" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.001"/>
   <testcase name="lessThanAnHourHasNoHours" classname="com.athar.athar.prayer.PrayerCountdownTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

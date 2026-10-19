@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.ruqya.RuqyaSectionsTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.0">
+<testsuite name="com.athar.athar.ruqya.RuqyaSectionsTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.001">
   <properties/>
-  <testcase name="anUnrelatedChapterIsNotIncluded" classname="com.athar.athar.ruqya.RuqyaSectionsTest" time="0.0"/>
+  <testcase name="anUnrelatedChapterIsNotIncluded" classname="com.athar.athar.ruqya.RuqyaSectionsTest" time="0.001"/>
   <testcase name="theFiveRuqyaChaptersAreFound" classname="com.athar.athar.ruqya.RuqyaSectionsTest" time="0.0"/>
   <testcase name="theShapedTitleStillMatches" classname="com.athar.athar.ruqya.RuqyaSectionsTest" time="0.0"/>
   <testcase name="theEmptyBookYieldsNothing" classname="com.athar.athar.ruqya.RuqyaSectionsTest" time="0.0"/>

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.HizbTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.021">
+<testsuite name="com.athar.athar.quran.HizbTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.044">
   <properties/>
   <testcase name="theLastHizbEndsAtTheLastVerse" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
-  <testcase name="startsAreStrictlyIncreasing" classname="com.athar.athar.quran.HizbTest" time="0.001"/>
-  <testcase name="everyHizbStartIsARealVerse" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
+  <testcase name="startsAreStrictlyIncreasing" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
+  <testcase name="everyHizbStartIsARealVerse" classname="com.athar.athar.quran.HizbTest" time="0.001"/>
   <testcase name="anOutOfRangeHizbHasNoStart" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
-  <testcase name="everyOddHizbStartsAJuz" classname="com.athar.athar.quran.HizbTest" time="0.001"/>
+  <testcase name="everyOddHizbStartsAJuz" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
   <testcase name="theFirstHizbStartsAtTheFirstVerse" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
   <testcase name="juzOfHizbGroupsThemInPairs" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
-  <testcase name="noVerseIsLeftOutsideTheHizbs" classname="com.athar.athar.quran.HizbTest" time="0.012"/>
+  <testcase name="noVerseIsLeftOutsideTheHizbs" classname="com.athar.athar.quran.HizbTest" time="0.022"/>
   <testcase name="theSecondHalfIsTheEvenOne" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
   <testcase name="thereAreSixtyHizbs" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
   <testcase name="theFirstVerseIsInTheFirstHizb" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
-  <testcase name="hizbOfFindsTheHizbOfAnyVerse" classname="com.athar.athar.quran.HizbTest" time="0.001"/>
+  <testcase name="hizbOfFindsTheHizbOfAnyVerse" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
   <testcase name="juzOfHizbRejectsWhatIsNotAHizb" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
   <testcase name="theLastVerseIsInTheLastHizb" classname="com.athar.athar.quran.HizbTest" time="0.0"/>
-  <testcase name="hizbOfNeverJumpsAHizb" classname="com.athar.athar.quran.HizbTest" time="0.005"/>
+  <testcase name="hizbOfNeverJumpsAHizb" classname="com.athar.athar.quran.HizbTest" time="0.016"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

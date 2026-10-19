@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.ruqya.RuqyaSelectionsTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.002">
+<testsuite name="com.athar.athar.ruqya.RuqyaSelectionsTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.002">
   <properties/>
   <testcase name="whatIsNotInTheSourceIsNotInvented" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.001"/>
   <testcase name="theVersesOutsideTheRangeAreExcluded" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>
   <testcase name="theThreeQulsAreComplete" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>
-  <testcase name="theVersesComeInOrder" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>
+  <testcase name="theVersesComeInOrder" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.001"/>
   <testcase name="theIdsAreUnique" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>
   <testcase name="theTitleKeysAreUnique" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>
   <testcase name="theLastTwoVersesOfBaqarah" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>

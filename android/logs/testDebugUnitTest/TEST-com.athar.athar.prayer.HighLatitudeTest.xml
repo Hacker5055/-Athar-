@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.prayer.HighLatitudeTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.002">
+<testsuite name="com.athar.athar.prayer.HighLatitudeTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.002">
   <properties/>
   <testcase name="ruleNamesAreDistinct" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
-  <testcase name="everyRuleResolves" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.002"/>
+  <testcase name="everyRuleResolves" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <testcase name="thereAreThreeRules" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <testcase name="theDefaultResolvesToo" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <testcase name="everyRuleHasATranslationKey" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranProgressTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.0">
+<testsuite name="com.athar.athar.quran.QuranProgressTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.003">
   <properties/>
-  <testcase name="theEndIsAfterTheBeginning" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
+  <testcase name="theEndIsAfterTheBeginning" classname="com.athar.athar.quran.QuranProgressTest" time="0.001"/>
   <testcase name="outOfRangeSurahIsRejected" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
   <testcase name="percentOfAnInvalidPositionIsZero" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
-  <testcase name="percentStartsAtZeroAndEndsAtHundred" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
+  <testcase name="percentStartsAtZeroAndEndsAtHundred" classname="com.athar.athar.quran.QuranProgressTest" time="0.001"/>
   <testcase name="ayahBeyondTheSurahIsRejected" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
   <testcase name="validPositionsAreAccepted" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
   <testcase name="percentIsBetweenZeroAndHundred" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
