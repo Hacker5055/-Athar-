@@ -559,6 +559,23 @@ class Strings(val locale: AppLocale) {
             "surah_filter_meccan" to "مكية",
             "surah_filter_medinan" to "مدنية",
             "surah_sections" to "السور",
+            "prayer_remaining" to "متبقٍّ",
+            "zakah_title" to "حاسبة الزكاة",
+            "zakah_gold" to "الذهب",
+            "zakah_silver" to "الفضة",
+            "zakah_cash" to "النقود",
+            "zakah_fitr" to "زكاة الفطر",
+            "zakah_grams" to "الجرامات",
+            "zakah_amount" to "المبلغ",
+            "zakah_people" to "عدد الأنفس",
+            "zakah_price" to "سعر الجرام",
+            "zakah_food_price" to "سعر الكيلو",
+            "zakah_nisab" to "النصاب",
+            "zakah_due" to "الواجب",
+            "zakah_not_liable" to "لم يبلغ النصاب",
+            "zakah_liable" to "بلغ النصاب",
+            "zakah_note" to "الأسعار تُدخلها أنت: سعر الذهب والفضة يتغيّر كلّ يوم، وسعرٌ في التطبيق يقدّم زكاةً خاطئة بثقة.",
+            "zakah_source" to "النصاب: ٨٥ جرامًا ذهبًا أو ٥٩٥ جرامًا فضة، و٢٫٥ كجم قوتًا للفرد في الفطر.",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -1092,6 +1109,23 @@ class Strings(val locale: AppLocale) {
             "surah_filter_meccan" to "Meccan",
             "surah_filter_medinan" to "Medinan",
             "surah_sections" to "Surahs",
+            "prayer_remaining" to "Remaining",
+            "zakah_title" to "Zakah calculator",
+            "zakah_gold" to "Gold",
+            "zakah_silver" to "Silver",
+            "zakah_cash" to "Cash",
+            "zakah_fitr" to "Zakat al-Fitr",
+            "zakah_grams" to "Grams",
+            "zakah_amount" to "Amount",
+            "zakah_people" to "Number of people",
+            "zakah_price" to "Price per gram",
+            "zakah_food_price" to "Price per kilo",
+            "zakah_nisab" to "Nisab",
+            "zakah_due" to "Due",
+            "zakah_not_liable" to "Below the nisab",
+            "zakah_liable" to "Nisab reached",
+            "zakah_note" to "You enter the prices: gold and silver change every day, and a price baked into the app gives a wrong zakah with confidence.",
+            "zakah_source" to "Nisab: 85 g of gold or 595 g of silver, and 2.5 kg of staple food per person for Fitr.",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1625,6 +1659,23 @@ class Strings(val locale: AppLocale) {
             "surah_filter_meccan" to "Mecquoises",
             "surah_filter_medinan" to "Médinoises",
             "surah_sections" to "Sourates",
+            "prayer_remaining" to "Restant",
+            "zakah_title" to "Calculateur de zakât",
+            "zakah_gold" to "Or",
+            "zakah_silver" to "Argent",
+            "zakah_cash" to "Liquidités",
+            "zakah_fitr" to "Zakât al-Fitr",
+            "zakah_grams" to "Grammes",
+            "zakah_amount" to "Montant",
+            "zakah_people" to "Nombre de personnes",
+            "zakah_price" to "Prix au gramme",
+            "zakah_food_price" to "Prix au kilo",
+            "zakah_nisab" to "Nisâb",
+            "zakah_due" to "Dû",
+            "zakah_not_liable" to "Nisâb non atteint",
+            "zakah_liable" to "Nisâb atteint",
+            "zakah_note" to "Les prix sont saisis par vous : l’or et l’argent changent chaque jour, et un prix inscrit dans l’application donne un zakât faux avec assurance.",
+            "zakah_source" to "Nisâb : 85 g d’or ou 595 g d’argent, et 2,5 kg de nourriture par personne pour le Fitr.",
         )
     }
 
@@ -2163,4 +2214,21 @@ class Strings(val locale: AppLocale) {
     val surahFilterMeccan: String get() = t("surah_filter_meccan")
     val surahFilterMedinan: String get() = t("surah_filter_medinan")
     val surahSections: String get() = t("surah_sections")
+    val prayerRemaining: String get() = t("prayer_remaining")
+    val zakahTitle: String get() = t("zakah_title")
+    val zakahGold: String get() = t("zakah_gold")
+    val zakahSilver: String get() = t("zakah_silver")
+    val zakahCash: String get() = t("zakah_cash")
+    val zakahFitr: String get() = t("zakah_fitr")
+    val zakahGrams: String get() = t("zakah_grams")
+    val zakahAmount: String get() = t("zakah_amount")
+    val zakahPeople: String get() = t("zakah_people")
+    val zakahPrice: String get() = t("zakah_price")
+    val zakahFoodPrice: String get() = t("zakah_food_price")
+    val zakahNisab: String get() = t("zakah_nisab")
+    val zakahDue: String get() = t("zakah_due")
+    val zakahNotLiable: String get() = t("zakah_not_liable")
+    val zakahLiable: String get() = t("zakah_liable")
+    val zakahNote: String get() = t("zakah_note")
+    val zakahSource: String get() = t("zakah_source")
 }

@@ -26,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +55,7 @@ import com.athar.athar.quran.QuranProgressStore
 import com.athar.athar.hijri.IslamicEvents
 import com.athar.athar.prayer.PrayerDay
 import com.athar.athar.prayer.PrayerAdjustments
+import com.athar.athar.prayer.PrayerCountdown
 import com.athar.athar.prayer.PrayerSlot
 import com.athar.athar.ramadan.Ramadan
 import com.athar.athar.hijri.HijriCalendar
@@ -162,6 +165,9 @@ fun PrayerScreen(
                         style = MaterialTheme.typography.displayLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
+                    // ⚠️ العدّ **تحت الوقت** لا فوقه: الوقت هو
+                    // المعلومة، والعدّ تفصيلٌ له.
+                    CountdownText(target = next.second)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(text = placeLabel, style = MaterialTheme.typography.bodySmall)
@@ -374,6 +380,37 @@ fun PrayerScreen(
         }
     }
 
+}
+
+/// العدّ التنازلي حتى الصلاة القادمة.
+///
+/// ⚠️ **تأخيره الخاص** لا تأخير الشاشة: إعادة تركيب الشاشة
+/// كلّ ثانية تُعيد بناء المواقيت كلّها وتُثقل الإطار، والعدّ
+/// وحده هو ما يحتاج الثانية.
+///
+/// ⚠️ والحلقة **لا تتوقّف**: `delay` داخل `LaunchedEffect` تُلغى
+/// تلقائيًّا حين يخرج التأليف من الشاشة.
+@Composable
+private fun CountdownText(target: Instant) {
+    val s = LocalStrings.current
+    val locale = com.athar.athar.i18n.LocalAppLocale.current
+    var now by remember { mutableStateOf(Instant.now()) }
+    LaunchedEffect(target) {
+        while (true) {
+            now = Instant.now()
+            delay(1000)
+        }
+    }
+    val countdown = PrayerCountdown.until(target, now)
+    Text(
+        text = if (countdown.isElapsed) {
+            s.prayerNow
+        } else {
+            "${s.prayerRemaining}: ${PrayerCountdown.text(countdown, locale)}"
+        },
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 /// التاريخ الميلادي بلغة المستخدم.

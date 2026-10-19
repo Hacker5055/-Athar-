@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Widgets
+import com.athar.athar.ui.zakah.ZakahScreen
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.size
 
@@ -114,6 +115,13 @@ fun MoreScreen(
                 onClick = { section = 6 },
                 label = { Text(s.backupTitle) },
             )
+            // ⚠️ حاسبة الزكاة **قسمٌ لا زرّ**: ليست ابنًا لصفحة
+            // أخرى، بل أداةٌ في «المزيد».
+            FilterChip(
+                selected = section == 7,
+                onClick = { section = 7 },
+                label = { Text(s.zakahTitle) },
+            )
         }
 
         // ⚠️ `weight` يعطي الشاشة الداخلية ارتفاعًا محدودًا فتعمل
@@ -133,7 +141,8 @@ fun MoreScreen(
                 )
                 4 -> LicensesScreen()
                 5 -> WidgetScreen()
-                else -> BackupScreen()
+                6 -> BackupScreen()
+                else -> ZakahScreen()
             }
         }
     }
