@@ -130,6 +130,16 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
 
     fun persist() = TasbihStore.save(context, phraseId, target, state)
 
+    /// يُعلّم «أثري» أن دورةَ تسبيحٍ اكتملت (E6 ← دمج).
+    ///
+    /// ⚠️ **إضافةٌ لا تبديل**: فمن أتمّ دورتين اليوم لا تُلغى
+    /// علامةُ الأولى.
+    fun markTasbihHabit() {
+        val today = LocalDate.now()
+        val next = TrackerStore.load(context).mark(today, HabitId.TASBIH).pruned(today)
+        TrackerStore.save(context, next)
+    }
+
     /// ⚠️ **العدُّ noble واحد** من مكانين: نقرةٌ على الدائرة أو
     /// ضغطةُ زرّ الصوت (E5). فلو تفرّقت صار في الشاشة عدّادان
     /// لا يعملان معًا — والإجمالي يخطئ.
@@ -163,16 +173,6 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
         if (TasbihSpeech.shouldSpeak(speakEnabled, spoken)) {
             speaker?.speak(TasbihSpeech.text(spoken))
         }
-    }
-
-    /// يُعلّم «أثري» أن دورةَ تسبيحٍ اكتملت (E6 ← دمج).
-    ///
-    /// ⚠️ **إضافةٌ لا تبديل**: فمن أتمّ دورتين اليوم لا تُلغى
-    /// علامةُ الأولى.
-    fun markTasbihHabit() {
-        val today = LocalDate.now()
-        val next = TrackerStore.load(context).mark(today, HabitId.TASBIH).pruned(today)
-        TrackerStore.save(context, next)
     }
 
     // ⚠️ **الالتقاطُ مؤقّت**: يتعلّق بالظهور ويُلغى بالمغادرة.

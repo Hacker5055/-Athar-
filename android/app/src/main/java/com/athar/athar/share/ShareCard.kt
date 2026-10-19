@@ -1,5 +1,6 @@
 package com.athar.athar.share
 
+import com.athar.athar.athary.DailyRecord
 import com.athar.athar.athary.DayLevel
 import com.athar.athar.athary.TrackerState
 import java.time.LocalDate
@@ -31,7 +32,10 @@ data class ShareCardData(
     val streakLabel: String,
 ) {
     /// كثافةُ كلّ يوم — نفسُ دلالة «أثري» (F2).
-    val levels: List<DayLevel> get() = days.map { DayLevel.levelFor(it) }
+    ///
+    /// ⚠️ `levelFor` في `DailyRecord` لا في `DayLevel`: الكثافةُ
+    /// دالّةُ اليوم لا دالّةُ النوع.
+    val levels: List<DayLevel> get() = days.map { DailyRecord.levelFor(it) }
 }
 
 /// بناءُ بيانات بطاقة المشاركة — **نقيّ**، بلا `Canvas` ولا `Context`.
