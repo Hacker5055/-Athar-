@@ -1,0 +1,169 @@
+package com.athar.athar.ui.theme
+
+import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+
+/// ⚠️ **الخلفيةُ ليست بيضاء**: ورقٌ كريميّ (#F7F5F0) أرفقُّ من
+/// الأبيض، خاصةً للنظر الطويل. وبياضُ الشاشةِ الخالصُ على
+/// ورقٍ كريميّ يبدو كأنّه لم يُصبَغ.
+private val LightColors = lightColorScheme(
+    primary = AtharPrimary,
+    onPrimary = AtharOnPrimary,
+    primaryContainer = AtharPrimaryContainer,
+    onPrimaryContainer = AtharOnPrimaryContainer,
+    inversePrimary = Color(0xFF7FD3C0),
+    secondary = AtharSecondary,
+    onSecondary = AtharOnSecondary,
+    secondaryContainer = AtharSecondaryContainer,
+    onSecondaryContainer = AtharOnSecondaryContainer,
+    tertiary = AtharTertiary,
+    onTertiary = AtharOnTertiary,
+    tertiaryContainer = AtharTertiaryContainer,
+    onTertiaryContainer = AtharOnTertiaryContainer,
+    background = AtharBackground,
+    onBackground = AtharOnBackground,
+    surface = AtharSurface,
+    onSurface = AtharOnSurface,
+    surfaceVariant = AtharSurfaceVariant,
+    onSurfaceVariant = AtharOnSurfaceVariant,
+    // ⚠️ **الأسطحُ الحاويةُ دافئةٌ لا بنفسجية**:Material3
+    // يتركها بلونِه الافتراضيِّ (رماديٌّ مائلٌ إلى البنفسجي)،
+    // فصارت البطاقةُ على ورقٍ كريميٍّ بنفسجيّةً خفيفة. والورقُ
+    // الأبيضُ الدافئُ على الورقِ الكريميِّ هو وجهُ التطبيق.
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFFBF9F4),
+    surfaceContainer = Color(0xFFF2EFE8),
+    surfaceContainerHigh = Color(0xFFEBE7DE),
+    surfaceContainerHighest = Color(0xFFE4E0D6),
+    surfaceBright = Color(0xFFFDFBF7),
+    surfaceDim = Color(0xFFE2DFD6),
+    surfaceTint = AtharPrimary,
+    outline = AtharOutline,
+    outlineVariant = AtharOutlineVariant,
+    error = AtharError,
+    onError = AtharOnError,
+    errorContainer = AtharErrorContainer,
+    onErrorContainer = AtharOnErrorContainer,
+    inverseSurface = Color(0xFF2F312F),
+    inverseOnSurface = Color(0xFFF1F1ED),
+)
+
+/// ⚠️ **داكنٌ كحليٌّ لا أسودُ خالص**: الأسودُ على شاشاتِ OLED يجعل
+/// الحروفَ «تحترق» بتباينٍ حادّ، والكحليُّ العميقُ يهدّئه ويوافقُ
+/// لونَ الشعار.
+private val DarkColors = darkColorScheme(
+    primary = Color(0xFF7FD3C0),
+    onPrimary = Color(0xFF00382F),
+    primaryContainer = Color(0xFF005143),
+    onPrimaryContainer = Color(0xFF9CF2DC),
+    inversePrimary = AtharPrimary,
+    secondary = Color(0xFFE0C48C),
+    onSecondary = Color(0xFF3D2E05),
+    secondaryContainer = Color(0xFF56451A),
+    onSecondaryContainer = Color(0xFFFDE1A6),
+    tertiary = Color(0xFFA9CBE0),
+    onTertiary = Color(0xFF103544),
+    tertiaryContainer = Color(0xFF274C5C),
+    onTertiaryContainer = Color(0xFFC5E7FF),
+    background = Color(0xFF0B1626),
+    onBackground = Color(0xFFE3E9F2),
+    surface = Color(0xFF0B1626),
+    onSurface = Color(0xFFE3E9F2),
+    surfaceVariant = Color(0xFF1B2839),
+    onSurfaceVariant = Color(0xFFB7C3D4),
+    surfaceContainerLowest = Color(0xFF060D16),
+    surfaceContainerLow = Color(0xFF121D2B),
+    surfaceContainer = Color(0xFF172334),
+    surfaceContainerHigh = Color(0xFF21303F),
+    surfaceContainerHighest = Color(0xFF2B3B4C),
+    surfaceBright = Color(0xFF2E3D52),
+    surfaceDim = Color(0xFF070E18),
+    surfaceTint = Color(0xFF7FD3C0),
+    outline = Color(0xFF6E7C90),
+    outlineVariant = Color(0xFF2A3849),
+    error = Color(0xFFF2B8B5),
+    onError = Color(0xFF601410),
+    errorContainer = Color(0xFF8C1D18),
+    onErrorContainer = Color(0xFFF9DEDC),
+    inverseSurface = Color(0xFFE2E3DF),
+    inverseOnSurface = Color(0xFF2F312F),
+)
+
+/// ألوان شاشة القراءة وحدها.
+///
+/// ⚠️ `NORMAL` يترك كل شيء كما هو (ألوان شفّافة): ثيم القراءة العادي
+/// **هو** ثيم التطبيق، فلا نفرض عليه لونًا يخالف ما اختاره المستخدم
+/// من فاتح أو داكن.
+data class ReaderPalette(
+    val background: Color,
+    val onBackground: Color,
+    val divider: Color,
+) {
+    val isCustom: Boolean get() = background != Color.Unspecified
+
+    companion object {
+        val NORMAL = ReaderPalette(Color.Unspecified, Color.Unspecified, Color.Unspecified)
+
+        /// ⚠️ ليلي: أسود قريب لا أسود خالص. الأسود الخالص على شاشة
+        /// OLED يجعل الحروف «تحترق» بتباين حادّ يؤذي العين في الظلام.
+        val NIGHT = ReaderPalette(
+            background = Color(0xFF121417),
+            onBackground = Color(0xFFE4E1DA),
+            divider = Color(0xFF2A2E33),
+        )
+
+        /// ⚠️ سيبيا: ورق قديم. التباين فيه مقصود أن يكون أقلّ من
+        /// الأبيض والأسود، فهو أوفر للعين في القراءة الطويلة.
+        val SEPIA = ReaderPalette(
+            background = Color(0xFFF4E4C1),
+            onBackground = Color(0xFF3E2C17),
+            divider = Color(0xFFDCCBA4),
+        )
+
+        fun of(theme: ReaderTheme) = when (theme) {
+            ReaderTheme.NORMAL -> NORMAL
+            ReaderTheme.NIGHT -> NIGHT
+            ReaderTheme.SEPIA -> SEPIA
+        }
+    }
+}
+
+@Composable
+fun AtharTheme(
+    appearance: Appearance = Appearance(),
+    content: @Composable () -> Unit,
+) {
+    val darkTheme = when (appearance.themeMode) {
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+
+    // ⚠️ **أيقوناتُ شريطِ الحالة تتبع ثيمَ التطبيق** لا ثيمَ
+    // النظام: من اختار الداكنَ في التطبيق ونظامُه فاتحٌ، كانت
+    // أيقوناتُ الشريطِ الداكنةُ على خلفيةٍ داكنةٍ لا تُرى.
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window ?: return@SideEffect
+            val controller = WindowCompat.getInsetsController(window, view)
+            controller.isAppearanceLightStatusBars = !darkTheme
+            controller.isAppearanceLightNavigationBars = !darkTheme
+        }
+    }
+
+    MaterialTheme(
+        colorScheme = if (darkTheme) DarkColors else LightColors,
+        typography = AtharTypography,
+        shapes = AtharShapes,
+        content = content,
+    )
+}

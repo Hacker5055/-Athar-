@@ -1,0 +1,63 @@
+<!--
+  ═══════════════════════════════════════════════════════════════
+  ألصق هذا الملف في android/app/src/main/AndroidManifest.xml
+  مقسومًا على موضعين — **لا يصحّ وضع كل شيء في مكان واحد**:
+    • بلوك الصلاحيات  → خارج <application> وقبله
+    • بقية البلوكات    → داخل <application>
+  ═══════════════════════════════════════════════════════════════
+
+
+  ── ١) الصلاحيات — خارج <application> ────────────────────────────
+
+     ⚠️ INTERNET ليست تحصيلًا حاصلًا: بناء Debug يضيفها Flutter
+     تلقائيًا، وبناء **Release لا يفعل**. بدونها يعمل التطبيق محليًا
+     ثم يموت عند أول بثّ أو تنزيل، وهو خطأ لا يظهر إلا في الإصدار
+     الذي يصل المستخدم.
+-->
+<uses-permission android:name="android.permission.INTERNET" />
+
+<!-- تشغيل في الخلفية: منع إيقاف المعالج أثناء التلاوة -->
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+<!--
+     ⚠️ لا نطلب أي صلاحية تخزين. التنزيل داخل حيز التطبيق الخاص،
+     يمحوه النظام مع الإلغاء.
+
+
+  ── ٢) خدمة تشغيل الوسائط — داخل <application> ───────────────────
+-->
+<service
+    android:name="com.ryanheise.audioservice.AudioService"
+    android:exported="true"
+    android:foregroundServiceType="mediaPlayback">
+    <intent-filter>
+        <action android:name="android.media.browse.MediaBrowserService" />
+    </intent-filter>
+</service>
+
+<!-- أزرار سماعة الرأس (تشغيل/إيقاف/التالي من الزر) -->
+<receiver
+    android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+    android:exported="true">
+    <intent-filter>
+        <action android:name="android.intent.action.MEDIA_BUTTON" />
+    </intent-filter>
+</receiver>
+
+<!--
+  ── ٣) الودجت (الأسبوع ٤) — داخل <application> ───────────────────
+-->
+<receiver
+    android:name=".AtharWidgetProvider"
+    android:exported="true"
+    android:label="@string/athar_widget_description">
+    <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    </intent-filter>
+
+    <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/athar_widget_info" />
+</receiver>

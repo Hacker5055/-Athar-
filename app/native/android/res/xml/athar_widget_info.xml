@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  تعريف الودجت لنظام أندرويد.
+
+  ⚠️ `android:updatePeriodMillis` مضبوط على ٣٠ دقيقة، لكن أندرويد
+  يتجاهله أصلًا في الحد الأدنى (النظام يسمح بـ ٣٠ دقيقة كأقل قيمة).
+  التحديث الفعلي يحدث من Dart عبر `HomeWidget.updateWidget()` عند:
+  فتح التطبيق · الرجوع للمقدمة · تغيير الإعدادات · إعادة الجدولة.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="180dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="3"
+    android:targetCellHeight="2"
+    android:initialLayout="@layout/athar_widget"
+    android:updatePeriodMillis="1800000"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:description="@string/athar_widget_description"
+    android:previewLayout="@layout/athar_widget" />

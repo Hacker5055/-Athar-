@@ -1,0 +1,45 @@
+# حاجات Flutter المولّدة
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/
+*.log
+
+# ios
+ios/Flutter/Generated.xcconfig
+ios/Pods/
+ios/.symlinks/
+ios/Runner.xcworkspace/xcshareddata/
+
+# android
+android/local.properties
+android/.gradle/
+android/gradlew
+android/gradlew.bat
+android/gradle/
+android/captures/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# بايثون (أدوات tool/)
+__pycache__/
+*.pyc
+
+# ملفات Drift المولّدة — تُبنى بـ build_runner (مضمّن في CI)
+*.g.dart
+
+# أسرار/توقيع — لا تُرفع أبدًا
+*.jks
+*.keystore
+key.properties
+**/google-services.json
+**/GoogleService-Info.plist
+.env

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ⚠️ **الأيقونةُ أحاديةُ اللون**: أندرويدَ ١٣ فصاعدًا يلوّنُ
+     أيقونةَ التطبيقِ بلونِ ثيمِه، فلا يبقى من الشعارِ إلا
+     ظلُّه. فجعلناه نجمةَ ثمانٍ — «الخاتم» — وحدَها: صورةٌ
+     واحدةٌ واضحةٌ تُعرفُ من غيرِ لون. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- مربّعانِ متقاطعان: مربّعٌ ومعيّنٌ فوقَه، وهما نجمةُ ثمانٍ. -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M38,38h32v32h-32z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M54,20L88,54L54,88L20,54z" />
+</vector>

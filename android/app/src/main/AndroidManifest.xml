@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- ⚠️ INTERNET ليست تحصيلًا حاصلًا: بناء Debug قد يضيفها وبناء
+         Release لا يفعل. التلاوة والتنزيل يحتاجانها. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- تشغيل التلاوة في الخلفية -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <!-- المواقيت: الموقع **التقريبي** يكفي. لا نطلب الدقيق لأن
+         فروق المواقيت بينهما دون الدقيقة على مسافة مدينة، ولا نطلب
+         الموقع في الخلفية أبدًا. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- الإشعارات: POST_NOTIFICATIONS إذن وقت التشغيل على API 33+،
+         وSCHEDULE_EXACT_ALARM يلزم لضبط الأذان في ثانيته بالضبط. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- ⚠️ بلا مستقبل الإقلاع يصمت التطبيق بعد أول إعادة تشغيل -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- اهتزازة خفيفة عند إتمام عدد الذكر (docs/02 · C4) -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- ⚠️ إذنُ «عدم الإزعاج» (docs/02 · A11): الإذنُ وحده لا يكفي،
+         فالمستخدمُ يقرّر من إعدادات النظام. ولا نكتم شيئًا قبل
+         موافقته. -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Athar">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Athar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+            <receiver android:name=".notification.AlertReceiver" android:exported="false" />
+        <!-- ⚠️ صمتُ الصلاة (A11): مستقبلٌ بلا تصدير، لا يُستدعى إلا
+             بمنبّهات التطبيق نفسها. -->
+        <receiver android:name=".notification.SilenceReceiver" android:exported="false" />
+
+        <!-- ⚠️ الخدمة المقدَّمة للتلاوة: `foregroundServiceType` واجب
+             على API 34+ وإلا رفض النظام بدءها، والتلاوة التي تعمل في
+             الخلفية يجب أن يُراها المستخدم. -->
+        <service
+            android:name=".quran.QuranPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <!-- ⚠️ ودجت المواقيت: `APPWIDGET_UPDATE` هو ما يجعل النظام
+             يعرف أن هذا المستقبل ودجت، و`meta-data` هو ما يقرأ منه
+             المقاس ودورة التحديث. بلا الأول لا يُضاف الودجت أصلًا. -->
+        <receiver
+            android:name=".widget.PrayerWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/prayer_widget_info" />
+        </receiver>
+
+            <receiver
+                android:name=".notification.BootReceiver"
+                android:exported="true"
+                android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+                <intent-filter>
+                    <action android:name="android.intent.action.BOOT_COMPLETED" />
+                </intent-filter>
+            </receiver>
+
+        <!-- ⚠️ مشاركةُ صورةِ الملخّص (F6): لا يُشارَك مسارُ ملفٍّ
+             مباشرةً منذ أندرويد ٧ — فيسقط التطبيق. وFileProvider
+             يعطي `content://` مع إذنٍ مؤقّتٍ للقراءة وحده. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+</manifest>

@@ -1,3 +1,7 @@
-node_modules
-dist
-.DS_Store
+
+# بايثون: لا تُلتزم ملفات مترجمة
+__pycache__/
+*.pyc
+
+# لوجات البناء المحلية (لا تُرفع إلى git)
+ci*.log

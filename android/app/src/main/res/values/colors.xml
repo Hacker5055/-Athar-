@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ⚠️ ألوانُ الودجت ثوابتٌ لا من الثيم: الودجتُ يُرسَم خارج
+     التطبيق فلا يقرأ ثيمَه، و«لونُ النظام» فيه أزرقُ أندرويد لا
+     لونُ أثر. -->
+<resources>
+    <color name="athar_teal">#0F6B5C</color>
+    <color name="athar_teal_dark">#083E36</color>
+    <color name="athar_gold">#C8A15A</color>
+    <color name="athar_cream">#F7F5F0</color>
+    <color name="athar_mint">#CDEFE4</color>
+</resources>

@@ -1,0 +1,345 @@
+name: Build Android APK
+
+# ═══════════════════════════════════════════════════════════════
+# يبني APK لأثر (Kotlin + Jetpack Compose) على كل push.
+#
+# ⚠️ لا يوجد gradle-wrapper.jar في المستودع (ملف ثنائي)، فنولّده
+# داخل CI بـ `gradle wrapper --gradle-version 8.9` ثم نستخدمه.
+# AGP 8.7.3 يتطلّب Gradle 8.9 — مذكوران معًا في android/build.gradle.kts.
+#
+# ⚠️ خطوة «نشر سبب الفشل» ليست تجميلًا: لوجات GitHub لا تُقرأ من
+# بيئة التطوير هنا (النطاق محجوب)، فننقل سبب الفشل إلى تعليق على
+# الـ PR لنتمكن من الإصلاح دون نقل يدوي.
+# ═══════════════════════════════════════════════════════════════
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+# ⚠️ بدون هذا، GITHUB_TOKEN قد يكون للقراءة فقط، فيفشل التعليق على
+# الـ PR ودفع فرع ci-logs **بصمت** — وهو ما حدث مرتين.
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: بناء APK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: إصدارات الأدوات
+        run: |
+          java -version
+          gradle --version
+
+      - name: تهيئة Gradle wrapper
+        run: gradle wrapper --gradle-version 8.9 --distribution-type bin
+
+      - name: صلاحيات التنفيذ
+        run: chmod +x gradlew
+
+      # ⚠️ كيف نوفّق بين «النص ليس في git» و«أوفلاين أولًا»؟
+      # ننزّله **وقت البناء** في CI ونضعه في assets/، فيصير جوه الـ APK
+      # وبلا وجود في المستودع. المصدر: tanzil (CC BY 3.0).
+      - name: تنزيل نص القرآن (لا يُرفع إلى git)
+        run: |
+          mkdir -p app/src/main/assets/quran
+          BASE=https://raw.githubusercontent.com/risan/quran-json/main/data/tanzil
+          curl -fsSL "$BASE/uthmani.json"  -o app/src/main/assets/quran/uthmani.json
+          curl -fsSL "$BASE/chapters.json" -o app/src/main/assets/quran/chapters.json
+          # ⚠️ والترجمتان بالحكم نفسه: **ليستا في git**، فتُنزَّلان وقت
+          # البناء. docs/09 §1 يجمع النصّ والترجمتين في قرار واحد،
+          # ويحسب حجمها معًا (النص + ترجمتان ≈ ٤ ميجابايت).
+          # المرجع: data/meta/sources.json في المصدر نفسه.
+          TBASE=https://raw.githubusercontent.com/risan/quran-json/main/data/extra
+          mkdir -p app/src/main/assets/quran/translations
+          curl -fsSL "$TBASE/english_pickthall.json" \
+            -o app/src/main/assets/quran/translations/english_pickthall.json
+          curl -fsSL "$TBASE/english_itani.json" \
+            -o app/src/main/assets/quran/translations/english_itani.json
+
+          # ⚠️ حارس: تنزيل ناقص يعني قرآنًا ناقصًا بلا رسالة خطأ واضحة
+          for f in uthmani chapters; do
+            size=$(wc -c < "app/src/main/assets/quran/$f.json")
+            echo "$f.json = $size بايت"
+            if [ "$size" -lt 50000 ]; then
+              echo "❌ $f.json صغير جدًا — فشل التنزيل"
+              exit 1
+            fi
+          done
+          for f in english_pickthall english_itani; do
+            size=$(wc -c < "app/src/main/assets/quran/translations/$f.json")
+            echo "$f.json = $size بايت"
+            if [ "$size" -lt 900000 ]; then
+              echo "❌ $f.json صغير جدًا — فشل التنزيل"
+              exit 1
+            fi
+          done
+
+      - name: تجهيز مفتاح التوقيع
+        env:
+          SECRET_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          SECRET_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          SECRET_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          SECRET_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$SECRET_KEYSTORE" ]; then
+            echo "🔐 أسرار توقيع رسمية موجودة"
+            echo "$SECRET_KEYSTORE" | base64 -d > app/athar.jks
+            {
+              echo "ATHAR_KEYSTORE=$GITHUB_WORKSPACE/android/app/athar.jks"
+              echo "ATHAR_STORE_PASSWORD=$SECRET_STORE_PASSWORD"
+              echo "ATHAR_KEY_ALIAS=$SECRET_ALIAS"
+              echo "ATHAR_KEY_PASSWORD=$SECRET_KEY_PASSWORD"
+            } >> "$GITHUB_ENV"
+          else
+            # ⚠️ بلا أسرار: APK غير الموقّع **لا يُثبَّت**، فنولّد مفتاحًا
+            # هنا ليكون الملف المرفق قابلًا للتثبيت فعلًا. مفتاحه معلوم،
+            # فليس للإصدارات الرسمية — لإصدار رسمي أضف الأسرار الأربعة.
+            echo "⚠️ لا أسرار توقيع — مفتاح CI مؤقت (قابل للتثبيت، لا للتوزيع الرسمي)"
+            keytool -genkeypair -v -keystore app/athar.jks -keyalg RSA -keysize 2048 \
+              -validity 10000 -alias athar -storepass android -keypass android \
+              -dname "CN=Athar, OU=Athar, O=Athar, L=Cairo, S=Cairo, C=EG"
+            {
+              echo "ATHAR_KEYSTORE=$GITHUB_WORKSPACE/android/app/athar.jks"
+              echo "ATHAR_STORE_PASSWORD=android"
+              echo "ATHAR_KEY_ALIAS=athar"
+              echo "ATHAR_KEY_PASSWORD=android"
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: تحقّق من روابط التلاوة
+        # ⚠️ غير مانع: شبكة المصدر ليست شرطًا في بناء APK. الفحص
+        # يُخبرنا (تعليقًا) ولا يحجب الناتج — فقد تعطّل المهمة ١٨
+        # دقيقة في مسح طويل، فكيف إن منع البناء أيضًا.
+        continue-on-error: true
+        # ⚠️ CI هي شبكتنا الوحيدة: الحقل المحجوب يمنعنا من الوصول إلى
+        # المصدر من هنا. فحص يقرأ الكتالوج من الكود ويتأكد أن كل قارئ
+        # يبثّ فعلًا — زرّ يعمل ولا يخرج صوتًا أسوأ من غيابه.
+        id: audio_links
+        run: |
+          python3 tool/check_audio_links.py 2>&1 | tee audio-links.log
+          if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+            echo "⟳ محاولة ثانية: قد تكون عطفة شبكة لا قارئًا مفقودًا"
+            sleep 10
+            python3 tool/check_audio_links.py 2>&1 | tee audio-links.log
+            if [ "${PIPESTATUS[0]}" -ne 0 ]; then exit 1; fi
+          fi
+
+      - name: نشر نتيجة فحص التلاوة
+        # ⚠️ ننشر المصفوفة دائمًا (لا عند الفشل وحده): نحن نقيس توفّر
+        # المصدر لنقرّر أيّ مسار يبني عليه المشغّل، والنجاح نفسه معلومة
+        # نحتاجها. نُزال هذا النشر حين يستقرّ التصميم.
+        if: always() && steps.audio_links.outcome != 'skipped'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          jq -Rs '{body: ("### مسح توفّر التلاوة (قارئ × جودة × مسار)\n\n```\n" + . + "\n```")}' audio-links.log > /tmp/p.json
+          PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
+          [ -z "$PR" ] && PR=1
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --input /tmp/p.json
+
+      - name: اختبارات + APK تصحيح
+        id: debug_apk
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          # ⚠️ `test` قبل البناء: اختبارات JVM تتحقق من **صحة** المواقيت
+          # بلا محاكي. البناء وحده يثبت أن الكود يُترجم لا أنه صحيح.
+          ./gradlew test assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle-debug.log
+
+      - name: ⚠ تجهيز ملخّص الخطأ
+        if: steps.debug_apk.outcome == 'failure'
+        run: |
+          {
+            echo "## ❌ فشل الاختبارات أو البناء"
+            echo
+            echo "run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo
+            echo '```'
+            grep -E 'e: |error:|FAILURE:|What went wrong|Could not|Cannot|Unresolved|Exception|Execution failed|not found|Failed' gradle-debug.log | head -40
+            echo '```'
+            echo
+            # ⚠️ تفاصيل الاختبارات لا تظهر في الأنماط السابقة — نقرأ XML
+            if ls app/build/test-results/testDebugUnitTest/*.xml >/dev/null 2>&1; then
+              echo '### نتائج الاختبارات (JUnit XML)'
+              echo '```'
+              for f in app/build/test-results/testDebugUnitTest/*.xml; do
+                echo "--- $f"
+                tr '>' '>\n' < "$f" | grep -E 'testcase |failure ' | head -30
+              done
+              echo '```'
+            fi
+            echo
+            echo '<details><summary>آخر ١٢٠ سطر خام</summary>'
+            echo
+            echo '```'
+            tail -120 gradle-debug.log
+            echo '```'
+            echo '</details>'
+          } > /tmp/why.md
+          echo "حجم الملخّص: $(wc -c < /tmp/why.md) بايت"
+
+      - name: ⚠ نشر سبب الفشل تعليقًا على الـ PR
+        if: steps.debug_apk.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
+          [ -z "$PR" ] && PR=1
+          echo "الـ PR المستهدف: #$PR"
+          # ⚠️ `gh api -f body=@file` نشر السطر الحرفي `@/tmp/why.md`
+          # ولم يقرأ الملف. الصحيح: بناء الـ JSON بـ jq ثم --input.
+          jq -Rs '{body: .}' /tmp/why.md > /tmp/payload.json
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --input /tmp/payload.json
+          echo "✅ نُشر التعليق ($(wc -c < /tmp/payload.json) بايت)"
+
+      - name: حفظ اللوج كـ artifact
+        if: steps.debug_apk.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-debug-log-${{ github.sha }}
+          path: android/gradle-debug.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: ⚠ دفع اللوج إلى فرع ci-logs
+        if: steps.debug_apk.outcome == 'failure'
+        working-directory: ${{ github.workspace }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd android
+          git config user.name "ci-bot"
+          git config user.email "ci-bot@users.noreply.github.com"
+          git fetch origin ci-logs 2>/dev/null || true
+          # ⚠️ `checkout -B ci-logs` ينشئ الفرع عند HEAD فيتجاهل التاريخ
+          # المُجلب، ثم يُرفض الـ push لعدم كونه fast-forward. الصح:
+          git checkout -B ci-logs origin/ci-logs 2>/dev/null || git checkout -B ci-logs
+          mkdir -p logs
+          cp gradle-debug.log logs/LATEST.log
+          # ⚠️ تقرير JUnit **مع السجلّ**: رسالة فشل الاختبار (القيمة
+          # الفعلية والمتوقّعة) لا تظهر في سجلّ Gradle — فيه اسم
+          # الاستثناء وسطره فقط. ومن غاب عنه الرسالة أعاد الفحص
+          # ثلاث مرّات على الفرض.
+          for d in app/build/test-results/testDebugUnitTest app/build/test-results/testReleaseUnitTest; do
+            if ls $d/*.xml >/dev/null 2>&1; then
+              tag=$(basename $d)
+              mkdir -p logs/$tag
+              cp $d/*.xml logs/$tag/ 2>/dev/null || true
+            fi
+          done
+          git add -f logs
+          git commit -m "ci: لوج فشل بناء ${GITHUB_SHA::8}" || echo "لا جديد للتثبيت"
+          git push origin ci-logs   # بلا كتم: نريد رؤية الفشل
+
+      - name: إيقاف البناء عند الفشل
+        if: steps.debug_apk.outcome == 'failure'
+        run: |
+          echo "❌ فشل assembleDebug — السبب في gradle-debug.log"
+          exit 1
+
+      - name: ✅ تحقّق من بيانات الـ APK
+        run: python3 tool/verify_apk.py app/build/outputs/apk/debug/app-debug.apk
+
+      - name: APK إصدار
+        id: release_apk
+        # ⚠️ tee: سطر `🔐 signing:` يُطبع في **إعداد** Gradle، وهو الدليل الوحيد
+        # على ما رآه من متغيّرات. السجل الأصلي محجوب عن القراءة.
+        run: ./gradlew assembleRelease --no-daemon 2>&1 | tee gradle-release.log
+
+      # ⚠️ APK غير موقّع **لا يُثبَّت**: يرفضه الهاتف ولا يظهر له سبب
+      # واضح. فالتوقيع ليس تفصيلًا في الإصدار بل شرط في أن يكون الملف
+      # المرفق نافعًا أصلًا.
+      - name: ⚠ تحقّق من توقيع APK الإصدار
+        id: sign_check
+        # ⚠️ defaults.working-directory = android ⇒ المسار النسبي هنا يصير
+        # android/android/... والملف «يغيب» فيبدو كأن التوقيع فشل. مطلقًا دائمًا.
+        run: |
+          APK=$GITHUB_WORKSPACE/android/app/build/outputs/apk/release/app-release.apk
+          echo "what Gradle saw: $(grep -a 'signing:' gradle-release.log || echo '(لا سطر)')"
+          [ -f "$APK" ] || { echo "❌ لا وجود لـ $APK"; exit 1; }
+          echo "الحجم: $(wc -c < "$APK") بايت"
+
+          # ⚠️ كان الحارس يطلب META-INF/*.RSA وحده، فأخطأ على APK موقّع
+          # صحيحًا: تلك الملفات تخصّ **توقيع v1** فقط، وأندرويد الحديث
+          # يوقّع بـ v2/v3 فيوقّع الملف كلّه بلا أيّ ملف META-INF.
+          # الحكم عندها لبرنامج التوقيع نفسه، لا لوجود ملف بعينه.
+          echo "--- META-INF (توقيع v1 — قد يغيب وهو صحيح) ---"
+          unzip -l "$APK" 2>&1 | grep -i 'META-INF' || echo '(لا ملفات META-INF: توقيع v2/v3)'
+
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner 2>/dev/null | tail -1 || true)
+          if [ -z "$APKSIGNER" ]; then
+            echo "❌ لم يُعثر على apksigner تحت ANDROID_HOME=$ANDROID_HOME"
+            exit 1
+          fi
+          echo "apksigner: $APKSIGNER"
+          if "$APKSIGNER" verify --print-certs -v "$APK"; then
+            echo "✅ APK الإصدار موقّع وتُحقَّق صحّته"
+          else
+            echo "❌ APK الإصدار غير موقّع أو توقيعه فاسد — لن يُثبَّت"
+            exit 1
+          fi
+
+      - name: ⚠ نشر سبب فشل التوقيع تعليقًا
+        # ⚠️ سجلات Actions محجوبة عن القراءة؛ التعليق على الـ PR هو القناة
+        # الوحيدة التي تصل. بدونه نخمّن دورات كاملة.
+        if: always() && steps.sign_check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo '### ⚠️ تعذّر التحقّق من توقيع APK الإصدار'
+            echo
+            echo '<details><summary>سطر توقيع Gradle + نواتج الإصدار</summary>'
+            echo
+            echo '```'
+            grep -a 'signing:' gradle-release.log || echo '(لا سطر 🔐 signing في السجل)'
+            echo '--- نواتج release/ ---'
+            ls -l "$GITHUB_WORKSPACE/android/app/build/outputs/apk/release/" || true
+            echo '--- محتويات مخرجات apk/ ---'
+            find "$GITHUB_WORKSPACE/android/app/build/outputs/apk" -name '*.apk' || true
+            echo '```'
+            echo
+            echo '</details>'
+          } > /tmp/signwhy.md
+          PR=$(gh pr list --state open --head "${GITHUB_REF_NAME}" --json number --jq '.[0].number' || true)
+          [ -z "$PR" ] && PR=1
+          jq -Rs '{body: .}' /tmp/signwhy.md > /tmp/payload.json
+          gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" --input /tmp/payload.json
+
+      - name: حفظ النواتج
+        uses: actions/upload-artifact@v4
+        with:
+          name: athar-apk-${{ github.sha }}
+          path: android/app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: إرفاق النواتج بالإصدار
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: android/app/build/outputs/apk/**/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,359 @@
+package com.athar.athar.quran
+
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+/// ما يعرضه المشغّل — حالة واحدة صريحة لا أعلام متفرّقة.
+///
+/// ⚠️ `reciterId` و`surah` محفوظان في كل حالة: الواجهة تعرف ماذا
+/// يعمل الآن فتُظهر «إيقاف» بدل «تشغيل» حين يعود المستخدم للشاشة،
+/// ولا تعتمد على متغيّر منفصل قد يفقد التزامن.
+///
+/// `ayah` فارغ يعني «السورة كاملة»، ورقم يعني «الآن نسمع هذه الآية»
+/// — وهو فرق يراه المستخدم في المصحف الذي يتابع عليه.
+sealed class QuranAudioState {
+    object Idle : QuranAudioState()
+
+    data class Loading(val reciterId: String, val surah: Int, val ayah: Int?) : QuranAudioState()
+
+    data class Playing(val reciterId: String, val surah: Int, val ayah: Int?) : QuranAudioState()
+
+    data class Paused(val reciterId: String, val surah: Int, val ayah: Int?) : QuranAudioState()
+
+    /// ⚠️ الرسالة للمستخدم لا رمز الخطأ: «تعذّر تشغيل التلاوة —
+    /// تحقّق من الاتصال» أنفع من `what=-38`.
+    data class Error(val message: String) : QuranAudioState()
+
+    val isActive: Boolean
+        get() = this is Loading || this is Playing || this is Paused
+
+    val surahOrNull: Int?
+        get() = when (this) {
+            is Loading -> surah
+            is Playing -> surah
+            is Paused -> surah
+            else -> null
+        }
+
+    val reciterIdOrNull: String?
+        get() = when (this) {
+            is Loading -> reciterId
+            is Playing -> reciterId
+            is Paused -> reciterId
+            else -> null
+        }
+
+    /// ⚠️ **الآيةُ الآن** لا السورةَ فقط: فمقتطفٌ كآية الكرسي
+    /// يُشغَّل آيةً واحدة، وبلا هذا لا تستطيع الواجهة أن تعرف أهو
+    /// المقتطفُ الذي يعمل أم غيره.
+    val ayahOrNull: Int?
+        get() = when (this) {
+            is Loading -> ayah
+            is Playing -> ayah
+            is Paused -> ayah
+            else -> null
+        }
+}
+
+/// طلب تشغيل واحد — يُحفظ ليستعمله إشعار الوسائط.
+///
+/// ⚠️ `ayah` **رقمُ آيةٍ واحدة** إن كان التشغيل آيةً مفردة: فمن
+/// استعمل إشعار الوسائط ليوقف التلاوة استعمل ما يُشغَّل فعلًا.
+private data class PlayRequest(
+    val reciter: Reciter,
+    val surah: Int,
+    val ayahCount: Int,
+    val ayah: Int? = null,
+)
+
+/// مشغّل التلاوة — [MediaPlayer] المدمج بلا أيّ مكتبة خارجية.
+///
+/// ⚠️ لماذا المدمج لا ExoPlayer: كل اعتماد جديد خطر على بناء لا
+/// نترجمه محليًّا. وبثّ ملفات mp3 متتابعة لا يحتاج ما تضيفه
+/// ExoPlayer من طوابير وتخبئة. حين نحتاج تشغيلًا في الخلفية مع
+/// إشعار، ننتقل إلى Media3 حينها لا الآن.
+/// ⚠️ كائن وحيد لا `class`: لو أُنشئ داخل الشاشة لأُفلت معها عند
+/// تبديل التبويب، فتنقطع التلاوة كلما انتقل المستخدم من المصحف إلى
+/// المواقيت — وهو بالضبط ما يُفتح التطبيق لأجله: اسمع واقرأ معًا.
+///
+/// والأصل أن يبقى التشغيل في خدمة مقدَّمة (`QuranPlaybackService`)؛
+/// هذه الحالة تعمل وحدها إن تعذّرت الخدمة، فلا يتوقف الصوت كله
+/// لخلل في إشعار.
+object QuranAudioController {
+
+    private val _state = MutableStateFlow<QuranAudioState>(QuranAudioState.Idle)
+    val state: StateFlow<QuranAudioState> = _state.asStateFlow()
+
+    private var player: MediaPlayer? = null
+
+    /// طابور الروابط: ملف واحد للسورة، أو ملف لكل آية.
+    private var queue: List<String> = emptyList()
+
+    /// أرقام الآيات الموازية للطابور — لنعرف أيّ آية نسمع الآن.
+    private var ayahNumbers: List<Int> = emptyList()
+
+    private var index = 0
+
+    /// المطلوب الآن (القارئ والسورة) — يُقرأ قبل أن ينتهي التحضير،
+    /// فلا نعتمد على الحالة وحدها لمعرفة ماذا نُعدّ.
+    private var token: String? = null
+
+    /// تشغيل سورة، أو إيقافها إن كانت هي العاملة الآن.
+    ///
+    /// ⚠️ التبديل بين القرّاء يقطع التشغيل الحالي ويبدأ من جديد:
+    /// الاستمرار بالصوت القديم بعد اختيار قارئ آخر كذبٌ على المستخدم.
+    /// آخر طلب تشغيل — يحتاجه إشعار الوسائط ليوقف ويستأنف، فالإشعار
+    /// يعمل خارج الشاشة ولا يعرف ما اختاره المستخدم فيها.
+    private var lastRequest: PlayRequest? = null
+
+    /// العنوان الذي يظهر في الإشعار: اسم السورة والقارئ.
+    private var lastTitle: String = ""
+
+    /// ما يعرضه الإشعار الآن — يقرأ من الخدمة.
+    val notificationTitle: String get() = lastTitle
+
+    /// تبديل تشغيل/إيقاف لآخر ما طُلب (مستعمل من إشعار الوسائط).
+    fun toggleLast() {
+        val request = lastRequest ?: return
+        val ayah = request.ayah
+        if (ayah != null) {
+            toggleAyahs(request.reciter, request.surah, ayah, ayah, lastTitle)
+        } else {
+            toggle(request.reciter, request.surah, request.ayahCount)
+        }
+    }
+
+    fun toggle(reciter: Reciter, surah: Int, ayahCount: Int, title: String = lastTitle) {
+        lastRequest = PlayRequest(reciter, surah, ayahCount)
+        val current = _state.value
+        val sameTarget =
+            current.reciterIdOrNull == reciter.id && current.surahOrNull == surah
+
+        when {
+            sameTarget && current is QuranAudioState.Playing -> pause()
+            sameTarget && current is QuranAudioState.Paused -> resume()
+            else -> play(reciter, surah, ayahCount, title)
+        }
+    }
+
+    /// ⚠️ **آياتٌ محدّدة لا سورةٌ كاملة**: الرقيةُ (C9) مقتطفاتُ
+    /// آيات، فمن شغّل السورةَ كاملة خلف آيةِ الكرسي سمع ما لا
+    /// يريد. والطابورُ هنا آياتٌ متتاليةٌ كما في أيّ سورة.
+    fun toggleAyahs(
+        reciter: Reciter,
+        surah: Int,
+        fromAyah: Int,
+        toAyah: Int,
+        title: String,
+    ) {
+        if (fromAyah > toAyah) return
+        val current = _state.value
+        val sameTarget = current.reciterIdOrNull == reciter.id &&
+            current.surahOrNull == surah &&
+            current.ayahOrNull == fromAyah
+
+        when {
+            sameTarget && current is QuranAudioState.Playing -> pause()
+            sameTarget && current is QuranAudioState.Paused -> resume()
+            else -> playAyahs(reciter, surah, fromAyah, toAyah, title)
+        }
+    }
+
+    private fun playAyahs(
+        reciter: Reciter,
+        surah: Int,
+        fromAyah: Int,
+        toAyah: Int,
+        title: String,
+    ) {
+        // ⚠️ **الرقمُ والرابطُ معًا**: `mapNotNull` وحدها تُخرج
+        // الرابطَ بلا رقمه، فيُزاح رقمُ الآية عن موضعه في الطابور
+        // — فيسمع السامع آيةً ويظنّها غيرها.
+        val pairs = (fromAyah..toAyah).mapNotNull { ayah ->
+            QuranAudio.ayahUrl(reciter, surah, ayah)?.let { ayah to it }
+        }
+        if (pairs.isEmpty()) {
+            _state.value = QuranAudioState.Error("لا تتوفّر تلاوة لهذه الآيات")
+            return
+        }
+
+        releasePlayer()
+        queue = pairs.map { it.second }
+        lastTitle = title
+        lastRequest = PlayRequest(reciter, surah, pairs.size, fromAyah)
+        // ⚠️ أرقامُ الآيات **موازية للطابور**: فالسورةُ بلا هذه
+        // الخانة تظهر بلا رقمٍ فيعرف السامع أين هو.
+        ayahNumbers = pairs.map { it.first }
+        index = 0
+        token = "${reciter.id}#$surah"
+        startAt(reciter, surah, 0)
+    }
+
+    private fun play(reciter: Reciter, surah: Int, ayahCount: Int, title: String) {
+        val urls = buildQueue(reciter, surah, ayahCount)
+        if (urls.isEmpty()) {
+            _state.value = QuranAudioState.Error("لا تتوفّر تلاوة لهذه السورة")
+            return
+        }
+
+        releasePlayer()
+        queue = urls
+        lastTitle = title
+        ayahNumbers = if (reciter.mode == ReciterMode.AYAH) (1..urls.size).toList() else emptyList()
+        index = 0
+        token = "${reciter.id}#$surah"
+        startAt(reciter, surah, 0)
+    }
+
+    /// ما حُفظ على الجهاز — تُضبطه الواجهة فلا يحتاج المشغّل سياقًا.
+    private var filesDir: java.io.File? = null
+    private var downloaded: Set<String> = emptySet()
+
+    /// يربط المشغّل بالتلاوات المحفوظة.
+    ///
+    /// ⚠️ المشغّل كائن وحيد بلا سياق، والواجهة تعرف المحفوظات؛ فتمرّرها
+    /// إليه. ولو قرأها من التخزين بنفسه لصار يعتمد على `Context`، ويُقرأ
+    /// من قرص في طريق التشغيل.
+    fun bindOffline(filesDir: java.io.File?, downloaded: Set<String>) {
+        this.filesDir = filesDir
+        this.downloaded = downloaded
+    }
+
+    /// ⚠️ الطابور يُبنى من وضع القارئ لا من رغبتنا: من يبثّ السورة
+    /// كاملة نأخذها منه، ومن لا يبثّ إلا آية آية نصفّ آيات السورة.
+    ///
+    /// ⚠️ والمحفوظ على الجهاز **أولًا**: من نزّل سورة ليسمعها في
+    /// الطائرة ثم فتحها بلا اتصال، يجب أن يسمعها من ملفّه لا أن
+    /// يفاجأ بصمت.
+    private fun buildQueue(reciter: Reciter, surah: Int, ayahCount: Int): List<String> {
+        return when (reciter.mode) {
+            ReciterMode.SURAH -> {
+                val dir = filesDir
+                val local = if (dir != null) {
+                    QuranAudioOffline.sourceFor(dir, reciter, surah, downloaded)
+                } else {
+                    null
+                }
+                listOfNotNull(local ?: QuranAudio.surahUrl(reciter, surah))
+            }
+            ReciterMode.AYAH -> (1..ayahCount).mapNotNull { ayah ->
+                QuranAudio.ayahUrl(reciter, surah, ayah)
+            }
+        }
+    }
+
+    private fun startAt(reciter: Reciter, surah: Int, at: Int) {
+        if (at !in queue.indices) {
+            // انتهت السورة
+            releasePlayer()
+            _state.value = QuranAudioState.Idle
+            return
+        }
+        index = at
+        val mine = "${reciter.id}#$surah"
+        val currentAyah = ayahNumbers.getOrNull(at)
+        _state.value = QuranAudioState.Loading(reciter.id, surah, currentAyah)
+
+        // ⚠️ إعادة استخدام المشغّل بعد `reset()`: إنشاء مشغّل جديد مع
+        // كل آية يكدّس كائنات غير محرّرة طوال سورة من ٢٨٦ آية.
+        val mp = player ?: MediaPlayer()
+        player = mp
+        mp.reset()
+        // ⚠️ `reset()` يمسح سمات الصوت فتُعاد بعده لا قبله — تعيين
+        // يسبق الـ reset لغو لا أثر له.
+        mp.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build(),
+        )
+
+        try {
+            mp.setDataSource(queue[at])
+            mp.setOnPreparedListener {
+                // ⚠️ قد يكون المستخدم بدّل السورة أثناء التحضير؛ نتحقّق
+                // قبل التشغيل وإلا سمع غير ما طلب.
+                if (token == mine) {
+                    it.start()
+                    _state.value = QuranAudioState.Playing(reciter.id, surah, currentAyah)
+                }
+            }
+            mp.setOnCompletionListener {
+                if (token == mine) startAt(reciter, surah, at + 1)
+            }
+            mp.setOnErrorListener { _, _, _ ->
+                if (token == mine) {
+                    // ⚠️ نتجاوز الآية الفاشلة ولا نوقف السورة: بعض
+                    // القرّاء ينقصهم ملف آية واحدة (docs/10 §٤)،
+                    // والتوقّف عندها يُسكت سورة كاملة من أجل ثانية
+                    // ناقصة. نكمل، ونُبلغ فقط إن تعذّر كل شيء.
+                    if (at + 1 in queue.indices) {
+                        startAt(reciter, surah, at + 1)
+                    } else {
+                        _state.value =
+                            QuranAudioState.Error("تعذّر تشغيل التلاوة — تحقّق من الاتصال")
+                    }
+                }
+                true
+            }
+            // ⚠️ غير متزامن: التحضير المتزامن يجمّد واجهة القراءة،
+            // والملف على الشبكة لا في الذاكرة.
+            mp.prepareAsync()
+        } catch (e: Exception) {
+            releasePlayer()
+            _state.value = QuranAudioState.Error("تعذّر تشغيل التلاوة — تحقّق من الاتصال")
+        }
+    }
+
+    private fun pause() {
+        val current = _state.value as? QuranAudioState.Playing ?: return
+        runCatching { player?.pause() }
+        _state.value = QuranAudioState.Paused(current.reciterId, current.surah, current.ayah)
+    }
+
+    private fun resume() {
+        val current = _state.value as? QuranAudioState.Paused ?: return
+        runCatching { player?.start() }
+        _state.value = QuranAudioState.Playing(current.reciterId, current.surah, current.ayah)
+    }
+
+    /// إيقاف تامّ: يُرجع الحالة إلى [QuranAudioState.Idle].
+    fun stop() {
+        releasePlayer()
+        lastTitle = ""
+        _state.value = QuranAudioState.Idle
+    }
+
+    /// ⚠️ تحرير الموارد واجب: ترك [MediaPlayer] حيًّا بعد ترك الشاشة
+    /// يترك مشغّلًا يُصرَف من البطارية ولا يراه أحد.
+    /// ⚠️ لم تعد تُستدعى عند مغادرة الشاشة: ذلك كان يقطع التلاوة مع
+    /// كل تبديل تبويب. تُستدعى عند تدمير الخدمة وحدها.
+    fun release() {
+        releasePlayer()
+        lastTitle = ""
+        _state.value = QuranAudioState.Idle
+    }
+
+    private fun releasePlayer() {
+        token = null
+        queue = emptyList()
+        ayahNumbers = emptyList()
+        try {
+            player?.apply {
+                if (isPlaying) stop()
+            }
+        } catch (e: IllegalStateException) {
+            // ⚠️ MediaPlayer يرمي إن أُوقف في حالة غير صالحة؛ الخطأ
+            // هنا لا يعني فشلًا يرى المستخدم أثره.
+        }
+        try {
+            player?.release()
+        } catch (e: Exception) {
+            // لا شيء: الإفلات متسامح بطبعه
+        }
+        player = null
+    }
+}

@@ -1,0 +1,223 @@
+package com.athar.athar.ui
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.RestartAlt
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import com.athar.athar.i18n.AppLocale
+import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.i18n.Strings
+import com.athar.athar.i18n.LocaleStore
+import com.athar.athar.i18n.ProvideStrings
+import com.athar.athar.notification.NotificationScheduler
+import com.athar.athar.notification.SilenceScheduler
+import com.athar.athar.prayer.PrayerSettingsStore
+import com.athar.athar.ui.adhkar.AdhkarScreen
+import com.athar.athar.ui.components.AtharNavBar
+import com.athar.athar.ui.components.AtharNavItem
+import com.athar.athar.ui.prayer.PrayerScreen
+import com.athar.athar.ui.tasbih.TasbihScreen
+import com.athar.athar.ui.quran.QuranScreen
+import com.athar.athar.ui.settings.MoreScreen
+import com.athar.athar.ui.theme.Appearance
+import com.athar.athar.ui.theme.AppearanceStore
+import com.athar.athar.ui.theme.AtharTheme
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+
+private val kTabIcons: List<ImageVector> = listOf(
+    Icons.Filled.Home,
+    Icons.Filled.MenuBook,
+    Icons.Filled.Star,
+    // ⚠️ السبحة **تبويب** لا بند في «المزيد»: E1–E4 كلها P0، ومن
+    // يسبّح بعد كل صلاة لا يفتح تبويبين ليصل إلى عدّاده.
+    // ⚠️ والأيقونة من أيقونات **مستخدمة أصلًا** في ملف آخر: أسماء
+    // الحزمة `material-icons-extended` لا تُحصى، واسم يبدو بديهيًّا
+    // قد لا يكون فيها — فالتخمين يكلّف دورة بناء.
+    Icons.Filled.RestartAlt,
+    // ⚠️ القبلةُ **لم تعد بندًا**: صار الشريطُ بخمسة بنودٍ أضيقَ
+    // من أن تُقرأ أسماؤه، فنُقلت إلى «المزيد» حيث تُذكَرُ مع سائر
+    // الأدواتِ لا كندٍ يُساوي المواقيتَ في الوزن.
+    Icons.Filled.MoreHoriz,
+)
+
+/// الهيكل: خمس تبويبات. المواقيت على «الرئيسية» لأنها أكثر ما يُفتح
+/// يوميًا (قرار docs/02).
+@Composable
+fun AtharApp(initialTab: Int = 0, initialSection: Int = 0) {
+    val context = LocalContext.current
+    var locale by remember { mutableStateOf(LocaleStore.load(context)) }
+    var appearance by remember { mutableStateOf(AppearanceStore.load(context)) }
+
+    ProvideStrings(locale) {
+        // ⚠️ الثيم هنا لا في MainActivity: اللغة والمظهر يُقرآن من
+        // التخزين عند التشغيل لا مرة واحدة عند إنشاء النشاط، وحتى
+        // يتغيّرا فورًا بلا إعادة إنشاء.
+        AtharTheme(appearance) {
+            // ⚠️ نضاعف `fontScale` لا نستبدله: إعداد الخط في أندرويد
+            // نفسه يبقى محترمًا، ومقاس التطبيق يُضاف إليه. من ضبط
+            // خطّ النظام كبيرًا ثم اختار «صغير» في أثر يرى نصًّا
+            // كبيرًا قليلًا لا صغيرًا مطلقًا.
+            val density = LocalDensity.current
+            val scaled = remember(density, appearance.fontScale) {
+                Density(density.density, density.fontScale * appearance.fontScale.scale)
+            }
+            CompositionLocalProvider(LocalDensity provides scaled) {
+                AppShell(
+                    locale = locale,
+                    appearance = appearance,
+                    initialTab = initialTab,
+                    initialSection = initialSection,
+                    onLocaleChange = { next ->
+                        locale = next
+                        LocaleStore.save(context, next)
+                        // ⚠️ نصوص التنبيهات المجدولة مخزّنة في النظام، فتبقى
+                        // بلغتها القديمة إن لم نُجدولها من جديد
+                        NotificationScheduler.rescheduleFromStored(context)
+                    },
+                    onAppearanceChange = { next ->
+                        appearance = next
+                        AppearanceStore.save(context, next)
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AppShell(
+    locale: AppLocale,
+    appearance: Appearance,
+    initialTab: Int = 0,
+    initialSection: Int = 0,
+    onLocaleChange: (AppLocale) -> Unit,
+    onAppearanceChange: (Appearance) -> Unit,
+) {
+    val s = LocalStrings.current
+    val context = LocalContext.current
+    var selected by rememberSaveable { mutableIntStateOf(initialTab) }
+
+    // ⚠️ **الاختصارُ يفتح تبويبًا**: ولا يكفي أن يبدأ التطبيقُ
+    // عليه، بل لا بدّ من القفز إليه إن كان التطبيقُ مفتوحًا.
+    LaunchedEffect(initialTab) {
+        if (initialTab != 0) selected = initialTab
+    }
+
+    // ⚠️ الاختصاراتُ **تُنشر كلما تغيّرت اللغة**: عنوانُ الاختصار
+    // من حزمة الترجمة، فإلا نشرناها بغيرها لبقيت بلغةٍ قديمة.
+    LaunchedEffect(locale) {
+        AppShortcuts.apply(context, Strings(locale))
+    }
+    // ⚠️ الهدف في الأب لا في الشاشة: «تابع القراءة» على الرئيسية
+    // يفتح القرآن، ولا سبيل إلى ذلك إلا بحالة يملكها من يملك
+    // اختيار التبويب. والموضع يُقرأ من مخزنه، لا يُمرَّر.
+    var quranTarget by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var settings by remember { mutableStateOf(PrayerSettingsStore.load(context)) }
+
+    /// ⚠️ إعادة الجدولة عند كل فتح: النظام ينسى التنبيهات بعد الإقلاع،
+    /// والمواقيت تتغيّر يوميًا، والمستخدم قد يغيّر مدينته.
+    LaunchedEffect(Unit) {
+        NotificationScheduler.rescheduleFromStored(context)
+        // ⚠️ نوافذُ الصمت تُجدَّد مع التنبيهات: بعد كل إعادة
+        // تشغيلٍ للجهاز، ومنبّهٌ ماضٍّ يُطلق فورًا.
+        SilenceScheduler.reschedule(context)
+    }
+
+    val labels = listOf(
+        s.tabHome, s.tabQuran, s.tabAdhkar, s.tabTasbih, s.tabMore,
+    )
+
+    Scaffold(
+        bottomBar = {
+            AtharNavBar(
+                items = labels.mapIndexed { index, label ->
+                    AtharNavItem(icon = kTabIcons[index], label = label)
+                },
+                selectedIndex = selected,
+                onSelect = { selected = it },
+            )
+        },
+    ) { innerPadding ->
+        // ⚠️ **تلاشٍ بين التبويبات**: انتقالٌ فوريٌّ يُقرأ كقفزة،
+        // والتلاشي البطيء (٢٢٠ جزءًا من الثانية) يجعل التنقّل
+        // انسيابيًّا — وهو ما يقتضيه نظامُ التصميم (٢٠٠–٣٠٠ جزء
+        // من الثانية).
+        // ⚠️ **التمريرُ يبقى في موضعه**: التلاشي يُخرج محتوى
+        // التبويبِ القديم، فتفقد القوائمُ موضعَها. فمَن كان في
+        // السورةِ الخمسينَ ثم ذهب إلى الأذكارِ ورجع وجد نفسه في
+        // الأولى — وهو تطبيقٌ يبدّل موضعَك دون أن يطلب.
+        val stateHolder = rememberSaveableStateHolder()
+        Crossfade(
+            targetState = selected,
+            animationSpec = tween(durationMillis = 220),
+            label = "tab",
+        ) { tab ->
+            stateHolder.SaveableStateProvider(tab.toString()) {
+                when (tab) {
+                    0 -> PrayerScreen(
+                        settings = settings,
+                        onContinueReading = { surah, ayah ->
+                            quranTarget = surah to ayah
+                            selected = 1
+                        },
+                        onSettingsChange = { newSettings ->
+                            settings = newSettings
+                            PrayerSettingsStore.save(context, newSettings)
+                            NotificationScheduler.rescheduleFromStored(context)
+                        },
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                    1 -> QuranScreen(
+                        readerTheme = appearance.readerTheme,
+                        target = quranTarget,
+                        onTargetConsumed = { quranTarget = null },
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                    2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
+                    3 -> TasbihScreen(modifier = Modifier.padding(innerPadding))
+                    4 -> MoreScreen(
+                        locale = locale,
+                        appearance = appearance,
+                        onLocaleChange = onLocaleChange,
+                        onAppearanceChange = onAppearanceChange,
+                        qiblaLatitude = settings.latitude,
+                        qiblaLongitude = settings.longitude,
+                        qiblaPlaceName = settings.placeName,
+                        initialSection = initialSection,
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                    else -> Box(
+                        modifier = Modifier.fillMaxSize().padding(innerPadding),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(text = labels[tab])
+                    }
+                }
+            }
+        }
+    }
+}

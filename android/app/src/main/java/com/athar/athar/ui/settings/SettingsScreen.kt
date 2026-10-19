@@ -1,0 +1,503 @@
+package com.athar.athar.ui.settings
+
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import com.athar.athar.i18n.AppLocale
+import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.i18n.LocaleStore
+import com.athar.athar.notification.NotificationScheduler
+import com.athar.athar.notification.NotificationSettings
+import com.athar.athar.notification.NotificationSettingsStore
+import com.athar.athar.notification.PrayerAlertMode
+import com.athar.athar.notification.SilenceController
+import com.athar.athar.notification.SilenceScheduler
+import com.athar.athar.notification.SilenceSettings
+import com.athar.athar.notification.SilenceStore
+import com.athar.athar.prayer.PrayerSlot
+import androidx.compose.runtime.mutableIntStateOf
+import com.athar.athar.hijri.HijriCalendar
+import com.athar.athar.hijri.HijriStore
+import com.athar.athar.ui.hijri.hijriText
+import com.athar.athar.ui.components.SubHeading
+import java.time.LocalDate
+import com.athar.athar.i18n.localDigits
+
+/// ⚠️ الشروق **مذكور** بصف «لا أذان — ليست صلاة» لا مخفيًا: إخفاؤه
+/// يوهم المستخدم أن التطبيق نسيه، وشرح السبب أصدق من الصمت.
+private val kPrayers = listOf(
+    PrayerSlot.FAJR,
+    PrayerSlot.DHUHR,
+    PrayerSlot.ASR,
+    PrayerSlot.MAGHRIB,
+    PrayerSlot.ISHA,
+)
+
+private data class ModeOption(val mode: PrayerAlertMode, val labelKey: String)
+
+/// ⚠️ التسمية **مفتاح ترجمة** لا نصًّا: القائمة تُبنى مرة واحدة عند
+/// الإقلاع، فلو حملت نصًّا لظلّت عربية بعد تغيير اللغة حتى إعادة التشغيل.
+private val kModes = listOf(
+    ModeOption(PrayerAlertMode.ADHAN, "notifications_mode_adhan"),
+    ModeOption(PrayerAlertMode.BEEP, "notifications_mode_beep"),
+    ModeOption(PrayerAlertMode.VIBRATE, "notifications_mode_vibrate"),
+    ModeOption(PrayerAlertMode.SILENT, "notifications_mode_silent"),
+    ModeOption(PrayerAlertMode.OFF, "notifications_mode_off"),
+)
+
+/// علامةُ العَزلِ اللاتينيّ: تُبقي ما داخلَها على اتّجاهِه
+/// اللاتينيّ مهما كانت صفحةُ التطبيقِ عربية.
+private const val LRI = "\u2066"
+
+/// علامةُ إغلاقِ العَزل.
+private const val PDI = "\u2069"
+
+@Composable
+fun SettingsScreen(modifier: Modifier = Modifier) {
+    val s = LocalStrings.current
+    val context = LocalContext.current
+    var hijriOffset by remember { mutableIntStateOf(HijriStore.load(context)) }
+    var settings by remember { mutableStateOf(NotificationSettingsStore.load(context)) }
+    var needsPermission by remember { mutableStateOf(false) }
+    var testSent by remember { mutableStateOf(false) }
+
+    fun commit(next: NotificationSettings) {
+        settings = next
+        NotificationSettingsStore.save(context, next)
+        NotificationScheduler.rescheduleFromStored(context)
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        needsPermission = !granted
+        if (granted) commit(settings)
+    }
+
+    LaunchedEffect(Unit) { needsPermission = !hasNotificationPermission(context) }
+
+    LazyColumn(
+        modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        // ⚠️ **لا عنوانَ في «المزيد»**: اسمُ القسمِ معروضٌ في
+        // شريطِ الأقسامِ فوقَه.
+
+        // ⚖️ ضبط الهجري **شرط لا تفضّل** (G2): الرؤية تختلف ببلد،
+        // ولا نملك أن نفرض على المستخدم تقويم بلد آخر.
+        item {
+            SubHeading(s.hijriAdjust)
+            Text(
+                s.hijriAdjustBody,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                val digits = localDigits()
+                for (n in -HijriCalendar.MAX_OFFSET..HijriCalendar.MAX_OFFSET) {
+                    FilterChip(
+                        selected = hijriOffset == n,
+                        onClick = {
+                            hijriOffset = n
+                            HijriStore.save(context, n)
+                        },
+                        // ⚠️ الأثر **معروض** لا موصوف: المستخدم لا
+                        // يعرف ما «+١»، ويرى فورًا إن صار التاريخ
+                        // موافقًا لما يعرفه.
+                        // ⚠️ **أرقامُ الواجهة**: «+٢» في العربية و«+2» في
+                        // غيرها.
+                        // ⚠️ **والإشارةُ داخلَ عَزلٍ لاتينيّ**: الصفحةُ
+                        // عربيةٌ فيقلبُ اتجاهُ العَزلِ الإشارةَ
+                        // («١+» بدل «+١»)، فالعَزلُ يحفظُ ترتيبَها
+                        // كما يُراد.
+                        label = {
+                            Text(
+                                LRI +
+                                    (if (n > 0) "+" else "") +
+                                    digits(n) +
+                                    PDI,
+                            )
+                        },
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = hijriText(LocalDate.now(), hijriOffset),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                )
+            }
+            HorizontalDivider()
+        }
+
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(s.notificationsMaster, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        s.notificationsMasterDesc,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(
+                    checked = settings.masterEnabled,
+                    onCheckedChange = { commit(settings.copy(masterEnabled = it)) },
+                )
+            }
+            HorizontalDivider()
+            Text(
+                s.sunriseNoAdhan,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(vertical = 4.dp),
+            )
+        }
+
+        items(kPrayers) { slot ->
+            PrayerCard(
+                slot = slot,
+                settings = settings,
+                onMode = { commit(settings.withMode(slot, it)) },
+                onReminder = { commit(settings.withReminder(slot, it)) },
+            )
+        }
+
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(s.notifChannelJumuah, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                s.notifJumuahBody,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Switch(
+                            checked = settings.jumuahReminder,
+                            onCheckedChange = { commit(settings.copy(jumuahReminder = it)) },
+                        )
+                    }
+                    if (settings.jumuahReminder) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            listOf(30, 60, 90, 120).forEach { minutes ->
+                                FilterChip(
+                                    selected = settings.jumuahMinutesBefore == minutes,
+                                    onClick = {
+                                        commit(settings.copy(jumuahMinutesBefore = minutes))
+                                    },
+                                    label = { Text(s.tArgs("minutes_short", "n" to minutes)) },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            SilenceCard()
+        }
+
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(s.settingsMorningAdhkar, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                s.notifMorningAdhkarBody,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Switch(
+                            checked = settings.morningAdhkar,
+                            onCheckedChange = { commit(settings.copy(morningAdhkar = it)) },
+                        )
+                    }
+                    if (settings.morningAdhkar) {
+                        Text(
+                            s.settingsAdhkarOffset,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 4.dp),
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            NotificationSettings.ADHKAR_OFFSET_CHOICES.forEach { minutes ->
+                                FilterChip(
+                                    selected = settings.morningAdhkarOffset == minutes,
+                                    onClick = { commit(settings.withMorningAdhkarOffset(minutes)) },
+                                    label = { Text(s.tArgs("minutes_short", "n" to minutes)) },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(s.settingsEveningAdhkar, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                            Text(
+                                s.notifEveningAdhkarBody,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Switch(
+                            checked = settings.eveningAdhkar,
+                            onCheckedChange = { commit(settings.copy(eveningAdhkar = it)) },
+                        )
+                    }
+                    if (settings.eveningAdhkar) {
+                        Text(
+                            s.settingsAdhkarOffset,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 4.dp),
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            NotificationSettings.ADHKAR_OFFSET_CHOICES.forEach { minutes ->
+                                FilterChip(
+                                    selected = settings.eveningAdhkarOffset == minutes,
+                                    onClick = { commit(settings.withEveningAdhkarOffset(minutes)) },
+                                    label = { Text(s.tArgs("minutes_short", "n" to minutes)) },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            Button(
+                onClick = {
+                    NotificationScheduler.scheduleTest(context)
+                    testSent = true
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(Icons.Filled.NotificationsActive, contentDescription = null)
+                Text("  " + s.notificationsTest)
+            }
+            if (testSent) {
+                Text(
+                    s.notificationsOffHint,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(vertical = 8.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PrayerCard(
+    slot: PrayerSlot,
+    settings: NotificationSettings,
+    onMode: (PrayerAlertMode) -> Unit,
+    onReminder: (Int) -> Unit,
+) {
+    /// ⚠️ `s` **ليس** في نطاق `SettingsScreen` — هذه دالة منفصلة، لا
+    /// lambda داخلي. إعادة قراءة `LocalStrings` هنا لا في تمريره،
+    /// لأن ما يُمرَّر قديمًا يظلّ قديمًا بعد تغيير اللغة.
+    val s = LocalStrings.current
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(s.t(slot.stringKey), fontSize = 17.sp, fontWeight = FontWeight.Bold)
+
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                kModes.forEach { option ->
+                    FilterChip(
+                        selected = settings.modeFor(slot) == option.mode,
+                        onClick = { onMode(option.mode) },
+                        label = { Text(s.t(option.labelKey)) },
+                    )
+                }
+            }
+
+            val current = settings.reminderFor(slot)
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                NotificationSettings.REMINDER_CHOICES.forEach { minutes ->
+                    FilterChip(
+                        selected = current == minutes,
+                        onClick = { onReminder(minutes) },
+                        label = { Text(if (minutes == 0) s.none else s.tArgs("minutes_short", "n" to minutes)) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun hasNotificationPermission(context: Context): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
+    return ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.POST_NOTIFICATIONS,
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+/// ⚠️ **الطلبُ في صفحة النظام**: إذنُ «عدم الإزعاج» لا يُمنح من
+/// داخل التطبيق، فالزرُّ يفتح صفحة النظام نفسها — ولا يعد
+/// التطبيقُ بأن يعمل قبل أن يصدّق النظام.
+@Composable
+private fun SilenceCard() {
+    val s = LocalStrings.current
+    val context = LocalContext.current
+    var settings by remember { mutableStateOf(SilenceStore.load(context)) }
+    var granted by remember { mutableStateOf(false) }
+    // ⚠️ **نيّةُ التفعيل محفوظة**: من ضغط المفتاح وذهب إلى النظام
+    // فلما رجع بصلاحية، فالأمرُ الأولُ لم يضيع عليه.
+    var wanted by remember { mutableStateOf(false) }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) {
+        granted = SilenceController.hasAccess(context)
+        // ⚠️ رجع المستخدمُ بصلاحية: نُتمّ ما بدأه — فلا يُبقى
+        // عليه أن يضغط المفتاح مرتين.
+        if (granted && wanted) {
+            wanted = false
+            settings = settings.copy(enabled = true)
+            SilenceStore.save(context, settings)
+            SilenceScheduler.reschedule(context)
+        }
+    }
+
+    LaunchedEffect(Unit) { granted = SilenceController.hasAccess(context) }
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(s.silenceTitle, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        s.silenceBody,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(
+                    checked = settings.enabled,
+                    onCheckedChange = { on ->
+                        if (on && !granted) {
+                            // ⚠️ بلا إذنٍ لا صمت: نفتح صفحة النظام.
+                            wanted = true
+                            launcher.launch(
+                                Intent(
+                                    android.provider.Settings
+                                        .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS,
+                                ),
+                            )
+                            return@Switch
+                        }
+                        settings = settings.copy(enabled = on)
+                        SilenceStore.save(context, settings)
+                        if (!on) {
+                            // ⚠️ إطفاؤه الآن **يرفع الصمت فورًا**:
+                            // الانتظارَ حتى آخر نافذةٍ يجعل المستخدم
+                            // ينتظر صمتًا أطفأه بنفسه.
+                            SilenceController.restore(context)
+                        }
+                        SilenceScheduler.reschedule(context)
+                    },
+                )
+            }
+            if (!granted) {
+                Text(
+                    s.silenceNeedAccess,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+                Button(
+                    onClick = {
+                        launcher.launch(
+                            Intent(
+                                android.provider.Settings
+                                    .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS,
+                            ),
+                        )
+                    },
+                    modifier = Modifier.padding(top = 8.dp),
+                ) {
+                    Text(s.silenceAllow)
+                }
+            }
+            if (settings.enabled && granted) {
+                Text(
+                    s.silenceMinutes,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SilenceSettings.MINUTE_CHOICES.forEach { minutes ->
+                        FilterChip(
+                            selected = settings.minutes == minutes,
+                            onClick = {
+                                settings = settings.copy(minutes = minutes)
+                                SilenceStore.save(context, settings)
+                                SilenceScheduler.reschedule(context)
+                            },
+                            label = { Text(s.tArgs("minutes_short", "n" to minutes)) },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
