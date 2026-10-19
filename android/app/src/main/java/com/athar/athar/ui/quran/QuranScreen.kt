@@ -87,6 +87,7 @@ import com.athar.athar.ui.theme.ReaderPalette
 import com.athar.athar.ui.theme.ReaderTheme
 import android.content.Intent
 import androidx.compose.material.icons.filled.Share
+import com.athar.athar.ui.theme.AmiriFamily
 
 @Composable
 fun QuranScreen(
@@ -580,6 +581,7 @@ private fun SearchResults(
                             text = hit.ayah.text,
                             fontSize = 18.sp,
                             lineHeight = 30.sp,
+                            fontFamily = AmiriFamily,
                             textAlign = TextAlign.Start,
                             modifier = Modifier.padding(top = 4.dp),
                         )
@@ -909,6 +911,9 @@ private fun ReaderView(
                         // النص العثماني يحتاج مقاسًا أكبر وتباعدًا أوسع
                         fontSize = 24.sp,
                         lineHeight = 44.sp,
+                        // ⚠️ **أميري**: الرسمُ العثماني بخطٍّ لا يعرف
+                        // علاماتِه تتفرّق حركاتُه عن حروفها.
+                        fontFamily = AmiriFamily,
                         textAlign = TextAlign.Justify,
                         modifier = Modifier.weight(1f).padding(vertical = 8.dp),
                     )

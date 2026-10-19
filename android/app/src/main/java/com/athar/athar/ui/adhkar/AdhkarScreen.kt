@@ -56,6 +56,7 @@ import com.athar.athar.adhkar.AdhkarSection
 import com.athar.athar.adhkar.AdhkarSources
 import com.athar.athar.adhkar.Dhikr
 import com.athar.athar.prayer.CitySearch
+import com.athar.athar.ui.theme.AmiriFamily
 
 @Composable
 fun AdhkarScreen(modifier: Modifier = Modifier) {
@@ -308,6 +309,7 @@ private fun DhikrCard(dhikr: Dhikr, done: Int, onTap: () -> Unit) {
                     text = dhikr.text,
                     fontSize = 18.sp,
                     lineHeight = 30.sp,
+                    fontFamily = AmiriFamily,
                     textAlign = TextAlign.Start,
                 )
                 if (dhikr.reference.isNotEmpty()) {

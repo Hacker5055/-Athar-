@@ -7,18 +7,69 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+/// ⚠️ **الخلفيةُ ليست بيضاء**: ورقٌ كريميّ (#F7F5F0) أرفقُّ من
+/// الأبيض، خاصةً للنظر الطويل. وبياضُ الشاشةِ الخالصُ على
+/// ورقٍ كريميّ يبدو كأنّه لم يُصبَغ.
 private val LightColors = lightColorScheme(
     primary = AtharPrimary,
     onPrimary = AtharOnPrimary,
     primaryContainer = AtharPrimaryContainer,
-    secondary = AtharAccent,
+    onPrimaryContainer = AtharOnPrimaryContainer,
+    inversePrimary = Color(0xFF7FD3C0),
+    secondary = AtharSecondary,
+    onSecondary = AtharOnSecondary,
+    secondaryContainer = AtharSecondaryContainer,
+    onSecondaryContainer = AtharOnSecondaryContainer,
+    tertiary = AtharTertiary,
+    onTertiary = AtharOnTertiary,
+    tertiaryContainer = AtharTertiaryContainer,
+    onTertiaryContainer = AtharOnTertiaryContainer,
     background = AtharBackground,
+    onBackground = AtharOnBackground,
+    surface = AtharSurface,
+    onSurface = AtharOnSurface,
+    surfaceVariant = AtharSurfaceVariant,
+    onSurfaceVariant = AtharOnSurfaceVariant,
+    outline = AtharOutline,
+    outlineVariant = AtharOutlineVariant,
+    error = AtharError,
+    onError = AtharOnError,
+    errorContainer = AtharErrorContainer,
+    onErrorContainer = AtharOnErrorContainer,
+    inverseSurface = Color(0xFF2F312F),
+    inverseOnSurface = Color(0xFFF1F1ED),
 )
 
+/// ⚠️ **داكنٌ أخضرُ لا أسودُ خالص**: الأسودُ على شاشاتِ OLED يجعل
+/// الحروفَ «تحترق» بتباينٍ حادّ، والأخضرُ العميقُ يهدّئه.
 private val DarkColors = darkColorScheme(
     primary = Color(0xFF7FD3C0),
     onPrimary = Color(0xFF00382F),
-    secondary = AtharAccent,
+    primaryContainer = Color(0xFF005143),
+    onPrimaryContainer = Color(0xFF9CF2DC),
+    inversePrimary = AtharPrimary,
+    secondary = Color(0xFFE0C48C),
+    onSecondary = Color(0xFF3D2E05),
+    secondaryContainer = Color(0xFF56451A),
+    onSecondaryContainer = Color(0xFFFDE1A6),
+    tertiary = Color(0xFFA9CBE0),
+    onTertiary = Color(0xFF103544),
+    tertiaryContainer = Color(0xFF274C5C),
+    onTertiaryContainer = Color(0xFFC5E7FF),
+    background = Color(0xFF0E1512),
+    onBackground = Color(0xFFE2E3DF),
+    surface = Color(0xFF0E1512),
+    onSurface = Color(0xFFE2E3DF),
+    surfaceVariant = Color(0xFF3F4946),
+    onSurfaceVariant = Color(0xFFBFC9C5),
+    outline = Color(0xFF899390),
+    outlineVariant = Color(0xFF3F4946),
+    error = Color(0xFFF2B8B5),
+    onError = Color(0xFF601410),
+    errorContainer = Color(0xFF8C1D18),
+    onErrorContainer = Color(0xFFF9DEDC),
+    inverseSurface = Color(0xFFE2E3DF),
+    inverseOnSurface = Color(0xFF2F312F),
 )
 
 /// ألوان شاشة القراءة وحدها.
@@ -72,6 +123,8 @@ fun AtharTheme(
     }
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
+        typography = AtharTypography,
+        shapes = AtharShapes,
         content = content,
     )
 }

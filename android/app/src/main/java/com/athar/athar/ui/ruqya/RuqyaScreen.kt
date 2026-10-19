@@ -48,6 +48,7 @@ import com.athar.athar.ruqya.RuqyaSelections
 import com.athar.athar.ruqya.RuqyaSections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.athar.athar.ui.theme.AmiriFamily
 
 /// الرقية الشرعية (C9 من docs/02).
 ///
@@ -229,6 +230,7 @@ private fun AyahCard(
                     },
                     fontSize = 19.sp,
                     lineHeight = 34.sp,
+                    fontFamily = AmiriFamily,
                     textAlign = TextAlign.Start,
                 )
             }
@@ -265,6 +267,7 @@ private fun DhikrText(dhikr: Dhikr) {
             text = dhikr.text,
             fontSize = 18.sp,
             lineHeight = 30.sp,
+            fontFamily = AmiriFamily,
             textAlign = TextAlign.Start,
         )
         if (dhikr.reference.isNotEmpty()) {

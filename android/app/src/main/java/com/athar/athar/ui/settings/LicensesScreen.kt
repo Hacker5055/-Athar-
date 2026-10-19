@@ -55,6 +55,10 @@ private val CREDITS: List<SourceCredit> = listOf(
         "quran-meta · MIT (رواية حفص)\nحدود الأجزاء والصفحات، لا نصًّا قرآنيًّا.",
     ),
     SourceCredit(
+        "الخطوط — تجوّل للواجهة · أميري للقرآن والأذكار",
+        "Tajawal · Amiri — SIL Open Font License 1.1\nنصوصُ الرخصة في التطبيق: ملفّا الأصول licenses/.",
+    ),
+    SourceCredit(
         "التلاوة",
         "islamic.network (alquran.cloud)\nمجاني للتوزيع غير التجاري، وحق كل تلاوة يبقى لقارئها. نبثّ ولا ننسخ.",
     ),

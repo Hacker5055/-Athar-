@@ -41,6 +41,7 @@ import com.athar.athar.quran.QuranMeta
 import com.athar.athar.quran.QuranRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.athar.athar.ui.theme.AmiriFamily
 
 /// وضع المصحف (B2 من docs/02) — قراءةً صفحةً صفحة.
 ///
@@ -112,6 +113,7 @@ fun MushafScreen(
                                 text = segment.name,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
+                                fontFamily = AmiriFamily,
                                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
                                 textAlign = TextAlign.Center,
                             )
@@ -135,6 +137,7 @@ fun MushafScreen(
                                 text = verse.text,
                                 fontSize = 19.sp,
                                 lineHeight = 32.sp,
+                                fontFamily = AmiriFamily,
                                 textAlign = TextAlign.Start,
                                 modifier = Modifier.weight(1f),
                             )
