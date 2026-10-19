@@ -7,10 +7,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Navigation
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +41,11 @@ import androidx.compose.ui.unit.sp
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.qibla.DeviceCompass
 import com.athar.athar.qibla.QiblaMath
+import com.athar.athar.qibla.SunQibla
 import com.batoulapps.adhan.Coordinates
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import com.batoulapps.adhan.Qibla
 import kotlin.math.abs
 import kotlin.math.cos
@@ -60,9 +71,13 @@ fun QiblaScreen(
     val accuracy by compass.accuracy.collectAsState()
 
     Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
+        // ⚠️ **قابل للتمرير**: البوصلة ٢٨٠ بكسل والبطاقة تحتها،
+        // فلا يظهر إلا نصفُها على شاشةٍ صغيرة.
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
         when {
             !compass.isAvailable -> {
@@ -134,6 +149,106 @@ fun QiblaScreen(
                     )
                 }
             }
+        }
+
+        // ⚠️ القبلة الشمسية **أسفل البوصلة** لا فوقها: هي بديلٌ
+        // عنها لا منافسة، ومن لا_sensor عنده يجدها هناك.
+        Spacer(Modifier.height(20.dp))
+        SunQiblaCard(latitude = latitude, longitude = longitude)
+    }
+}
+
+/// بطاقة القبلة الشمسية (D3).
+///
+/// ⚠️ **الوصف لا الوعد**: إن لم يكن في هذه السنة يومٌ تشرق فيه
+/// الشمس في اتجاه القبلة، فالتطبيق يقول ذلك. والاختراع أضرّ من
+/// الصدق.
+@Composable
+private fun SunQiblaCard(latitude: Double, longitude: Double) {
+    val s = LocalStrings.current
+    val zone = remember { ZoneId.systemDefault() }
+    val today = remember { LocalDate.now() }
+    val year = today.year
+
+    val days = remember(latitude, longitude, year, zone) {
+        SunQibla.qiblaSunDays(year, latitude, longitude, zone)
+    }
+    val moment = remember(latitude, longitude, today, zone) {
+        SunQibla.shadowMoment(today, latitude, longitude, zone)
+    }
+    val now = remember { Instant.now() }
+    val sun = remember(latitude, longitude, zone) {
+        SunQibla.position(now, latitude, longitude, zone.rules.getOffset(now).totalSeconds)
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+        ),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = s.qiblaSunTitle,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = s.qiblaSunBody,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(8.dp))
+            if (days.isEmpty()) {
+                Text(
+                    text = s.qiblaSunNone,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            } else {
+                Text(
+                    text = s.qiblaSunDays,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                for (day in days) {
+                    Text(
+                        text = day.toString(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                    )
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = s.qiblaSunShadow,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = if (moment == null) {
+                    s.qiblaSunShadowNone
+                } else {
+                    String.format(
+                        java.util.Locale.US,
+                        "%02d:%02d",
+                        moment.minutesOfDay / 60,
+                        moment.minutesOfDay % 60,
+                    )
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = s.tArgs(
+                    "qibla_sun_now",
+                    "alt" to sun.altitude.toInt(),
+                    "az" to sun.azimuth.toInt(),
+                ),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

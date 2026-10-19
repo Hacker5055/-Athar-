@@ -576,6 +576,14 @@ class Strings(val locale: AppLocale) {
             "zakah_liable" to "بلغ النصاب",
             "zakah_note" to "الأسعار تُدخلها أنت: سعر الذهب والفضة يتغيّر كلّ يوم، وسعرٌ في التطبيق يقدّم زكاةً خاطئة بثقة.",
             "zakah_source" to "النصاب: ٨٥ جرامًا ذهبًا أو ٥٩٥ جرامًا فضة، و٢٫٥ كجم قوتًا للفرد في الفطر.",
+            "qibla_sun_title" to "القبلة من الشمس",
+            "qibla_sun_body" to "لا تحتاج البوصلة: مرّتين في السنة تشرق الشمس في اتجاه القبلة بالضبط. في تلك اليومين، قف عند الشرق ووجه نفسك — فأنت funky",
+            "qibla_sun_days" to "أيام الشروق",
+            "qibla_sun_none" to "لا يوجد في هذه السنة يومٌ تشرق فيه الشمس في اتجاه القبلة من مكانك.",
+            "qibla_sun_shadow" to "وقت الظلّ اليوم",
+            "qibla_sun_shadow_none" to "لا يبلغ الظلّ القبلة اليوم.",
+            "qibla_sun_now" to "الشمس الآن على ارتفاع {alt}° واتجاه {az}°",
+            "qibla_sun_pointing" to "الظلّ الآن يشير إلى القبلة",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -1126,6 +1134,14 @@ class Strings(val locale: AppLocale) {
             "zakah_liable" to "Nisab reached",
             "zakah_note" to "You enter the prices: gold and silver change every day, and a price baked into the app gives a wrong zakah with confidence.",
             "zakah_source" to "Nisab: 85 g of gold or 595 g of silver, and 2.5 kg of staple food per person for Fitr.",
+            "qibla_sun_title" to "Qibla by the sun",
+            "qibla_sun_body" to "No compass needed: twice a year the sun rises exactly in the qibla direction. On those days, face the east — and you face the Kaaba.",
+            "qibla_sun_days" to "Sunrise days",
+            "qibla_sun_none" to "In this year, no day brings the sun up in the qibla direction from where you are.",
+            "qibla_sun_shadow" to "Shadow time today",
+            "qibla_sun_shadow_none" to "The shadow does not reach the qibla today.",
+            "qibla_sun_now" to "The sun is now at {alt}° altitude, {az}° bearing",
+            "qibla_sun_pointing" to "Your shadow points to the qibla now",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1676,6 +1692,14 @@ class Strings(val locale: AppLocale) {
             "zakah_liable" to "Nisâb atteint",
             "zakah_note" to "Les prix sont saisis par vous : l’or et l’argent changent chaque jour, et un prix inscrit dans l’application donne un zakât faux avec assurance.",
             "zakah_source" to "Nisâb : 85 g d’or ou 595 g d’argent, et 2,5 kg de nourriture par personne pour le Fitr.",
+            "qibla_sun_title" to "Qibla par le soleil",
+            "qibla_sun_body" to "Pas besoin de boussole : deux fois par an, le soleil se lève exactement dans la direction de la Qibla. Ces jours-là, tournez-vous vers l’est — vous ferez face à la Kaaba.",
+            "qibla_sun_days" to "Jours de lever",
+            "qibla_sun_none" to "Cette année, aucun jour ne fait lever le soleil dans la direction de la Qibla d’ici.",
+            "qibla_sun_shadow" to "Heure de l’ombre aujourd’hui",
+            "qibla_sun_shadow_none" to "L’ombre n’atteint pas la Qibla aujourd’hui.",
+            "qibla_sun_now" to "Le soleil est à {alt}° d’altitude, {az}° d’azimut",
+            "qibla_sun_pointing" to "Votre ombre pointe vers la Qibla",
         )
     }
 
@@ -2231,4 +2255,12 @@ class Strings(val locale: AppLocale) {
     val zakahLiable: String get() = t("zakah_liable")
     val zakahNote: String get() = t("zakah_note")
     val zakahSource: String get() = t("zakah_source")
+    val qiblaSunTitle: String get() = t("qibla_sun_title")
+    val qiblaSunBody: String get() = t("qibla_sun_body")
+    val qiblaSunDays: String get() = t("qibla_sun_days")
+    val qiblaSunNone: String get() = t("qibla_sun_none")
+    val qiblaSunShadow: String get() = t("qibla_sun_shadow")
+    val qiblaSunShadowNone: String get() = t("qibla_sun_shadow_none")
+    val qiblaSunNow: String get() = t("qibla_sun_now")
+    val qiblaSunPointing: String get() = t("qibla_sun_pointing")
 }

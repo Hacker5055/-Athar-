@@ -601,4 +601,12 @@ const Map<String, String> kStringsFr = {
   'zakah_liable': 'Nisâb atteint',
   'zakah_note': 'Les prix sont saisis par vous : l’or et l’argent changent chaque jour, et un prix inscrit dans l’application donne un zakât faux avec assurance.',
   'zakah_source': 'Nisâb : 85 g d’or ou 595 g d’argent, et 2,5 kg de nourriture par personne pour le Fitr.',
+  'qibla_sun_title': 'Qibla par le soleil',
+  'qibla_sun_body': 'Pas besoin de boussole : deux fois par an, le soleil se lève exactement dans la direction de la Qibla. Ces jours-là, tournez-vous vers l’est — vous ferez face à la Kaaba.',
+  'qibla_sun_days': 'Jours de lever',
+  'qibla_sun_none': 'Cette année, aucun jour ne fait lever le soleil dans la direction de la Qibla d’ici.',
+  'qibla_sun_shadow': 'Heure de l’ombre aujourd’hui',
+  'qibla_sun_shadow_none': 'L’ombre n’atteint pas la Qibla aujourd’hui.',
+  'qibla_sun_now': 'Le soleil est à {alt}° d’altitude, {az}° d’azimut',
+  'qibla_sun_pointing': 'Votre ombre pointe vers la Qibla',
 };

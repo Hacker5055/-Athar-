@@ -601,4 +601,12 @@ const Map<String, String> kStringsEn = {
   'zakah_liable': 'Nisab reached',
   'zakah_note': 'You enter the prices: gold and silver change every day, and a price baked into the app gives a wrong zakah with confidence.',
   'zakah_source': 'Nisab: 85 g of gold or 595 g of silver, and 2.5 kg of staple food per person for Fitr.',
+  'qibla_sun_title': 'Qibla by the sun',
+  'qibla_sun_body': 'No compass needed: twice a year the sun rises exactly in the qibla direction. On those days, face the east — and you face the Kaaba.',
+  'qibla_sun_days': 'Sunrise days',
+  'qibla_sun_none': 'In this year, no day brings the sun up in the qibla direction from where you are.',
+  'qibla_sun_shadow': 'Shadow time today',
+  'qibla_sun_shadow_none': 'The shadow does not reach the qibla today.',
+  'qibla_sun_now': 'The sun is now at {alt}° altitude, {az}° bearing',
+  'qibla_sun_pointing': 'Your shadow points to the qibla now',
 };
