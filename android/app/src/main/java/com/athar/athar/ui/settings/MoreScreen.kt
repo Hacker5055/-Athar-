@@ -25,9 +25,12 @@ import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.ui.athary.TrackerScreen
 import com.athar.athar.ui.theme.Appearance
 import com.athar.athar.ui.asma.AsmaScreen
-import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Widgets
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.size
 
 /// تبويب «المزيد» — المدخل إلى ما لا يحتاج تبويبًا خاصًا به
 /// (`docs/03`: المتتبع · الإعدادات · عن التطبيق).
