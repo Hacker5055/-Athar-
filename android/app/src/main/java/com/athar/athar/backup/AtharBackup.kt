@@ -222,12 +222,16 @@ object BackupCodec {
         p.cityId?.let { put("cityId", it) }
         put("placeName", p.placeName)
         put("highLatitude", p.highLatitude.name)
-        put("adjust", jsonOf(p.adjustments))
+        put("adjust", adjustmentsJson(p.adjustments))
     }
 
-    /// ⚠️ التعديلات **بالاسم لا بالترتيب**: ترتيب التعداد قد
-    /// يتغيّر، واسم الثابت يبقى.
-    private fun jsonOf(adjustments: Map<PrayerSlot, Int>): JSONObject = JSONObject().apply {
+    /// ⚠️ **اسمها مختلف** عن `jsonOf(Map<String, Set<String>>)`:
+    /// الخريطتان تُمحيان على JVM إلى `Map` فيصطدمان، وKotlin
+    /// يقبل التزاحم في المصدر ولا يكتشفه إلا وقت البناء.
+    ///
+    /// ⚠️ وبالاسم لا بالترتيب: ترتيب التعداد قد يتغيّر، واسم
+    /// الثابت يبقى.
+    private fun adjustmentsJson(adjustments: Map<PrayerSlot, Int>): JSONObject = JSONObject().apply {
         adjustments.forEach { (slot, minutes) ->
             if (minutes != 0) put(slot.name, PrayerAdjustments.clamp(minutes))
         }
