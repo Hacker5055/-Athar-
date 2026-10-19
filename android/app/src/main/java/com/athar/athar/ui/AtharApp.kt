@@ -112,6 +112,10 @@ private fun AppShell(
     val s = LocalStrings.current
     val context = LocalContext.current
     var selected by rememberSaveable { mutableIntStateOf(0) }
+    // ⚠️ الهدف في الأب لا في الشاشة: «تابع القراءة» على الرئيسية
+    // يفتح القرآن، ولا سبيل إلى ذلك إلا بحالة يملكها من يملك
+    // اختيار التبويب. والموضع يُقرأ من مخزنه، لا يُمرَّر.
+    var quranTarget by remember { mutableStateOf<Pair<Int, Int>?>(null) }
     var settings by remember { mutableStateOf(PrayerSettingsStore.load(context)) }
 
     /// ⚠️ إعادة الجدولة عند كل فتح: النظام ينسى التنبيهات بعد الإقلاع،
@@ -140,6 +144,10 @@ private fun AppShell(
         when (selected) {
             0 -> PrayerScreen(
                 settings = settings,
+                onContinueReading = { surah, ayah ->
+                    quranTarget = surah to ayah
+                    selected = 1
+                },
                 onSettingsChange = { newSettings ->
                     settings = newSettings
                     PrayerSettingsStore.save(context, newSettings)
@@ -149,6 +157,8 @@ private fun AppShell(
             )
             1 -> QuranScreen(
                 readerTheme = appearance.readerTheme,
+                target = quranTarget,
+                onTargetConsumed = { quranTarget = null },
                 modifier = Modifier.padding(innerPadding),
             )
             2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))

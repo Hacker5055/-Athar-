@@ -469,6 +469,7 @@ class Strings(val locale: AppLocale) {
             "hijri_adjust" to "ضبط الهجري",
             "hijri_adjust_body" to "بعض البلدان ترى الهلال قبل غيرها. اختر الإزاحة إن كان التاريخ عندك مختلفًا.",
             "hijri_today" to "اليوم",
+            "quran_ayah" to "آية",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -912,6 +913,7 @@ class Strings(val locale: AppLocale) {
             "hijri_adjust" to "Hijri adjustment",
             "hijri_adjust_body" to "Some countries sight the crescent before others. Pick the offset if your date differs.",
             "hijri_today" to "Today",
+            "quran_ayah" to "Verse",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1355,6 +1357,7 @@ class Strings(val locale: AppLocale) {
             "hijri_adjust" to "Ajustement hégirien",
             "hijri_adjust_body" to "Certains pays observent le croissant avant d’autres. Choisissez le décalage si votre date diffère.",
             "hijri_today" to "Aujourd’hui",
+            "quran_ayah" to "Verset",
         )
     }
 
@@ -1803,4 +1806,5 @@ class Strings(val locale: AppLocale) {
     val hijriAdjust: String get() = t("hijri_adjust")
     val hijriAdjustBody: String get() = t("hijri_adjust_body")
     val hijriToday: String get() = t("hijri_today")
+    val quranAyah: String get() = t("quran_ayah")
 }

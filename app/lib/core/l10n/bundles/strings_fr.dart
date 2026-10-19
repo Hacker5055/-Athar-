@@ -494,4 +494,5 @@ const Map<String, String> kStringsFr = {
   'hijri_adjust': 'Ajustement hégirien',
   'hijri_adjust_body': 'Certains pays observent le croissant avant d’autres. Choisissez le décalage si votre date diffère.',
   'hijri_today': 'Aujourd’hui',
+  'quran_ayah': 'Verset',
 };

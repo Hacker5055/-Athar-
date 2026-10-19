@@ -42,6 +42,8 @@ import com.athar.athar.hijri.HijriStore
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.ui.hijri.hijriText
 import java.time.format.FormatStyle
+import com.athar.athar.quran.QuranProgress
+import com.athar.athar.quran.QuranProgressStore
 
 private val timeFormat: DateTimeFormatter =
     DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
@@ -49,6 +51,9 @@ private val timeFormat: DateTimeFormatter =
 @Composable
 fun PrayerScreen(
     settings: PrayerSettings,
+    /// فتح القرآن عند (سورة، آية) — يُمرَّر إلى الأب لأن اختيار
+    /// التبويب ليس بيد هذه الشاشة.
+    onContinueReading: (Int, Int) -> Unit = {},
     onSettingsChange: (PrayerSettings) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -139,6 +144,42 @@ fun PrayerScreen(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+        }
+
+        // ⚠️ «تابع القراءة» **تحت البطاقة مباشرة** لا في قسم: أكثر
+        // ما يُفتح التطبيق لأجله بعد المواقيت هو العودة إلى حيث
+        // توقّف القارئ. وهي تظهر بلا مفتاح إن لم يُقرأ شيء —
+        // اختصار إلى لا شيء ليس اختصارًا.
+        val last = remember(hijriOffset) { QuranProgressStore.load(context) }
+        if (last != null) {
+            Card(
+                onClick = { onContinueReading(last.surah, last.ayah) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = s.continueReading,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = "${last.surahName} · ${s.quranAyah} ${last.ayah}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Text(
+                        text = "${QuranProgress.percent(last.surah, last.ayah)}%",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
             }
         }
 

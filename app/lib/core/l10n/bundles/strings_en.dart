@@ -494,4 +494,5 @@ const Map<String, String> kStringsEn = {
   'hijri_adjust': 'Hijri adjustment',
   'hijri_adjust_body': 'Some countries sight the crescent before others. Pick the offset if your date differs.',
   'hijri_today': 'Today',
+  'quran_ayah': 'Verse',
 };

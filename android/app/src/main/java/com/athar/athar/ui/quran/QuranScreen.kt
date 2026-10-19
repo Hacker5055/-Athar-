@@ -75,7 +75,9 @@ import com.athar.athar.quran.Reciter
 import com.athar.athar.quran.ReciterWithdrawalStore
 import com.athar.athar.quran.ReciterWithdrawals
 import com.athar.athar.quran.QuranAudioOffline
+import com.athar.athar.quran.LastRead
 import com.athar.athar.quran.QuranBookmarkStore
+import com.athar.athar.quran.QuranProgressStore
 import com.athar.athar.quran.QuranBookmarks
 import com.athar.athar.quran.QuranDownloader
 import com.athar.athar.quran.Reciters
@@ -85,6 +87,9 @@ import com.athar.athar.ui.theme.ReaderTheme
 @Composable
 fun QuranScreen(
     readerTheme: ReaderTheme = ReaderTheme.NORMAL,
+    /// (سورة، آية) يُفتح من تبويب آخر — «تابع القراءة» من الرئيسية.
+    target: Pair<Int, Int>? = null,
+    onTargetConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val s = LocalStrings.current
@@ -153,6 +158,17 @@ fun QuranScreen(
             }
             out
         }
+    }
+
+    // ⚠️ الهدف يُستهلك **مرة واحدة** ثم يُصفَّر: لو بقي لأعاد فتح
+    // السورة مع كل إعادة تركيب، فيقفز المستخدم إلى موضعه كلما
+    // غيّر لغة أو أدار الشاشة.
+    LaunchedEffect(target, surahs) {
+        val (surah, ayah) = target ?: return@LaunchedEffect
+        val list = surahs ?: return@LaunchedEffect
+        opened = list.firstOrNull { it.id == surah }
+        openAyah = ayah
+        onTargetConsumed()
     }
 
     var withdrawn by remember { mutableStateOf(emptySet<String>()) }
@@ -490,6 +506,7 @@ private fun ReaderView(
     onPlayToggle: () -> Unit,
     onStop: () -> Unit,
 ) {
+    val context = LocalContext.current
     val s = LocalStrings.current
     val listState = rememberLazyListState()
     // ⚠️ ثيم القراءة يخصّ هذه الشاشة وحدها: النصّ يُقرأ طويلًا وفي
@@ -509,6 +526,17 @@ private fun ReaderView(
     }
 
     val firstVisible = listState.firstVisibleItemIndex
+
+    // ⚠️ الحفظ مع كل تمرير لا عند الخروج: من أُغلق تطبيقه فجأة يجب
+    // أن يعود إلى حيث كان، لا إلى أول السورة. و`apply` لا `commit`
+    // فلا تعرقل الكتابة الإطار.
+    LaunchedEffect(firstVisible, surah.id) {
+        if (firstVisible < 0) return@LaunchedEffect
+        QuranProgressStore.save(
+            context,
+            LastRead(surah.id, surah.nameAr, firstVisible + 1),
+        )
+    }
     val currentAyah = ayahs.getOrNull(firstVisible)?.number ?: 1
     val juz = QuranMeta.juzOf(surah.id, currentAyah)
     val page = QuranMeta.pageOf(surah.id, currentAyah)

@@ -493,4 +493,5 @@ const Map<String, String> kStringsAr = {
   'hijri_adjust': 'ضبط الهجري',
   'hijri_adjust_body': 'بعض البلدان ترى الهلال قبل غيرها. اختر الإزاحة إن كان التاريخ عندك مختلفًا.',
   'hijri_today': 'اليوم',
+  'quran_ayah': 'آية',
 };
