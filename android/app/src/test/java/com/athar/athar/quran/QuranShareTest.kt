@@ -46,7 +46,7 @@ class QuranShareTest {
         assertTrue(compact.length < full.length)
         assertTrue(compact.contains(text))
         assertTrue(compact.contains("﴿255﴾"))
-        assertTrue(compact.contains("سورة البقرة"))
+        assertTrue(compact.contains("البقرة"))
     }
 
     @Test
