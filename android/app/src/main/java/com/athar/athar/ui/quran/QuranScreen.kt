@@ -106,6 +106,7 @@ import com.athar.athar.ui.components.AtharPageTitle
 import com.athar.athar.ui.theme.AtharPageMargin
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.key
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 
 @Composable
 fun QuranScreen(
