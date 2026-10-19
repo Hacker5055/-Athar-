@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -23,6 +24,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -62,6 +64,11 @@ fun MushafScreen(
     val digits = localDigits()
     var page by remember { mutableIntStateOf(1) }
     var jumping by remember { mutableStateOf(false) }
+    // ⚠️ **الصفحةُ تبدأُ من أوّلها**: كانت حالةُ التمريرِ تُحفَظ
+    // بين الصفحات، فمن كان في آخرِ صفحةٍ وقفزَ إلى غيرِها وجد
+    // نفسه هناك — أو في فراغٍ أبيض. فحالةُ التمريرِ مربوطةٌ
+    // بالصفحة: كلُّ صفحةٍ لها موضعُها.
+    val pageListState = key(page) { rememberLazyListState() }
 
     // ⚠️ الصفحة **تُحمَّل وحدها** لا القرآن كلّه: من يفتح
     // المصحف يريد صفحة، لا ستّة آلاف آية في الذاكرة.
@@ -97,13 +104,14 @@ fun MushafScreen(
             Card(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(14.dp),
+                    .padding(16.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 ),
             ) {
                 LazyColumn(
+                    state = pageListState,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp, vertical = 6.dp),
@@ -165,7 +173,7 @@ fun MushafScreen(
         // ⚠️ أزرار الصفحة **نصٌّ لا سهم**: السهم في العربية يشير
         // اتجاهًا قد يوهم، والكلمة لا تحتمل.
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             TextButton(

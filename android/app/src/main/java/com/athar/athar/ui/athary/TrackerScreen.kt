@@ -130,7 +130,7 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { toggle(habit) }
-                        .padding(horizontal = 14.dp, vertical = 6.dp),
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(s.t(habit.stringKey), modifier = Modifier.weight(1f), fontSize = 16.sp)

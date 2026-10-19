@@ -539,7 +539,7 @@ private fun CalculationCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = s.prayerCalcSettings,
                 style = MaterialTheme.typography.titleSmall,

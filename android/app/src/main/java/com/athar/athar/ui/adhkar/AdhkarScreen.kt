@@ -243,7 +243,10 @@ private fun DhikrCard(dhikr: Dhikr, done: Int, onTap: () -> Unit) {
         onClick = onTap,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            // ⚠️ **الحاشيةُ ستّةَ عشرَ** كسائرِ البطاقات: الأذكارُ
+            // وحدَها كانت على اثني عشر، فبدت ناقصةً في قائمة
+            // بطاقاتٍ كلُّها بعرضٍ واحد.
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (finished) {
                 MaterialTheme.colorScheme.primaryContainer
@@ -253,7 +256,7 @@ private fun DhikrCard(dhikr: Dhikr, done: Int, onTap: () -> Unit) {
         ),
     ) {
         Row(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {

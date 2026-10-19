@@ -941,10 +941,13 @@ private fun ReaderView(
 
         // ⚠️ أفقي قابل للتمرير: ثلاث شرائح بثلاث لغات تتجاوز عرض الشاشة
         // على الأجهزة الصغيرة، والقصّ الصامت أسوأ من التمرير.
+        // ⚠️ **الحاشيةُ ستّةَ عشرَ** كسائرِ التطبيق: كانت هذه
+        // الصفوفُ على ثمانيةٍ وأثني عشر، فكان القارئُ يرى أعمدةً
+        // متجاورةً لا سطحًا واحدًا.
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = AtharPageMargin)
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -965,7 +968,7 @@ private fun ReaderView(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                    .padding(horizontal = AtharPageMargin, vertical = 4.dp)
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -981,7 +984,7 @@ private fun ReaderView(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                    .padding(horizontal = AtharPageMargin, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 val playing = audioState is QuranAudioState.Playing
@@ -1074,9 +1077,13 @@ private fun ReaderView(
             },
         )
 
+        // ⚠️ **الحاشيةُ ستّةَ عشرَ** كسائرِ التطبيق: كان سطحُ
+        // القراءةِ على عشرين، فهو الوحيدُ الذي كسر القاعدة.
         LazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = AtharPageMargin, vertical = 12.dp),
         ) {
             // ⚠️ **البسملةُ رأسَ السورة** كما في المصحف: لا رقمَ
             // لها ولا آية، تُكتبُ فوق النصّ. ولا تُعرض في الفاتحة
@@ -1205,11 +1212,14 @@ private fun ReaderView(
                     // الفهرسَ ثمَّ السورة. فلمّا بلغت آخرَ السورة
                     // جُعلَ الطريقُ أمامَه مبسوطًا: بطاقةٌ تفتحُ
                     // السورةَ التاليةَ بنقرةٍ واحدة.
+                    // ⚠️ **البطاقةُ على عرضِ النصّ**: كتلةُ القراءة
+                    // عشرون، فبطاقةٌ أضيقُ منها أو أعرضُ تكسرُ
+                    // السطح.
                     Card(
                         onClick = { onOpenNext(nextSurah) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                            .padding(vertical = 12.dp),
                     ) {
                         Row(
                             modifier = Modifier.padding(16.dp),
@@ -1294,7 +1304,7 @@ private fun BookmarksView(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 12.dp, end = 12.dp, top = 12.dp),
+                                .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
@@ -1330,7 +1340,7 @@ private fun BookmarksView(
                             textAlign = TextAlign.End,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                                .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 16.dp),
                         )
                     }
                 }
