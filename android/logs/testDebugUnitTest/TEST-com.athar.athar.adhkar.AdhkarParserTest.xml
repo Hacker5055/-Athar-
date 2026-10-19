@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.adhkar.AdhkarParserTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.067">
+<testsuite name="com.athar.athar.adhkar.AdhkarParserTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:59" hostname="runnervm8k3b6" time="0.084">
   <properties/>
-  <testcase name="parsesSectionShape" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.001"/>
-  <testcase name="realDataIsComplete" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.055"/>
-  <testcase name="coercesBadCountToOne" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.0"/>
-  <testcase name="hasCoreSections" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.01"/>
-  <testcase name="skipsEmptyText" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.0"/>
+  <testcase name="parsesSectionShape" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.002"/>
+  <testcase name="realDataIsComplete" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.052"/>
+  <testcase name="coercesBadCountToOne" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.001"/>
+  <testcase name="hasCoreSections" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.025"/>
+  <testcase name="skipsEmptyText" classname="com.athar.athar.adhkar.AdhkarParserTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

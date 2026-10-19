@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.hijri.HijriCalendarTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.08">
+<testsuite name="com.athar.athar.hijri.HijriCalendarTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.059">
   <properties/>
-  <testcase name="outOfRangeMonthFallsBackNotCrashes" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.001"/>
-  <testcase name="yearIsPlausible" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.027"/>
-  <testcase name="consecutiveGregorianDaysNeverGoBackwards" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.038"/>
-  <testcase name="aPositiveOffsetNeverMovesTheDateBackwards" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.0"/>
+  <testcase name="outOfRangeMonthFallsBackNotCrashes" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.0"/>
+  <testcase name="yearIsPlausible" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.017"/>
+  <testcase name="consecutiveGregorianDaysNeverGoBackwards" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.024"/>
+  <testcase name="aPositiveOffsetNeverMovesTheDateBackwards" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.001"/>
   <testcase name="aTwoDayOffsetDiffersByAtMostTwoDays" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.0"/>
-  <testcase name="allTwelveMonthsAppearWithinAYear" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.002"/>
-  <testcase name="dayIsNeverAboveThirty" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.003"/>
+  <testcase name="allTwelveMonthsAppearWithinAYear" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.003"/>
+  <testcase name="dayIsNeverAboveThirty" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.007"/>
   <testcase name="monthNamesCoverEveryMonth" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.0"/>
-  <testcase name="monthIsAlwaysOneToTwelve" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.001"/>
+  <testcase name="monthIsAlwaysOneToTwelve" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.006"/>
   <testcase name="monthKeyIsStable" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.001"/>
-  <testcase name="offsetIsClampedToTwoDays" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.001"/>
+  <testcase name="offsetIsClampedToTwoDays" classname="com.athar.athar.hijri.HijriCalendarTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

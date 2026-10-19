@@ -32,13 +32,13 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebug
 > Task :app:javaPreCompileDebugUnitTest
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:processDebugManifestForPackage
-> Task :app:checkReleaseAarMetadata
 > Task :app:generateReleaseResValues
+> Task :app:checkReleaseAarMetadata
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
@@ -83,16 +83,18 @@ w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/
 > Task :app:compileDebugJavaWithJavac NO-SOURCE
 > Task :app:processDebugJavaRes
 > Task :app:compileReleaseJavaWithJavac NO-SOURCE
-> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:bundleDebugClassesToCompileJar
-> Task :app:bundleReleaseClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:bundleReleaseClassesToRuntimeJar
 > Task :app:processReleaseJavaRes
-> Task :app:compileReleaseUnitTestKotlin
-> Task :app:compileDebugUnitTestKotlin
+> Task :app:bundleReleaseClassesToCompileJar
 > Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
+> Task :app:mergeDebugJavaResource
+> Task :app:compileReleaseUnitTestKotlin
 
 > Task :app:testDebugUnitTest
 
@@ -276,5 +278,5 @@ Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 
 
-BUILD FAILED in 3m 36s
-50 actionable tasks: 50 executed
+BUILD FAILED in 4m 3s
+52 actionable tasks: 52 executed

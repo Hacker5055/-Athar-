@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.adhkar.AdhkarSectionsTest" tests="8" skipped="0" failures="2" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.012">
+<testsuite name="com.athar.athar.adhkar.AdhkarSectionsTest" tests="8" skipped="0" failures="2" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.024">
   <properties/>
-  <testcase name="dailyMatchesVocalisedTitles" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.0"/>
+  <testcase name="dailyMatchesVocalisedTitles" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.001"/>
   <testcase name="findsPostPrayerDespiteFullDiacritics" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.0"/>
-  <testcase name="dailySkipsAbsentSections" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.009">
+  <testcase name="dailySkipsAbsentSections" classname="com.athar.athar.adhkar.AdhkarSectionsTest" time="0.018">
     <failure message="java.lang.AssertionError: expected:&lt;[AdhkarSection(title=أَذْكَارُ الصَّبَاحِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)])]&gt; but was:&lt;[AdhkarSection(title=أَذْكَارُ الصَّبَاحِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)]), AdhkarSection(title=أَذْكَارُ المَسَاءِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)])]&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;[AdhkarSection(title=أَذْكَارُ الصَّبَاحِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)])]&gt; but was:&lt;[AdhkarSection(title=أَذْكَارُ الصَّبَاحِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)]), AdhkarSection(title=أَذْكَارُ المَسَاءِ, items=[Dhikr(text=ذكر, count=1, reference=أبو داود)])]&gt;
 	at org.junit.Assert.fail(Assert.java:89)
 	at org.junit.Assert.failNotEquals(Assert.java:835)

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.qibla.QiblaMathTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.008">
+<testsuite name="com.athar.athar.qibla.QiblaMathTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.01">
   <properties/>
   <testcase name="bearingPointsTheRightWay" classname="com.athar.athar.qibla.QiblaMathTest" time="0.002"/>
-  <testcase name="agreesWithIndependentBearing" classname="com.athar.athar.qibla.QiblaMathTest" time="0.005"/>
+  <testcase name="agreesWithIndependentBearing" classname="com.athar.athar.qibla.QiblaMathTest" time="0.007"/>
   <testcase name="canvasAngleOffsetsByNinety" classname="com.athar.athar.qibla.QiblaMathTest" time="0.0"/>
   <testcase name="normalizeWraps" classname="com.athar.athar.qibla.QiblaMathTest" time="0.0"/>
   <testcase name="declinationIsApplied" classname="com.athar.athar.qibla.QiblaMathTest" time="0.0"/>

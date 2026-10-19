@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.tasbih.TasbihRangesTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:46" hostname="runnervm8k3b6" time="0.007">
+<testsuite name="com.athar.athar.tasbih.TasbihRangesTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.008">
   <properties/>
   <testcase name="theDayEndsAtTheNextMidnight" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.001"/>
-  <testcase name="theDayStartsAtMidnight" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.001"/>
+  <testcase name="theDayStartsAtMidnight" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
   <testcase name="theWeekCoversSevenDays" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
-  <testcase name="theDayIsHalfOpen" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
+  <testcase name="theDayIsHalfOpen" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.001"/>
   <testcase name="theWeekStartsSixDaysBeforeToday" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
-  <testcase name="theRangeFollowsTheDeviceZone" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.005"/>
+  <testcase name="theRangeFollowsTheDeviceZone" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.006"/>
   <testcase name="theWeekIncludesToday" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
   <testcase name="aSessionOfTodayIsInBothRanges" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
