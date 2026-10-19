@@ -61,14 +61,23 @@ class HizbTest {
 
     @Test
     fun noVerseIsLeftOutsideTheHizbs() {
-        // ⚠️ تغطية كاملة: كل آية في حزب واحد بالضبط
-        var expected = 1
-        for (hizb in 1..QuranMeta.HIZB_COUNT) {
+        // ⚠️ حزب الآية = **آخر حزب يبدأ عندها أو قبلها**، لا أوّل
+        // حزب بعدها. هذا يربط `hizbOf` بـ `startOfHizb` على كل
+        // آية — لا على نقاط البداية وحدها كما يفعل
+        // `hizbOfFindsTheHizbOfAnyVerse`.
+        //
+        // ⚠️ وقد كنتُ كتبتُ هذا الاختبار سلسلةً تقول إنّ الحزب n+1
+        // يبدأ حيث بدأ n — وهو محال. فسد من أوّل حزب، والدرس:
+        // اختبار «التغطية» لا يُكتب بمساواة متتالية.
+        val starts = (1..QuranMeta.HIZB_COUNT).map { hizb ->
             val (surah, ayah) = QuranMeta.startOfHizb(hizb)
-            assertEquals("الحزب $hizb", expected, QuranMeta.verseId(surah, ayah))
-            expected = QuranMeta.verseId(surah, ayah)
+            QuranMeta.verseId(surah, ayah) to hizb
         }
-        assertTrue(expected <= QuranMeta.TOTAL_VERSES)
+        for (id in 1..QuranMeta.TOTAL_VERSES) {
+            val (surah, ayah) = QuranMeta.surahAyahOf(id)
+            val expected = starts.last { it.first <= id }.second
+            assertEquals("الآية $id", expected, QuranMeta.hizbOf(surah, ayah))
+        }
     }
 
     @Test
