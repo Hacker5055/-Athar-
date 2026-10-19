@@ -21,6 +21,9 @@ for p in files:
     body = re.sub(r"^import .*$", "", t, flags=re.M)
     body = re.sub(r"/\*.*?\*/", " ", body, flags=re.S)
     body = re.sub(r"//[^\n]*", " ", body)
+    # النصوصُ داخلُ السلاسلِ نصوصٌ لا رموز: «Text» مفتاحُ JSON
+    # و«Font» اسمُ رخصةٍ في نصٍّ — ولا يُستوردُ أيٌّ منهما.
+    body = re.sub(r'"(?:\\.|[^"\\])*"', '""', body)
     paths = re.findall(r"^import\s+([\w.]+)$", t, re.M)
     imps = {i.split(".")[-1] for i in paths}
     pkg = re.search(r"^package\s+([\w.]+)", t, re.M)
@@ -35,10 +38,11 @@ for _, _, imps, _, _, paths in parsed:
     full_vocab |= set(paths)
 
 # رموزٌ من خارج المشروع (حزمُ أندرويد وكوتلن) — نتجاهلها.
-FOREIGN = re.compile(
-    r"^(android|androidx|kotlin|kotlinx|java|javax|org|com\.google|dalvik|"
-    r"okhttp|retrofit|room|dagger|hilt|javax)\."
-)
+# ⚠️ **حزمةُ java.lang وحدها** هي التي يُستعملُ منها بلا استيراد.
+# سائرُ الحزم — حتى أندرويد وكوتلن — لا يُوجدُ فيها رمزٌ بلا
+# استيرادٍ صريح. فتسهُيلُها يُخفي أخطاءً حقيقيّةً (كـ«Arrangement»
+# في شاشةِ الأذكار).
+FOREIGN = re.compile(r"^java\.lang\.")
 
 problems = 0
 for p, body, imps, pkg, declared, paths in parsed:
