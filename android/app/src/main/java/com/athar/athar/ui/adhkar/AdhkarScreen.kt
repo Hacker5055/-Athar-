@@ -481,7 +481,7 @@ private fun CustomAdhkarScreen(
 ///
 /// ⚠️ **السهمُ يتقلّب مع الاتجاه**: في العربية يمينُك البداية،
 /// وفي الفرنسية يسارُك — والسهمُ الذي لا يتقلّب يجعل الباب
-/// يشير إلىardown.
+/// يشير إلى اليمين دائمًا.
 @Composable
 private fun AdhkarSectionCard(
     title: String,

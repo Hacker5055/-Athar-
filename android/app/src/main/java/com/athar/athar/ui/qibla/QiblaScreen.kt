@@ -157,7 +157,7 @@ fun QiblaScreen(
         }
 
         // ⚠️ القبلة الشمسية **أسفل البوصلة** لا فوقها: هي بديلٌ
-        // عنها لا منافسة، ومن لا_sensor عنده يجدها هناك.
+        // عنها لا منافسة، ومن لا يملك مستشعرًا يجدها هناك.
         Spacer(Modifier.height(20.dp))
         SunQiblaCard(latitude = latitude, longitude = longitude)
     }

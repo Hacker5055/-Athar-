@@ -112,6 +112,10 @@ fun QuranScreen(
     var surahs by remember { mutableStateOf<List<Surah>?>(null) }
     var opened by remember { mutableStateOf<Surah?>(null) }
     var ayahs by remember { mutableStateOf<List<Ayah>>(emptyList()) }
+    // ⚠️ **البسملةُ من المصدر لا من الذاكرة**: تُؤخذ من آيةِ الفاتحة
+    // الأولى في نصّ تنزيل — فهي النصُّ المرخَّص، ولا نكتب نصًّا
+    // دينيًّا من تلقائنا أبدًا.
+    var basmala by remember { mutableStateOf<String?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
     var query by remember { mutableStateOf("") }
     var results by remember { mutableStateOf<List<QuranSearch.Hit>>(emptyList()) }
@@ -220,8 +224,16 @@ fun QuranScreen(
 
     LaunchedEffect(Unit) {
         runCatching {
-            withContext(Dispatchers.IO) { QuranRepository(context).surahs() }
-        }.onSuccess { surahs = it }.onFailure { error = it.message }
+            withContext(Dispatchers.IO) {
+                val repo = QuranRepository(context)
+                // ⚠️ **نسخةٌ واحدة**: التحليلُ مرّةً واحدة، والبسملةُ
+                // من نفس النسخة فلا يُعاد قراءةُ الملف.
+                repo.surahs() to repo.ayahsOf(1).firstOrNull()?.text
+            }
+        }.onSuccess { (list, basm) ->
+            surahs = list
+            basmala = basm
+        }.onFailure { error = it.message }
     }
 
     LaunchedEffect(opened) {
@@ -273,6 +285,7 @@ fun QuranScreen(
             opened != null -> ReaderView(
                 surah = opened!!,
                 ayahs = ayahs,
+                basmala = basmala,
                 onBack = { opened = null },
                 translation = translation,
                 translated = translated,
@@ -731,6 +744,8 @@ private fun SurahList(
 private fun ReaderView(
     surah: Surah,
     ayahs: List<Ayah>,
+    /// نصُّ البسملة — يُعرض رأسَ السورة إلا في الفاتحة والتوبة.
+    basmala: String?,
     onBack: () -> Unit,
     translation: QuranTranslation,
     translated: Map<String, String>,
@@ -762,10 +777,13 @@ private fun ReaderView(
     // ⚠️ الانتقال إلى جزء يفتح السورة **ويمرّر** إلى آيته: فتح أولها
     // وحده يجعل «الانتقال إلى الجزء ٣٠» يبدأ من أول سورة النبأ فقط،
     // وهو صحيح مصادفةً لا دائمًا.
+    // ⚠️ **البسملةُ تزيحُ الأرقام**: رأسُ السورة بندٌ في القائمة،
+    // فالآيةُ الأولى رقمُها ١ في النصّ و٢ في القائمة.
+    val basmalaOffset = if (basmala != null && surah.id != 1 && surah.id != 9) 1 else 0
     LaunchedEffect(openAyah) {
         val target = openAyah
         if (target != null && target in 1..ayahs.size) {
-            listState.scrollToItem(target - 1)
+            listState.scrollToItem(target - 1 + basmalaOffset)
             onOpened()
         }
     }
@@ -799,7 +817,13 @@ private fun ReaderView(
                 Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = surah.nameAr, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = surah.nameAr,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    // ⚠️ **نسخٌ لاسم السورة**: عنوانُ المصحف.
+                    fontFamily = AmiriFamily,
+                )
                 // ⚠️ الموضع مذكور دائمًا: بلا «الجزء / الصفحة» لا يعرف
                 // القارئ أين هو في المصحف الورقي الذي يتابع عليه.
                 Text(
@@ -953,6 +977,27 @@ private fun ReaderView(
             state = listState,
             modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp),
         ) {
+            // ⚠️ **البسملةُ رأسَ السورة** كما في المصحف: لا رقمَ
+            // لها ولا آية، تُكتبُ فوق النصّ. ولا تُعرض في الفاتحة
+            // (فهي آيتُها الأولى) ولا في التوبة (فهي محفوظةٌ عند
+            // المشركين، ولم يُحكم عليها).
+            if (basmala != null && surah.id != 1 && surah.id != 9) {
+                // ⚠️ **بلا مفتاح**: بنودُ الآياتِ في هذه القائمة بلا
+                // مفاتيح، ومفتاحٌ واحدٌ مع بنودٍ بلا مفتاحٍ يُلخبط
+                // القائمةَ فتُرمى استثناءً.
+                item {
+                    Text(
+                        text = basmala,
+                        fontSize = 22.sp,
+                        lineHeight = 38.sp,
+                        fontFamily = AmiriFamily,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp),
+                    )
+                }
+            }
             items(ayahs) { ayah ->
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(

@@ -99,7 +99,7 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
     // يمضي، فلا معنى لجلستٍ لا تُعرف إلا حين يقطعها.
     //
     // ⚠️ والجلسة القائمة **محفوظة**: فمن ترك الشاشة ورجع بعد
-    // دقيقةٍ كمل-sessionه، لا بدأ من جديد. والإلّا ضاعت
+    // دقيقةٍ كجلسةٍ جارية، لا بدأ من جديد. والإلّا ضاعت
     // الجلسة بمجرّد أن ينتقل بين الألسنة.
     var session by remember { mutableStateOf(TasbihSessionStore.loadCurrent(context)) }
     var sessions by remember { mutableStateOf(TasbihSessionStore.load(context)) }
