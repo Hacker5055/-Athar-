@@ -59,13 +59,16 @@ class AdhkarSectionsTest {
     }
 
     /// ⚠️ وما لا يُوجدُ يُسقَط: لا عنوانَ فارغًا ولا موضعًا غلط.
+    /// ⚠️ و«أذكار بعد الصلاة» **ليس** من أذكارِ اليوم — فليس
+    /// day's list، وإن كان في الشاشةِ مثبَّتًا.
     @Test fun dailySkipsAbsentSections() {
-        assertEquals(listOf(morning), AdhkarSections.daily(listOf(morning, evening)))
+        assertEquals(listOf(morning), AdhkarSections.daily(listOf(morning, afterPrayer)))
         assertTrue(AdhkarSections.daily(emptyList()).isEmpty())
     }
 
-    /// ⚠️ «أذكار الصباح» لا «أذكار المساء» — فالمطابقةُ تامّة.
+    /// ⚠️ «أذكار الصباح» لا «أذكار المساء» — فالمطابقةُ تامّةٌ لا
+    /// جزئية: من يبحثُ عن الصباحِ لا يجدُ المساءَ في مكانه.
     @Test fun dailyDoesNotMatchAnotherSection() {
-        assertTrue(AdhkarSections.daily(listOf(evening)).isEmpty())
+        assertTrue(AdhkarSections.daily(listOf(afterPrayer, beforeTasleem)).isEmpty())
     }
 }
