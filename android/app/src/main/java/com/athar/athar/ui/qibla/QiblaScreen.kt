@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +43,10 @@ import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.qibla.DeviceCompass
 import com.athar.athar.qibla.QiblaMath
 import com.athar.athar.qibla.SunQibla
+import com.athar.athar.ui.theme.AtharCream
+import com.athar.athar.ui.theme.AtharGold
+import com.athar.athar.ui.theme.AtharHeroBottom
+import com.athar.athar.ui.theme.AtharPrimaryContainer
 import com.batoulapps.adhan.Coordinates
 import java.time.Instant
 import java.time.LocalDate
@@ -114,7 +119,7 @@ fun QiblaScreen(
                     Icon(
                         imageVector = Icons.Filled.Navigation,
                         contentDescription = s.qiblaDeviceDirection,
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = AtharGold,
                         modifier = Modifier
                             .align(Alignment.TopCenter)
                             .size(30.dp)
@@ -271,9 +276,13 @@ private fun CompassRose(
     modifier: Modifier = Modifier,
 ) {
     val s = LocalStrings.current
-    val ringColor = MaterialTheme.colorScheme.outline
-    val tickColor = MaterialTheme.colorScheme.onSurfaceVariant
-    val accent = MaterialTheme.colorScheme.primary
+    // ⚠️ **البوصلةُ قرصٌ داكنٌ وحروفٌ ذهبية**: البوصلةُ الحقيقية
+    // كذلك — قرصٌ داكنٌ وإبرةٌ مضيئة. والرسمُ الخطّي وحده على
+    // خلفيةٍ فاتحة يبدو مخططًا لا بوصلة.
+    val discColor = AtharHeroBottom
+    val ringColor = AtharGold
+    val tickColor = AtharPrimaryContainer.copy(alpha = 0.45f)
+    val accent = AtharGold
 
     Box(
         modifier = modifier
@@ -284,6 +293,13 @@ private fun CompassRose(
         Canvas(modifier = Modifier.fillMaxSize()) {
             val radius = size.minDimension / 2f
             val ring = 2.dp.toPx()
+            // ⚠️ **القرصُ أولًا** ثم الحلقةُ فوقه: ما رُسم بعدَه
+            // يغطّي ما قبلَه، فالترتيبُ هو كلُّ شيء.
+            drawCircle(
+                color = discColor,
+                radius = radius - ring,
+                style = Fill,
+            )
             drawCircle(
                 color = ringColor,
                 radius = radius - ring,
@@ -314,12 +330,13 @@ private fun CompassRose(
         // ⚠️ ندير كل لقبلة بعكس دوران الوردة ليبقى النصّ معتدلًا
         val upright = deviceAzimuth.toFloat()
         Text(s.north, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+            color = AtharCream,
             modifier = Modifier.align(Alignment.TopCenter).rotate(upright))
-        Text(s.south, fontSize = 13.sp,
+        Text(s.south, fontSize = 13.sp, color = AtharCream,
             modifier = Modifier.align(Alignment.BottomCenter).rotate(upright))
-        Text(s.east, fontSize = 13.sp,
+        Text(s.east, fontSize = 13.sp, color = AtharCream,
             modifier = Modifier.align(Alignment.CenterEnd).rotate(upright))
-        Text(s.west, fontSize = 13.sp,
+        Text(s.west, fontSize = 13.sp, color = AtharCream,
             modifier = Modifier.align(Alignment.CenterStart).rotate(upright))
     }
 }

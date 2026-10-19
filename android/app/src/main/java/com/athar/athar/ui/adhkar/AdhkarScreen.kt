@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.RestartAlt
@@ -129,85 +130,34 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
                 // أكثر مما يبحث في الأبواب، وهو ملكه وحده.
                 if (q.isEmpty()) {
                     item {
-                        TextButton(
+                        AdhkarSectionCard(
+                            title = s.adhkarMine,
+                            subtitle = s.adhkarMineBody,
                             onClick = { showMine = true },
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 10.dp),
-                            ) {
-                                Text(
-                                    text = s.adhkarMine,
-                                    fontSize = 17.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Start,
-                                )
-                                Text(
-                                    // ⚖️ التنبيه واجب لا تفضّل: ذكر بلا
-                                    // تخريج لا يجوز أن يبدو كالباقي.
-                                    text = s.adhkarMineBody,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.Start,
-                                )
-                            }
-                        }
-                        HorizontalDivider()
+                        )
                     }
                 }
                 if (pinned != null) {
                     item {
-                        TextButton(
+                        AdhkarSectionCard(
+                            title = s.adhkarAfterPrayer,
+                            subtitle = s.tArgs(
+                                "adhkar_items_count",
+                                "n" to pinned.items.size,
+                            ),
                             onClick = { openSection = pinned },
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 10.dp),
-                            ) {
-                                Text(
-                                    text = s.adhkarAfterPrayer,
-                                    fontSize = 17.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Start,
-                                )
-                                Text(
-                                    text = s.tArgs("adhkar_items_count", "n" to pinned.items.size),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.Start,
-                                )
-                            }
-                        }
-                        HorizontalDivider()
+                        )
                     }
                 }
                 items(filtered.filter { it.title != pinned?.title }) { section ->
-                    TextButton(
+                    AdhkarSectionCard(
+                        title = section.title,
+                        subtitle = s.tArgs(
+                            "adhkar_items_count",
+                            "n" to section.items.size,
+                        ),
                         onClick = { openSection = section },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 6.dp),
-                        ) {
-                            Text(
-                                text = section.title,
-                                fontSize = 17.sp,
-                                textAlign = TextAlign.Start,
-                            )
-                            Text(
-                                text = s.tArgs("adhkar_items_count", "n" to section.items.size),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                    HorizontalDivider()
+                    )
                 }
                 item {
                     Text(
@@ -523,6 +473,51 @@ private fun CustomAdhkarScreen(
                 }
                 HorizontalDivider()
             }
+        }
+    }
+}
+
+/// بابٌ من أبواب الأذكار: بطاقةٌ باسم الباب وعدد أذكاره.
+///
+/// ⚠️ **السهمُ يتقلّب مع الاتجاه**: في العربية يمينُك البداية،
+/// وفي الفرنسية يسارُك — والسهمُ الذي لا يتقلّب يجعل الباب
+/// يشير إلىardown.
+@Composable
+private fun AdhkarSectionCard(
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 3.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Start,
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Start,
+                )
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

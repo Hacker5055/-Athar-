@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import android.Manifest
 import android.content.pm.PackageManager
@@ -12,6 +13,10 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +28,9 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.DownloadDone
@@ -48,8 +56,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import com.athar.athar.core.ArabicDigits
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -373,28 +383,47 @@ fun QuranScreen(
                         // الصفّ والقائمة فيه جنبًا إلى جنب — يحتاجان
                         // Column يوزّع الارتفاع بينهما.
                         Column(modifier = Modifier.fillMaxSize()) {
+                            // ⚠️ **الأفعالُ الأربعةُ أيقوناتٌ لا روابط**:
+                            // رابطٌ نصّيٌّ بين آلاف النصوصِ التي
+                            // ستُقرأ ليس فعلًا، بل سطرٌ ضائع.
                             // ⚠️ المفضلة قبل الأجزاء: من حفظ آية يريدها
                             // في ضغطة، لا أن يمرّ بثلاثين جزءًا ليصلها.
                             // ⚠️ الختمة قبل المفضلة: ورد اليوم
                             // له وقت، والذي فات لا يُستدرك.
-                            TextButton(onClick = { showKhatmah = true }) {
-                                Text(s.khatmahTitle)
-                            }
-                            // ⚠️ الحفظ بعد الختمة: الورد يُقرأ،
-                            // والحفظ يُستظهَر — وكلاهما التزام
-                            // يوميّ، فقُرِنا في موضع واحد.
-                            TextButton(onClick = { showHifz = true }) {
-                                Text(s.hifzTitle)
-                            }
-                            // ⚠️ وضع المصحف **بعد الحفظ**: من يقرأ
-                            // المصحف ورقيًّا يتبع صفحاته، فمن يجد
-                            // الصفحات متأخّرة بحثًا عنه تاه.
-                            TextButton(onClick = { showMushaf = true }) {
-                                Text(s.mushafOpen)
-                            }
-                            if (bookmarks.isNotEmpty()) {
-                                TextButton(onClick = { showBookmarks = true }) {
-                                    Text("${s.quranBookmarks} (${bookmarks.size})")
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                QuranAction(
+                                    icon = Icons.Filled.MenuBook,
+                                    label = s.khatmahTitle,
+                                    onClick = { showKhatmah = true },
+                                )
+                                // ⚠️ الحفظ بعد الختمة: الورد يُقرأ،
+                                // والحفظ يُستظهَر — وكلاهما التزام
+                                // يوميّ، فقُرِنا في موضع واحد.
+                                QuranAction(
+                                    icon = Icons.Filled.School,
+                                    label = s.hifzTitle,
+                                    onClick = { showHifz = true },
+                                )
+                                // ⚠️ وضع المصحف **بعد الحفظ**: من يقرأ
+                                // المصحف ورقيًّا يتبع صفحاته، فمن يجد
+                                // الصفحات متأخّرة بحثًا عنه تاه.
+                                QuranAction(
+                                    icon = Icons.Filled.Book,
+                                    label = s.mushafOpen,
+                                    onClick = { showMushaf = true },
+                                )
+                                if (bookmarks.isNotEmpty()) {
+                                    QuranAction(
+                                        icon = Icons.Filled.Bookmark,
+                                        label = s.quranBookmarks,
+                                        badge = bookmarks.size,
+                                        onClick = { showBookmarks = true },
+                                    )
                                 }
                             }
                             // ⚠️ الأجزاء قبل القائمة: من يقرأ «جزء عمّ»
@@ -1080,5 +1109,62 @@ private fun BookmarksView(
                 }
             }
         }
+    }
+}
+
+/// فعلٌ سريعٌ في تبويبِ القرآن: أيقونةٌ في دائرٍ واسمٌ تحتها.
+///
+/// ⚠️ **الدائرةُ ملوّنةٌ دائمًا**: الدائرةُ الفارغةُ تعني «معطّل»،
+/// والمفعّلُ يُعرف بلونه.
+@Composable
+private fun RowScope.QuranAction(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    badge: Int? = null,
+) {
+    Column(
+        modifier = Modifier
+            .weight(1f)
+            .clip(RoundedCornerShape(18.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(18.dp),
+            )
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(contentAlignment = Alignment.TopEnd) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+            if (badge != null && badge > 0) {
+                Text(
+                    text = ArabicDigits.of(badge),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 2.dp),
+                )
+            }
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(top = 6.dp),
+        )
     }
 }
