@@ -43,10 +43,11 @@ object ShareCards {
 
     const val DAYS = 7
 
-    /// ⚠️ **الأحدثُ أوّلًا**: نافذةُ «أثري» ترجع الأحدثَ أولًا
-    /// (اليوم ثم أمس) — وهي ترتيبُ الرسم في العربية.
+    /// ⚠️ **الأحدثُ أوّلًا**: نافذةُ «أثري» ترجع **الأقدمَ أوّلًا**
+    /// (من قديمٍ إلى اليوم — `window.last()` هو اليوم) — فَنقلبها
+    /// هنا. والرسمُ في العربية يبدأ من اليسار، واليسارُ هو اليوم.
     fun daysNewestFirst(state: TrackerState, today: LocalDate): List<Int> =
-        state.window(today, DAYS).map { it.count }
+        state.window(today, DAYS).reversed().map { it.count }
 
     /// أسماءُ الأيام — بلغة الواجهة.
     ///
