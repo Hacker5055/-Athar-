@@ -51,7 +51,10 @@ private val kTabIcons: List<ImageVector> = listOf(
     Icons.Filled.Star,
     // ⚠️ السبحة **تبويب** لا بند في «المزيد»: E1–E4 كلها P0، ومن
     // يسبّح بعد كل صلاة لا يفتح تبويبين ليصل إلى عدّاده.
-    Icons.Filled.RadioButtonChecked,
+    // ⚠️ والأيقونة من أيقونات **مستخدمة أصلًا** في ملف آخر: أسماء
+    // الحزمة `material-icons-extended` لا تُحصى، واسم يبدو بديهيًّا
+    // قد لا يكون فيها — فالتخمين يكلّف دورة بناء.
+    Icons.Filled.RestartAlt,
     Icons.Filled.Explore,
     Icons.Filled.MoreHoriz,
 )
