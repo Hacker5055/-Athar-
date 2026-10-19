@@ -1,5 +1,7 @@
 package com.athar.athar.i18n
 
+import com.athar.athar.core.ArabicDigits
+
 /// ⚠️ **ملف مولَّد** — لا تُعدّله يدويًا.
 /// أعِد توليده بـ `python3 android/tool/gen_strings.py`.
 /// المصدر: `app/lib/core/l10n/bundles/` (٣٢١ مفتاحًا × ٣ لغات).
@@ -14,10 +16,27 @@ class Strings(val locale: AppLocale) {
         bundle()[key] ?: kStringsAr[key] ?: key
 
     /// Lookup مع استبدال متغيّرات على شكل `{name}`.
+    ///
+    /// ⚠️ **الأرقامُ بلغةِ الواجهة**: في العربية «١٥» لا «15».
+    /// والرقمانِ في نصٍّ واحدٍ يبدوان كأنّ التطبيقَ ناقصٌ من لغته،
+    /// و«فاضل 15 دقيقة» يقرأه العربيُّ كأنّه محرَّفٌ من تطبيقٍ غريب.
     fun tArgs(key: String, vararg pairs: Pair<String, Any>): String {
         var value = t(key)
-        for ((name, arg) in pairs) value = value.replace("{$name}", "$arg")
+        for ((name, arg) in pairs) {
+            value = value.replace("{$name}", render(arg))
+        }
         return value
+    }
+
+    /// يُحوّلُ قيمةَ المعاملِ إلى نصٍّ بلغةِ الواجهة: الأرقامُ
+    /// العربيةُ في العربية، واللاتينيةُ فيما سواها.
+    private fun render(arg: Any): String = when (arg) {
+        is Int -> if (locale.isRtl) ArabicDigits.of(arg) else arg.toString()
+        is Long -> if (locale.isRtl) ArabicDigits.of(arg) else arg.toString()
+        // ⚠️ النصُّ يُحوَّلُ بأرقامه لا بتمامِه: «دقيقتان 15» يجب أن
+        // تصير «دقيقتان ١٥» لا «١٥دقيقتان».
+        is String -> if (locale.isRtl) ArabicDigits.ofText(arg) else arg
+        else -> arg.toString()
     }
 
     private fun bundle(): Map<String, String> = when (locale) {

@@ -1011,6 +1011,10 @@ private fun ReaderView(
     val context = LocalContext.current
     val s = LocalStrings.current
     val digits = localDigits()
+    // ⚠️ **اللغةُ في أوّلِ الدالة**: القارئُ يقرأُها في رأسِ
+    // السورةِ قبل شريطِ القراء، فتعريفُها في موضعٍ متأخّرٍ
+    // يجعلُ ما قبلَه بلا معنى.
+    val locale = LocalAppLocale.current
     // ⚠️ **السورةُ تبدأُ من أوّلها**: حالةُ التمريرِ كانت تُحفَظ
     // بين السور، فمن انتهى من سورةٍ وفتح ما بعدها وجد نفسه في
     // آخرِ السورةِ الأولى — أو في فراغٍ أبيض. فحالةُ التمريرِ
@@ -1163,7 +1167,6 @@ private fun ReaderView(
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                val locale = LocalAppLocale.current
                 availableReciters.forEach { option ->
                     FilterChip(
                         selected = option.id == reciter.id,
