@@ -36,6 +36,11 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import androidx.compose.runtime.mutableIntStateOf
+import com.athar.athar.hijri.HijriStore
+import com.athar.athar.i18n.AppLocale
+import com.athar.athar.ui.hijri.hijriText
+import java.time.format.FormatStyle
 
 private val timeFormat: DateTimeFormatter =
     DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
@@ -91,6 +96,8 @@ fun PrayerScreen(
             ?: settings.placeName.ifBlank { s.prayerMyLocation }
     }
 
+    var hijriOffset by remember { mutableIntStateOf(HijriStore.load(context)) }
+
     val day = remember(settings, today) { PrayerTimesCalculator.calculate(settings, today) }
     val next = remember(day) { day.nextAfter(Instant.now()) }
 
@@ -122,6 +129,14 @@ fun PrayerScreen(
                         Text("  " + s.change)
                     }
                 }
+                // ⚠️ التاريخ الهجري **مع الميلادي** لا بديلًا عنه:
+                // المستخدم يعيش بالتقويمين معًا، وربط المناسبات
+                // الدينية يحتاج الهجري وحده.
+                Text(
+                    text = "${gregorianText(today, locale)} · ${hijriText(today, hijriOffset)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
 
@@ -166,4 +181,17 @@ fun PrayerScreen(
             }
         }
     }
+
+/// التاريخ الميلادي بلغة المستخدم.
+///
+/// ⚠️ `DateTimeFormatter` بلغة الواجهة لا بنمط ثابت: «١٩ أكتوبر»
+/// و«19 octobre» و«October 19» كلها صحيحة في موضعها، ونمط واحد
+/// يفرض ترتيب لغة على أخرى.
+private fun gregorianText(date: LocalDate, locale: AppLocale): String =
+    runCatching {
+        DateTimeFormatter
+            .ofLocalizedDate(FormatStyle.LONG)
+            .withLocale(java.util.Locale.forLanguageTag(locale.code))
+            .format(date)
+    }.getOrDefault(date.toString())
 }

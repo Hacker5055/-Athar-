@@ -454,6 +454,21 @@ class Strings(val locale: AppLocale) {
             "tasbih_rounds" to "دورات",
             "tasbih_total" to "الإجمالي",
             "tab_tasbih" to "السبحة",
+            "hijri_month_1" to "محرم",
+            "hijri_month_2" to "صفر",
+            "hijri_month_3" to "ربيع الأول",
+            "hijri_month_4" to "ربيع الآخر",
+            "hijri_month_5" to "جمادى الأولى",
+            "hijri_month_6" to "جمادى الآخرة",
+            "hijri_month_7" to "رجب",
+            "hijri_month_8" to "شعبان",
+            "hijri_month_9" to "رمضان",
+            "hijri_month_10" to "شوال",
+            "hijri_month_11" to "ذو القعدة",
+            "hijri_month_12" to "ذو الحجة",
+            "hijri_adjust" to "ضبط الهجري",
+            "hijri_adjust_body" to "بعض البلدان ترى الهلال قبل غيرها. اختر الإزاحة إن كان التاريخ عندك مختلفًا.",
+            "hijri_today" to "اليوم",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -882,6 +897,21 @@ class Strings(val locale: AppLocale) {
             "tasbih_rounds" to "Rounds",
             "tasbih_total" to "Total",
             "tab_tasbih" to "Tasbih",
+            "hijri_month_1" to "Muharram",
+            "hijri_month_2" to "Safar",
+            "hijri_month_3" to "Rabi al-Awwal",
+            "hijri_month_4" to "Rabi al-Thani",
+            "hijri_month_5" to "Jumada al-Ula",
+            "hijri_month_6" to "Jumada al-Akhirah",
+            "hijri_month_7" to "Rajab",
+            "hijri_month_8" to "Shaban",
+            "hijri_month_9" to "Ramadan",
+            "hijri_month_10" to "Shawwal",
+            "hijri_month_11" to "Dhul Qadah",
+            "hijri_month_12" to "Dhul Hijjah",
+            "hijri_adjust" to "Hijri adjustment",
+            "hijri_adjust_body" to "Some countries sight the crescent before others. Pick the offset if your date differs.",
+            "hijri_today" to "Today",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1310,6 +1340,21 @@ class Strings(val locale: AppLocale) {
             "tasbih_rounds" to "Cycles",
             "tasbih_total" to "Total",
             "tab_tasbih" to "Tasbih",
+            "hijri_month_1" to "Mouharram",
+            "hijri_month_2" to "Safar",
+            "hijri_month_3" to "Rabi al-Awwal",
+            "hijri_month_4" to "Rabi ath-Thani",
+            "hijri_month_5" to "Joumada al-Oula",
+            "hijri_month_6" to "Joumada al-Akhira",
+            "hijri_month_7" to "Rajab",
+            "hijri_month_8" to "Chaabane",
+            "hijri_month_9" to "Ramadan",
+            "hijri_month_10" to "Chawwal",
+            "hijri_month_11" to "Dhoul Qiada",
+            "hijri_month_12" to "Dhoul Hijja",
+            "hijri_adjust" to "Ajustement hégirien",
+            "hijri_adjust_body" to "Certains pays observent le croissant avant d’autres. Choisissez le décalage si votre date diffère.",
+            "hijri_today" to "Aujourd’hui",
         )
     }
 
@@ -1743,4 +1788,19 @@ class Strings(val locale: AppLocale) {
     val tasbihRounds: String get() = t("tasbih_rounds")
     val tasbihTotal: String get() = t("tasbih_total")
     val tabTasbih: String get() = t("tab_tasbih")
+    val hijriMonth1: String get() = t("hijri_month_1")
+    val hijriMonth2: String get() = t("hijri_month_2")
+    val hijriMonth3: String get() = t("hijri_month_3")
+    val hijriMonth4: String get() = t("hijri_month_4")
+    val hijriMonth5: String get() = t("hijri_month_5")
+    val hijriMonth6: String get() = t("hijri_month_6")
+    val hijriMonth7: String get() = t("hijri_month_7")
+    val hijriMonth8: String get() = t("hijri_month_8")
+    val hijriMonth9: String get() = t("hijri_month_9")
+    val hijriMonth10: String get() = t("hijri_month_10")
+    val hijriMonth11: String get() = t("hijri_month_11")
+    val hijriMonth12: String get() = t("hijri_month_12")
+    val hijriAdjust: String get() = t("hijri_adjust")
+    val hijriAdjustBody: String get() = t("hijri_adjust_body")
+    val hijriToday: String get() = t("hijri_today")
 }

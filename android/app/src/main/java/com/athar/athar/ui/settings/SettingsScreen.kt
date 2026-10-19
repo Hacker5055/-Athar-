@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -45,6 +46,11 @@ import com.athar.athar.notification.NotificationSettings
 import com.athar.athar.notification.NotificationSettingsStore
 import com.athar.athar.notification.PrayerAlertMode
 import com.athar.athar.prayer.PrayerSlot
+import androidx.compose.runtime.mutableIntStateOf
+import com.athar.athar.hijri.HijriCalendar
+import com.athar.athar.hijri.HijriStore
+import com.athar.athar.ui.hijri.hijriText
+import java.time.LocalDate
 
 /// ⚠️ الشروق **مذكور** بصف «لا أذان — ليست صلاة» لا مخفيًا: إخفاؤه
 /// يوهم المستخدم أن التطبيق نسيه، وشرح السبب أصدق من الصمت.
@@ -72,6 +78,7 @@ private val kModes = listOf(
 fun SettingsScreen(modifier: Modifier = Modifier) {
     val s = LocalStrings.current
     val context = LocalContext.current
+    var hijriOffset by remember { mutableIntStateOf(HijriStore.load(context)) }
     var settings by remember { mutableStateOf(NotificationSettingsStore.load(context)) }
     var needsPermission by remember { mutableStateOf(false) }
     var testSent by remember { mutableStateOf(false) }
@@ -102,6 +109,43 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 8.dp),
             )
+        }
+
+        // ⚖️ ضبط الهجري **شرط لا تفضّل** (G2): الرؤية تختلف ببلد،
+        // ولا نملك أن نفرض على المستخدم تقويم بلد آخر.
+        item {
+            Text(s.hijriAdjust, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            Text(
+                s.hijriAdjustBody,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                for (n in -HijriCalendar.MAX_OFFSET..HijriCalendar.MAX_OFFSET) {
+                    FilterChip(
+                        selected = hijriOffset == n,
+                        onClick = {
+                            hijriOffset = n
+                            HijriStore.save(context, n)
+                        },
+                        // ⚠️ الأثر **معروض** لا موصوف: المستخدم لا
+                        // يعرف ما «+١»، ويرى فورًا إن صار التاريخ
+                        // موافقًا لما يعرفه.
+                        label = { Text("${if (n > 0) "+" else ""}$n") },
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = hijriText(LocalDate.now(), hijriOffset),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                )
+            }
+            HorizontalDivider()
         }
 
         item {
