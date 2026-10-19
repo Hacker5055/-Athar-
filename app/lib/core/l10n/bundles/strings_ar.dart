@@ -548,6 +548,7 @@ const Map<String, String> kStringsAr = {
   'event_days_left': 'باقي {n} يومًا',
   'event_today': 'اليوم',
   'event_tomorrow': 'غدًا',
+  'events_title': 'المناسبات',
   'hl_title': 'خطوط العرض العالية',
   'hl_middle': 'وسط الليل',
   'hl_seventh': 'سُبع الليل',

@@ -549,6 +549,7 @@ const Map<String, String> kStringsFr = {
   'event_days_left': 'Dans {n} jours',
   'event_today': 'Aujourd’hui',
   'event_tomorrow': 'Demain',
+  'events_title': 'Événements',
   'hl_title': 'Hautes latitudes',
   'hl_middle': 'Milieu de la nuit',
   'hl_seventh': 'Septième de la nuit',

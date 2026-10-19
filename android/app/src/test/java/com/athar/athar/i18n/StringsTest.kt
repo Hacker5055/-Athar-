@@ -74,10 +74,24 @@ class StringsTest {
         assertEquals("nope", fr.t("nope"))
     }
 
+    /// ⚠️ **الأرقامُ بلغةِ الواجهة**: في العربية «١٥» لا «15»،
+    /// وفي غيرها «15» لا «١٥». والرقمانِ في شاشةٍ واحدةِ يبدوان
+    /// كأنّ التطبيقَ ناقصًا.
     @Test fun tArgsSubstitutesPlaceholders() {
         val text = ar.tArgs("notif_reminder_body", "n" to 15)
-        assertTrue("«$text» لا يحوي ١٥", text.contains("15"))
-        assertTrue("«$text» ما زال يحوي {n}", !text.contains("{n}"))
+        val arabicDigits = "١٥"
+        val message = "الوسائطُ لم تُستبدل"
+        assertTrue(message, text.contains(arabicDigits))
+        assertTrue(message, !text.contains("{n}"))
+    }
+
+    @Test fun tArgsKeepsLatinDigitsInOtherLocales() {
+        val text = en.tArgs("notif_reminder_body", "n" to 15)
+        val latinDigits = "15"
+        val arabicDigits = "١٥"
+        val message = "الأرقامُ في غيرِ العربية لاتينية"
+        assertTrue(message, text.contains(latinDigits))
+        assertTrue(message, !text.contains(arabicDigits))
     }
 
     /// ⚠️ الواجهة تترجم أسماء الصلوات بـ `stringKey` لا بـ `arabicName`

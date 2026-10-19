@@ -88,6 +88,7 @@ import com.athar.athar.hijri.HijriCalendar
 import java.time.temporal.ChronoUnit
 import com.athar.athar.ui.theme.AtharPageMargin
 import com.athar.athar.ui.quran.ContinueReadingCard
+import com.athar.athar.ui.components.SectionTitle
 
 /// ⚠️ **الوقتُ بلغةِ التطبيق**: `ofPattern` بلا لغةٍ يتبع لغةَ
 /// الجهاز، فيرى مستخدمُ العربية على هاتفٍ إنجليزيٍّ أوقاتَه
@@ -277,20 +278,38 @@ fun PrayerScreen(
             IslamicEvents.upcoming(today, hijriOffset, limit = 2)
         }
         if (events.isNotEmpty()) {
-            Row(
+            // ⚠️ **المناسباتُ عمودٌ لا صفّ**: اسمانِ متجاورانِ
+            // بنصفِ الشاشةِ يتصادمانِ في الفرنسية، فيُقصُّ
+            // الاسمُ أو يلتوي. فصار كلُّ مناسبةٍ سطرًا: اسمُها
+            // وتاريخُها الهجريُّ وبقيتُها.
+            // ⚠️ **ولها عنوان**: نصٌّ يطيرُ في الصفحةِ بلا بابٍ
+            // يُقرأ زينةً لا معلومة.
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                    .padding(horizontal = AtharPageMargin, vertical = 2.dp),
             ) {
+                SectionTitle(title = s.eventsTitle)
                 events.forEach { (at, event) ->
                     val days = ChronoUnit.DAYS.between(today, at).toInt()
-                    Column {
-                        Text(
-                            text = s.t(event.nameKey),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = s.t(event.nameKey),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = hijriText(at, hijriOffset),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                         Text(
                             // ⚠️ «اليوم» و«غدًا» لا «٠ يومًا» و«١
                             // يومًا»: العدّاد الذي يقول «باقي ٠
