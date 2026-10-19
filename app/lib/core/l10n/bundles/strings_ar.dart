@@ -473,4 +473,9 @@ const Map<String, String> kStringsAr = {
   'adhkar_repeat_count': 'عدد المرات',
   'adhkar_mine_empty': 'لم تكتب شيئًا بعد',
   'adhkar_delete': 'حذف',
+  'tasbih_undo': 'رجوع',
+  'tasbih_reset': 'تصفير',
+  'tasbih_rounds': 'دورات',
+  'tasbih_total': 'الإجمالي',
+  'tab_tasbih': 'السبحة',
 };

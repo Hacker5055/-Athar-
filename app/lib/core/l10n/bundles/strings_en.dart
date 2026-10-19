@@ -474,4 +474,9 @@ const Map<String, String> kStringsEn = {
   'adhkar_repeat_count': 'Repetitions',
   'adhkar_mine_empty': 'Nothing written yet',
   'adhkar_delete': 'Delete',
+  'tasbih_undo': 'Undo',
+  'tasbih_reset': 'Reset',
+  'tasbih_rounds': 'Rounds',
+  'tasbih_total': 'Total',
+  'tab_tasbih': 'Tasbih',
 };

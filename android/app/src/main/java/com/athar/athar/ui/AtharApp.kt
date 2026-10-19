@@ -38,6 +38,7 @@ import com.athar.athar.prayer.PrayerSettingsStore
 import com.athar.athar.ui.adhkar.AdhkarScreen
 import com.athar.athar.ui.prayer.PrayerScreen
 import com.athar.athar.ui.qibla.QiblaScreen
+import com.athar.athar.ui.tasbih.TasbihScreen
 import com.athar.athar.ui.quran.QuranScreen
 import com.athar.athar.ui.settings.MoreScreen
 import com.athar.athar.ui.theme.Appearance
@@ -48,6 +49,9 @@ private val kTabIcons: List<ImageVector> = listOf(
     Icons.Filled.Home,
     Icons.Filled.MenuBook,
     Icons.Filled.Star,
+    // ⚠️ السبحة **تبويب** لا بند في «المزيد»: E1–E4 كلها P0، ومن
+    // يسبّح بعد كل صلاة لا يفتح تبويبين ليصل إلى عدّاده.
+    Icons.Filled.RadioButtonChecked,
     Icons.Filled.Explore,
     Icons.Filled.MoreHoriz,
 )
@@ -110,7 +114,9 @@ private fun AppShell(
     /// والمواقيت تتغيّر يوميًا، والمستخدم قد يغيّر مدينته.
     LaunchedEffect(Unit) { NotificationScheduler.rescheduleFromStored(context) }
 
-    val labels = listOf(s.tabHome, s.tabQuran, s.tabAdhkar, s.tabQibla, s.tabMore)
+    val labels = listOf(
+        s.tabHome, s.tabQuran, s.tabAdhkar, s.tabTasbih, s.tabQibla, s.tabMore,
+    )
 
     Scaffold(
         bottomBar = {
@@ -142,12 +148,13 @@ private fun AppShell(
                 modifier = Modifier.padding(innerPadding),
             )
             2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
-            3 -> QiblaScreen(
+            3 -> TasbihScreen(modifier = Modifier.padding(innerPadding))
+            4 -> QiblaScreen(
                 latitude = settings.latitude,
                 longitude = settings.longitude,
                 modifier = Modifier.padding(innerPadding),
             )
-            4 -> MoreScreen(
+            5 -> MoreScreen(
                 locale = locale,
                 appearance = appearance,
                 onLocaleChange = onLocaleChange,

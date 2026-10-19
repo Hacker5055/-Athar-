@@ -1,5 +1,6 @@
 package com.athar.athar.widget
 
+import com.athar.athar.core.ArabicDigits
 import com.athar.athar.prayer.PrayerDay
 import com.athar.athar.prayer.PrayerSlot
 import java.time.Instant
@@ -13,13 +14,10 @@ import java.time.format.DateTimeFormatter
 object PrayerWidgetPlan {
 
     /// أرقام عربية — الودجت عربي أولًا.
-    private val DIGITS = charArrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
-
-    fun arabicDigits(value: Int): String =
-        if (value == 0) "٠"
-        else value.toString().map { c ->
-            if (c in '0'..'9') DIGITS[c - '0'] else c
-        }.joinToString("")
+    ///
+    /// ⚠️ تُفوَّض إلى [ArabicDigits] لا تُنسخ هنا: نسختان للتحويل
+    /// تختلفان يومًا في السالب أو في الصفر.
+    fun arabicDigits(value: Int): String = ArabicDigits.of(value)
 
     private val CLOCK = DateTimeFormatter.ofPattern("HH:mm")
 

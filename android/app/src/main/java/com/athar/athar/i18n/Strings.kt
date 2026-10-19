@@ -449,6 +449,11 @@ class Strings(val locale: AppLocale) {
             "adhkar_repeat_count" to "عدد المرات",
             "adhkar_mine_empty" to "لم تكتب شيئًا بعد",
             "adhkar_delete" to "حذف",
+            "tasbih_undo" to "رجوع",
+            "tasbih_reset" to "تصفير",
+            "tasbih_rounds" to "دورات",
+            "tasbih_total" to "الإجمالي",
+            "tab_tasbih" to "السبحة",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -872,6 +877,11 @@ class Strings(val locale: AppLocale) {
             "adhkar_repeat_count" to "Repetitions",
             "adhkar_mine_empty" to "Nothing written yet",
             "adhkar_delete" to "Delete",
+            "tasbih_undo" to "Undo",
+            "tasbih_reset" to "Reset",
+            "tasbih_rounds" to "Rounds",
+            "tasbih_total" to "Total",
+            "tab_tasbih" to "Tasbih",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1295,6 +1305,11 @@ class Strings(val locale: AppLocale) {
             "adhkar_repeat_count" to "Répétitions",
             "adhkar_mine_empty" to "Rien d’écrit pour l’instant",
             "adhkar_delete" to "Supprimer",
+            "tasbih_undo" to "Annuler",
+            "tasbih_reset" to "Réinitialiser",
+            "tasbih_rounds" to "Cycles",
+            "tasbih_total" to "Total",
+            "tab_tasbih" to "Tasbih",
         )
     }
 
@@ -1723,4 +1738,9 @@ class Strings(val locale: AppLocale) {
     val adhkarRepeatCount: String get() = t("adhkar_repeat_count")
     val adhkarMineEmpty: String get() = t("adhkar_mine_empty")
     val adhkarDelete: String get() = t("adhkar_delete")
+    val tasbihUndo: String get() = t("tasbih_undo")
+    val tasbihReset: String get() = t("tasbih_reset")
+    val tasbihRounds: String get() = t("tasbih_rounds")
+    val tasbihTotal: String get() = t("tasbih_total")
+    val tabTasbih: String get() = t("tab_tasbih")
 }
