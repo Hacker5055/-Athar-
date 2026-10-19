@@ -33,88 +33,52 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebug
-> Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebugUnitTest
+> Task :app:processDebugManifestForPackage
 > Task :app:buildKotlinToolingMetadata
 > Task :app:preReleaseBuild UP-TO-DATE
-> Task :app:generateReleaseResValues
 > Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResValues
 > Task :app:mapReleaseSourceSetPaths
 > Task :app:generateReleaseResources
 > Task :app:processDebugResources
 > Task :app:mergeReleaseResources
 > Task :app:packageReleaseResources
+> Task :app:parseReleaseLocalResources
 > Task :app:createReleaseCompatibleScreenManifests
 > Task :app:extractDeepLinksRelease
-> Task :app:parseReleaseLocalResources
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
-> Task :app:javaPreCompileRelease
 > Task :app:processReleaseManifestForPackage
 > Task :app:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileRelease
 > Task :app:javaPreCompileReleaseUnitTest
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
-> Task :app:processReleaseResources
 > Task :app:mergeDebugAssets
 > Task :app:desugarDebugFileDependencies
+> Task :app:processReleaseResources
 > Task :app:compressDebugAssets
-> Task :app:mergeDebugJniLibFolders
 > Task :app:checkDebugDuplicateClasses
-> Task :app:compileDebugKotlin
+
 > Task :app:compileReleaseKotlin
-> Task :app:mergeDebugNativeLibs
+e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/prayer/PrayerScreen.kt:56:45 Initializer type mismatch: expected 'kotlin.Function2<kotlin.Int, kotlin.Int, kotlin.Unit>', actual 'kotlin.Function0<kotlin.Unit>'.
+
+> Task :app:compileDebugKotlin
+e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/prayer/PrayerScreen.kt:56:45 Initializer type mismatch: expected 'kotlin.Function2<kotlin.Int, kotlin.Int, kotlin.Unit>', actual 'kotlin.Function0<kotlin.Unit>'.
+
 > Task :app:mergeExtDexDebug
-
-> Task :app:compileReleaseKotlin
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/AtharApp.kt:51:18 'val Icons.Filled.MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:242:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:334:21 'fun CircularProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., strokeWidth: Dp = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:393:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/prayer/CityPickerScreen.kt:78:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/quran/QuranScreen.kt:526:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/quran/QuranScreen.kt:800:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/tasbih/TasbihScreen.kt:135:51 'val Icons.Filled.Undo: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Undo.
-
-> Task :app:compileDebugKotlin
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/AtharApp.kt:51:18 'val Icons.Filled.MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:242:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:334:21 'fun CircularProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., strokeWidth: Dp = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/adhkar/AdhkarScreen.kt:393:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/prayer/CityPickerScreen.kt:78:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/quran/QuranScreen.kt:526:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/quran/QuranScreen.kt:800:35 'val Icons.Filled.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack.
-w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/athar/ui/tasbih/TasbihScreen.kt:135:51 'val Icons.Filled.Undo: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Undo.
-
-> Task :app:compileDebugJavaWithJavac NO-SOURCE
-> Task :app:bundleDebugClassesToRuntimeJar
-> Task :app:bundleDebugClassesToCompileJar
-> Task :app:processDebugJavaRes
-> Task :app:compileReleaseJavaWithJavac NO-SOURCE
-> Task :app:bundleReleaseClassesToRuntimeJar
-> Task :app:bundleReleaseClassesToCompileJar
-> Task :app:processReleaseJavaRes
-
-> Task :app:compileDebugUnitTestKotlin
-e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/test/java/com/athar/athar/hijri/HijriCalendarTest.kt:70:24 Unresolved reference 'compareTo'.
-e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/test/java/com/athar/athar/hijri/HijriCalendarTest.kt:93:53 Unresolved reference 'compareTo'.
-
-> Task :app:compileDebugUnitTestKotlin FAILED
-
-> Task :app:compileReleaseUnitTestKotlin FAILED
-e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/test/java/com/athar/athar/hijri/HijriCalendarTest.kt:70:24 Unresolved reference 'compareTo'.
-e: file:///home/runner/work/-Athar-/-Athar-/android/app/src/test/java/com/athar/athar/hijri/HijriCalendarTest.kt:93:53 Unresolved reference 'compareTo'.
-
-> Task :app:dexBuilderDebug
+> Task :app:compileDebugKotlin FAILED
+> Task :app:compileReleaseKotlin FAILED
 
 FAILURE: Build completed with 2 failures.
 
 1: Task failed with an exception.
 -----------
 * What went wrong:
-Execution failed for task ':app:compileDebugUnitTestKotlin'.
+Execution failed for task ':app:compileDebugKotlin'.
 > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
    > Compilation error. See log for more details
 
@@ -124,7 +88,7 @@ Execution failed for task ':app:compileDebugUnitTestKotlin'.
 > Get more help at https://help.gradle.org.
 
 * Exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:compileDebugUnitTestKotlin'.
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:compileDebugKotlin'.
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:130)
 	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:293)
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:128)
@@ -317,7 +281,7 @@ Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilat
 2: Task failed with an exception.
 -----------
 * What went wrong:
-Execution failed for task ':app:compileReleaseUnitTestKotlin'.
+Execution failed for task ':app:compileReleaseKotlin'.
 > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
    > Compilation error. See log for more details
 
@@ -327,7 +291,7 @@ Execution failed for task ':app:compileReleaseUnitTestKotlin'.
 > Get more help at https://help.gradle.org.
 
 * Exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:compileReleaseUnitTestKotlin'.
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:compileReleaseKotlin'.
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:130)
 	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:293)
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:128)
@@ -588,5 +552,5 @@ Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilat
 
 ==============================================================================
 
-BUILD FAILED in 2m 47s
-50 actionable tasks: 50 executed
+BUILD FAILED in 2m 45s
+39 actionable tasks: 39 executed
