@@ -22,6 +22,9 @@ object PrayerSettingsStore {
             longitude = p.getFloat("lng", 31.2357f).toDouble(),
             cityId = p.getString("cityId", "cairo"),
             placeName = p.getString("place", "") ?: "",
+            // ⚠️ بالاسم لا بالترتيب: ترتيب التعداد قد يتغيّر،
+            // والاسم ثابت.
+            highLatitude = HighLatitude.fromName(p.getString("highLatitude", null)),
         )
     }
 
@@ -33,6 +36,7 @@ object PrayerSettingsStore {
             .putFloat("lng", settings.longitude.toFloat())
             .putString("cityId", settings.cityId)
             .putString("place", settings.placeName)
+            .putString("highLatitude", settings.highLatitude.name)
             .apply()
     }
 }

@@ -497,6 +497,10 @@ class Strings(val locale: AppLocale) {
             "event_days_left" to "باقي {n} يومًا",
             "event_today" to "اليوم",
             "event_tomorrow" to "غدًا",
+            "hl_title" to "خطوط العرض العالية",
+            "hl_middle" to "وسط الليل",
+            "hl_seventh" to "سُبع الليل",
+            "hl_twilight" to "زاوية الشفق",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -968,6 +972,10 @@ class Strings(val locale: AppLocale) {
             "event_days_left" to "{n} days to go",
             "event_today" to "Today",
             "event_tomorrow" to "Tomorrow",
+            "hl_title" to "High latitudes",
+            "hl_middle" to "Middle of night",
+            "hl_seventh" to "Seventh of night",
+            "hl_twilight" to "Twilight angle",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1439,6 +1447,10 @@ class Strings(val locale: AppLocale) {
             "event_days_left" to "Dans {n} jours",
             "event_today" to "Aujourd’hui",
             "event_tomorrow" to "Demain",
+            "hl_title" to "Hautes latitudes",
+            "hl_middle" to "Milieu de la nuit",
+            "hl_seventh" to "Septième de la nuit",
+            "hl_twilight" to "Angle crépusculaire",
         )
     }
 
@@ -1915,4 +1927,8 @@ class Strings(val locale: AppLocale) {
     val eventDaysLeft: String get() = t("event_days_left")
     val eventToday: String get() = t("event_today")
     val eventTomorrow: String get() = t("event_tomorrow")
+    val hlTitle: String get() = t("hl_title")
+    val hlMiddle: String get() = t("hl_middle")
+    val hlSeventh: String get() = t("hl_seventh")
+    val hlTwilight: String get() = t("hl_twilight")
 }

@@ -21,6 +21,10 @@ object PrayerTimesCalculator {
         val dateComponents = DateComponents(date.year, date.monthValue, date.dayOfMonth)
         val parameters = settings.method.parameters().apply {
             madhab = settings.madhab
+            // ⚠️ `?.let` لا إسناد مباشر: اسم ثابت المكتبة قد يختلف
+            // بين إصداراتها، والفشل يعود إلى افتراضي المكتبة لا
+            // يوقف الحساب.
+            HighLatitudeRules.resolve(settings.highLatitude)?.let { highLatitudeRule = it }
         }
 
         val times = PrayerTimes(coordinates, dateComponents, parameters)

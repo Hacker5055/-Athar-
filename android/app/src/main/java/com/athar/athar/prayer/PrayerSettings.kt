@@ -12,4 +12,7 @@ data class PrayerSettings(
     /// `null` = إحداثيات يدوية أو تحديد تلقائي بالموقع.
     val cityId: String? = "cairo",
     val placeName: String = "",
+    /// ⚠️ قاعدة خطوط العرض العالية: بلا تطبيقها لا يُحسب فجر ولا
+    /// عشاء في أوروبا شتاءً — إمّا أن يغيبا أو يتطرّفا.
+    val highLatitude: HighLatitude = HighLatitude.DEFAULT,
 )

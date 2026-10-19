@@ -33,6 +33,7 @@ import com.athar.athar.prayer.PrayerMethod
 import com.athar.athar.prayer.PrayerSettings
 import com.athar.athar.prayer.PrayerSettingsStore
 import com.athar.athar.prayer.PrayerTimesCalculator
+import com.athar.athar.prayer.HighLatitude
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -233,6 +234,39 @@ fun PrayerScreen(
                             MaterialTheme.colorScheme.onSurfaceVariant
                         },
                         fontWeight = if (method == settings.method) FontWeight.Bold else null,
+                    )
+                }
+            }
+        }
+
+        // ⚠️ القاعدة **تحت طريقة الحساب** لا داخلها: هي تعديل
+        // عليها، ومن رآها وحدها ظنّها طريقة ثانية فيختار ما لا
+        // يفهمه. القرب يبيّن أنها فرع لا نظير.
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = s.hlTitle,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(end = 8.dp),
+            )
+            HighLatitude.entries.forEach { rule ->
+                TextButton(
+                    onClick = { onSettingsChange(settings.copy(highLatitude = rule)) },
+                ) {
+                    Text(
+                        text = s.t(rule.nameKey),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (rule == settings.highLatitude) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                        fontWeight = if (rule == settings.highLatitude) FontWeight.Bold else null,
                     )
                 }
             }
