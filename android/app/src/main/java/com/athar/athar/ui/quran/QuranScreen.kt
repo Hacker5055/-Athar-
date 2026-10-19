@@ -379,6 +379,21 @@ fun QuranScreen(
                                 opened = surahs!!.firstOrNull { it.id == surah }
                                 openAyah = ayah
                             }
+                            // ⚠️ الأحزاب **بعد** الأجزاء لا قبلها:
+                            // الجزء أعمّ والحزب أدقّ، ومن يحفظ
+                            // ترتيب الأجزاء يصلها من الصفّ الأوّل،
+                            // ومن يقرأ بالحزب يجد ما يريد تحته.
+                            Text(
+                                s.quranHizb,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+                            )
+                            HizbRow { hizb ->
+                                val (surah, ayah) = QuranMeta.startOfHizb(hizb)
+                                opened = surahs!!.firstOrNull { it.id == surah }
+                                openAyah = ayah
+                            }
                             SurahList(
                                 surahs = surahs!!,
                                 onOpen = { opened = it },
@@ -403,6 +418,30 @@ fun QuranScreen(
 /// والتلاوة التي تبثّ آية آية بلا موضع تُفقده الصفحة.
 private fun label(reciter: Reciter, prefix: String, ayah: Int?): String =
     if (ayah != null) "$prefix · آية $ayah" else prefix
+
+/// ستّون حزبًا في صفّ يمرّر أفقيًا.
+///
+/// ⚠️ الشريحة تُظهر **رقم الحزب ورقم الجزء**: «الحزب ٣٧» وحده لا
+/// يعني شيئًا لمن لا يحفظ ترتيب الستّين، أمّا «١٩-١» فيُقرأ فورًا:
+/// الجزء التاسع عشر، نصفه الأول.
+@Composable
+private fun HizbRow(onPick: (Int) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        (1..QuranMeta.HIZB_COUNT).forEach { hizb ->
+            FilterChip(
+                selected = false,
+                onClick = { onPick(hizb) },
+                label = { Text("${QuranMeta.juzOfHizb(hizb)}-${if (QuranMeta.isSecondHalf(hizb)) 2 else 1}") },
+            )
+        }
+    }
+}
 
 /// ثلاثون جزءًا في صفّ يمرّر أفقيًا.
 @Composable

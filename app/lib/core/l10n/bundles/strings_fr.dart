@@ -552,4 +552,5 @@ const Map<String, String> kStringsFr = {
   'hifz_progress': '{a} sur {b}',
   'hifz_repeats_of': 'Répétition {a} sur {b}',
   'hifz_finished': 'Vous avez mémorisé toute la plage',
+  'quran_hizb': 'Hizbs — deux par juz',
 };

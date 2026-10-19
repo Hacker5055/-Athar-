@@ -527,6 +527,7 @@ class Strings(val locale: AppLocale) {
             "hifz_progress" to "{a} من {b}",
             "hifz_repeats_of" to "التكرار {a} من {b}",
             "hifz_finished" to "حفظت النطاق كلّه",
+            "quran_hizb" to "الأحزاب — حزبان في كل جزء",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -1028,6 +1029,7 @@ class Strings(val locale: AppLocale) {
             "hifz_progress" to "{a} of {b}",
             "hifz_repeats_of" to "Repeat {a} of {b}",
             "hifz_finished" to "You memorized the whole range",
+            "quran_hizb" to "Hizbs — two per juz",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1529,6 +1531,7 @@ class Strings(val locale: AppLocale) {
             "hifz_progress" to "{a} sur {b}",
             "hifz_repeats_of" to "Répétition {a} sur {b}",
             "hifz_finished" to "Vous avez mémorisé toute la plage",
+            "quran_hizb" to "Hizbs — deux par juz",
         )
     }
 
@@ -2035,4 +2038,5 @@ class Strings(val locale: AppLocale) {
     val hifzProgress: String get() = t("hifz_progress")
     val hifzRepeatsOf: String get() = t("hifz_repeats_of")
     val hifzFinished: String get() = t("hifz_finished")
+    val quranHizb: String get() = t("quran_hizb")
 }

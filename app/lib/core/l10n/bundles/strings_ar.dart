@@ -551,4 +551,5 @@ const Map<String, String> kStringsAr = {
   'hifz_progress': '{a} من {b}',
   'hifz_repeats_of': 'التكرار {a} من {b}',
   'hifz_finished': 'حفظت النطاق كلّه',
+  'quran_hizb': 'الأحزاب — حزبان في كل جزء',
 };
