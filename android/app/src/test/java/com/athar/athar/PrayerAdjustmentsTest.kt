@@ -6,6 +6,7 @@ import org.junit.Test
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import com.athar.athar.prayer.PrayerTimesCalculator
 
 /// اختبارات التعديل اليدوي (A4 من docs/02) — المنطق النقي.
@@ -132,6 +133,37 @@ class PrayerAdjustmentsTest {
     }
 
     // ── مع الحساب الحقيقي ───────────────────────────────
+
+    @Test
+    fun theCalculatedTimesAreAlignedToTheMinute() {
+        // ⚠️ المكتبة تترك **مللي ثانية ساعة الحائط** في الوقت
+        // (فـ `resolveTime` يبني من `GregorianCalendar.getInstance()`
+        // ولا يمسّ المللي ثانية). فبلا قطع، يُحسب الوقت مرّةً
+        // ٠٤:٣٠:٠٠٤٣٧ ومرّةً ٠٤:٣٠:٠٠٩١٢ — والفرق بينهما
+        // ليس صفرًا. والوقت في المصحف محاذٍ للدقيقة.
+        val date = LocalDate.of(2026, 10, 19)
+        val day = PrayerTimesCalculator.calculate(PrayerSettings(), date)
+        for ((slot, instant) in day.ordered) {
+            assertEquals(
+                "$slot",
+                0L,
+                instant.truncatedTo(ChronoUnit.MINUTES).epochSecond - instant.epochSecond,
+            )
+            assertEquals("$slot", 0, instant.nano)
+        }
+    }
+
+    @Test
+    fun twoCalculationsGiveTheSameTime() {
+        // ⚠️ **الحتمية**: حسابان لنفس اليوم نفس النتيجة تمامًا.
+        // فبلا قطع المللي ثانية كانا يختلفان بمللي ثانية.
+        val date = LocalDate.of(2026, 10, 19)
+        val a = PrayerTimesCalculator.calculate(PrayerSettings(), date)
+        val b = PrayerTimesCalculator.calculate(PrayerSettings(), date)
+        assertEquals(a.fajr, b.fajr)
+        assertEquals(a.isha, b.isha)
+        assertEquals(a.maghrib, b.maghrib)
+    }
 
     @Test
     fun theRealCalculationIsShifted() {

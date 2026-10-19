@@ -238,6 +238,17 @@ jobs:
           git checkout -B ci-logs origin/ci-logs 2>/dev/null || git checkout -B ci-logs
           mkdir -p logs
           cp gradle-debug.log logs/LATEST.log
+          # ⚠️ تقرير JUnit **مع السجلّ**: رسالة فشل الاختبار (القيمة
+          # الفعلية والمتوقّعة) لا تظهر في سجلّ Gradle — فيه اسم
+          # الاستثناء وسطره فقط. ومن غاب عنه الرسالة أعاد الفحص
+          # ثلاث مرّات على الفرض.
+          for d in app/build/test-results/testDebugUnitTest app/build/test-results/testReleaseUnitTest; do
+            if ls $d/*.xml >/dev/null 2>&1; then
+              tag=$(basename $d)
+              mkdir -p logs/$tag
+              cp $d/*.xml logs/$tag/ 2>/dev/null || true
+            fi
+          done
           git add -f logs
           git commit -m "ci: لوج فشل بناء ${GITHUB_SHA::8}" || echo "لا جديد للتثبيت"
           git push origin ci-logs   # بلا كتم: نريد رؤية الفشل
