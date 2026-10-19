@@ -485,6 +485,18 @@ class Strings(val locale: AppLocale) {
             "khatmah_finished" to "أتممت الختمة",
             "khatmah_finished_body" to "الحمد لله. ابدأ ختمة أخرى متى شئت.",
             "khatmah_per_day" to "{n} آية كل يوم",
+            "event_hijri_new_year" to "رأس السنة الهجرية",
+            "event_ashura" to "عاشوراء",
+            "event_mawlid" to "المولد النبوي",
+            "event_isra" to "الإسراء والمعراج",
+            "event_ramadan" to "رمضان",
+            "event_qadr" to "ليلة القدر",
+            "event_eid_fitr" to "عيد الفطر",
+            "event_arafah" to "يوم عرفة",
+            "event_eid_adha" to "عيد الأضحى",
+            "event_days_left" to "باقي {n} يومًا",
+            "event_today" to "اليوم",
+            "event_tomorrow" to "غدًا",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -944,6 +956,18 @@ class Strings(val locale: AppLocale) {
             "khatmah_finished" to "You completed the khatmah",
             "khatmah_finished_body" to "All praise is for God. Begin another whenever you like.",
             "khatmah_per_day" to "{n} verses a day",
+            "event_hijri_new_year" to "Islamic New Year",
+            "event_ashura" to "Ashura",
+            "event_mawlid" to "The Prophet’s Birthday",
+            "event_isra" to "Isra and Mi’raj",
+            "event_ramadan" to "Ramadan",
+            "event_qadr" to "Laylat al-Qadr",
+            "event_eid_fitr" to "Eid al-Fitr",
+            "event_arafah" to "Day of Arafah",
+            "event_eid_adha" to "Eid al-Adha",
+            "event_days_left" to "{n} days to go",
+            "event_today" to "Today",
+            "event_tomorrow" to "Tomorrow",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1403,6 +1427,18 @@ class Strings(val locale: AppLocale) {
             "khatmah_finished" to "Vous avez achevé la khatma",
             "khatmah_finished_body" to "Louange à Dieu. Commencez-en une autre quand vous voulez.",
             "khatmah_per_day" to "{n} versets par jour",
+            "event_hijri_new_year" to "Nouvel an hégirien",
+            "event_ashura" to "Achoura",
+            "event_mawlid" to "Naissance du Prophète",
+            "event_isra" to "Isra et Mi’radj",
+            "event_ramadan" to "Ramadan",
+            "event_qadr" to "Laylat al-Qadr",
+            "event_eid_fitr" to "Aïd al-Fitr",
+            "event_arafah" to "Jour de Arafat",
+            "event_eid_adha" to "Aïd al-Adha",
+            "event_days_left" to "Dans {n} jours",
+            "event_today" to "Aujourd’hui",
+            "event_tomorrow" to "Demain",
         )
     }
 
@@ -1867,4 +1903,16 @@ class Strings(val locale: AppLocale) {
     val khatmahFinished: String get() = t("khatmah_finished")
     val khatmahFinishedBody: String get() = t("khatmah_finished_body")
     val khatmahPerDay: String get() = t("khatmah_per_day")
+    val eventHijriNewYear: String get() = t("event_hijri_new_year")
+    val eventAshura: String get() = t("event_ashura")
+    val eventMawlid: String get() = t("event_mawlid")
+    val eventIsra: String get() = t("event_isra")
+    val eventRamadan: String get() = t("event_ramadan")
+    val eventQadr: String get() = t("event_qadr")
+    val eventEidFitr: String get() = t("event_eid_fitr")
+    val eventArafah: String get() = t("event_arafah")
+    val eventEidAdha: String get() = t("event_eid_adha")
+    val eventDaysLeft: String get() = t("event_days_left")
+    val eventToday: String get() = t("event_today")
+    val eventTomorrow: String get() = t("event_tomorrow")
 }

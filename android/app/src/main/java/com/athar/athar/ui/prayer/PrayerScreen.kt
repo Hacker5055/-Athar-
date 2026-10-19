@@ -44,6 +44,8 @@ import com.athar.athar.ui.hijri.hijriText
 import java.time.format.FormatStyle
 import com.athar.athar.quran.QuranProgress
 import com.athar.athar.quran.QuranProgressStore
+import com.athar.athar.hijri.IslamicEvents
+import java.time.temporal.ChronoUnit
 
 private val timeFormat: DateTimeFormatter =
     DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
@@ -179,6 +181,43 @@ fun PrayerScreen(
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                     )
+                }
+            }
+        }
+
+        // ⚠️ المناسبات **بعد التاريخ الهجري** لا قبله: العدّاد
+        // التنازلي لا يُفهم إلا بجانب التاريخ الذي يُحسب منه.
+        val events = remember(hijriOffset, today) {
+            IslamicEvents.upcoming(today, hijriOffset, limit = 2)
+        }
+        if (events.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                events.forEach { (at, event) ->
+                    val days = ChronoUnit.DAYS.between(today, at).toInt()
+                    Column {
+                        Text(
+                            text = s.t(event.nameKey),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            // ⚠️ «اليوم» و«غدًا» لا «٠ يومًا» و«١
+                            // يومًا»: العدّاد الذي يقول «باقي ٠
+                            // يومًا» على مناسبة اليوم نفسه غباء.
+                            text = when (days) {
+                                0 -> s.eventToday
+                                1 -> s.eventTomorrow
+                                else -> s.tArgs("event_days_left", "n" to days)
+                            },
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 }
             }
         }
