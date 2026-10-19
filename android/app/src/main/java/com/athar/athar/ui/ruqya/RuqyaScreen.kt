@@ -161,6 +161,9 @@ private fun AyahCard(
     state: QuranAudioState,
 ) {
     val s = LocalStrings.current
+    // ⚠️ **لغةُ العرض**: اسمُ القارئِ يُكتبُ بلغةِ الواجهة، فاحتاجَ
+    // البطاقةُ أن تعرفَها.
+    val locale = LocalAppLocale.current
     val reciter: Reciter = Reciters.DEFAULT
     val playing = state is QuranAudioState.Playing &&
         state.surahOrNull == selection.surah &&
