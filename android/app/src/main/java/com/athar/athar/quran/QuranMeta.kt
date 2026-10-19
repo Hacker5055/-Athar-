@@ -147,11 +147,35 @@ object QuranMeta {
     /// الصفحة التي تقع فيها الآية (١ .. ٦٠٤) برواية حفص.
     fun pageOf(surah: Int, ayah: Int): Int = indexIn(PAGE_STARTS, verseId(surah, ayah))
 
+    /// الصفحة التي تقع فيها الآية — **بالفهرس العالمي**.
+    ///
+    /// ⚠️ نسخة الفهرسGlobal لا بديل: الحساب في `pageOf` يحتاج
+    /// إزاحة السورة، والصفحة تحتاج حسابًا آخر.
+    fun pageOfId(id: Int): Int = indexIn(PAGE_STARTS, id)
+
     /// أول آية في جزء — للانتقال إليه.
     fun startOfJuz(juz: Int): Pair<Int, Int> = startAt(JUZ_STARTS, juz, JUZ_COUNT)
 
     /// أول آية في صفحة — للانتقال إليها.
     fun startOfPage(page: Int): Pair<Int, Int> = startAt(PAGE_STARTS, page, PAGE_COUNT)
+
+    /// الفهرس العالمي لأول آية في صفحة (١..٦٢٣٦)، أو ٠ خارج النطاق.
+    ///
+    /// ⚠️ **على مستوى الفهرس العالمي** لا (سورة، آية): صفحة
+    /// المصحف تقطع الآيات، فمن يطلب (سورة، آية) يحتاج حساب
+    /// إزاحة في كل مرّة.
+    fun firstIdOfPage(page: Int): Int =
+        if (page in 1..PAGE_COUNT) PAGE_STARTS[page] else 0
+
+    /// الجزء الذي تقع فيه الآية — **بالفهرس العالمي**.
+    fun juzOfId(id: Int): Int = indexIn(JUZ_STARTS, id)
+
+    /// الفهرس العالمي لآخر آية في صفحة، أو ٠ خارج النطاق.
+    ///
+    /// ⚠️ **الحدّ التالي** لا آية بعد الأخيرة: آخر صفحة تنتهي عند
+    /// ٦٢٣٦، والحرس في `PAGE_STARTS[605]` هو ٦٢٣٧.
+    fun lastIdOfPage(page: Int): Int =
+        if (page in 1..PAGE_COUNT) PAGE_STARTS[page + 1] - 1 else 0
 
     /// الحزب الذي تقع فيه الآية (١ .. ٦٠).
     fun hizbOf(surah: Int, ayah: Int): Int = indexIn(HIZB_STARTS, verseId(surah, ayah))

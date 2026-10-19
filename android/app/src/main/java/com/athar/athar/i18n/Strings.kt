@@ -547,6 +547,18 @@ class Strings(val locale: AppLocale) {
             "adjust_reset" to "تصفير الكل",
             "adjust_minutes" to "{n} د",
             "adjust_open" to "تعديل",
+            "mushaf_mode" to "وضع المصحف",
+            "mushaf_page" to "صفحة {n}",
+            "mushaf_jump" to "اذهب إلى صفحة",
+            "mushaf_of" to "من ٦٠٤",
+            "mushaf_note" to "حدود الصفحات من المصحف المدني برواية حفص. والنصّ عثماني كما هو.",
+            "mushaf_open" to "وضع المصحف",
+            "mushaf_next" to "التالية",
+            "mushaf_prev" to "السابقة",
+            "surah_filter_all" to "الكل",
+            "surah_filter_meccan" to "مكية",
+            "surah_filter_medinan" to "مدنية",
+            "surah_sections" to "السور",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -1068,6 +1080,18 @@ class Strings(val locale: AppLocale) {
             "adjust_reset" to "Reset all",
             "adjust_minutes" to "{n} min",
             "adjust_open" to "Adjust",
+            "mushaf_mode" to "Mushaf mode",
+            "mushaf_page" to "Page {n}",
+            "mushaf_jump" to "Go to page",
+            "mushaf_of" to "of 604",
+            "mushaf_note" to "Page boundaries follow the Madinah mushaf (Hafs). The text is Uthmani, unchanged.",
+            "mushaf_open" to "Mushaf mode",
+            "mushaf_next" to "Next",
+            "mushaf_prev" to "Previous",
+            "surah_filter_all" to "All",
+            "surah_filter_meccan" to "Meccan",
+            "surah_filter_medinan" to "Medinan",
+            "surah_sections" to "Surahs",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1589,6 +1613,18 @@ class Strings(val locale: AppLocale) {
             "adjust_reset" to "Tout réinitialiser",
             "adjust_minutes" to "{n} min",
             "adjust_open" to "Ajuster",
+            "mushaf_mode" to "Mode mushaf",
+            "mushaf_page" to "Page {n}",
+            "mushaf_jump" to "Aller à la page",
+            "mushaf_of" to "sur 604",
+            "mushaf_note" to "Les limites des pages suivent le mushaf de Médine (Hafs). Le texte est ourthani, inchangé.",
+            "mushaf_open" to "Mode mushaf",
+            "mushaf_next" to "Suivante",
+            "mushaf_prev" to "Précédente",
+            "surah_filter_all" to "Toutes",
+            "surah_filter_meccan" to "Mecquoises",
+            "surah_filter_medinan" to "Médinoises",
+            "surah_sections" to "Sourates",
         )
     }
 
@@ -2115,4 +2151,16 @@ class Strings(val locale: AppLocale) {
     val adjustReset: String get() = t("adjust_reset")
     val adjustMinutes: String get() = t("adjust_minutes")
     val adjustOpen: String get() = t("adjust_open")
+    val mushafMode: String get() = t("mushaf_mode")
+    val mushafPage: String get() = t("mushaf_page")
+    val mushafJump: String get() = t("mushaf_jump")
+    val mushafOf: String get() = t("mushaf_of")
+    val mushafNote: String get() = t("mushaf_note")
+    val mushafOpen: String get() = t("mushaf_open")
+    val mushafNext: String get() = t("mushaf_next")
+    val mushafPrev: String get() = t("mushaf_prev")
+    val surahFilterAll: String get() = t("surah_filter_all")
+    val surahFilterMeccan: String get() = t("surah_filter_meccan")
+    val surahFilterMedinan: String get() = t("surah_filter_medinan")
+    val surahSections: String get() = t("surah_sections")
 }

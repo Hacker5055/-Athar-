@@ -60,6 +60,7 @@ import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.quran.QuranSources
 import com.athar.athar.quran.QuranSearch
 import com.athar.athar.quran.Surah
+import com.athar.athar.quran.SurahSearch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -176,6 +177,11 @@ fun QuranScreen(
 
     var showKhatmah by remember { mutableStateOf(false) }
     var showHifz by remember { mutableStateOf(false) }
+    var showMushaf by remember { mutableStateOf(false) }
+    /// تصفية السور بمكان النزول: ٠ = الكلّ · ١ = مكية · ٢ = مدنية
+    var originFilter by remember { mutableIntStateOf(0) }
+    /// السور التي يطابقها **اسمها** (لا نصّها) — بحث سريع.
+    var surahHits by remember { mutableStateOf<List<Surah>>(emptyList()) }
 
     var withdrawn by remember { mutableStateOf(emptySet<String>()) }
     LaunchedEffect(Unit) { withdrawn = ReciterWithdrawalStore.refresh(context) }
@@ -225,10 +231,15 @@ fun QuranScreen(
         val needle = query.trim()
         if (needle.isEmpty()) {
             results = emptyList()
+            surahHits = emptyList()
             searching = false
             return@LaunchedEffect
         }
         searching = true
+        // ⚠️ **السور بالاسم قبل النصّ**: من كتب «الكهف» يريد
+        // السورة لا موضع آية فيها، والبحث في النصّ وحده يُخفي
+        // سورةً باسمها.
+        surahHits = SurahSearch.byName(needle, list)
         // ⚠️ مرة واحدة خارجه: لو أُنشئ داخل ayahsOf أعيد تحليل ١٫٧ ميجابايت
         // مع كل سورة (١١٤ مرة) في كل حرف يكتبه المستخدم.
         val repo = QuranRepository(context)
@@ -317,6 +328,13 @@ fun QuranScreen(
                 onBack = { showHifz = false },
                 modifier = Modifier.fillMaxSize(),
             )
+            // ⚠️ وضع المصحف **شاشة مستقلّة** لا تبويبًا داخل
+            // القائمة: القارئ فيه يقرأ صفحةً صفحة، ومزاحمته
+            // مع قائمة السور تُربكه.
+            showMushaf -> MushafScreen(
+                onBack = { showMushaf = false },
+                modifier = Modifier.fillMaxSize(),
+            )
             showKhatmah -> KhatmahScreen(
                 onBack = { showKhatmah = false },
                 onRead = { surahId, ayah ->
@@ -367,6 +385,12 @@ fun QuranScreen(
                             TextButton(onClick = { showHifz = true }) {
                                 Text(s.hifzTitle)
                             }
+                            // ⚠️ وضع المصحف **بعد الحفظ**: من يقرأ
+                            // المصحف ورقيًّا يتبع صفحاته، فمن يجد
+                            // الصفحات متأخّرة بحثًا عنه تاه.
+                            TextButton(onClick = { showMushaf = true }) {
+                                Text(s.mushafOpen)
+                            }
                             if (bookmarks.isNotEmpty()) {
                                 TextButton(onClick = { showBookmarks = true }) {
                                     Text("${s.quranBookmarks} (${bookmarks.size})")
@@ -394,8 +418,19 @@ fun QuranScreen(
                                 opened = surahs!!.firstOrNull { it.id == surah }
                                 openAyah = ayah
                             }
+                            // ⚠️ التصفية **قبل** القائمة لا داخلها:
+                            // قائمة من ١١٤ سورة بلا تصفية تفرض
+                            // تمريرًا طويلًا للوصول إلى سورة واحدة.
+                            OriginFilter(
+                                selected = originFilter,
+                                onSelect = { originFilter = it },
+                            )
                             SurahList(
-                                surahs = surahs!!,
+                                surahs = SurahSearch.byOrigin(
+                                    surahs!!,
+                                    meccanOnly = if (originFilter == 1) true else null,
+                                    medinanOnly = if (originFilter == 2) true else null,
+                                ),
                                 onOpen = { opened = it },
                                 modifier = Modifier.weight(1f),
                             )
@@ -404,6 +439,8 @@ fun QuranScreen(
                         SearchResults(
                             hits = results,
                             searching = searching,
+                            surahHits = surahHits,
+                            onOpenSurah = { surah -> opened = surah },
                         ) { hit -> opened = surahs!!.firstOrNull { it.id == hit.ayah.surah } }
                     }
                 }
@@ -467,6 +504,9 @@ private fun JuzRow(onPick: (Int) -> Unit) {
 private fun SearchResults(
     hits: List<QuranSearch.Hit>,
     searching: Boolean,
+    /// السور المطابقة **بالاسم** — تُعرض قبل النتائج النصّية.
+    surahHits: List<Surah> = emptyList(),
+    onOpenSurah: (Surah) -> Unit = {},
     onOpen: (QuranSearch.Hit) -> Unit,
 ) {
     val s = LocalStrings.current
@@ -474,7 +514,10 @@ private fun SearchResults(
         CircularProgressIndicator(modifier = Modifier.padding(24.dp))
         return
     }
-    if (hits.isEmpty()) {
+    // ⚠️ «لا نتائج» **لا تُقال** إن وُجدت سورة بالاسم: البحث
+    // في نصّ القرآن لا يجد «الكهف» في اسمها، فيظنّ القارئ أنّ
+    // التطبيق لا يعرف هذه السورة.
+    if (hits.isEmpty() && surahHits.isEmpty()) {
         Text(
             text = s.quranSearchEmpty,
             modifier = Modifier.padding(24.dp),
@@ -483,38 +526,96 @@ private fun SearchResults(
         return
     }
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            Text(
-                text = s.tArgs("quran_results_count", "n" to hits.size),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            )
-        }
-        items(hits) { hit ->
-            TextButton(onClick = { onOpen(hit) }, modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+        if (surahHits.isNotEmpty()) {
+            item {
+                Text(
+                    text = s.surahSections,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            items(surahHits) { surah ->
+                TextButton(
+                    onClick = { onOpenSurah(surah) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(hit.surahNameAr, style = MaterialTheme.typography.bodySmall)
+                        Text(surah.nameAr, fontSize = 18.sp, fontWeight = FontWeight.Medium)
                         Text(
-                            "${hit.ayah.surah}:${hit.ayah.number}",
+                            text = "${surah.ayahCount} ${s.verses}",
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
-                    Text(
-                        // ⚠️ النص **كما هو** بلا أي تعديل — شرط الرخصة
-                        text = hit.ayah.text,
-                        fontSize = 18.sp,
-                        lineHeight = 30.sp,
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.padding(top = 4.dp),
-                    )
                 }
             }
-            HorizontalDivider()
+        }
+        if (hits.isNotEmpty()) {
+            item {
+                Text(
+                    text = s.tArgs("quran_results_count", "n" to hits.size),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            items(hits) { hit ->
+                TextButton(onClick = { onOpen(hit) }, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(hit.surahNameAr, style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                "${hit.ayah.surah}:${hit.ayah.number}",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                        Text(
+                            // ⚠️ النص **كما هو** بلا أي تعديل — شرط الرخصة
+                            text = hit.ayah.text,
+                            fontSize = 18.sp,
+                            lineHeight = 30.sp,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
+                }
+                HorizontalDivider()
+            }
+        }
+    }
+}
+
+/// شريط تصفية السور بمكان النزول.
+@Composable
+private fun OriginFilter(
+    selected: Int,
+    onSelect: (Int) -> Unit,
+) {
+    val s = LocalStrings.current
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        val labels = listOf(s.surahFilterAll, s.surahFilterMeccan, s.surahFilterMedinan)
+        labels.forEachIndexed { index, label ->
+            TextButton(onClick = { onSelect(index) }) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (index == selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    fontWeight = if (index == selected) FontWeight.Bold else null,
+                )
+            }
         }
     }
 }
@@ -542,6 +643,15 @@ private fun SurahList(
                         Text(
                             text = "${surah.ayahCount} ${s.verses} · ${if (surah.isMeccan) s.meccan else s.medinan}",
                             style = MaterialTheme.typography.bodySmall,
+                        )
+                        // ⚠️ **أول** آية لا آيةٍ منتصفها: الجزء والصفحة
+                        // يُذكران لبداية السورة، فمن أراد صفحةً
+                        // داخلها وجدها في المصحف.
+                        Text(
+                            text = "${s.quranJuz} ${QuranMeta.juzOf(surah.id, 1)} · " +
+                                "${s.quranPage} ${QuranMeta.pageOf(surah.id, 1)}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     Text(
