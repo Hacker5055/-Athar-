@@ -220,7 +220,9 @@ private fun SunQiblaCard(latitude: Double, longitude: Double) {
                 )
                 for (day in days) {
                     Text(
-                        text = digits(day),
+                        // ⚠️ `day` تاريخٌ لا رقمٌ: والصوابُ
+                        // رقمُ اليومِ من اليوم.
+                        text = digits(day.dayOfMonth),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                     )
