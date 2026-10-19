@@ -45,6 +45,7 @@ import com.athar.athar.quran.QuranRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.athar.athar.ui.theme.AmiriFamily
+import com.athar.athar.i18n.localDigits
 
 /// وضع المصحف (B2 من docs/02) — قراءةً صفحةً صفحة.
 ///
@@ -59,6 +60,7 @@ fun MushafScreen(
 ) {
     val s = LocalStrings.current
     val context = LocalContext.current
+    val digits = localDigits()
     var page by remember { mutableIntStateOf(1) }
     var jumping by remember { mutableStateOf(false) }
 
@@ -78,12 +80,12 @@ fun MushafScreen(
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = s.tArgs("mushaf_page", "n" to page.toString()),
+                    text = s.tArgs("mushaf_page", "n" to digits(page)),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "${s.t("mushaf_of")} · ${s.quranJuz} ${content?.juz ?: 0}",
+                    text = "${s.t("mushaf_of")} · ${s.quranJuz} ${digits(content?.juz ?: 0)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -147,7 +149,7 @@ fun MushafScreen(
                                 // من نسخ المصحف لا من النصّ القرآني،
                                 // وإدخاله يغيّر النصّ.
                                 Text(
-                                    text = verse.number.toString(),
+                                    text = digits(verse.number),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.padding(end = 8.dp),

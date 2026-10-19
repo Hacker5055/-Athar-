@@ -88,8 +88,13 @@ import com.athar.athar.ui.theme.AtharPrimaryContainer
 import com.athar.athar.hijri.HijriCalendar
 import java.time.temporal.ChronoUnit
 
-private val timeFormat: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("HH:mm").withZone(ZoneId.systemDefault())
+/// ⚠️ **الوقتُ بلغةِ التطبيق**: `ofPattern` بلا لغةٍ يتبع لغةَ
+/// الجهاز، فيرى مستخدمُ العربية على هاتفٍ إنجليزيٍّ أوقاتَه
+/// بأرقامٍ لاتينية. والوقتُ وقتُه: «٠٥:١٢» في العربية.
+private fun timeFormat(locale: AppLocale): DateTimeFormatter =
+    DateTimeFormatter
+        .ofPattern("HH:mm", locale.javaLocale())
+        .withZone(ZoneId.systemDefault())
 
 @Composable
 fun PrayerScreen(
@@ -163,6 +168,7 @@ fun PrayerScreen(
     /// ⚠️ اسم المدينة يُقرأ باللغة الحالية — «القاهرة» داخل تطبيق
     /// فرنسي بالكامل عيب لا يراه من يختبر بالعربية فقط.
     val locale = com.athar.athar.i18n.LocalAppLocale.current
+    val timeFmt = remember(locale) { timeFormat(locale) }
     val placeLabel = remember(settings, s, locale) {
         val city = settings.cityId?.let { id ->
             com.athar.athar.prayer.Cities.all.firstOrNull { it.id == id }
@@ -230,7 +236,7 @@ fun PrayerScreen(
         // تحت قائمةِ المواقيت.
         HeroCard(
             prayerName = next?.let { s.t(it.first.stringKey) } ?: s.prayerNoneLeft,
-            time = next?.second?.let { timeFormat.format(it) } ?: "",
+            time = next?.second?.let { timeFmt.format(it) } ?: "",
             place = placeLabel,
             date = "${gregorianText(today, locale)} · ${hijriText(today, hijriOffset)}",
             target = next?.second,
@@ -480,6 +486,8 @@ private fun PrayerStrip(
     settings: PrayerSettings,
 ) {
     val s = LocalStrings.current
+    val locale = com.athar.athar.i18n.LocalAppLocale.current
+    val timeFmt = remember(locale) { timeFormat(locale) }
     val now = remember(day) { Instant.now() }
     LazyRow(
         modifier = Modifier
@@ -521,7 +529,7 @@ private fun PrayerStrip(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = timeFormat.format(instant),
+                    text = timeFmt.format(instant),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = if (isNext) FontWeight.Bold else null,
                     color = when {
@@ -662,7 +670,7 @@ private fun gregorianText(date: LocalDate, locale: AppLocale): String =
     runCatching {
         DateTimeFormatter
             .ofLocalizedDate(FormatStyle.LONG)
-            .withLocale(java.util.Locale.forLanguageTag(locale.code))
+            .withLocale(locale.javaLocale())
             .format(date)
     }.getOrDefault(date.toString())
 
@@ -678,6 +686,8 @@ private fun RamadanCard(
     length: Int,
 ) {
     val s = LocalStrings.current
+    val locale = com.athar.athar.i18n.LocalAppLocale.current
+    val timeFmt = remember(locale) { timeFormat(locale) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -711,7 +721,7 @@ private fun RamadanCard(
                 Column {
                     Text(s.ramadanIftar, style = MaterialTheme.typography.labelSmall)
                     Text(
-                        timeFormat.format(day.maghrib),
+                        timeFmt.format(day.maghrib),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -719,7 +729,7 @@ private fun RamadanCard(
                 Column {
                     Text(s.ramadanSuhur, style = MaterialTheme.typography.labelSmall)
                     Text(
-                        timeFormat.format(day.fajr),
+                        timeFmt.format(day.fajr),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )

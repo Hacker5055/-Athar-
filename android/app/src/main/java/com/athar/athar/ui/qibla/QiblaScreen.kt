@@ -47,6 +47,7 @@ import com.athar.athar.ui.theme.AtharCream
 import com.athar.athar.ui.theme.AtharGold
 import com.athar.athar.ui.theme.AtharHeroBottom
 import com.athar.athar.ui.theme.AtharPrimaryContainer
+import com.athar.athar.i18n.localDigits
 import com.batoulapps.adhan.Coordinates
 import java.time.Instant
 import java.time.LocalDate
@@ -171,6 +172,7 @@ fun QiblaScreen(
 @Composable
 private fun SunQiblaCard(latitude: Double, longitude: Double) {
     val s = LocalStrings.current
+    val digits = localDigits()
     val zone = remember { ZoneId.systemDefault() }
     val today = remember { LocalDate.now() }
     val year = today.year
@@ -218,7 +220,7 @@ private fun SunQiblaCard(latitude: Double, longitude: Double) {
                 )
                 for (day in days) {
                     Text(
-                        text = day.toString(),
+                        text = digits(day),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                     )

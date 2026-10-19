@@ -44,6 +44,7 @@ import com.athar.athar.prayer.PrayerSlot
 import com.athar.athar.share.MonthCards
 import com.athar.athar.share.MonthImage
 import com.athar.athar.share.ShareImage
+import com.athar.athar.i18n.localDigits
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,7 +52,6 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Locale
 import kotlin.math.max
 
 private const val DAY_W = 46
@@ -228,6 +228,7 @@ fun MonthScreen(
 
 @Composable
 private fun MonthRowView(row: MonthRow, locale: AppLocale, today: LocalDate) {
+    val digits = localDigits()
     val s = LocalStrings.current
     Row(
         modifier = Modifier
@@ -244,7 +245,7 @@ private fun MonthRowView(row: MonthRow, locale: AppLocale, today: LocalDate) {
             horizontalAlignment = Alignment.Start,
         ) {
             Text(
-                text = row.date.dayOfMonth.toString(),
+                text = digits(row.date.dayOfMonth),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = if (row.date == today) FontWeight.Bold else null,
                 color = if (row.date == today) {
@@ -254,7 +255,7 @@ private fun MonthRowView(row: MonthRow, locale: AppLocale, today: LocalDate) {
                 },
             )
             Text(
-                text = row.hijri.day.toString(),
+                text = digits(row.hijri.day),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -276,16 +277,17 @@ private fun monthText(year: Int, month: Int, locale: AppLocale): String =
     runCatching {
         DateTimeFormatter
             .ofLocalizedDate(FormatStyle.FULL)
-            .withLocale(Locale.forLanguageTag(locale.code))
+            .withLocale(locale.javaLocale())
             .format(YearMonth.of(year, month).atDay(1))
             .let { it.substring(max(0, it.length - 12)) }
     }.getOrDefault("$year/$month")
 
+/// ⚠️ **٢٤ ساعةً دائمًا**: الجدولُ يوافقُ صورةَ التصدير (HH:mm)،
+/// و«ص/م» في الجدولِ بلا مكانٍ له في الصورة.
 private fun timeText(instant: java.time.Instant, locale: AppLocale): String =
     runCatching {
         DateTimeFormatter
-            .ofLocalizedTime(FormatStyle.SHORT)
-            .withLocale(Locale.forLanguageTag(locale.code))
+            .ofPattern("HH:mm", locale.javaLocale())
             .withZone(java.time.ZoneId.systemDefault())
             .format(instant)
     }.getOrDefault("--:--")

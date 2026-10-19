@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.sp
 import com.athar.athar.asma.AsmaRepository
 import com.athar.athar.asma.AsmaName
 import com.athar.athar.asma.AsmaSearch
-import com.athar.athar.core.ArabicDigits
 import com.athar.athar.ui.theme.AmiriFamily
 import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.i18n.localDigits
 
 /// الأسماء الحسنى — قائمة تبحث بالاسم أو بالمعنى.
 ///
@@ -89,6 +89,9 @@ fun AsmaScreen(modifier: Modifier = Modifier) {
 /// ⚠️ لا يقرأ `s` — دوال `@Composable` المستقلة لا ترى متغيّرات الأب.
 @Composable
 private fun NameCard(name: AsmaName, modifier: Modifier = Modifier) {
+    // ⚠️ **الأرقامُ حسب اللغة**: «٢٥» في واجهةٍ فرنسيةٍ خطأٌ
+    // ظاهر، و«25» في واجهةٍ عربيةٍ كذلك.
+    val digits = localDigits()
     Card(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -105,7 +108,7 @@ private fun NameCard(name: AsmaName, modifier: Modifier = Modifier) {
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = ArabicDigits.of(name.id),
+                    text = digits(name.id),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )

@@ -37,13 +37,13 @@ import com.athar.athar.athary.DayLevel
 import com.athar.athar.athary.HabitId
 import com.athar.athar.athary.TrackerState
 import com.athar.athar.athary.TrackerStore
-import com.athar.athar.core.ArabicDigits
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.i18n.LocalAppLocale
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.athary.WeeklySummaries
 import com.athar.athar.share.ShareCards
 import com.athar.athar.share.ShareImage
+import com.athar.athar.i18n.localDigits
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -96,14 +96,15 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
 
         item {
             Card(modifier = Modifier.fillMaxWidth()) {
+                val digits = localDigits()
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
-                    Statistic(value = state.currentStreak(today).toString(), label = s.streakDays)
-                    Statistic(value = state.bestStreak().toString(), label = s.atharyBest)
+                    Statistic(value = digits(state.currentStreak(today)), label = s.streakDays)
+                    Statistic(value = digits(state.bestStreak()), label = s.atharyBest)
                     Statistic(
-                        value = "${state.countFor(today)}/${HabitId.entries.size}",
+                        value = "${digits(state.countFor(today))}/${digits(HabitId.entries.size)}",
                         label = s.today,
                     )
                 }
@@ -164,6 +165,7 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
 /// الرسم لا داخله — النيةُ تُرسل من خيط الواجهة.
 @Composable
 private fun ShareWeekCard(state: TrackerState, today: LocalDate) {
+    val digits = localDigits()
     val s = LocalStrings.current
     val context = LocalContext.current
     val locale = LocalAppLocale.current
@@ -192,7 +194,7 @@ private fun ShareWeekCard(state: TrackerState, today: LocalDate) {
                         )
                         val uri = withContext(Dispatchers.Default) {
                             runCatching {
-                                ShareImage.save(context, ShareImage.render(data, digitsOf(locale)))
+                                ShareImage.save(context, ShareImage.render(data, digits))
                             }.getOrNull()
                         }
                         busy = false
@@ -227,13 +229,6 @@ private fun ShareWeekCard(state: TrackerState, today: LocalDate) {
 
 /// ⚠️ **الأرقامُ بحسب اللغة**: العربيةُ شرقية، وما دونها لاتينية.
 /// وصورةٌ تُشارَك بالإنجليزية وأرقامُها عربيةٌ شرقية تبدو خطأً.
-private fun digitsOf(locale: AppLocale): (Int) -> String =
-    if (locale.isRtl) {
-        { value -> ArabicDigits.of(value) }
-    } else {
-        { value -> value.toString() }
-    }
-
 @Composable
 private fun Statistic(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

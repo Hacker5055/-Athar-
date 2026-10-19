@@ -59,7 +59,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import com.athar.athar.core.ArabicDigits
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -100,6 +99,7 @@ import android.content.Intent
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Search
 import com.athar.athar.ui.theme.AmiriFamily
+import com.athar.athar.i18n.localDigits
 
 @Composable
 fun QuranScreen(
@@ -587,6 +587,7 @@ private fun SearchResults(
             // يبحث عنها الناسُ اسمًا لها، فلها شكلُ الفهرس نفسه —
             // وإلا بدا قسمان لشيءٍ واحد.
             items(surahHits) { surah ->
+                val digits = localDigits()
                 Card(
                     onClick = { onOpenSurah(surah) },
                     modifier = Modifier
@@ -618,7 +619,7 @@ private fun SearchResults(
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                text = ArabicDigits.of(surah.id),
+                                text = digits(surah.id),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
@@ -724,6 +725,7 @@ private fun SurahList(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    val digits = localDigits()
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
                         Text(
                             text = surah.nameAr,
@@ -735,15 +737,16 @@ private fun SurahList(
                             fontFamily = AmiriFamily,
                         )
                         Text(
-                            text = "${surah.ayahCount} ${s.verses} · ${if (surah.isMeccan) s.meccan else s.medinan}",
+                            text = "${digits(surah.ayahCount)} ${s.verses} · " +
+                                "${if (surah.isMeccan) s.meccan else s.medinan}",
                             style = MaterialTheme.typography.bodySmall,
                         )
                         // ⚠️ **أول** آية لا آيةٍ منتصفها: الجزء والصفحة
                         // يُذكران لبداية السورة، فمن أراد صفحةً
                         // داخلها وجدها في المصحف.
                         Text(
-                            text = "${s.quranJuz} ${QuranMeta.juzOf(surah.id, 1)} · " +
-                                "${s.quranPage} ${QuranMeta.pageOf(surah.id, 1)}",
+                            text = "${s.quranJuz} ${digits(QuranMeta.juzOf(surah.id, 1))} · " +
+                                "${s.quranPage} ${digits(QuranMeta.pageOf(surah.id, 1))}",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -760,7 +763,7 @@ private fun SurahList(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = ArabicDigits.of(surah.id),
+                            text = digits(surah.id),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
@@ -1233,6 +1236,7 @@ private fun RowScope.QuranAction(
     onClick: () -> Unit,
     badge: Int? = null,
 ) {
+    val digits = localDigits()
     Column(
         modifier = Modifier
             .weight(1f)
@@ -1263,7 +1267,7 @@ private fun RowScope.QuranAction(
             }
             if (badge != null && badge > 0) {
                 Text(
-                    text = ArabicDigits.of(badge),
+                    text = digits(badge),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 2.dp),

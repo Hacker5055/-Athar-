@@ -14,6 +14,15 @@ enum class AppLocale(
 
     val isRtl: Boolean get() = this == AR
 
+    /// ⚠️ **لغةُ java**: التواريخُ والأوقاتُ تُنسَّقُ بلغةٍ واحدة،
+    /// فلا يصحّ أن تتبع لغةَ الجهازِ بدلَ لغةِ التطبيق — فمستخدمُ
+    /// العربية على هاتفٍ إنجليزيٍّ يرى تواريخَه بالإنجليزية.
+    fun javaLocale(): java.util.Locale = when (this) {
+        AR -> java.util.Locale("ar", "EG")
+        EN -> java.util.Locale.ENGLISH
+        FR -> java.util.Locale.FRENCH
+    }
+
     companion object {
         fun fromCode(code: String?): AppLocale =
             entries.firstOrNull { it.code == code } ?: AR

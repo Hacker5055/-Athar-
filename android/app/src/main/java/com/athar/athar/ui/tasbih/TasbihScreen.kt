@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.athar.athar.athary.HabitId
 import com.athar.athar.athary.TrackerStore
-import com.athar.athar.core.ArabicDigits
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.tasbih.Speaker
 import com.athar.athar.tasbih.TasbihCounter
@@ -69,6 +68,7 @@ import com.athar.athar.ui.theme.AtharCream
 import com.athar.athar.ui.theme.AtharHeroBottom
 import com.athar.athar.ui.theme.AtharHeroTop
 import com.athar.athar.ui.theme.AtharPrimaryContainer
+import com.athar.athar.i18n.localDigits
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -79,6 +79,7 @@ import java.time.ZoneId
 @Composable
 fun TasbihScreen(modifier: Modifier = Modifier) {
     val s = LocalStrings.current
+    val digits = localDigits()
     val context = LocalContext.current
 
     // ⚠️ إبقاء الشاشة مضاءة (E4): من يسبّح مئة لا يريد أن يلمس
@@ -227,14 +228,14 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = ArabicDigits.of(state.count),
+                    text = digits(state.count),
                     fontSize = 72.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = AmiriFamily,
                     color = AtharCream,
                 )
                 Text(
-                    text = "${ArabicDigits.of(state.count)} / ${ArabicDigits.of(target)}",
+                    text = "${digits(state.count)} / ${digits(target)}",
                     fontSize = 13.sp,
                     color = AtharPrimaryContainer,
                 )
@@ -270,8 +271,8 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            Stat(label = s.tasbihRounds, value = ArabicDigits.of(state.rounds))
-            Stat(label = s.tasbihTotal, value = ArabicDigits.of(state.lifetime))
+            Stat(label = s.tasbihRounds, value = digits(state.rounds))
+            Stat(label = s.tasbihTotal, value = digits(state.lifetime))
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -297,7 +298,7 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
                         state = TasbihCounter.reset(state)
                         persist()
                     },
-                    label = { Text(ArabicDigits.of(n)) },
+                    label = { Text(digits(n)) },
                 )
             }
         }
@@ -400,6 +401,7 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun SessionLog(sessions: List<TasbihSession>) {
     val s = LocalStrings.current
+    val digits = localDigits()
     val zone = remember { ZoneId.systemDefault() }
     // ⚠️ التاريخ **يُحسب في كلّ رسمٍ لا مرّة واحدة**: فمن ترك
     // التطبيق مفتوحًا حتى منتصف الليل يجب أن يرى «اليوم» الجديد
@@ -432,11 +434,11 @@ private fun SessionLog(sessions: List<TasbihSession>) {
         ) {
             Stat(
                 s.tasbihToday,
-                s.tArgs("tasbih_counts", "n" to ArabicDigits.of(todaySummary.rangeCount)),
+                s.tArgs("tasbih_counts", "n" to digits(todaySummary.rangeCount)),
             )
             Stat(
                 s.tasbihWeek,
-                s.tArgs("tasbih_counts", "n" to ArabicDigits.of(weekSummary.rangeCount)),
+                s.tArgs("tasbih_counts", "n" to digits(weekSummary.rangeCount)),
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -446,15 +448,15 @@ private fun SessionLog(sessions: List<TasbihSession>) {
         ) {
             Stat(
                 s.tasbihSessionsToday,
-                s.tArgs("tasbih_sessions_count", "n" to ArabicDigits.of(todaySummary.rangeSessions)),
+                s.tArgs("tasbih_sessions_count", "n" to digits(todaySummary.rangeSessions)),
             )
             Stat(
                 s.tasbihTotal,
-                ArabicDigits.of(todaySummary.totalCount),
+                digits(todaySummary.totalCount),
             )
             Stat(
                 s.tasbihBest,
-                ArabicDigits.of(todaySummary.bestSession),
+                digits(todaySummary.bestSession),
             )
         }
     }
