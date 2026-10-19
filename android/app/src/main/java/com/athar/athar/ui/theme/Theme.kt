@@ -1,11 +1,15 @@
 package com.athar.athar.ui.theme
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 /// ⚠️ **الخلفيةُ ليست بيضاء**: ورقٌ كريميّ (#F7F5F0) أرفقُّ من
 /// الأبيض، خاصةً للنظر الطويل. وبياضُ الشاشةِ الخالصُ على
@@ -121,6 +125,20 @@ fun AtharTheme(
         ThemeMode.LIGHT -> false
         ThemeMode.DARK -> true
     }
+
+    // ⚠️ **أيقوناتُ شريطِ الحالة تتبع ثيمَ التطبيق** لا ثيمَ
+    // النظام: من اختار الداكنَ في التطبيق ونظامُه فاتحٌ، كانت
+    // أيقوناتُ الشريطِ الداكنةُ على خلفيةٍ داكنةٍ لا تُرى.
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window ?: return@SideEffect
+            val controller = WindowCompat.getInsetsController(window, view)
+            controller.isAppearanceLightStatusBars = !darkTheme
+            controller.isAppearanceLightNavigationBars = !darkTheme
+        }
+    }
+
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
         typography = AtharTypography,

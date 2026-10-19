@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:padding="12dp"
     android:layoutDirection="locale"
-    android:background="@android:color/white">
+    android:background="@drawable/widget_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:textSize="11sp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:textColor="@color/athar_mint" />
 
         <TextView
             android:id="@+id/widget_remaining"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textColor="@color/athar_cream" />
     </LinearLayout>
 
     <LinearLayout
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:textColor="@color/athar_mint" />
 
         <TextView
             android:id="@+id/widget_next_name"
@@ -58,14 +58,14 @@
             android:textStyle="bold"
             android:layout_marginStart="6dp"
             android:layout_marginEnd="6dp"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textColor="@color/athar_gold" />
 
         <TextView
             android:id="@+id/widget_next_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textColor="@color/athar_cream" />
     </LinearLayout>
 
     <!-- ⚠️ الصلوات الخمس كما هي في اليوم لا «القادمة وحدها»: من
@@ -80,50 +80,50 @@
             android:layout_weight="1" android:orientation="vertical" android:gravity="center">
             <TextView android:id="@+id/widget_fajr_name" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="10sp"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="@color/athar_mint" />
             <TextView android:id="@+id/widget_fajr_time" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="12sp" android:textStyle="bold"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textColor="@color/athar_cream" />
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_weight="1" android:orientation="vertical" android:gravity="center">
             <TextView android:id="@+id/widget_dhuhr_name" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="10sp"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="@color/athar_mint" />
             <TextView android:id="@+id/widget_dhuhr_time" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="12sp" android:textStyle="bold"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textColor="@color/athar_cream" />
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_weight="1" android:orientation="vertical" android:gravity="center">
             <TextView android:id="@+id/widget_asr_name" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="10sp"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="@color/athar_mint" />
             <TextView android:id="@+id/widget_asr_time" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="12sp" android:textStyle="bold"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textColor="@color/athar_cream" />
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_weight="1" android:orientation="vertical" android:gravity="center">
             <TextView android:id="@+id/widget_maghrib_name" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="10sp"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="@color/athar_mint" />
             <TextView android:id="@+id/widget_maghrib_time" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="12sp" android:textStyle="bold"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textColor="@color/athar_cream" />
         </LinearLayout>
 
         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_weight="1" android:orientation="vertical" android:gravity="center">
             <TextView android:id="@+id/widget_isha_name" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="10sp"
-                android:textColor="?android:attr/textColorSecondary" />
+                android:textColor="@color/athar_mint" />
             <TextView android:id="@+id/widget_isha_time" android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:textSize="12sp" android:textStyle="bold"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:textColor="@color/athar_cream" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

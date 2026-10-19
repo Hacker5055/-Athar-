@@ -10,6 +10,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -72,62 +74,34 @@ fun MoreScreen(
         }
         HorizontalDivider()
 
-        androidx.compose.foundation.layout.Row(
-            // ⚠️ قابل للتمرير أفقيًا: خمس شرائح بثلاث لغات تتجاوز عرض
-            // الشاشة على الأجهزة الصغيرة، والقصّ الصامت أسوأ من التمرير.
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        // ⚠️ **أشرطةُ أقسامٍ لا شرائحَ عائمة**: تسعةُ أقسامٍ
+        // في «المزيد» — والشرائحُ العائمةُ تتراكمُ حتى يصير
+        // الصفُّ جدارًا من البطاقات. وشريطُ الأقسامِ يبيّن: كم
+        // قسمًا، وأين أنا.
+        ScrollableTabRow(
+            selectedTabIndex = section,
+            edgePadding = 8.dp,
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            FilterChip(
-                selected = section == 0,
-                onClick = { section = 0 },
-                label = { Text(s.trackerTitle) },
-            )
-            FilterChip(
-                selected = section == 1,
-                onClick = { section = 1 },
-                label = { Text(s.notifications) },
-            )
-            FilterChip(
-                selected = section == 2,
-                onClick = { section = 2 },
-                label = { Text(s.moreAsma) },
-            )
-            FilterChip(
-                selected = section == 3,
-                onClick = { section = 3 },
-                label = { Text(s.appearance) },
-            )
-            FilterChip(
-                selected = section == 4,
-                onClick = { section = 4 },
-                label = { Text(s.sources) },
-            )
-            FilterChip(
-                selected = section == 5,
-                onClick = { section = 5 },
-                label = { Text(s.widgetAdd) },
-            )
-            FilterChip(
-                selected = section == 6,
-                onClick = { section = 6 },
-                label = { Text(s.backupTitle) },
-            )
             // ⚠️ حاسبة الزكاة **قسمٌ لا زرّ**: ليست ابنًا لصفحة
             // أخرى، بل أداةٌ في «المزيد».
-            FilterChip(
-                selected = section == 7,
-                onClick = { section = 7 },
-                label = { Text(s.zakahTitle) },
-            )
-            FilterChip(
-                selected = section == 8,
-                onClick = { section = 8 },
-                label = { Text(s.ruqyaTitle) },
-            )
+            listOf(
+                s.trackerTitle,
+                s.notifications,
+                s.moreAsma,
+                s.appearance,
+                s.sources,
+                s.widgetAdd,
+                s.backupTitle,
+                s.zakahTitle,
+                s.ruqyaTitle,
+            ).forEachIndexed { index, label ->
+                Tab(
+                    selected = index == section,
+                    onClick = { section = index },
+                    text = { Text(label, maxLines = 1) },
+                )
+            }
         }
 
         // ⚠️ `weight` يعطي الشاشة الداخلية ارتفاعًا محدودًا فتعمل
