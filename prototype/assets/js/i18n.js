@@ -14,6 +14,7 @@ const T = {
   tab_quran:           {ar:'القرآن', en:'Quran', fr:'Coran'},
   tab_adhkar:          {ar:'الأذكار', en:'Adhkar', fr:'Invocations'},
   tab_qibla:           {ar:'القبلة', en:'Qibla', fr:'Qibla'},
+  tab_tasbih:          {ar:'السبحة', en:'Tasbih', fr:'Tasbih'},
   tab_more:            {ar:'المزيد', en:'More', fr:'Plus'},
 
   next_prayer:         {ar:'الصلاة القادمة', en:'Next prayer', fr:'Prochaine prière'},

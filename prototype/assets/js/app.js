@@ -65,6 +65,7 @@ const IC = {
   quran: svg('<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13Z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5v-13Z"/>'),
   adhkar: svg('<circle cx="12" cy="10" r="7"/><circle cx="12" cy="3" r="1.5"/><circle cx="19" cy="10" r="1.2"/><circle cx="5" cy="10" r="1.2"/><circle cx="12" cy="17" r="1.2"/>'),
   qibla: svg('<circle cx="12" cy="12" r="9"/><path d="m15.8 8.2-2.3 4.9-4.9 2.3 2.3-4.9z"/>'),
+  tasbih: svg('<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20.4 4.5v4.2h-4.2"/>'),
   more: svg('<circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.6" fill="currentColor" stroke="none"/>'),
   search: svg('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/>'),
   gear: svg('<circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.9 1.9M16.8 16.8l1.9 1.9M18.7 5.3l-1.9 1.9M7.2 16.8l-1.9 1.9"/>'),
@@ -529,7 +530,7 @@ function screenQibla() {
 function screenMore() {
   const items = [
     ['tracker', IC.leaf, 'tracker_title', 'tracker_sub'],
-    ['tasbih', IC.adhkar, 'tasbih_title', 'target'],
+    ['qibla', IC.qibla, 'qibla_title', 'qibla_hint'],
     ['calendar', IC.calendar, 'calendar_title', 'upcoming'],
     ['settings', IC.gear, 'settings', 'general'],
     ['duas', IC.star, 'dua_library', 'source'],
@@ -874,7 +875,7 @@ const TABS = [
   { id: 'home', icon: IC.home, label: 'tab_home' },
   { id: 'quran', icon: IC.quran, label: 'tab_quran' },
   { id: 'adhkar', icon: IC.adhkar, label: 'tab_adhkar' },
-  { id: 'qibla', icon: IC.qibla, label: 'tab_qibla' },
+  { id: 'tasbih', icon: IC.tasbih, label: 'tab_tasbih' },
   { id: 'more', icon: IC.more, label: 'tab_more' },
 ];
 

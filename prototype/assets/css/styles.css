@@ -28,6 +28,10 @@
   --pat-color:%230F6E5C; --pat-op:.07;
   --quran-bg:#FDF8EC; --quran-ink:#1F1A14;
   --sb-ink:#12211D;
+  /* ⚠️ الكحليُّ: لونُ الشعارِ ولونُ شريطِ التنقّل — لا يُشتقُّ من
+     غيره، فيبقى اللوحُ عينَه في المظهرين. */
+  --navy:#143A63; --navy-deep:#0A1E38; --navy-ink:rgba(242,234,218,.68);
+  --gold:#C8A15A;
 }
 .phone.theme-dark{
   --bg:#0C1512; --surface:#13211D; --surface-2:#182923; --surface-3:#21362F;
@@ -44,6 +48,8 @@
   --pat-color:%233FBF9E; --pat-op:.08;
   --quran-bg:#151A18; --quran-ink:#DCE6DF;
   --sb-ink:#ECF3F0;
+  --navy:#143A63; --navy-deep:#0A1E38; --navy-ink:rgba(242,234,218,.68);
+  --gold:#C8A15A;
 }
 
 /* ─────────────── المسرح ─────────────── */
@@ -70,13 +76,13 @@ body{
 .side--notes{max-height:calc(100vh - 56px); display:flex; flex-direction:column}
 
 .brand{display:flex; gap:12px; align-items:center; margin-bottom:14px}
+/* ⚠️ الشعارُ نفسُه: لا حرفًا ولا حقلًا. */
 .brand__mark{
   width:44px;height:44px;border-radius:13px;flex:0 0 44px;
-  background:linear-gradient(145deg,#0F6E5C,#15A085);
-  display:grid;place-items:center;font-family:var(--font-display);
-  font-size:24px;font-weight:700;color:#FBF8F2;
-  box-shadow:0 6px 18px rgba(15,110,92,.45);
+  overflow:hidden;background:#0A1E38;
+  box-shadow:0 6px 18px rgba(10,30,56,.45);
 }
+.brand__mark img{width:100%;height:100%;display:block;border-radius:13px}
 .brand__name{margin:0;font-family:var(--font-display);font-size:22px;line-height:1.2}
 .brand__sub{margin:2px 0 0;font-size:11.5px;color:#9DB3AC;letter-spacing:.2px}
 .side__intro{font-size:12.5px;line-height:1.85;color:#C3D4CE;margin:0 0 18px}
@@ -169,20 +175,26 @@ html[dir="rtl"] .switchrow input:checked + .switch::after{transform:translateX(-
 .content::-webkit-scrollbar{display:none}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* شريط التبويبات */
+/* شريطُ التنقّل — لوحٌ كحليٌّ مستديرٌ يطفو على الصفحة.
+   ⚠️ خمسةُ بنودٍ لا ستّة: القبلةُ في «المزيد» — والبنودُ الستّةُ
+   كانت تضيقُ حتى تُقطعَ الأسماء. */
 .tabbar{
   position:relative;z-index:3;flex:0 0 auto;display:flex;align-items:stretch;
-  background:var(--surface);border-top:1px solid var(--border);
-  padding:6px 6px calc(6px + env(safe-area-inset-bottom));
-  box-shadow:0 -1px 0 var(--border);
+  margin:0 14px calc(12px + env(safe-area-inset-bottom));
+  border-radius:26px;
+  background:linear-gradient(180deg,var(--navy) 0%,var(--navy-deep) 100%);
+  border:1px solid rgba(201,162,39,.30);
+  box-shadow:0 12px 30px rgba(10,30,56,.30);
+  padding:7px 6px;
 }
 .tab{
-  flex:1;border:0;background:transparent;cursor:pointer;padding:7px 2px 6px;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  color:var(--ink-40);font-family:inherit;font-size:10.5px;transition:.2s var(--ease);border-radius:14px;
+  flex:1;border:0;background:transparent;cursor:pointer;padding:5px 2px 4px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--navy-ink);font-family:inherit;font-size:10.5px;transition:.2s var(--ease);border-radius:16px;
 }
-.tab svg{width:22px;height:22px}
-.tab.is-active{color:var(--primary);background:var(--primary-100)}
+.tab svg{width:33px;height:33px;padding:6px;border-radius:13px;transition:.2s var(--ease)}
+.tab.is-active{color:var(--gold);font-weight:600}
+.tab.is-active svg{background:rgba(255,255,255,.12)}
 .tab:active{transform:scale(.94)}
 .tab__dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0}
 .tab:not(.is-active) .tab__dot{opacity:0!important}
