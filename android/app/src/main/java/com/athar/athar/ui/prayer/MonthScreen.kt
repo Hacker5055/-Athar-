@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.prayer.Cities
 import com.athar.athar.prayer.MonthRow
 import com.athar.athar.prayer.MonthSchedule
 import com.athar.athar.prayer.PrayerSettings
