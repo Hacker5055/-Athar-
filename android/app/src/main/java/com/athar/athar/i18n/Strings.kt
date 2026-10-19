@@ -432,6 +432,7 @@ class Strings(val locale: AppLocale) {
             "quran_credit_pickthall" to "معاني القرآن المجيد — محمد مارمادوك پيكثال، ١٩٣٠. ملكية عامة.",
             "quran_credit_itani" to "The Clear Quran — طلال إيتاني. CC BY-ND 4.0: يُعرض كما هو دون تعديل.",
             "quran_juz" to "الجزء",
+            "next_surah" to "السورة التالية",
             "quran_page" to "الصفحة",
             "quran_reciter" to "القارئ",
             "quran_play" to "استماع السورة",
@@ -1033,6 +1034,7 @@ class Strings(val locale: AppLocale) {
             "quran_credit_pickthall" to "The Meaning of the Glorious Koran — Marmaduke Pickthall, 1930. Public domain.",
             "quran_credit_itani" to "The Clear Quran — Talal Itani. CC BY-ND 4.0, shown verbatim and unmodified.",
             "quran_juz" to "Juz’",
+            "next_surah" to "Next surah",
             "quran_page" to "Page",
             "quran_reciter" to "Reciter",
             "quran_play" to "Play surah",
@@ -1634,6 +1636,7 @@ class Strings(val locale: AppLocale) {
             "quran_credit_pickthall" to "The Meaning of the Glorious Koran — Marmaduke Pickthall, 1930. Domaine public.",
             "quran_credit_itani" to "The Clear Quran — Talal Itani. CC BY-ND 4.0, affiché textuellement et sans modification.",
             "quran_juz" to "Juz",
+            "next_surah" to "Sourate suivante",
             "quran_page" to "Page",
             "quran_reciter" to "Récitateur",
             "quran_play" to "Écouter la sourate",
@@ -2240,6 +2243,7 @@ class Strings(val locale: AppLocale) {
     val quranCreditPickthall: String get() = t("quran_credit_pickthall")
     val quranCreditItani: String get() = t("quran_credit_itani")
     val quranJuz: String get() = t("quran_juz")
+    val nextSurah: String get() = t("next_surah")
     val quranPage: String get() = t("quran_page")
     val quranReciter: String get() = t("quran_reciter")
     val quranPlay: String get() = t("quran_play")

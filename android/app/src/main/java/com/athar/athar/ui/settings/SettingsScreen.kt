@@ -188,7 +188,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
         item {
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(s.notifChannelJumuah, fontSize = 17.sp, fontWeight = FontWeight.Bold)
@@ -226,7 +226,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
         item {
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(s.settingsMorningAdhkar, fontSize = 17.sp, fontWeight = FontWeight.Bold)
@@ -264,7 +264,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
         item {
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(s.settingsEveningAdhkar, fontSize = 17.sp, fontWeight = FontWeight.Bold)
@@ -335,7 +335,7 @@ private fun PrayerCard(
     /// لأن ما يُمرَّر قديمًا يظلّ قديمًا بعد تغيير اللغة.
     val s = LocalStrings.current
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(s.t(slot.stringKey), fontSize = 17.sp, fontWeight = FontWeight.Bold)
 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -400,7 +400,7 @@ private fun SilenceCard() {
     LaunchedEffect(Unit) { granted = SilenceController.hasAccess(context) }
 
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(s.silenceTitle, fontSize = 17.sp, fontWeight = FontWeight.Bold)

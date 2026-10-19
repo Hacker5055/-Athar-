@@ -105,6 +105,7 @@ import com.athar.athar.ui.components.AtharSearchField
 import com.athar.athar.ui.components.AtharPageTitle
 import com.athar.athar.ui.theme.AtharPageMargin
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.runtime.key
 
 @Composable
 fun QuranScreen(
@@ -292,6 +293,13 @@ fun QuranScreen(
             opened != null -> ReaderView(
                 surah = opened!!,
                 ayahs = ayahs,
+                // ⚠️ **السورةُ التاليةُ في ترتيبِ المصحف**: `id` + ١
+                // هي التاليةُ دائمًا، فالسورُ مرقّمةٌ متّصلة.
+                nextSurah = surahs?.firstOrNull { it.id == opened!!.id + 1 },
+                onOpenNext = { next ->
+                    opened = next
+                    openAyah = null
+                },
                 basmala = basmala,
                 onBack = { opened = null },
                 translation = translation,
@@ -626,7 +634,7 @@ private fun SearchResults(
                         .padding(horizontal = AtharPageMargin, vertical = 3.dp),
                 ) {
                     Row(
-                        modifier = Modifier.padding(14.dp),
+                        modifier = Modifier.padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
@@ -677,7 +685,7 @@ private fun SearchResults(
                         .fillMaxWidth()
                         .padding(horizontal = AtharPageMargin, vertical = 3.dp),
                 ) {
-                    Column(modifier = Modifier.padding(14.dp)) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -717,7 +725,12 @@ private fun OriginFilter(
 ) {
     val s = LocalStrings.current
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        // ⚠️ **الحاشيةُ واحدةٌ كسائرِ التبويب**: كان هذا الصفُّ
+        // وحدَه على ثمانية — فكان تصفيةُ السورِ تبدأُ من حافةٍ
+        // غيرِ حافةِ البطاقاتِ تحتها.
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = AtharPageMargin),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         val labels = listOf(s.surahFilterAll, s.surahFilterMeccan, s.surahFilterMedinan)
@@ -761,7 +774,7 @@ private fun SurahList(
                     .padding(horizontal = AtharPageMargin),
             ) {
                 Row(
-                    modifier = Modifier.padding(14.dp),
+                    modifier = Modifier.padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -828,6 +841,10 @@ private fun SurahList(
 private fun ReaderView(
     surah: Surah,
     ayahs: List<Ayah>,
+    /// السورةُ التالية — تُعرضُ في آخرِ السورةِ ليمضيَ القارئُ
+    /// دونَ رجوعٍ إلى الفهرس.
+    nextSurah: Surah?,
+    onOpenNext: (Surah) -> Unit,
     /// نصُّ البسملة — يُعرض رأسَ السورة إلا في الفاتحة والتوبة.
     basmala: String?,
     onBack: () -> Unit,
@@ -852,7 +869,11 @@ private fun ReaderView(
 ) {
     val context = LocalContext.current
     val s = LocalStrings.current
-    val listState = rememberLazyListState()
+    // ⚠️ **السورةُ تبدأُ من أوّلها**: حالةُ التمريرِ كانت تُحفَظ
+    // بين السور، فمن انتهى من سورةٍ وفتح ما بعدها وجد نفسه في
+    // آخرِ السورةِ الأولى — أو في فراغٍ أبيض. فحالةُ التمريرِ
+    // مربوطةٌ بالسورة: كلُّ سورةٍ لها موضعُها.
+    val listState = key(surah.id) { rememberLazyListState() }
     // ⚠️ ثيم القراءة يخصّ هذه الشاشة وحدها: النصّ يُقرأ طويلًا وفي
     // ظروف إضاءة غير بقية التطبيق، فلو ألزمناه بالثيم العام لأجبرنا
     // من يقرأ ليلًا على شاشة بيضاء أو العكس.
@@ -879,12 +900,17 @@ private fun ReaderView(
     // فلا تعرقل الكتابة الإطار.
     LaunchedEffect(firstVisible, surah.id) {
         if (firstVisible < 0) return@LaunchedEffect
+        // ⚠️ **البسملةُ تزيحُ الأرقام**: البسملةُ بندٌ في
+        // القائمة، فرقمُ البندِ أكبرُ من رقمِ الآيةِ بواحد. فبين
+        // السطورِ آيةٌ بعدَ البسملة.
         QuranProgressStore.save(
             context,
-            LastRead(surah.id, surah.nameAr, firstVisible + 1),
+            LastRead(surah.id, surah.nameAr, maxOf(1, firstVisible + 1 - basmalaOffset)),
         )
     }
-    val currentAyah = ayahs.getOrNull(firstVisible)?.number ?: 1
+    // ⚠️ **رقمُ الآيةِ مع البسملة**: `ayahs` لا يسعُ البسملة،
+    // والقائمةُ تسعُها — فالفرقُ واحدٌ في كلِّ سورةٍ لها بسملة.
+    val currentAyah = ayahs.getOrNull(firstVisible - basmalaOffset)?.number ?: 1
     val juz = QuranMeta.juzOf(surah.id, currentAyah)
     val page = QuranMeta.pageOf(surah.id, currentAyah)
 
@@ -1171,6 +1197,47 @@ private fun ReaderView(
                         .padding(vertical = 12.dp, horizontal = 16.dp),
                 )
             }
+            if (nextSurah != null) {
+                item {
+                    // ⚠️ **«السورة التالية» في آخرِ السورة**: القارئ
+                    // الذي انتهى من سورةٍ يريد السورةَ التي بعدها، لا
+                    // الفهرسَ ثمَّ السورة. فلمّا بلغت آخرَ السورة
+                    // جُعلَ الطريقُ أمامَه مبسوطًا: بطاقةٌ تفتحُ
+                    // السورةَ التاليةَ بنقرةٍ واحدة.
+                    Card(
+                        onClick = { onOpenNext(nextSurah) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = s.nextSurah,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                Text(
+                                    text = nextSurah.nameAr,
+                                    fontSize = 21.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    // ⚠️ **نسخٌ لأسماء السور**:
+                                    // اسمٌ يُقرأ لا رقمٌ يُكتب.
+                                    fontFamily = AmiriFamily,
+                                )
+                            }
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -1221,7 +1288,7 @@ private fun BookmarksView(
                         onClick = { onOpen(surah, ayah) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                            .padding(horizontal = AtharPageMargin, vertical = 4.dp),
                     ) {
                         Row(
                             modifier = Modifier

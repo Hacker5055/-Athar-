@@ -166,7 +166,7 @@ private fun AyahCard(
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 5.dp),
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(

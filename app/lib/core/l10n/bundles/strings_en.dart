@@ -457,6 +457,7 @@ const Map<String, String> kStringsEn = {
   'quran_credit_pickthall': 'The Meaning of the Glorious Koran — Marmaduke Pickthall, 1930. Public domain.',
   'quran_credit_itani': 'The Clear Quran — Talal Itani. CC BY-ND 4.0, shown verbatim and unmodified.',
   'quran_juz': 'Juz’',
+  'next_surah': 'Next surah',
   'quran_page': 'Page',
   'quran_reciter': 'Reciter',
   'quran_play': 'Play surah',

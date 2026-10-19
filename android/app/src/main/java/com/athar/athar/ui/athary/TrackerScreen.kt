@@ -108,7 +108,7 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
 
         item {
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(s.last30, fontWeight = FontWeight.Bold)
                     // ⚠️ العدّاد النصّي **دائمًا** إلى جانب الشبكة: اللون
                     // وحده لا يكفي لمن لا يميّز الألوان (docs/04 §أ)
@@ -169,7 +169,7 @@ private fun ShareWeekCard(state: TrackerState, today: LocalDate) {
     var busy by remember { mutableStateOf(false) }
 
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Button(
                 onClick = {
                     if (busy) return@Button
