@@ -388,6 +388,17 @@ class Strings(val locale: AppLocale) {
             "share_footer" to "خلّي أثرك باقي — أثر",
             "share_text" to "هذا أسبوعي في أثر.",
             "share_failed" to "تعذّر إنشاء الصورة.",
+            "ruqya_title" to "الرقية الشرعية",
+            "ruqya_note" to "ما في هذا التطبيق دعاءٌ جديد: هو جمعٌ لمقتطفاتٍ مشهورة من حصن المسلم والقرآن، بنصّها كما هي، من مصادر التطبيق نفسها.",
+            "ruqya_quran_title" to "من القرآن",
+            "ruqya_adhkar_title" to "من حصن المسلم",
+            "ruqya_kursi" to "آية الكرسي",
+            "ruqya_baqarah_last" to "آخر آيتي البقرة",
+            "ruqya_ikhlas" to "سورة الإخلاص",
+            "ruqya_falaq" to "سورة الفلق",
+            "ruqya_nas" to "سورة الناس",
+            "ruqya_play" to "تلاوة المقتطف",
+            "ruqya_missing" to "المقتطف غير متاح في هذه النسخة.",
             "tracker_today_empty" to "ما سجّلت شيء اليوم — ابدأ بواحدة",
             "tracker_days" to "يوم",
             "more_asma" to "أسماء الله الحسنى",
@@ -967,6 +978,17 @@ class Strings(val locale: AppLocale) {
             "share_footer" to "Leave your trace — Athar",
             "share_text" to "This is my week in Athar.",
             "share_failed" to "Could not create the image.",
+            "ruqya_title" to "Ruqya — Quran & Adhkar",
+            "ruqya_note" to "Nothing new here: a collection of well-known passages from Hisn al-Muslim and the Quran, in their own wording, taken from the app's own sources.",
+            "ruqya_quran_title" to "From the Quran",
+            "ruqya_adhkar_title" to "From Hisn al-Muslim",
+            "ruqya_kursi" to "Ayat al-Kursi",
+            "ruqya_baqarah_last" to "The last two verses of Al-Baqarah",
+            "ruqya_ikhlas" to "Surah Al-Ikhlas",
+            "ruqya_falaq" to "Surah Al-Falaq",
+            "ruqya_nas" to "Surah An-Nas",
+            "ruqya_play" to "Play the passage",
+            "ruqya_missing" to "This passage is not available in this copy.",
             "tracker_today_empty" to "Nothing logged today — start with one",
             "tracker_days" to "days",
             "more_asma" to "The 99 Names",
@@ -1546,6 +1568,17 @@ class Strings(val locale: AppLocale) {
             "share_footer" to "Laisse ta trace — Athar",
             "share_text" to "Voici ma semaine dans Athar.",
             "share_failed" to "Impossible de créer l’image.",
+            "ruqya_title" to "Ruqya — Coran & Adhkar",
+            "ruqya_note" to "Rien de nouveau ici : un choix de passages connus du Hisn al-Muslim et du Coran, dans leurs propres mots, puisés aux sources de l'application.",
+            "ruqya_quran_title" to "Du Coran",
+            "ruqya_adhkar_title" to "Du Hisn al-Muslim",
+            "ruqya_kursi" to "L’Ayat al-Kursi",
+            "ruqya_baqarah_last" to "Les deux derniers versets d’Al-Baqara",
+            "ruqya_ikhlas" to "Sourate Al-Ikhlas",
+            "ruqya_falaq" to "Sourate Al-Falaq",
+            "ruqya_nas" to "Sourate An-Nas",
+            "ruqya_play" to "Lire le passage",
+            "ruqya_missing" to "Ce passage n’est pas disponible dans cette version.",
             "tracker_today_empty" to "Rien aujourd’hui — commencez par une",
             "tracker_days" to "jours",
             "more_asma" to "Les 99 Noms",
@@ -2130,6 +2163,17 @@ class Strings(val locale: AppLocale) {
     val shareFooter: String get() = t("share_footer")
     val shareText: String get() = t("share_text")
     val shareFailed: String get() = t("share_failed")
+    val ruqyaTitle: String get() = t("ruqya_title")
+    val ruqyaNote: String get() = t("ruqya_note")
+    val ruqyaQuranTitle: String get() = t("ruqya_quran_title")
+    val ruqyaAdhkarTitle: String get() = t("ruqya_adhkar_title")
+    val ruqyaKursi: String get() = t("ruqya_kursi")
+    val ruqyaBaqarahLast: String get() = t("ruqya_baqarah_last")
+    val ruqyaIkhlas: String get() = t("ruqya_ikhlas")
+    val ruqyaFalaq: String get() = t("ruqya_falaq")
+    val ruqyaNas: String get() = t("ruqya_nas")
+    val ruqyaPlay: String get() = t("ruqya_play")
+    val ruqyaMissing: String get() = t("ruqya_missing")
     val trackerTodayEmpty: String get() = t("tracker_today_empty")
     val trackerDays: String get() = t("tracker_days")
     val moreAsma: String get() = t("more_asma")

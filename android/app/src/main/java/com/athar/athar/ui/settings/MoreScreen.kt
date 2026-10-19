@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.ui.ruqya.RuqyaScreen
 import com.athar.athar.ui.athary.TrackerScreen
 import com.athar.athar.ui.theme.Appearance
 import com.athar.athar.ui.asma.AsmaScreen
@@ -122,6 +123,11 @@ fun MoreScreen(
                 onClick = { section = 7 },
                 label = { Text(s.zakahTitle) },
             )
+            FilterChip(
+                selected = section == 8,
+                onClick = { section = 8 },
+                label = { Text(s.ruqyaTitle) },
+            )
         }
 
         // ⚠️ `weight` يعطي الشاشة الداخلية ارتفاعًا محدودًا فتعمل
@@ -142,7 +148,8 @@ fun MoreScreen(
                 4 -> LicensesScreen()
                 5 -> WidgetScreen()
                 6 -> BackupScreen()
-                else -> ZakahScreen()
+                7 -> ZakahScreen()
+                else -> RuqyaScreen()
             }
         }
     }

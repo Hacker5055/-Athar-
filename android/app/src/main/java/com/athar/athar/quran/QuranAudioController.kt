@@ -45,10 +45,29 @@ sealed class QuranAudioState {
             is Paused -> reciterId
             else -> null
         }
+
+    /// ⚠️ **الآيةُ الآن** لا السورةَ فقط: فمقتطفٌ كآية الكرسي
+    /// يُشغَّل آيةً واحدة، وبلا هذا لا تستطيع الواجهة أن تعرف أهو
+    /// المقتطفُ الذي يعمل أم غيره.
+    val ayahOrNull: Int?
+        get() = when (this) {
+            is Loading -> ayah
+            is Playing -> ayah
+            is Paused -> ayah
+            else -> null
+        }
 }
 
 /// طلب تشغيل واحد — يُحفظ ليستعمله إشعار الوسائط.
-private data class PlayRequest(val reciter: Reciter, val surah: Int, val ayahCount: Int)
+///
+/// ⚠️ `ayah` **رقمُ آيةٍ واحدة** إن كان التشغيل آيةً مفردة: فمن
+/// استعمل إشعار الوسائط ليوقف التلاوة استعمل ما يُشغَّل فعلًا.
+private data class PlayRequest(
+    val reciter: Reciter,
+    val surah: Int,
+    val ayahCount: Int,
+    val ayah: Int? = null,
+)
 
 /// مشغّل التلاوة — [MediaPlayer] المدمج بلا أيّ مكتبة خارجية.
 ///
@@ -99,7 +118,12 @@ object QuranAudioController {
     /// تبديل تشغيل/إيقاف لآخر ما طُلب (مستعمل من إشعار الوسائط).
     fun toggleLast() {
         val request = lastRequest ?: return
-        toggle(request.reciter, request.surah, request.ayahCount)
+        val ayah = request.ayah
+        if (ayah != null) {
+            toggleAyahs(request.reciter, request.surah, ayah, ayah, lastTitle)
+        } else {
+            toggle(request.reciter, request.surah, request.ayahCount)
+        }
     }
 
     fun toggle(reciter: Reciter, surah: Int, ayahCount: Int, title: String = lastTitle) {
@@ -113,6 +137,59 @@ object QuranAudioController {
             sameTarget && current is QuranAudioState.Paused -> resume()
             else -> play(reciter, surah, ayahCount, title)
         }
+    }
+
+    /// ⚠️ **آياتٌ محدّدة لا سورةٌ كاملة**: الرقيةُ (C9) مقتطفاتُ
+    /// آيات، فمن شغّل السورةَ كاملة خلف آيةِ الكرسي سمع ما لا
+    /// يريد. والطابورُ هنا آياتٌ متتاليةٌ كما في أيّ سورة.
+    fun toggleAyahs(
+        reciter: Reciter,
+        surah: Int,
+        fromAyah: Int,
+        toAyah: Int,
+        title: String,
+    ) {
+        if (fromAyah > toAyah) return
+        val current = _state.value
+        val sameTarget = current.reciterIdOrNull == reciter.id &&
+            current.surahOrNull == surah &&
+            current.ayahOrNull == fromAyah
+
+        when {
+            sameTarget && current is QuranAudioState.Playing -> pause()
+            sameTarget && current is QuranAudioState.Paused -> resume()
+            else -> playAyahs(reciter, surah, fromAyah, toAyah, title)
+        }
+    }
+
+    private fun playAyahs(
+        reciter: Reciter,
+        surah: Int,
+        fromAyah: Int,
+        toAyah: Int,
+        title: String,
+    ) {
+        // ⚠️ **الرقمُ والرابطُ معًا**: `mapNotNull` وحدها تُخرج
+        // الرابطَ بلا رقمه، فيُزاح رقمُ الآية عن موضعه في الطابور
+        // — فيسمع السامع آيةً ويظنّها غيرها.
+        val pairs = (fromAyah..toAyah).mapNotNull { ayah ->
+            QuranAudio.ayahUrl(reciter, surah, ayah)?.let { ayah to it }
+        }
+        if (pairs.isEmpty()) {
+            _state.value = QuranAudioState.Error("لا تتوفّر تلاوة لهذه الآيات")
+            return
+        }
+
+        releasePlayer()
+        queue = pairs.map { it.second }
+        lastTitle = title
+        lastRequest = PlayRequest(reciter, surah, pairs.size, fromAyah)
+        // ⚠️ أرقامُ الآيات **موازية للطابور**: فالسورةُ بلا هذه
+        // الخانة تظهر بلا رقمٍ فيعرف السامع أين هو.
+        ayahNumbers = pairs.map { it.first }
+        index = 0
+        token = "${reciter.id}#$surah"
+        startAt(reciter, surah, 0)
     }
 
     private fun play(reciter: Reciter, surah: Int, ayahCount: Int, title: String) {
