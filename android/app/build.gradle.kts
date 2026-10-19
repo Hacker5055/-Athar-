@@ -14,8 +14,8 @@ android {
         // والإشعارات الحديثة بلا مكتبات توافق.
         minSdk = 26
         targetSdk = 35
-        versionCode = 32
-        versionName = "0.32.0"
+        versionCode = 33
+        versionName = "0.33.0"
     }
 
     // ⚠️ لماذا التوقيع مشروط؟ لأن APK غير موقّع **لا يُثبَّت أصلًا**،
