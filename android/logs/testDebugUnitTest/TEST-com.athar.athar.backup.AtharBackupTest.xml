@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.backup.AtharBackupTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.041">
+<testsuite name="com.athar.athar.backup.AtharBackupTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:21" hostname="runnervm8k3b6" time="0.035">
   <properties/>
-  <testcase name="outOfRangeCoordinatesFallBack" classname="com.athar.athar.backup.AtharBackupTest" time="0.018"/>
+  <testcase name="outOfRangeCoordinatesFallBack" classname="com.athar.athar.backup.AtharBackupTest" time="0.015"/>
   <testcase name="anUnknownKhatmahLengthIsDropped" classname="com.athar.athar.backup.AtharBackupTest" time="0.002"/>
-  <testcase name="unknownKeysAreIgnored" classname="com.athar.athar.backup.AtharBackupTest" time="0.002"/>
-  <testcase name="thePrayerAdjustmentsSurvive" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
-  <testcase name="roundTripKeepsEverything" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
+  <testcase name="unknownKeysAreIgnored" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
+  <testcase name="thePrayerAdjustmentsSurvive" classname="com.athar.athar.backup.AtharBackupTest" time="0.0"/>
+  <testcase name="roundTripKeepsEverything" classname="com.athar.athar.backup.AtharBackupTest" time="0.002"/>
   <testcase name="anUnknownSlotNameIsDropped" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
   <testcase name="unknownHabitIdsAreFiltered" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
-  <testcase name="anOutOfRangeKhatmahProgressIsClamped" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
+  <testcase name="anOutOfRangeKhatmahProgressIsClamped" classname="com.athar.athar.backup.AtharBackupTest" time="0.0"/>
   <testcase name="foreignJsonIsRefused" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
   <testcase name="theMagicIsWrittenFirst" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
   <testcase name="anOldBackupWithoutTheSessionLogIsAccepted" classname="com.athar.athar.backup.AtharBackupTest" time="0.0"/>
-  <testcase name="theVersionIsWritten" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
-  <testcase name="anInvalidBookmarkIsDroppedTheValidOneSurvives" classname="com.athar.athar.backup.AtharBackupTest" time="0.002"/>
+  <testcase name="theVersionIsWritten" classname="com.athar.athar.backup.AtharBackupTest" time="0.0"/>
+  <testcase name="anInvalidBookmarkIsDroppedTheValidOneSurvives" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
   <testcase name="unknownPrayerMethodFallsBack" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
-  <testcase name="adjustmentsAreClampedOnImport" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
+  <testcase name="adjustmentsAreClampedOnImport" classname="com.athar.athar.backup.AtharBackupTest" time="0.0"/>
   <testcase name="anImpossibleReadingPositionIsDropped" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
   <testcase name="negativeCountersAreRejected" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>
   <testcase name="isBackupOnlyAcceptsOurOwn" classname="com.athar.athar.backup.AtharBackupTest" time="0.001"/>

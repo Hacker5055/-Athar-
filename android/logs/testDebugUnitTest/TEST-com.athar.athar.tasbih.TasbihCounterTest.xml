@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.tasbih.TasbihCounterTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.004">
+<testsuite name="com.athar.athar.tasbih.TasbihCounterTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:21" hostname="runnervm8k3b6" time="0.001">
   <properties/>
-  <testcase name="undoNeverGoesBelowZero" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.001"/>
+  <testcase name="undoNeverGoesBelowZero" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="resetOfAFreshStateIsEmpty" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="completedIsFalseBeforeTheTarget" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="undoKeepsLifetimeConsistent" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="undoCrossesTheRoundBoundary" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
-  <testcase name="targetsIncludeTheKnownCounts" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.001"/>
-  <testcase name="reachingTargetCompletesARoundAndContinues" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
+  <testcase name="targetsIncludeTheKnownCounts" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
+  <testcase name="reachingTargetCompletesARoundAndContinues" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.001"/>
   <testcase name="oneTapIsOne" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="resetClearsTheRoundButNeverTheLifetime" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="undoStepsBack" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>

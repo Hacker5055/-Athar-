@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranMetaTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.011">
+<testsuite name="com.athar.athar.quran.QuranMetaTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:21" hostname="runnervm8k3b6" time="0.005">
   <properties/>
-  <testcase name="everyVerseFallsInExactlyOneJuz" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
+  <testcase name="everyVerseFallsInExactlyOneJuz" classname="com.athar.athar.quran.QuranMetaTest" time="0.001"/>
   <testcase name="outOfRangeIsZeroNotAnException" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
-  <testcase name="juzThirtyStartsAtAnNaba" classname="com.athar.athar.quran.QuranMetaTest" time="0.001"/>
+  <testcase name="juzThirtyStartsAtAnNaba" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
   <testcase name="juzTwoStartsAtBaqarahOneFortyTwo" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
   <testcase name="pageOneIsAlFatihah" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
   <testcase name="lastVerseIsJuzThirtyPageSixOhFour" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
   <testcase name="juzOneStartsAtAlFatihah" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
   <testcase name="everyVerseFallsInExactlyOnePage" classname="com.athar.athar.quran.QuranMetaTest" time="0.001"/>
-  <testcase name="juzOneSpansOneHundredFortyEightVerses" classname="com.athar.athar.quran.QuranMetaTest" time="0.002"/>
-  <testcase name="verseIdRoundTripsForEveryVerse" classname="com.athar.athar.quran.QuranMetaTest" time="0.006"/>
+  <testcase name="juzOneSpansOneHundredFortyEightVerses" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
+  <testcase name="verseIdRoundTripsForEveryVerse" classname="com.athar.athar.quran.QuranMetaTest" time="0.002"/>
   <testcase name="juzBoundariesAreUnequal" classname="com.athar.athar.quran.QuranMetaTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

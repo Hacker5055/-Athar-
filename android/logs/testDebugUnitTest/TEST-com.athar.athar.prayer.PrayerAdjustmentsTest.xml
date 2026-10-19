@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.prayer.PrayerAdjustmentsTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.007">
+<testsuite name="com.athar.athar.prayer.PrayerAdjustmentsTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:21" hostname="runnervm8k3b6" time="0.008">
   <properties/>
   <testcase name="sunriseIsAdjustableToo" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
   <testcase name="theRangeIsThirtyMinutes" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
-  <testcase name="minutesOfDefaultsToZero" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
+  <testcase name="minutesOfDefaultsToZero" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
   <testcase name="everySlotCanBeAdjustedAlone" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
-  <testcase name="theCalculatedTimesAreAlignedToTheMinute" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
-  <testcase name="theWholeDayCanMoveTogether" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
+  <testcase name="theCalculatedTimesAreAlignedToTheMinute" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
+  <testcase name="theWholeDayCanMoveTogether" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
   <testcase name="aZeroIsTheSameAsNothing" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
   <testcase name="theDateOfTheRealCalculationIsUntouched" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
-  <testcase name="isAdjustedOnlyWhenSomethingIsNonZero" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
-  <testcase name="theRealCalculationIsShifted" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
+  <testcase name="isAdjustedOnlyWhenSomethingIsNonZero" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
+  <testcase name="theRealCalculationIsShifted" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
   <testcase name="theRealCalculationIgnoresAZero" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
   <testcase name="oneSlotMovesAndTheOthersDoNot" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
-  <testcase name="whatIsInsideTheRangeSurvives" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
+  <testcase name="whatIsInsideTheRangeSurvives" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
   <testcase name="anythingBeyondTheRangeIsClamped" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
   <testcase name="theDateNeverChanges" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
-  <testcase name="positiveDelaysAndNegativeAdvances" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
+  <testcase name="positiveDelaysAndNegativeAdvances" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
   <testcase name="noSettingsMeansNoChange" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.001"/>
   <testcase name="twoCalculationsGiveTheSameTime" classname="com.athar.athar.prayer.PrayerAdjustmentsTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>

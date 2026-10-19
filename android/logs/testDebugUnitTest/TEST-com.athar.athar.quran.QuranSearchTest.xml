@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranSearchTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.005">
+<testsuite name="com.athar.athar.quran.QuranSearchTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:21" hostname="runnervm8k3b6" time="0.004">
   <properties/>
+  <testcase name="shortNeedleIsNotSearchedLoosely" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="findsWithDiacritics" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
+  <testcase name="findsModernSpellingWithFullAlef" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="stripsUthmaniSukunAndDaggerAlef" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="respectsTheLimit" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="findsWithoutDiacritics" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
   <testcase name="searchesAcrossSurahs" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="returnedTextIsUntouched" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
-  <testcase name="emptyQueryYieldsNothing" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
+  <testcase name="emptyQueryYieldsNothing" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="noMatchYieldsNothing" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
   <testcase name="carriesSurahName" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="loadsEachSurahExactlyOnce" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>

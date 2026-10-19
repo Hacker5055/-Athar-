@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.MushafPageTest" tests="23" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.041">
+<testsuite name="com.athar.athar.quran.MushafPageTest" tests="23" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:21" hostname="runnervm8k3b6" time="0.024">
   <properties/>
-  <testcase name="thePageOfAVerseAgreesWithThePageThatContainsIt" classname="com.athar.athar.quran.MushafPageTest" time="0.002"/>
-  <testcase name="theSegmentsAreContiguous" classname="com.athar.athar.quran.MushafPageTest" time="0.006"/>
-  <testcase name="aPageThatStartsASurahBeginsWithItsFirstAyah" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
-  <testcase name="theFirstSegmentContinuesExactlyWhenThePageDoesNotStartASurah" classname="com.athar.athar.quran.MushafPageTest" time="0.004"/>
-  <testcase name="theSurahsOnAPageAreConsecutive" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
-  <testcase name="onlyTheFirstSegmentCanBeContinued" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
+  <testcase name="thePageOfAVerseAgreesWithThePageThatContainsIt" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
+  <testcase name="theSegmentsAreContiguous" classname="com.athar.athar.quran.MushafPageTest" time="0.003"/>
+  <testcase name="aPageThatStartsASurahBeginsWithItsFirstAyah" classname="com.athar.athar.quran.MushafPageTest" time="0.002"/>
+  <testcase name="theFirstSegmentContinuesExactlyWhenThePageDoesNotStartASurah" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
+  <testcase name="theSurahsOnAPageAreConsecutive" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
+  <testcase name="onlyTheFirstSegmentCanBeContinued" classname="com.athar.athar.quran.MushafPageTest" time="0.002"/>
   <testcase name="theLastPageEndsWithTheLastVerse" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
   <testcase name="aPageThatDoesNotStartASurahBeginsInsideOne" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
-  <testcase name="everyVerseOfTheQuranBelongsToExactlyOnePage" classname="com.athar.athar.quran.MushafPageTest" time="0.009"/>
+  <testcase name="everyVerseOfTheQuranBelongsToExactlyOnePage" classname="com.athar.athar.quran.MushafPageTest" time="0.004"/>
   <testcase name="exactlyTheKnownNumberOfPagesIsValid" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
   <testcase name="anImpossiblePageHasNoSegments" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
-  <testcase name="theSegmentsOfAPageAreItsSurahsInOrder" classname="com.athar.athar.quran.MushafPageTest" time="0.006"/>
+  <testcase name="theSegmentsOfAPageAreItsSurahsInOrder" classname="com.athar.athar.quran.MushafPageTest" time="0.004"/>
   <testcase name="theVerseCountOfAPageIsNeverEmpty" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
   <testcase name="theFirstPageStartsASurahAndTheFirstSurahIsAlFatihah" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
   <testcase name="theNeighboursOfAPageAreOneAway" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
-  <testcase name="theSegmentsCoverEveryVerseOfThePageExactlyOnce" classname="com.athar.athar.quran.MushafPageTest" time="0.005"/>
-  <testcase name="somePagesStartASurahAndSomeDoNot" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
+  <testcase name="theSegmentsCoverEveryVerseOfThePageExactlyOnce" classname="com.athar.athar.quran.MushafPageTest" time="0.003"/>
+  <testcase name="somePagesStartASurahAndSomeDoNot" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
   <testcase name="anImpossiblePageIsEmptyNotAnException" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
-  <testcase name="pagesAreContiguousAndNeverOverlap" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
+  <testcase name="pagesAreContiguousAndNeverOverlap" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
   <testcase name="thereAreSixHundredAndFourPages" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
-  <testcase name="aPageWithThreeSurahsHasOnlyShortOnes" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
-  <testcase name="aPageNeverSpansMoreThanThreeSurahs" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
+  <testcase name="aPageWithThreeSurahsHasOnlyShortOnes" classname="com.athar.athar.quran.MushafPageTest" time="0.001"/>
+  <testcase name="aPageNeverSpansMoreThanThreeSurahs" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
   <testcase name="theFirstPageStartsWithTheFirstVerse" classname="com.athar.athar.quran.MushafPageTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

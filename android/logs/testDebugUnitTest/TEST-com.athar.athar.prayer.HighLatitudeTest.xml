@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.prayer.HighLatitudeTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.004">
+<testsuite name="com.athar.athar.prayer.HighLatitudeTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:21" hostname="runnervm8k3b6" time="0.001">
   <properties/>
-  <testcase name="ruleNamesAreDistinct" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.001"/>
+  <testcase name="ruleNamesAreDistinct" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <testcase name="everyRuleResolves" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <testcase name="thereAreThreeRules" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <testcase name="theDefaultResolvesToo" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
-  <testcase name="everyRuleHasATranslationKey" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.001"/>
+  <testcase name="everyRuleHasATranslationKey" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <testcase name="knownNamesRoundTrip" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <testcase name="unknownNameFallsBackToDefault" classname="com.athar.athar.prayer.HighLatitudeTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.PrayerTimesTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:24:59" hostname="runnervm8k3b6" time="0.118">
+<testsuite name="com.athar.athar.PrayerTimesTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:20" hostname="runnervm8k3b6" time="0.048">
   <properties/>
-  <testcase name="madhabAffectsOnlyAsr" classname="com.athar.athar.PrayerTimesTest" time="0.064"/>
-  <testcase name="nextPrayerSkipsSunrise" classname="com.athar.athar.PrayerTimesTest" time="0.007"/>
+  <testcase name="madhabAffectsOnlyAsr" classname="com.athar.athar.PrayerTimesTest" time="0.014"/>
+  <testcase name="nextPrayerSkipsSunrise" classname="com.athar.athar.PrayerTimesTest" time="0.002"/>
   <testcase name="timesAreStrictlyIncreasing" classname="com.athar.athar.PrayerTimesTest" time="0.002"/>
-  <testcase name="cairo_egyptian_shafi_2026_10_18" classname="com.athar.athar.PrayerTimesTest" time="0.041"/>
+  <testcase name="cairo_egyptian_shafi_2026_10_18" classname="com.athar.athar.PrayerTimesTest" time="0.03"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

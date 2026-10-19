@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranTranslationTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:25:00" hostname="runnervm8k3b6" time="0.003">
+<testsuite name="com.athar.athar.quran.QuranTranslationTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T16:24:21" hostname="runnervm8k3b6" time="0.001">
   <properties/>
-  <testcase name="toleratesCorruptInput" classname="com.athar.athar.quran.QuranTranslationTest" time="0.001"/>
+  <testcase name="toleratesCorruptInput" classname="com.athar.athar.quran.QuranTranslationTest" time="0.0"/>
   <testcase name="ignoresNonNumericChapterKeys" classname="com.athar.athar.quran.QuranTranslationTest" time="0.0"/>
   <testcase name="keyDistinguishesSurahFromAyah" classname="com.athar.athar.quran.QuranTranslationTest" time="0.0"/>
   <testcase name="skipsInvalidVerseNumbers" classname="com.athar.athar.quran.QuranTranslationTest" time="0.0"/>
   <testcase name="noneTranslationHasNothingToShow" classname="com.athar.athar.quran.QuranTranslationTest" time="0.0"/>
-  <testcase name="skipsEmptyText" classname="com.athar.athar.quran.QuranTranslationTest" time="0.001"/>
+  <testcase name="skipsEmptyText" classname="com.athar.athar.quran.QuranTranslationTest" time="0.0"/>
   <testcase name="parsesTheSchema" classname="com.athar.athar.quran.QuranTranslationTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
