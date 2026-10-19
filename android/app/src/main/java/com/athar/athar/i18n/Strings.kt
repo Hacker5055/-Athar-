@@ -379,6 +379,7 @@ class Strings(val locale: AppLocale) {
             "habit_duha" to "صلاة الضحى",
             "habit_sadaqa" to "صدقة",
             "habit_fasting" to "صيام",
+            "habit_tasbih" to "تسبيح مكتمل",
             "tracker_today_empty" to "ما سجّلت شيء اليوم — ابدأ بواحدة",
             "tracker_days" to "يوم",
             "more_asma" to "أسماء الله الحسنى",
@@ -577,13 +578,23 @@ class Strings(val locale: AppLocale) {
             "zakah_note" to "الأسعار تُدخلها أنت: سعر الذهب والفضة يتغيّر كلّ يوم، وسعرٌ في التطبيق يقدّم زكاةً خاطئة بثقة.",
             "zakah_source" to "النصاب: ٨٥ جرامًا ذهبًا أو ٥٩٥ جرامًا فضة، و٢٫٥ كجم قوتًا للفرد في الفطر.",
             "qibla_sun_title" to "القبلة من الشمس",
-            "qibla_sun_body" to "لا تحتاج البوصلة: مرّتين في السنة تشرق الشمس في اتجاه القبلة بالضبط. في تلك اليومين، قف عند الشرق ووجه نفسك — فأنت funky",
+            "qibla_sun_body" to "لا تحتاج البوصلة: مرّتين في السنة تشرق الشمس في اتجاه القبلة بالضبط. في تلك اليومين، قف عند الشرق ووجه نفسك — فأنت مُتّجه إلى الكعبة",
             "qibla_sun_days" to "أيام الشروق",
             "qibla_sun_none" to "لا يوجد في هذه السنة يومٌ تشرق فيه الشمس في اتجاه القبلة من مكانك.",
             "qibla_sun_shadow" to "وقت الظلّ اليوم",
             "qibla_sun_shadow_none" to "لا يبلغ الظلّ القبلة اليوم.",
             "qibla_sun_now" to "الشمس الآن على ارتفاع {alt}° واتجاه {az}°",
             "qibla_sun_pointing" to "الظلّ الآن يشير إلى القبلة",
+            "tasbih_sessions" to "سجلّ الجلسات",
+            "tasbih_today" to "اليوم",
+            "tasbih_best" to "أطول جلسة",
+            "tasbih_sessions_count" to "{n} جلسة",
+            "tasbih_counts" to "{n} ذكرًا",
+            "tasbih_no_sessions" to "لا جلسات بعد.",
+            "tasbih_speak" to "نطق العدد",
+            "tasbih_sessions_today" to "جلسات اليوم",
+            "tasbih_week" to "آخر ٧ أيام",
+            "tasbih_speak_hint" to "ينطق العدد بصوت عالٍ عند كل نقرة — أطفئه إن أزعجك.",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -937,6 +948,7 @@ class Strings(val locale: AppLocale) {
             "habit_duha" to "Duha prayer",
             "habit_sadaqa" to "Charity",
             "habit_fasting" to "Fasting",
+            "habit_tasbih" to "Completed tasbih",
             "tracker_today_empty" to "Nothing logged today — start with one",
             "tracker_days" to "days",
             "more_asma" to "The 99 Names",
@@ -1142,6 +1154,16 @@ class Strings(val locale: AppLocale) {
             "qibla_sun_shadow_none" to "The shadow does not reach the qibla today.",
             "qibla_sun_now" to "The sun is now at {alt}° altitude, {az}° bearing",
             "qibla_sun_pointing" to "Your shadow points to the qibla now",
+            "tasbih_sessions" to "Session log",
+            "tasbih_today" to "Today",
+            "tasbih_best" to "Longest session",
+            "tasbih_sessions_count" to "{n} sessions",
+            "tasbih_counts" to "{n} counts",
+            "tasbih_no_sessions" to "No sessions yet.",
+            "tasbih_speak" to "Speak the count",
+            "tasbih_sessions_today" to "Sessions today",
+            "tasbih_week" to "Last 7 days",
+            "tasbih_speak_hint" to "Speaks the count aloud on every tap — turn it off if it gets in the way.",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1495,6 +1517,7 @@ class Strings(val locale: AppLocale) {
             "habit_duha" to "Prière de Doha",
             "habit_sadaqa" to "Aumône",
             "habit_fasting" to "Jeûne",
+            "habit_tasbih" to "Tasbih complet",
             "tracker_today_empty" to "Rien aujourd’hui — commencez par une",
             "tracker_days" to "jours",
             "more_asma" to "Les 99 Noms",
@@ -1700,6 +1723,16 @@ class Strings(val locale: AppLocale) {
             "qibla_sun_shadow_none" to "L’ombre n’atteint pas la Qibla aujourd’hui.",
             "qibla_sun_now" to "Le soleil est à {alt}° d’altitude, {az}° d’azimut",
             "qibla_sun_pointing" to "Votre ombre pointe vers la Qibla",
+            "tasbih_sessions" to "Journal des sessions",
+            "tasbih_today" to "Aujourd’hui",
+            "tasbih_best" to "Session la plus longue",
+            "tasbih_sessions_count" to "{n} sessions",
+            "tasbih_counts" to "{n} dhikr",
+            "tasbih_no_sessions" to "Aucune session pour l’instant.",
+            "tasbih_speak" to "Prononcer le compte",
+            "tasbih_sessions_today" to "Sessions du jour",
+            "tasbih_week" to "7 derniers jours",
+            "tasbih_speak_hint" to "Prononce le compte à chaque appui — désactivez-le s’il gêne.",
         )
     }
 
@@ -2058,6 +2091,7 @@ class Strings(val locale: AppLocale) {
     val habitDuha: String get() = t("habit_duha")
     val habitSadaqa: String get() = t("habit_sadaqa")
     val habitFasting: String get() = t("habit_fasting")
+    val habitTasbih: String get() = t("habit_tasbih")
     val trackerTodayEmpty: String get() = t("tracker_today_empty")
     val trackerDays: String get() = t("tracker_days")
     val moreAsma: String get() = t("more_asma")
@@ -2263,4 +2297,14 @@ class Strings(val locale: AppLocale) {
     val qiblaSunShadowNone: String get() = t("qibla_sun_shadow_none")
     val qiblaSunNow: String get() = t("qibla_sun_now")
     val qiblaSunPointing: String get() = t("qibla_sun_pointing")
+    val tasbihSessions: String get() = t("tasbih_sessions")
+    val tasbihToday: String get() = t("tasbih_today")
+    val tasbihBest: String get() = t("tasbih_best")
+    val tasbihSessionsCount: String get() = t("tasbih_sessions_count")
+    val tasbihCounts: String get() = t("tasbih_counts")
+    val tasbihNoSessions: String get() = t("tasbih_no_sessions")
+    val tasbihSpeak: String get() = t("tasbih_speak")
+    val tasbihSessionsToday: String get() = t("tasbih_sessions_today")
+    val tasbihWeek: String get() = t("tasbih_week")
+    val tasbihSpeakHint: String get() = t("tasbih_speak_hint")
 }

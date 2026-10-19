@@ -6,6 +6,7 @@ import com.athar.athar.prayer.PrayerMethod
 import com.athar.athar.quran.KhatmahStore
 import com.athar.athar.quran.LastRead
 import com.athar.athar.quran.QuranMeta
+import com.athar.athar.tasbih.TasbihSession
 import com.athar.athar.tasbih.TasbihState
 import com.batoulapps.adhan.Madhab
 import org.junit.Assert.assertEquals
@@ -36,6 +37,14 @@ class AtharBackupTest {
         bookmarks = setOf("2:255", "36:1"),
         khatmah = KhatmahStore.Plan(days = 60, startEpochDay = 20_000L, doneUpTo = 4312),
         tasbih = TasbihState(count = 7, rounds = 2, lifetime = 3300),
+        tasbihSessions = listOf(
+            TasbihSession(
+                startedAtMillis = 1_763_000_000_000L,
+                lastTapAtMillis = 1_763_000_060_000L,
+                count = 33,
+                target = 33,
+            ),
+        ),
         athary = mapOf("2026-10-19" to setOf("fajr", "quran")),
         customAdhkar = listOf(CustomDhikr(id = "a1", text = "سبحان الله", target = 33)),
         hijriOffset = 1,
@@ -60,6 +69,7 @@ class AtharBackupTest {
         assertEquals(setOf("2:255", "36:1"), back.bookmarks)
         assertEquals(sample.khatmah, back.khatmah)
         assertEquals(sample.tasbih, back.tasbih)
+        assertEquals(sample.tasbihSessions, back.tasbihSessions)
         assertEquals(mapOf("2026-10-19" to setOf("fajr", "quran")), back.athary)
         assertEquals(listOf(CustomDhikr("a1", "سبحان الله", 33)), back.customAdhkar)
         assertEquals(1, back.hijriOffset)
@@ -87,6 +97,15 @@ class AtharBackupTest {
     }
 
     // ── الرفض ────────────────────────────────────────────
+
+    @Test
+    fun anOldBackupWithoutTheSessionLogIsAccepted() {
+        // ⚠️ نسخةٌ أقدم **تُقرأ**: الحقل الغائب = سجلٌّ فارغ، لا
+        // رفضٌ للملف كلّه.
+        val text = """{"app":"athar-backup","version":1,"createdAt":0}"""
+        val back = BackupCodec.read(text)!!
+        assertTrue(back.tasbihSessions.isEmpty())
+    }
 
     @Test
     fun aFutureVersionIsRefusedNotHalfImported() {

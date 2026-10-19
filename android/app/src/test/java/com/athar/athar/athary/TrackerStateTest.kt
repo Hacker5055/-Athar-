@@ -229,10 +229,10 @@ class TrackerStateTest {
 
     // ── العبادات ──────────────────────────────────────────
 
-    @Test fun eightHabitsWithUniqueIds() {
-        assertEquals(8, HabitId.entries.size)
-        assertEquals(8, HabitId.entries.map { it.id }.toSet().size)
-        assertEquals(8, HabitId.entries.map { it.stringKey }.toSet().size)
+    @Test fun nineHabitsWithUniqueIds() {
+        assertEquals(9, HabitId.entries.size)
+        assertEquals(9, HabitId.entries.map { it.id }.toSet().size)
+        assertEquals(9, HabitId.entries.map { it.stringKey }.toSet().size)
     }
 
     /// ⚠️ حارس: لو كان `id` هو `name` نفسه لأضاع أي إعادة تسمية سجل
@@ -249,5 +249,50 @@ class TrackerStateTest {
         assertEquals(HabitId.FIVE_PRAYERS, HabitId.fromId("FIVE_PRAYERS"))
         assertNull(HabitId.fromId("غير-موجود"))
         assertNull(HabitId.fromId(null))
+    }
+
+    // ── العلامة التلقائية (E6) ────────────────────────────
+
+    @Test fun markAddsTheHabit() {
+        val day = d(2026, 10, 19)
+        val state = TrackerState.EMPTY.mark(day, HabitId.TASBIH)
+        assertTrue(state.has(day, HabitId.TASBIH))
+        assertEquals(1, state.countFor(day))
+    }
+
+    @Test fun markTwiceDoesNotUndoTheFirst() {
+        // ⚠️ **إضافةٌ لا تبديل**: فمن أتمّ دورتين من التسبيح في
+        // اليوم نفسه لا تُلغى علامةُ الأولى.
+        val day = d(2026, 10, 19)
+        val state = TrackerState.EMPTY
+            .mark(day, HabitId.TASBIH)
+            .mark(day, HabitId.TASBIH)
+        assertTrue(state.has(day, HabitId.TASBIH))
+        assertEquals(1, state.countFor(day))
+    }
+
+    @Test fun markKeepsTheOtherHabits() {
+        val day = d(2026, 10, 19)
+        val state = TrackerState.EMPTY
+            .toggle(day, HabitId.FAJR)
+            .mark(day, HabitId.TASBIH)
+        assertTrue(state.has(day, HabitId.FAJR))
+        assertTrue(state.has(day, HabitId.TASBIH))
+        assertEquals(2, state.countFor(day))
+    }
+
+    @Test fun markDoesNotTouchAnotherDay() {
+        val today = d(2026, 10, 19)
+        val yesterday = d(2026, 10, 18)
+        val state = TrackerState.EMPTY.mark(today, HabitId.TASBIH)
+        assertFalse(state.has(yesterday, HabitId.TASBIH))
+        assertEquals(0, state.countFor(yesterday))
+    }
+
+    @Test fun markSurvivesTheRoundTrip() {
+        val day = d(2026, 10, 19)
+        val state = TrackerState.EMPTY.mark(day, HabitId.TASBIH)
+        val back = TrackerState.decode(state.encode())
+        assertTrue(back.has(day, HabitId.TASBIH))
     }
 }

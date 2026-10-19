@@ -26,9 +26,11 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,11 +47,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.athar.athar.athary.HabitId
+import com.athar.athar.athary.TrackerStore
 import com.athar.athar.core.ArabicDigits
 import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.tasbih.Speaker
 import com.athar.athar.tasbih.TasbihCounter
 import com.athar.athar.tasbih.TasbihPhrases
+import com.athar.athar.tasbih.TasbihRanges
+import com.athar.athar.tasbih.TasbihSession
+import com.athar.athar.tasbih.TasbihSessionStore
+import com.athar.athar.tasbih.TasbihSessions
+import com.athar.athar.tasbih.TasbihSpeech
+import com.athar.athar.tasbih.TasbihSpeechStore
 import com.athar.athar.tasbih.TasbihStore
+import java.time.LocalDate
+import java.time.ZoneId
 
 /// السبحة (E1–E4 من docs/02).
 ///
@@ -74,7 +87,52 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
     var target by remember { mutableIntStateOf(TasbihStore.loadTarget(context, phrase)) }
     var state by remember { mutableStateOf(TasbihStore.loadState(context)) }
 
+    // ⚠️ **الجلسة** تُتتبَّع بنقرةٍ بنقرة: فالمستعمل يسبّح ثم
+    // يمضي، فلا معنى لجلستٍ لا تُعرف إلا حين يقطعها.
+    //
+    // ⚠️ والجلسة القائمة **محفوظة**: فمن ترك الشاشة ورجع بعد
+    // دقيقةٍ كمل-sessionه، لا بدأ من جديد. والإلّا ضاعت
+    // الجلسة بمجرّد أن ينتقل بين الألسنة.
+    var session by remember { mutableStateOf(TasbihSessionStore.loadCurrent(context)) }
+    var sessions by remember { mutableStateOf(TasbihSessionStore.load(context)) }
+
+    // ⚠️ النطق **مُطفأ افتراضيًا** (C10): من يسبّح في المسجد
+    // قد لا يريد صوته. والمحرّك **لا يُشغَّل أصلًا** إلا إن
+    // طلبه المستخدم — ويُحرَّر بمغادرة الشاشة أو إطفائه.
+    var speakEnabled by remember { mutableStateOf(TasbihSpeechStore.isEnabled(context)) }
+    val speaker = remember(speakEnabled, context) {
+        if (speakEnabled) Speaker(context) else null
+    }
+    DisposableEffect(speaker) {
+        onDispose { speaker?.shutdown() }
+    }
+
+    // ⚠️ الجلسة القديمة **تُغلق عند الدخول**: فمن غاب ساعةً
+    // ثم عاد فسبّح — فجلستُه الأولى يجب أن تُحفظ في السجلّ قبل
+    // أن تبدأ الثانية، لا أن تُشطب.
+    //
+    // ⚠️ وتُصفَّر بعد حفظها: لو بقيت في الذاكرة لأُضيفت مرّتين
+    // — مرّةً هنا ومرّةً عند النقرة التالية.
+    LaunchedEffect(Unit) {
+        val now = System.currentTimeMillis()
+        val stale = TasbihSessions.closeIfStale(session, now) ?: return@LaunchedEffect
+        sessions = TasbihSessions.add(sessions, stale)
+        session = null
+        TasbihSessionStore.save(context, sessions)
+        TasbihSessionStore.saveCurrent(context, null)
+    }
+
     fun persist() = TasbihStore.save(context, phraseId, target, state)
+
+    /// يُعلّم «أثري» أن دورةَ تسبيحٍ اكتملت (E6 ← دمج).
+    ///
+    /// ⚠️ **إضافةٌ لا تبديل**: فمن أتمّ دورتين اليوم لا تُلغى
+    /// علامةُ الأولى.
+    fun markTasbihHabit() {
+        val today = LocalDate.now()
+        val next = TrackerStore.load(context).mark(today, HabitId.TASBIH).pruned(today)
+        TrackerStore.save(context, next)
+    }
 
     Column(
         modifier = modifier
@@ -103,8 +161,33 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
                 .clickable(role = Role.Button) {
                     val result = TasbihCounter.tap(state, target)
                     state = result.state
-                    if (result.completed) buzz(context)
+                    if (result.completed) {
+                        buzz(context)
+                        markTasbihHabit()
+                    }
+                    // ⚠️ الجلسة **تُغلق قبل أن تبدأ الجديدة**: فنقرة
+                    // بعد انقطاعٍ طويل تُنهي الجلسة السابقة وتبدأ
+                    // أخرى، فلا تُنسَب إلى الأولى.
+                    val now = System.currentTimeMillis()
+                    val closed = TasbihSessions.closeIfStale(session, now)
+                    if (closed != null) {
+                        sessions = TasbihSessions.add(sessions, closed)
+                        // ⚠️ السجلّ **لا يُكتب كل نقرة**: لا يتغيّر
+                        // إلا حين تُغلق جلسة. وكاتبةُ ملفٍ كاملٍ في
+                        // كل نقرةٍ إهدارٌ للبطارية.
+                        TasbihSessionStore.save(context, sessions)
+                    }
+                    session = TasbihSessions.onTap(session, now, target)
                     persist()
+                    TasbihSessionStore.saveCurrent(context, session)
+                    // ⚠️ **العدد المنطوق هو الذي بلغه العدّاد**، لا
+                    // ما يعرضه بعد التصفير: عند إتمام دورة يعود
+                    // العدّاد إلى صفر، ومن يسمع «صفر» يظنّ أن عدّه
+                    // ضاع.
+                    val spoken = TasbihSpeech.spokenCount(result, target)
+                    if (TasbihSpeech.shouldSpeak(speakEnabled, spoken)) {
+                        speaker?.speak(TasbihSpeech.text(spoken))
+                    }
                 },
             contentAlignment = Alignment.Center,
         ) {
@@ -212,7 +295,106 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
             }
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // ⚠️ النطق **مفتاحٌ لا زرّ**: مطفأٌ افتراضيًا، ويزيده
+        // المستخدم إن أراد. والصوتُ يُحرَّر بمغادرة الشاشة.
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(s.tasbihSpeak, style = MaterialTheme.typography.labelLarge)
+                Text(
+                    text = s.tasbihSpeakHint,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Switch(
+                checked = speakEnabled,
+                onCheckedChange = {
+                    speakEnabled = it
+                    TasbihSpeechStore.setEnabled(context, it)
+                },
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // ⚠️ السجلّ **أسفل** الاختيار لا فوقه: هو تاريخٌ يُطالع
+        // بعد التسبيح، لا لوحةُ تحكّمٍ تُطالع قبله.
+        SessionLog(sessions = sessions)
+
         Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+/// سجلّ الجلسات (E6).
+///
+/// ⚠️ **الوصف لا التفاف**: «١٢٠ ذكرًا اليوم» و«٤ جلسات». ولا
+/// «إنت لم تصل» ولا «أداء ممتاز» — فالعدد ليس تقييمًا، وأحدٌ
+/// يذكّر بنفسه قد لا يكون في يومٍ أفضل.
+@Composable
+private fun SessionLog(sessions: List<TasbihSession>) {
+    val s = LocalStrings.current
+    val zone = remember { ZoneId.systemDefault() }
+    // ⚠️ التاريخ **يُحسب في كلّ رسمٍ لا مرّة واحدة**: فمن ترك
+    // التطبيق مفتوحًا حتى منتصف الليل يجب أن يرى «اليوم» الجديد
+    // لا أمسٍ.
+    val today = LocalDate.now()
+    val day = remember(today, zone) { TasbihRanges.day(today, zone) }
+    val week = remember(today, zone) { TasbihRanges.week(today, zone) }
+    val todaySummary = remember(sessions, day) { TasbihSessions.summary(sessions, day.first, day.last + 1) }
+    val weekSummary = remember(sessions, week) { TasbihSessions.summary(sessions, week.first, week.last + 1) }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = s.tasbihSessions,
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start,
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        if (sessions.isEmpty()) {
+            Text(
+                text = s.tasbihNoSessions,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            return@Column
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Stat(
+                s.tasbihToday,
+                s.tArgs("tasbih_counts", "n" to ArabicDigits.of(todaySummary.rangeCount)),
+            )
+            Stat(
+                s.tasbihWeek,
+                s.tArgs("tasbih_counts", "n" to ArabicDigits.of(weekSummary.rangeCount)),
+            )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Stat(
+                s.tasbihSessionsToday,
+                s.tArgs("tasbih_sessions_count", "n" to ArabicDigits.of(todaySummary.rangeSessions)),
+            )
+            Stat(
+                s.tasbihTotal,
+                ArabicDigits.of(todaySummary.totalCount),
+            )
+            Stat(
+                s.tasbihBest,
+                ArabicDigits.of(todaySummary.bestSession),
+            )
+        }
     }
 }
 

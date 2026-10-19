@@ -13,6 +13,7 @@ import com.athar.athar.prayer.PrayerSettingsStore
 import com.athar.athar.quran.KhatmahStore
 import com.athar.athar.quran.QuranBookmarkStore
 import com.athar.athar.quran.QuranProgressStore
+import com.athar.athar.tasbih.TasbihSessionStore
 import com.athar.athar.tasbih.TasbihStore
 import java.time.LocalDate
 
@@ -32,6 +33,8 @@ object BackupStore {
         khatmah = runCatching { KhatmahStore.load(context) }.getOrNull(),
         tasbih = runCatching { TasbihStore.loadState(context) }
             .getOrDefault(com.athar.athar.tasbih.TasbihState()),
+        tasbihSessions = runCatching { TasbihSessionStore.load(context) }
+            .getOrDefault(emptyList()),
         athary = runCatching { TrackerStore.load(context) }
             .getOrDefault(TrackerState())
             .records
@@ -63,6 +66,7 @@ object BackupStore {
                 backup.tasbih,
             )
         }
+        runCatching { TasbihSessionStore.save(context, backup.tasbihSessions) }
         runCatching { TrackerStore.save(context, trackerStateOf(backup.athary)) }
         runCatching { CustomAdhkarStore.save(context, backup.customAdhkar) }
         runCatching { HijriStore.save(context, backup.hijriOffset) }

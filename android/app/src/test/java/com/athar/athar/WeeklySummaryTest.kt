@@ -87,9 +87,10 @@ class WeeklySummaryTest {
         // أراد أن يرى ٢٥٪ لا ١٠٠٪.
         val all = HabitId.entries.toSet()
         val s = WeeklySummaries.of(state(today to all, today.minusDays(1) to all), today)
-        // ⚠️ ١٦ عبادة من ٥٦ ممكنة = ٢٨٪. وكان هذا الاختبار يقارن
-        // ٢٨ بـ ٢٨ بلا نظر إلى `s` — تحصيل حاصل لا يفحص شيئًا.
-        assertEquals(16, s.totalActs)
+        // ⚠️ ١٨ عبادة من ٦٣ ممكنة (تسع عبادات × سبعة أيام) = ٢٨٪.
+        // وكان هذا الاختبار يقارن ٢٨ بـ ٢٨ بلا نظر إلى `s` — تحصيل
+        // حاصل لا يفحص شيئًا.
+        assertEquals(18, s.totalActs)
         assertEquals(28, s.completion)
     }
 

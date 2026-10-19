@@ -13,6 +13,8 @@ import com.athar.athar.quran.LastRead
 import com.athar.athar.quran.QuranBookmarks
 import com.athar.athar.quran.QuranMeta
 import com.athar.athar.quran.QuranProgress
+import com.athar.athar.tasbih.TasbihSession
+import com.athar.athar.tasbih.TasbihSessionCodec
 import com.athar.athar.tasbih.TasbihState
 import com.batoulapps.adhan.Madhab
 import org.json.JSONArray
@@ -31,6 +33,9 @@ data class AtharBackup(
     val bookmarks: Set<String> = emptySet(),
     val khatmah: KhatmahStore.Plan? = null,
     val tasbih: TasbihState = TasbihState(),
+    /// ⚠️ **سجلّ الجلسات** جزءٌ من الأثر لا من العدّاد: من نسخ
+    /// ملفّه ثم استعادته على جهازٍ جديد وجد تاريخه intactًا.
+    val tasbihSessions: List<TasbihSession> = emptyList(),
     /// ⚠️ مفتاح اليوم ← معرّفات العادات: **بالمعرّف** لا بالاسم،
     /// لأن الاسم يُترجم والمعرّف ثابت.
     val athary: Map<String, Set<String>> = emptyMap(),
@@ -63,6 +68,7 @@ object BackupCodec {
         put("bookmarks", JSONArray(backup.bookmarks.toList()))
         backup.khatmah?.let { put("khatmah", jsonOf(it)) }
         put("tasbih", jsonOf(backup.tasbih))
+        put("tasbihSessions", JSONArray(TasbihSessionCodec.encode(backup.tasbihSessions)))
         put("athary", jsonOf(backup.athary))
         put("customAdhkar", JSONArray().apply {
             backup.customAdhkar.forEach { put(jsonOf(it)) }
@@ -88,6 +94,9 @@ object BackupCodec {
             bookmarks = bookmarksOf(root),
             khatmah = root.optJSONObject("khatmah")?.let(::khatmahOf),
             tasbih = root.optJSONObject("tasbih")?.let(::tasbihOf) ?: TasbihState(),
+            tasbihSessions = root.optJSONArray("tasbihSessions")
+                ?.let { TasbihSessionCodec.decode(it.toString()) }
+                ?: emptyList(),
             athary = atharyOf(root.optJSONObject("athary")),
             customAdhkar = customAdhkarOf(root.optJSONArray("customAdhkar")),
             hijriOffset = root.optInt("hijriOffset", 0),

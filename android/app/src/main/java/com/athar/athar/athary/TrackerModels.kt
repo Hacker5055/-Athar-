@@ -2,10 +2,14 @@ package com.athar.athar.athary
 
 import java.time.LocalDate
 
-/// العبادات اليومية الثمانية.
+/// العبادات اليومية.
 ///
 /// ⚠️ القائمة **ثابتة** عن قصد: التخصيص يفتح باب تصميم كبير (أهداف،
 /// أيقونات، ترتيب) وهو مؤجّل لما بعد الإطلاق.
+///
+/// ⚠️ وزاد عليها **التسبيح** (E6): أولُ ما تعلّمه التطبيقُ نفسُه
+/// أن يميّز — فدورةُ تسبيحٍ مكتملة تُعلَّم في «أثري» من غير أن
+/// يضغط المستخدم شيئًا.
 enum class HabitId(val stringKey: String, val id: String) {
     /// أصعب واحدة، وأكثر واحدة تكسر السلسلة
     FAJR("habit_fajr", "fajr"),
@@ -16,6 +20,8 @@ enum class HabitId(val stringKey: String, val id: String) {
     DUHA("habit_duha", "duha"),
     SADAQA("habit_sadaqa", "sadaqa"),
     FASTING("habit_fasting", "fasting"),
+    /// دورةُ تسبيحٍ كاملة — تُعلَّم تلقائيًا عند إتمام الدورة.
+    TASBIH("habit_tasbih", "tasbih"),
     ;
 
     companion object {
@@ -56,6 +62,11 @@ data class DailyRecord(
 
     fun toggle(habit: HabitId): DailyRecord =
         copy(done = if (habit in done) done - habit else done + habit)
+
+    /// يُضيف عبادةً **دون أن يرفعها**: العلامةُ التلقائية (دورةُ
+    /// تسبيح) تُضيف ولا تحذف — بخلاف `toggle` الذي يُنقص.
+    fun mark(habit: HabitId): DailyRecord =
+        if (habit in done) this else copy(done = done + habit)
 
     companion object {
         fun levelFor(count: Int): DayLevel = when (count) {

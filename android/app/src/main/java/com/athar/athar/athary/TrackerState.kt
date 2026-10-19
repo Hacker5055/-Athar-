@@ -23,6 +23,20 @@ data class TrackerState(val records: Map<String, DailyRecord> = emptyMap()) {
         return TrackerState(map)
     }
 
+    /// يُعلّم عبادةً **دون أن يرفعها** — العلامةُ التلقائية.
+    ///
+    /// ⚠️ `toggle` هنا لا يصلح: من أتمّ دورتين بتسبيحٍ في اليوم
+    /// الواحد لصارت الثانيةُ **إلغاءً** للعلامة الأولى. والعلامة
+    /// التلقائية إضافةٌ لا تبديل.
+    fun mark(day: LocalDate, habit: HabitId): TrackerState {
+        val key = dayKey(day)
+        val next = recordFor(day).mark(habit)
+        if (next.isEmpty) return this
+        val map = records.toMutableMap()
+        map[key] = next
+        return TrackerState(map)
+    }
+
     /// يحذف ما هو أقدم من [RETENTION_DAYS] — وإلا نما ملف التخزين بلا حدّ.
     fun pruned(today: LocalDate): TrackerState {
         if (records.isEmpty()) return this
