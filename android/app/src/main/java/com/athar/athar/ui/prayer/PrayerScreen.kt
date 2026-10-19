@@ -53,7 +53,7 @@ fun PrayerScreen(
     settings: PrayerSettings,
     /// فتح القرآن عند (سورة، آية) — يُمرَّر إلى الأب لأن اختيار
     /// التبويب ليس بيد هذه الشاشة.
-    onContinueReading: (Int, Int) -> Unit = {},
+    onContinueReading: (Int, Int) -> Unit = { _, _ -> },
     onSettingsChange: (PrayerSettings) -> Unit,
     modifier: Modifier = Modifier,
 ) {
