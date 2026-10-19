@@ -18,6 +18,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,6 +43,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -960,6 +962,29 @@ private fun ReaderView(
             },
         )
 
+        // ⚠️ **شريطُ التقدّمِ تحتَ اسمِ السورة**: السورةُ الواحدةُ
+        // قد تكون مئتينِ وستّين آية، فمن يقرأها يحتاج أن يعرف أين
+        // هو منها — لا أن يعدَّ. والشريطُ رفيعٌ فلا يزاحم النصّ.
+        LinearProgressIndicator(
+            progress = {
+                val total = ayahs.size.coerceAtLeast(1)
+                (currentAyah - 1).coerceAtLeast(0).toFloat() / total.toFloat()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(3.dp),
+            color = if (palette.isCustom) {
+                palette.onBackground.copy(alpha = 0.6f)
+            } else {
+                MaterialTheme.colorScheme.primary
+            },
+            trackColor = if (palette.isCustom) {
+                palette.divider
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            },
+        )
+
         // ⚠️ أفقي قابل للتمرير: ثلاث شرائح بثلاث لغات تتجاوز عرض الشاشة
         // على الأجهزة الصغيرة، والقصّ الصامت أسوأ من التمرير.
         // ⚠️ **الحاشيةُ ستّةَ عشرَ** كسائرِ التطبيق: كانت هذه
@@ -1100,188 +1125,201 @@ private fun ReaderView(
 
         // ⚠️ **الحاشيةُ ستّةَ عشرَ** كسائرِ التطبيق: كان سطحُ
         // القراءةِ على عشرين، فهو الوحيدُ الذي كسر القاعدة.
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = AtharPageMargin, vertical = 12.dp),
-        ) {
-            // ⚠️ **البسملةُ رأسَ السورة** كما في المصحف: لا رقمَ
-            // لها ولا آية، تُكتبُ فوق النصّ. ولا تُعرض في الفاتحة
-            // (فهي آيتُها الأولى) ولا في التوبة (فهي محفوظةٌ عند
-            // المشركين، ولم يُحكم عليها).
-            if (basmala != null && surah.id != 1 && surah.id != 9) {
-                // ⚠️ **بلا مفتاح**: بنودُ الآياتِ في هذه القائمة بلا
-                // مفاتيح، ومفتاحٌ واحدٌ مع بنودٍ بلا مفتاحٍ يُلخبط
-                // القائمةَ فتُرمى استثناءً.
-                item {
-                    Text(
-                        text = basmala,
-                        fontSize = 22.sp,
-                        lineHeight = 38.sp,
-                        fontFamily = AmiriFamily,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                    )
-                }
-            }
-            items(ayahs) { ayah ->
-                // ⚠️ **الآيةُ المسموعةُ مظلَّلةٌ**: ظلٌّ دافئٌ خلفَ
-                // النصّ لا تلوينٌ له — فتلوينُ الآيةِ يُنقِصُ من
-                // قراءتها، والظلُّ يعلوها ويُبقيها.
-                val spoken = spokenAyah != null && ayah.number == spokenAyah
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "${ayah.text} ﴿${ayah.number}﴾",
-                        // النص العثماني يحتاج مقاسًا أكبر وتباعدًا أوسع
-                        fontSize = 24.sp,
-                        lineHeight = 44.sp,
-                        // ⚠️ **أميري**: الرسمُ العثماني بخطٍّ لا يعرف
-                        // علاماتِه تتفرّق حركاتُه عن حروفها.
-                        fontFamily = AmiriFamily,
-                        textAlign = TextAlign.Justify,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(vertical = 8.dp)
-                            .background(
-                                color = if (spoken) {
-                                    AtharGold.copy(alpha = 0.22f)
-                                } else {
-                                    Color.Transparent
-                                },
-                                shape = RoundedCornerShape(10.dp),
-                            ),
-                    )
-                    // ⚠️ المشاركة على السطر نفسه لا في قائمة منبثقة:
-                    // الآية أمام العين حين يقرّر مشاركتها.
-                    IconButton(onClick = { onShare(ayah) }) {
-                        Icon(
-                            Icons.Filled.Share,
-                            contentDescription = s.share,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    // ⚠️ العلامة **على السطر نفسه** لا في قائمة منبثقة:
-                    // ضغطة واحدة بدل ضغطتين، والآية أمام العين حين
-                    // يقرّر حفظها لا بعد أن ينسى أي آية كانت.
-                    val marked = QuranBookmarks.contains(bookmarks, ayah.surah, ayah.number)
-                    IconButton(onClick = { onBookmarkToggle(ayah.number) }) {
-                        Icon(
-                            imageVector = if (marked) {
-                                Icons.Filled.Bookmark
-                            } else {
-                                Icons.Filled.BookmarkBorder
-                            },
-                            contentDescription = if (marked) {
-                                s.quranBookmarkRemove
-                            } else {
-                                s.quranBookmarkAdd
-                            },
-                            tint = if (marked) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                        )
-                    }
-                }
-                // ⚠️ الترجمة **تحت** آيتها لا في صفحة أخرى: القارئ يريد
-                // المعنى أمام النصّ، لا رحلة بين شاشتين.
-                translated[QuranTranslationRepository.key(ayah.surah, ayah.number)]
-                    ?.let { meaning ->
+        // ⚠️ **لا فراغَ أبيضَ في القارئ**: كان نصُّ السورةِ يُحمَّل
+        // فيتبيّنُ القارئُ شاشةً بيضاءَ لحظات، والأخطرُ أنّها
+        // تبدو كأنّ السورةَ فارغة.
+        Box(modifier = Modifier.weight(1f)) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = AtharPageMargin, vertical = 12.dp),
+            ) {
+                // ⚠️ **البسملةُ رأسَ السورة** كما في المصحف: لا رقمَ
+                // لها ولا آية، تُكتبُ فوق النصّ. ولا تُعرض في الفاتحة
+                // (فهي آيتُها الأولى) ولا في التوبة (فهي محفوظةٌ عند
+                // المشركين، ولم يُحكم عليها).
+                if (basmala != null && surah.id != 1 && surah.id != 9) {
+                    // ⚠️ **بلا مفتاح**: بنودُ الآياتِ في هذه القائمة بلا
+                    // مفاتيح، ومفتاحٌ واحدٌ مع بنودٍ بلا مفتاحٍ يُلخبط
+                    // القائمةَ فتُرمى استثناءً.
+                    item {
                         Text(
-                            text = meaning,
-                            color = if (palette.isCustom) {
-                                palette.onBackground.copy(alpha = 0.72f)
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                            fontSize = 15.sp,
-                            lineHeight = 24.sp,
-                            textAlign = TextAlign.Start,
+                            text = basmala,
+                            fontSize = 22.sp,
+                            lineHeight = 38.sp,
+                            fontFamily = AmiriFamily,
+                            textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 14.dp),
+                                .padding(vertical = 10.dp),
                         )
                     }
-                HorizontalDivider(
-                    color = if (palette.isCustom) {
-                        palette.divider
-                    } else {
-                        MaterialTheme.colorScheme.outlineVariant
-                    },
-                )
-            }
-            if (translation != QuranTranslation.NONE) {
+                }
+                items(ayahs) { ayah ->
+                    // ⚠️ **الآيةُ المسموعةُ مظلَّلةٌ**: ظلٌّ دافئٌ خلفَ
+                    // النصّ لا تلوينٌ له — فتلوينُ الآيةِ يُنقِصُ من
+                    // قراءتها، والظلُّ يعلوها ويُبقيها.
+                    val spoken = spokenAyah != null && ayah.number == spokenAyah
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "${ayah.text} ﴿${ayah.number}﴾",
+                            // النص العثماني يحتاج مقاسًا أكبر وتباعدًا أوسع
+                            fontSize = 24.sp,
+                            lineHeight = 44.sp,
+                            // ⚠️ **أميري**: الرسمُ العثماني بخطٍّ لا يعرف
+                            // علاماتِه تتفرّق حركاتُه عن حروفها.
+                            fontFamily = AmiriFamily,
+                            textAlign = TextAlign.Justify,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(vertical = 8.dp)
+                                .background(
+                                    color = if (spoken) {
+                                        AtharGold.copy(alpha = 0.22f)
+                                    } else {
+                                        Color.Transparent
+                                    },
+                                    shape = RoundedCornerShape(10.dp),
+                                ),
+                        )
+                        // ⚠️ المشاركة على السطر نفسه لا في قائمة منبثقة:
+                        // الآية أمام العين حين يقرّر مشاركتها.
+                        IconButton(onClick = { onShare(ayah) }) {
+                            Icon(
+                                Icons.Filled.Share,
+                                contentDescription = s.share,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        // ⚠️ العلامة **على السطر نفسه** لا في قائمة منبثقة:
+                        // ضغطة واحدة بدل ضغطتين، والآية أمام العين حين
+                        // يقرّر حفظها لا بعد أن ينسى أي آية كانت.
+                        val marked = QuranBookmarks.contains(bookmarks, ayah.surah, ayah.number)
+                        IconButton(onClick = { onBookmarkToggle(ayah.number) }) {
+                            Icon(
+                                imageVector = if (marked) {
+                                    Icons.Filled.Bookmark
+                                } else {
+                                    Icons.Filled.BookmarkBorder
+                                },
+                                contentDescription = if (marked) {
+                                    s.quranBookmarkRemove
+                                } else {
+                                    s.quranBookmarkAdd
+                                },
+                                tint = if (marked) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                            )
+                        }
+                    }
+                    // ⚠️ الترجمة **تحت** آيتها لا في صفحة أخرى: القارئ يريد
+                    // المعنى أمام النصّ، لا رحلة بين شاشتين.
+                    translated[QuranTranslationRepository.key(ayah.surah, ayah.number)]
+                        ?.let { meaning ->
+                            Text(
+                                text = meaning,
+                                color = if (palette.isCustom) {
+                                    palette.onBackground.copy(alpha = 0.72f)
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                                fontSize = 15.sp,
+                                lineHeight = 24.sp,
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 14.dp),
+                            )
+                        }
+                    HorizontalDivider(
+                        color = if (palette.isCustom) {
+                            palette.divider
+                        } else {
+                            MaterialTheme.colorScheme.outlineVariant
+                        },
+                    )
+                }
+                if (translation != QuranTranslation.NONE) {
+                    item {
+                        // ⚠️ الإسناد واجب (docs/09) وشرط الرخصة — لا «من مصادر عامة»
+                        Text(
+                            text = s.t(translation.creditKey),
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 20.dp, horizontal = 16.dp),
+                        )
+                    }
+                }
                 item {
-                    // ⚠️ الإسناد واجب (docs/09) وشرط الرخصة — لا «من مصادر عامة»
+                    // ⚖️ حق التلاوة لقارئها: النسبة واجبة كما في النصّ
                     Text(
-                        text = s.t(translation.creditKey),
+                        text = Reciters.CREDIT,
                         fontSize = 11.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 20.dp, horizontal = 16.dp),
+                            .padding(vertical = 12.dp, horizontal = 16.dp),
                     )
                 }
-            }
-            item {
-                // ⚖️ حق التلاوة لقارئها: النسبة واجبة كما في النصّ
-                Text(
-                    text = Reciters.CREDIT,
-                    fontSize = 11.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp, horizontal = 16.dp),
-                )
-            }
-            if (nextSurah != null) {
-                item {
-                    // ⚠️ **«السورة التالية» في آخرِ السورة**: القارئ
-                    // الذي انتهى من سورةٍ يريد السورةَ التي بعدها، لا
-                    // الفهرسَ ثمَّ السورة. فلمّا بلغت آخرَ السورة
-                    // جُعلَ الطريقُ أمامَه مبسوطًا: بطاقةٌ تفتحُ
-                    // السورةَ التاليةَ بنقرةٍ واحدة.
-                    // ⚠️ **البطاقةُ على عرضِ النصّ**: كتلةُ القراءة
-                    // عشرون، فبطاقةٌ أضيقُ منها أو أعرضُ تكسرُ
-                    // السطح.
-                    Card(
-                        onClick = { onOpenNext(nextSurah) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
+                if (nextSurah != null) {
+                    item {
+                        // ⚠️ **«السورة التالية» في آخرِ السورة**: القارئ
+                        // الذي انتهى من سورةٍ يريد السورةَ التي بعدها، لا
+                        // الفهرسَ ثمَّ السورة. فلمّا بلغت آخرَ السورة
+                        // جُعلَ الطريقُ أمامَه مبسوطًا: بطاقةٌ تفتحُ
+                        // السورةَ التاليةَ بنقرةٍ واحدة.
+                        // ⚠️ **البطاقةُ على عرضِ النصّ**: كتلةُ القراءة
+                        // عشرون، فبطاقةٌ أضيقُ منها أو أعرضُ تكسرُ
+                        // السطح.
+                        Card(
+                            onClick = { onOpenNext(nextSurah) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
                         ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = s.nextSurah,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                                Text(
-                                    text = nextSurah.nameAr,
-                                    fontSize = 22.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    // ⚠️ **نسخٌ لأسماء السور**:
-                                    // اسمٌ يُقرأ لا رقمٌ يُكتب.
-                                    fontFamily = AmiriFamily,
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = s.nextSurah,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                    Text(
+                                        text = nextSurah.nameAr,
+                                        fontSize = 22.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        // ⚠️ **نسخٌ لأسماء السور**:
+                                        // اسمٌ يُقرأ لا رقمٌ يُكتب.
+                                        fontFamily = AmiriFamily,
+                                    )
+                                }
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
                         }
                     }
+                }
+            }
+            if (ayahs.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
                 }
             }
         }
