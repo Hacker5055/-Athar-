@@ -1,10 +1,14 @@
 package com.athar.athar.ui.asma
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import com.athar.athar.asma.AsmaRepository
 import com.athar.athar.asma.AsmaName
 import com.athar.athar.asma.AsmaSearch
+import com.athar.athar.core.ArabicDigits
+import com.athar.athar.ui.theme.AmiriFamily
 import com.athar.athar.i18n.LocalStrings
 
 /// الأسماء الحسنى — قائمة تبحث بالاسم أو بالمعنى.
@@ -83,18 +90,42 @@ fun AsmaScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun NameCard(name: AsmaName, modifier: Modifier = Modifier) {
     Card(modifier = modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                name.nameArabic,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            Text(
-                name.meaning,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 6.dp),
-            )
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // ⚠️ **الرقمُ في دائرٍ**: تسعةٌ وتسعون اسمًا، والرقمُ هو
+            // ما يُحفظ به ترتيبُها. وهو في دائرٍ صغيرةٍ لا في نصٍّ
+            // عادي.
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = ArabicDigits.of(name.id),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+            }
+            Column(modifier = Modifier.padding(start = 12.dp)) {
+                Text(
+                    name.nameArabic,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    // ⚠️ **نسخٌ لا سانس`: اسمُ الله اسمٌ يُكتب
+                    // ويُنطق، فيستحقّ خطًّا يكتبُه لا خطَّ شاشات.
+                    fontFamily = AmiriFamily,
+                )
+                Text(
+                    name.meaning,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
+            }
         }
     }
 }

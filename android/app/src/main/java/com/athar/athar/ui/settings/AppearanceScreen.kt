@@ -25,6 +25,7 @@ import com.athar.athar.ui.theme.FontScaleLevel
 import com.athar.athar.ui.theme.ReaderPalette
 import com.athar.athar.ui.theme.ReaderTheme
 import com.athar.athar.ui.theme.ThemeMode
+import com.athar.athar.ui.theme.AmiriFamily
 
 /// شاشة المظهر: الثيم · حجم الخط · ثيم القراءة.
 ///
@@ -120,6 +121,10 @@ private fun ReaderPreview(theme: ReaderTheme, sample: String) {
     Text(
         text = "﴿ $sample ﴾",
         fontSize = 20.sp,
+        // ⚠️ **المعاينةُ بخطّها الحقيقي**: أميري هو الذي سيُقرأ
+        // به النصّ، ومعاينةٌ بخطٍّ آخر تُدخل في الذهن صورةً
+        // خاطئةً عن شكل القراءة.
+        fontFamily = AmiriFamily,
         textAlign = TextAlign.Center,
         color = if (foreground == Color.Unspecified) Color.Unspecified else foreground,
         modifier = Modifier

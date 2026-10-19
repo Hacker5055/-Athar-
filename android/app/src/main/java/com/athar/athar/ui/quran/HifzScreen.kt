@@ -41,6 +41,7 @@ import com.athar.athar.quran.Hifz
 import com.athar.athar.quran.HifzStore
 import com.athar.athar.quran.QuranMeta
 import com.athar.athar.quran.QuranRepository
+import com.athar.athar.ui.theme.AmiriFamily
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -186,7 +187,11 @@ fun HifzScreen(
                 Text(
                     text = if (revealed || text.isEmpty()) text else Hifz.mask(text, level),
                     style = MaterialTheme.typography.bodyLarge,
-                    lineHeight = 34.sp,
+                    fontSize = 22.sp,
+                    lineHeight = 38.sp,
+                    // ⚠️ **نسخٌ للحفظ**: من يحفظ يقرأ النصّ بنَفَسِ
+                    // المصحف، فخطُّ الشاشة لا يمثّله.
+                    fontFamily = AmiriFamily,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()

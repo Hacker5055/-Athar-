@@ -670,7 +670,15 @@ private fun SurahList(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
-                        Text(text = surah.nameAr, fontSize = 19.sp, fontWeight = FontWeight.Medium)
+                        Text(
+                            text = surah.nameAr,
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.Bold,
+                            // ⚠️ **نسخٌ لأسماء السور**: فهرسُ المصحف
+                            // أسماءُ سورٍ تُكتبُ وتُنطق، فخطُّ الشاشات
+                            // لا يليق بها.
+                            fontFamily = AmiriFamily,
+                        )
                         Text(
                             text = "${surah.ayahCount} ${s.verses} · ${if (surah.isMeccan) s.meccan else s.medinan}",
                             style = MaterialTheme.typography.bodySmall,
@@ -685,11 +693,23 @@ private fun SurahList(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    Text(
-                        text = surah.id.toString(),
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 12.dp),
-                    )
+                    // ⚠️ **رقمُ السورةِ في دائر**: هو العلامةُ التي
+                    // يعرفها القارئُ في المصحف، وقديمًا كان رقمُ السورة
+                    // ونقطُها في الهامش.
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .size(42.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = ArabicDigits.of(surah.id),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
                 }
             }
             HorizontalDivider()
@@ -1100,6 +1120,9 @@ private fun BookmarksView(
                             Text(
                                 text = texts[key].orEmpty(),
                                 style = MaterialTheme.typography.bodyMedium,
+                                fontSize = 19.sp,
+                                lineHeight = 32.sp,
+                                fontFamily = AmiriFamily,
                                 textAlign = TextAlign.End,
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                             )
