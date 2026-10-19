@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.ReciterWithdrawalsTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.002">
+<testsuite name="com.athar.athar.quran.ReciterWithdrawalsTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.004">
   <properties/>
   <testcase name="fallbackMovesSelectionOffAWithdrawnReciter" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.001"/>
   <testcase name="applyIgnoresUnknownIds" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
   <testcase name="applyRemovesWithdrawnReciters" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
-  <testcase name="emptyListWithdrawsNothing" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
+  <testcase name="emptyListWithdrawsNothing" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.001"/>
   <testcase name="corruptJsonNeverThrows" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
   <testcase name="parsesWithdrawnIds" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
   <testcase name="fallbackWithNoWithdrawalsIsIdentity" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.001"/>
@@ -12,7 +12,7 @@
   <testcase name="blankOrNullInputWithdrawsNothing" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
   <testcase name="withdrawingEverythingEmptiesTheCatalog" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
   <testcase name="applyWithEmptySetChangesNothing" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
-  <testcase name="ignoresEntriesThatAreNotReciterIds" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.0"/>
+  <testcase name="ignoresEntriesThatAreNotReciterIds" classname="com.athar.athar.quran.ReciterWithdrawalsTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

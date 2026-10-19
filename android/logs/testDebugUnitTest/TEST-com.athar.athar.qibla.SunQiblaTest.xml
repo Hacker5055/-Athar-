@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.qibla.SunQiblaTest" tests="27" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.057">
+<testsuite name="com.athar.athar.qibla.SunQiblaTest" tests="27" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.052">
   <properties/>
-  <testcase name="theSunRisesSouthOfEastInWinter" classname="com.athar.athar.qibla.SunQiblaTest" time="0.003"/>
+  <testcase name="theSunRisesSouthOfEastInWinter" classname="com.athar.athar.qibla.SunQiblaTest" time="0.002"/>
   <testcase name="theSunRisesNorthOfEastInSummer" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
-  <testcase name="theSunIsDueSouthAtSolarNoonInTheNorth" classname="com.athar.athar.qibla.SunQiblaTest" time="0.008"/>
+  <testcase name="theSunIsDueSouthAtSolarNoonInTheNorth" classname="com.athar.athar.qibla.SunQiblaTest" time="0.004"/>
   <testcase name="theShadowNeverPointsToTheQiblaAtNight" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
-  <testcase name="theSunIsDueNorthAtSolarNoonInTheSouth" classname="com.athar.athar.qibla.SunQiblaTest" time="0.004"/>
-  <testcase name="theDeclinationPeaksAtTheJuneSolstice" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>
-  <testcase name="onTheQiblaSunDayTheSunRisesExactlyAtTheQiblaBearing" classname="com.athar.athar.qibla.SunQiblaTest" time="0.009"/>
+  <testcase name="theSunIsDueNorthAtSolarNoonInTheSouth" classname="com.athar.athar.qibla.SunQiblaTest" time="0.002"/>
+  <testcase name="theDeclinationPeaksAtTheJuneSolstice" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
+  <testcase name="onTheQiblaSunDayTheSunRisesExactlyAtTheQiblaBearing" classname="com.athar.athar.qibla.SunQiblaTest" time="0.005"/>
   <testcase name="theBearingIsAlwaysBetweenZeroAndThreeSixty" classname="com.athar.athar.qibla.SunQiblaTest" time="0.002"/>
-  <testcase name="theSunIsHighestAroundNoonAndLowestAtNight" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>
+  <testcase name="theSunIsHighestAroundNoonAndLowestAtNight" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
   <testcase name="theHighestPointOfTheDayIsInTheDaylight" classname="com.athar.athar.qibla.SunQiblaTest" time="0.002"/>
-  <testcase name="thereIsNoShadowMomentWhenTheSunNeverReachesThatDirection" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>
+  <testcase name="thereIsNoShadowMomentWhenTheSunNeverReachesThatDirection" classname="com.athar.athar.qibla.SunQiblaTest" time="0.004"/>
   <testcase name="theDeclinationNeverExceedsTheObliquity" classname="com.athar.athar.qibla.SunQiblaTest" time="0.01"/>
   <testcase name="cairoHasNoQiblaSunDay" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>
-  <testcase name="theQiblaBearingOfNewYorkIsKnown" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>
+  <testcase name="theQiblaBearingOfNewYorkIsKnown" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
   <testcase name="theDeclinationIsZeroAtTheMarchEquinox" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
   <testcase name="theKaabaIsDueEastFromAPointJustWestOfIt" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>
   <testcase name="theKaabaIsDueWestFromAPointJustEastOfIt" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
   <testcase name="theDeclinationIsNegativeInDecemberAndPositiveInJune" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
   <testcase name="theDeclinationIsZeroAtTheSeptemberEquinox" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
   <testcase name="theQiblaBearingOfCairoIsKnown" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
-  <testcase name="theQiblaSunDaysAreInTheYear" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
-  <testcase name="theAzimuthIsAlwaysNormalized" classname="com.athar.athar.qibla.SunQiblaTest" time="0.007"/>
+  <testcase name="theQiblaSunDaysAreInTheYear" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>
+  <testcase name="theAzimuthIsAlwaysNormalized" classname="com.athar.athar.qibla.SunQiblaTest" time="0.006"/>
   <testcase name="theShadowMomentIsFoundOnTheDayItExists" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>
   <testcase name="parisHasTwoQiblaSunDays" classname="com.athar.athar.qibla.SunQiblaTest" time="0.0"/>
   <testcase name="theQiblaSunDaysAreDistinct" classname="com.athar.athar.qibla.SunQiblaTest" time="0.001"/>

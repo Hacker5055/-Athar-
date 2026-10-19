@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.tasbih.TasbihSessionCodecTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.002">
+<testsuite name="com.athar.athar.tasbih.TasbihSessionCodecTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.001">
   <properties/>
   <testcase name="aSessionWithoutTimesIsSkipped" classname="com.athar.athar.tasbih.TasbihSessionCodecTest" time="0.0"/>
-  <testcase name="theCurrentSessionRoundTrips" classname="com.athar.athar.tasbih.TasbihSessionCodecTest" time="0.001"/>
+  <testcase name="theCurrentSessionRoundTrips" classname="com.athar.athar.tasbih.TasbihSessionCodecTest" time="0.0"/>
   <testcase name="anEmptyListEncodesToAnEmptyArray" classname="com.athar.athar.tasbih.TasbihSessionCodecTest" time="0.0"/>
   <testcase name="aBrokenCurrentSessionIsSimplyAbsent" classname="com.athar.athar.tasbih.TasbihSessionCodecTest" time="0.0"/>
   <testcase name="aBrokenSessionDoesNotSinkTheOthers" classname="com.athar.athar.tasbih.TasbihSessionCodecTest" time="0.0"/>

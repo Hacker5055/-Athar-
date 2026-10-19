@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.tasbih.TasbihCounterTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.003">
+<testsuite name="com.athar.athar.tasbih.TasbihCounterTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.002">
   <properties/>
   <testcase name="undoNeverGoesBelowZero" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="resetOfAFreshStateIsEmpty" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
@@ -13,7 +13,7 @@
   <testcase name="undoStepsBack" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="targetIsNeverZeroOrNegative" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="unknownPhraseFallsBackNotCrashes" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
-  <testcase name="phrasesAreUniqueAndPositive" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.001"/>
+  <testcase name="phrasesAreUniqueAndPositive" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="lifetimeCountsEveryTap" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <testcase name="hundredTargetCountsAHundred" classname="com.athar.athar.tasbih.TasbihCounterTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>

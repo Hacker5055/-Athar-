@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.hijri.IslamicEventsTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.022">
+<testsuite name="com.athar.athar.hijri.IslamicEventsTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:32" hostname="runnervm8k3b6" time="0.019">
   <properties/>
   <testcase name="arafahPrecedesEidAlAdha" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.001"/>
-  <testcase name="nextOccurrenceIsWithinOneHijriYear" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.005"/>
-  <testcase name="laylatAlQadrIsInTheLastTenNightsOfRamadan" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
-  <testcase name="theKnownEventsAreAllPresent" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.001"/>
-  <testcase name="upcomingRespectsTheLimit" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.003"/>
+  <testcase name="nextOccurrenceIsWithinOneHijriYear" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.006"/>
+  <testcase name="laylatAlQadrIsInTheLastTenNightsOfRamadan" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.001"/>
+  <testcase name="theKnownEventsAreAllPresent" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
+  <testcase name="upcomingRespectsTheLimit" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
   <testcase name="everyEventHasAnOccurrence" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
-  <testcase name="laterDatesNeverPushAnEventEarlier" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.008"/>
-  <testcase name="everyEventIsARealHijriDate" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
+  <testcase name="laterDatesNeverPushAnEventEarlier" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.004"/>
+  <testcase name="everyEventIsARealHijriDate" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.001"/>
   <testcase name="ramadanPrecedesEidAlFitr" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
   <testcase name="daysUntilMatchesTheOccurrence" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.001"/>
   <testcase name="upcomingIsNotEmpty" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
-  <testcase name="nextOccurrenceIsNeverInThePast" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
-  <testcase name="upcomingIsSortedByDate" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.001"/>
-  <testcase name="idsAreUnique" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
+  <testcase name="nextOccurrenceIsNeverInThePast" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.001"/>
+  <testcase name="upcomingIsSortedByDate" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
+  <testcase name="idsAreUnique" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.001"/>
   <testcase name="daysUntilIsNeverNegative" classname="com.athar.athar.hijri.IslamicEventsTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

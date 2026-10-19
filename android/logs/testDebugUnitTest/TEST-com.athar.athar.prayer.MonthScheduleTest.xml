@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.prayer.MonthScheduleTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.12">
+<testsuite name="com.athar.athar.prayer.MonthScheduleTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:32" hostname="runnervm8k3b6" time="0.137">
   <properties/>
-  <testcase name="theOffsetIsAppliedToEveryRow" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.026"/>
-  <testcase name="theFirstRowIsTheFirstOfTheMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.007"/>
+  <testcase name="theOffsetIsAppliedToEveryRow" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.043"/>
+  <testcase name="theFirstRowIsTheFirstOfTheMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.011"/>
   <testcase name="februaryIsLongerInALeapYear" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.0"/>
-  <testcase name="timesAreOrderedWithinADay" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.005"/>
-  <testcase name="everyMonthHasItsOwnLength" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.001"/>
-  <testcase name="datesAreConsecutiveAndInsideTheMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.005"/>
-  <testcase name="rowCountMatchesTheMonthLength" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.037"/>
-  <testcase name="everyRowStaysInTheRequestedMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.029"/>
-  <testcase name="navigationAgreesWithYearMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.001"/>
+  <testcase name="timesAreOrderedWithinADay" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.009"/>
+  <testcase name="everyMonthHasItsOwnLength" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.0"/>
+  <testcase name="datesAreConsecutiveAndInsideTheMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.007"/>
+  <testcase name="rowCountMatchesTheMonthLength" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.036"/>
+  <testcase name="everyRowStaysInTheRequestedMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.023"/>
+  <testcase name="navigationAgreesWithYearMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.0"/>
   <testcase name="nextDecemberWrapsToJanuary" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.0"/>
-  <testcase name="nextAndPreviousAreInverse" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.001"/>
-  <testcase name="everyRowCarriesAHijriDate" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.002"/>
+  <testcase name="nextAndPreviousAreInverse" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.0"/>
+  <testcase name="everyRowCarriesAHijriDate" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.001"/>
   <testcase name="theTimesMoveThroughTheMonth" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.002"/>
   <testcase name="previousJanuaryWrapsToDecember" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.0"/>
   <testcase name="theHijriDateNeverGoesBackwards" classname="com.athar.athar.prayer.MonthScheduleTest" time="0.003"/>

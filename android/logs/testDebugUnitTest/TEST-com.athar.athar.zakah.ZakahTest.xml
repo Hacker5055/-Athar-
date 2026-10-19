@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.zakah.ZakahTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.004">
+<testsuite name="com.athar.athar.zakah.ZakahTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.004">
   <properties/>
   <testcase name="noPeopleMeansNoFitr" classname="com.athar.athar.zakah.ZakahTest" time="0.001"/>
   <testcase name="aZeroPriceMeansNoNisabAndNoLiability" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="theNisabIsWorthTheNisabWeight" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
-  <testcase name="cashAboveTheNisabIsLiable" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
+  <testcase name="cashAboveTheNisabIsLiable" classname="com.athar.athar.zakah.ZakahTest" time="0.001"/>
   <testcase name="theNisabOfSilverIsFiveHundredAndNinetyFiveGrams" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="goldAtTheNisabIsLiable" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="theNisabOfGoldIsEightyFiveGrams" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
@@ -16,10 +16,10 @@
   <testcase name="theRateIsATwentyFifth" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="zeroIsNeverLiable" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="theAmountIsNeverNegative" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
-  <testcase name="theFitrQuantityIsTwoAndAHalfKilosPerPerson" classname="com.athar.athar.zakah.ZakahTest" time="0.001"/>
+  <testcase name="theFitrQuantityIsTwoAndAHalfKilosPerPerson" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="silverBelowTheNisabIsNotLiable" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="theCashNisabIsTheSmallerOfGoldAndSilver" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
-  <testcase name="theZakahIsATwentyFifthOfTheValue" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
+  <testcase name="theZakahIsATwentyFifthOfTheValue" classname="com.athar.athar.zakah.ZakahTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

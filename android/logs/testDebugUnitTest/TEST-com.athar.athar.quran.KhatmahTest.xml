@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.KhatmahTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.005">
+<testsuite name="com.athar.athar.quran.KhatmahTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.005">
   <properties/>
   <testcase name="theFirstPortionStartsAtAlFatiha" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
   <testcase name="dayZeroIsTreatedAsDayOne" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
@@ -9,8 +9,8 @@
   <testcase name="aPastDateNeverGivesLessThanOne" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
   <testcase name="theLastPortionEndsAtTheLastVerse" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
   <testcase name="everyDayHasAtLeastOneVerse" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
-  <testcase name="portionsAreInIncreasingOrder" classname="com.athar.athar.quran.KhatmahTest" time="0.001"/>
-  <testcase name="dayOfNeverExceedsThePlan" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
+  <testcase name="portionsAreInIncreasingOrder" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
+  <testcase name="dayOfNeverExceedsThePlan" classname="com.athar.athar.quran.KhatmahTest" time="0.001"/>
   <testcase name="percentStartsAtZeroAndEndsAtHundred" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
   <testcase name="noVerseIsLeftOutsideThePlan" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>
   <testcase name="percentIsClamped" classname="com.athar.athar.quran.KhatmahTest" time="0.0"/>

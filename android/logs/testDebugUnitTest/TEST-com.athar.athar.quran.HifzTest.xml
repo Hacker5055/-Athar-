@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.HifzTest" tests="24" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.009">
+<testsuite name="com.athar.athar.quran.HifzTest" tests="24" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.008">
   <properties/>
   <testcase name="fullMaskingHidesEveryWord" classname="com.athar.athar.quran.HifzTest" time="0.001"/>
-  <testcase name="memorizationNeedsTheTarget" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
+  <testcase name="memorizationNeedsTheTarget" classname="com.athar.athar.quran.HifzTest" time="0.001"/>
   <testcase name="anEmptyRangeIsNeverComplete" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
   <testcase name="maskingNeverHidesEverythingBelowTheTop" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
   <testcase name="percentOfAnEmptyRangeIsZero" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
-  <testcase name="maskingKeepsTheWordCount" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
-  <testcase name="percentNeverExceedsAHundred" classname="com.athar.athar.quran.HifzTest" time="0.001"/>
-  <testcase name="percentIsRelativeToTheRangeNotTheWholeQuran" classname="com.athar.athar.quran.HifzTest" time="0.001"/>
-  <testcase name="anImpossibleRangeIsEmpty" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
+  <testcase name="maskingKeepsTheWordCount" classname="com.athar.athar.quran.HifzTest" time="0.001"/>
+  <testcase name="percentNeverExceedsAHundred" classname="com.athar.athar.quran.HifzTest" time="0.002"/>
+  <testcase name="percentIsRelativeToTheRangeNotTheWholeQuran" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
+  <testcase name="anImpossibleRangeIsEmpty" classname="com.athar.athar.quran.HifzTest" time="0.001"/>
   <testcase name="maskingGrowsMonotonically" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
   <testcase name="maskingHardensWithRepetition" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
   <testcase name="reviewStartsFromTheMostRecent" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
@@ -21,8 +21,8 @@
   <testcase name="levelZeroKeepsTheTextAsItIs" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
   <testcase name="maskingSurvivesBlankAndSingleWords" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
   <testcase name="theFirstReadingsAreVisible" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
-  <testcase name="completionNeedsEveryVerse" classname="com.athar.athar.quran.HifzTest" time="0.001"/>
-  <testcase name="theMaskHidesFromTheEnd" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
+  <testcase name="completionNeedsEveryVerse" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
+  <testcase name="theMaskHidesFromTheEnd" classname="com.athar.athar.quran.HifzTest" time="0.001"/>
   <testcase name="everyIdIsUniqueAndReal" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
   <testcase name="aRangeMaySpanSurahs" classname="com.athar.athar.quran.HifzTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>

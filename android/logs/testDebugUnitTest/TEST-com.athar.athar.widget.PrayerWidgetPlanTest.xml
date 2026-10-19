@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.widget.PrayerWidgetPlanTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.011">
+<testsuite name="com.athar.athar.widget.PrayerWidgetPlanTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.01">
   <properties/>
   <testcase name="remainingOverAnHourIsHoursAndMinutes" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.001"/>
   <testcase name="sunriseIsNeverTheNextPrayer" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.002"/>
   <testcase name="afterIshaItRollsToTomorrowsFajr" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.002"/>
   <testcase name="remainingIsNeverNegative" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.0"/>
-  <testcase name="clockIsTwentyFourHour" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.001"/>
+  <testcase name="clockIsTwentyFourHour" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.0"/>
   <testcase name="beforeFajrShowsTodaysFajr" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.002"/>
   <testcase name="remainingUnderAnHourIsMinutesOnly" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.0"/>
   <testcase name="digitsAreArabic" classname="com.athar.athar.widget.PrayerWidgetPlanTest" time="0.001"/>

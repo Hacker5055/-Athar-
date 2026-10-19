@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.notification.NotificationPlannerTest" tests="25" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.025">
+<testsuite name="com.athar.athar.notification.NotificationPlannerTest" tests="25" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:32" hostname="runnervm8k3b6" time="0.017">
   <properties/>
-  <testcase name="adhkarAlertsCarryNoPrayerSlot" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.006"/>
-  <testcase name="pastDueReminderIsDroppedButAthanStays" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
-  <testcase name="masterSwitchOffYieldsNothing" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
-  <testcase name="adhkarAlertIsScheduledOncePerDay" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.003"/>
-  <testcase name="silentPrayerKeepsItsReminder" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="adhkarAlertsCarryNoPrayerSlot" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.004"/>
+  <testcase name="pastDueReminderIsDroppedButAthanStays" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="masterSwitchOffYieldsNothing" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="adhkarAlertIsScheduledOncePerDay" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="silentPrayerKeepsItsReminder" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
   <testcase name="emptyDaysYieldEmptyPlan" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
-  <testcase name="morningAdhkarIsCappedAtSunrise" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
-  <testcase name="reminderAndAthanNeverShareAnId" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.004"/>
+  <testcase name="morningAdhkarIsCappedAtSunrise" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="reminderAndAthanNeverShareAnId" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
   <testcase name="noFridayInRangeIsSilentlyIgnored" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
   <testcase name="reminderIsScheduledBeforeAthn" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
   <testcase name="planIsOrderedWithinEachKind" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
   <testcase name="sunriseStaysOffEvenIfExplicitlyRequested" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
-  <testcase name="offModeCancelsOnlyThatPrayer" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
-  <testcase name="jumuahOffYieldsNone" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
-  <testcase name="eveningAdhkarFollowsAsr" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
-  <testcase name="adhkarOffYieldsNone" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
-  <testcase name="zeroMinutesMeansNoReminder" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="offModeCancelsOnlyThatPrayer" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="jumuahOffYieldsNone" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="eveningAdhkarFollowsAsr" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="adhkarOffYieldsNone" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
+  <testcase name="zeroMinutesMeansNoReminder" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
   <testcase name="defaultAdhanForEveryPrayerExceptSunrise" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
-  <testcase name="jumuahIsWeeklyBeforeFridayDhuhr" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
+  <testcase name="jumuahIsWeeklyBeforeFridayDhuhr" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
   <testcase name="pastDueIsNotScheduled" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
   <testcase name="eveningAdhkarIsCappedAtMaghrib" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
   <testcase name="everyIdIsDecodable" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
-  <testcase name="morningAdhkarFollowsFajr" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
-  <testcase name="jumuahWrapsAWeekWhenMissed" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
-  <testcase name="switchedOffPrayerHasNoReminder" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="morningAdhkarFollowsFajr" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
+  <testcase name="jumuahWrapsAWeekWhenMissed" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.0"/>
+  <testcase name="switchedOffPrayerHasNoReminder" classname="com.athar.athar.notification.NotificationPlannerTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
