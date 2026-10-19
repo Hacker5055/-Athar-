@@ -114,6 +114,9 @@ import com.athar.athar.ui.theme.AtharGold
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.key
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import com.athar.athar.core.ArabicText
 
 @Composable
 fun QuranScreen(
@@ -559,8 +562,16 @@ fun QuranScreen(
                             hits = results,
                             searching = searching,
                             surahHits = surahHits,
+                            query = query,
                             onOpenSurah = { surah -> opened = surah },
-                        ) { hit -> opened = surahs!!.firstOrNull { it.id == hit.ayah.surah } }
+                        ) { hit ->
+                            // ⚠️ النتيجةُ **تفتحُ عند آيتها**: الفتحُ
+                            // من أوّل السورةِ بعد البحثِ يجعل
+                            // المستخدمَ يبحثَ مرّتين — مرةً في النصّ
+                            // ومرةً في السورة.
+                            opened = surahs?.firstOrNull { it.id == hit.ayah.surah }
+                            openAyah = hit.ayah.number
+                        }
                     }
                 }
             }
@@ -625,6 +636,8 @@ private fun SearchResults(
     searching: Boolean,
     /// السور المطابقة **بالاسم** — تُعرض قبل النتائج النصّية.
     surahHits: List<Surah> = emptyList(),
+    /// الكلمةُ التي كتبها المستخدم — لتُبرزَ في النتيجة.
+    query: String = "",
     onOpenSurah: (Surah) -> Unit = {},
     onOpen: (QuranSearch.Hit) -> Unit,
 ) {
@@ -734,8 +747,9 @@ private fun SearchResults(
                             )
                         }
                         Text(
-                            // ⚠️ النص **كما هو** بلا أي تعديل — شرط الرخصة
-                            text = hit.ayah.text,
+                            // ⚠️ النص **كما هو** بلا أي تعديل — شرط الرخصة.
+                            // والإبرازُ لَونٌ على النصّ لا تغييرٌ فيه.
+                            text = highlightMatch(hit.ayah.text, query, MaterialTheme.colorScheme.primary),
                             fontSize = 19.sp,
                             lineHeight = 32.sp,
                             fontFamily = AmiriFamily,
@@ -747,6 +761,85 @@ private fun SearchResults(
             }
         }
     }
+}
+
+/// الألفُ وحده: ما يُهمَلُ في المقارنةِ المرنة.
+private const val ALEF = '\u0627'
+
+/// يُبرزُ في النصّ ما طابقَه البحث.
+///
+/// ⚠️ **المطابقةُ على النصِّ المُطبَّع**: النصُّ العثمانيُ مشكولٌ
+/// بالكامل، فمن كتب «الحمد لله» بلا تشكيلٍ لا يجد «ٱلۡحَمۡدُ
+/// لِلَّهِ» إلا بتطبيعِ الطرفين. فالمقارنةُ على المُطبَّعِ
+/// والقسمُ على الأصلِ حفاظًا على النصِّ المرخَّص — فالإبرازُ لَونٌ
+/// على الحروفِ لا تغييرٌ فيها.
+///
+/// ⚠️ **النصُّ يُحفظُ حرفيًّا**: تُؤخذ كلماتُه بمواضعها من النصّ
+/// الأصلي، فلا يُعادُ ترتيبُه ولا يُحذفُ منه حرفٌ.
+private fun highlightMatch(text: String, needle: String, color: Color): AnnotatedString {
+    val query = ArabicText.normalize(needle.trim())
+        .split(" ")
+        .filter { it.isNotBlank() }
+        .joinToString(" ")
+    if (query.isEmpty()) return AnnotatedString(text)
+    // ⚠️ **المرونةُ كما في البحث**: «العالمين» تُبرزُ «ٱلۡعَٰلَمِينَ»
+    // كما يجدُها البحثُ، وإلّا ظهرت النتيجةُ بلا إبرازٍ فرأى
+    // المستخدمُ أنّ البحثَ أخطأ.
+    val loose = query.filter { it != ALEF }
+    fun matches(piece: String): Boolean {
+        val normalized = ArabicText.normalize(piece)
+        if (query in normalized) return true
+        return loose.length >= 3 && loose in normalized.filter { it != ALEF }
+    }
+    val words = Regex("\\S+").findAll(text).toList()
+    if (words.isEmpty()) return AnnotatedString(text)
+    val queryWords = query.split(" ").count { it.isNotBlank() }
+    val builder = AnnotatedString.Builder()
+    var cursor = 0
+    var index = 0
+    while (index < words.size) {
+        val start = words[index].range.first
+        val end = words[index].range.last + 1
+        // ① نافذةٌ بعدد كلماتِ البحث: «الحمد لله» تُبرز كلمتين.
+        var windowEnd = -1
+        var next = index
+        if (queryWords > 1 && index + queryWords <= words.size) {
+            val candidate = words[index + queryWords - 1].range.last + 1
+            val piece = text.substring(start, candidate)
+            if (matches(piece)) {
+                windowEnd = candidate
+                next = index + queryWords
+            }
+        }
+        // ② كلمةٌ واحدة: «الحمد» تُبرز الكلمةَ التي تحويها.
+        if (windowEnd < 0) {
+            val piece = text.substring(start, end)
+            if (matches(piece)) {
+                windowEnd = end
+                next = index + 1
+            }
+        }
+        if (windowEnd < 0) {
+            builder.append(text.substring(cursor, end))
+            cursor = end
+            index += 1
+            continue
+        }
+        builder.append(text.substring(cursor, start))
+        builder.addStyle(
+            SpanStyle(
+                color = color,
+                fontWeight = FontWeight.Bold,
+            ),
+            start,
+            windowEnd,
+        )
+        builder.append(text.substring(start, windowEnd))
+        cursor = windowEnd
+        index = next
+    }
+    builder.append(text.substring(cursor))
+    return builder.toAnnotatedString()
 }
 
 /// شريط تصفية السور بمكان النزول.
@@ -917,7 +1010,11 @@ private fun ReaderView(
     // ⚠️ **البسملةُ تزيحُ الأرقام**: رأسُ السورة بندٌ في القائمة،
     // فالآيةُ الأولى رقمُها ١ في النصّ و٢ في القائمة.
     val basmalaOffset = if (basmala != null && surah.id != 1 && surah.id != 9) 1 else 0
-    LaunchedEffect(openAyah) {
+    // ⚠️ **التمريرُ ينتظرُ الآيات**: الآياتُ تُحمَّلُ بعد فتحِ
+    // السورة، فكان التمريرُ يجري قبل وصولِها فلا يجدُ إلا
+    // السورةَ من أعلاها. ومن بحثَ عن آيةٍ ثم فتحَها وجدَ
+    // نفسهَ في أوّلِ السورة — بحثَ مرّتين.
+    LaunchedEffect(openAyah, ayahs) {
         val target = openAyah
         if (target != null && target in 1..ayahs.size) {
             listState.scrollToItem(target - 1 + basmalaOffset)

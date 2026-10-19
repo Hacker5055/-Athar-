@@ -58,6 +58,31 @@ class QuranSearchTest {
         assertTrue(QuranSearch.search("كلمة-لا-توجد", surahs, ::ayahsOf).isEmpty())
     }
 
+    /// ⚠️ **الرسمُ العثمانيُّ يكتبُ الألفَ خنجريةً في محلِّ الألف**:
+    /// «ٱلۡعَٰلَمِينَ». فمن كتب «العالمين» لم يجدْ شيئًا — والخطأُ
+    /// في التطبيقِ لا في المستخدم.
+    @Test fun findsModernSpellingWithFullAlef() {
+        val hits = QuranSearch.search(
+            "العالمين",
+            surahs,
+            ::ayahsOf,
+        )
+        assertEquals(1, hits.size)
+        assertEquals(2, hits[0].ayah.number)
+    }
+
+    /// ⚠️ **الحرفةُ الواحدةُ لا تُبحثُ بها مرنًا**: «لا» بلا ألفٍ
+    /// = «ل»، ولو سُمحَ بذلك لَفَ كلُّ لامٍ في القرآن.
+    @Test fun shortNeedleIsNotSearchedLoosely() {
+        assertTrue(
+            QuranSearch.search(
+                "لا",
+                surahs,
+                ::ayahsOf,
+            ).isEmpty(),
+        )
+    }
+
     /// ⚠️ بلا حدٍّ يتجمّد البناء على جهاز ضعيف
     @Test fun respectsTheLimit() {
         assertEquals(1, QuranSearch.search("الله", surahs, ::ayahsOf, limit = 1).size)
