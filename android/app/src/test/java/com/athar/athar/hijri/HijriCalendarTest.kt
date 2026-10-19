@@ -15,6 +15,13 @@ class HijriCalendarTest {
 
     private val start = LocalDate.of(2026, 1, 1)
 
+    /// مقارنة (سنة، شهر، يوم) — `List<Int>` لا يقبل `<=` في كوتلن.
+    private fun compare(a: HijriDate, b: HijriDate): Int {
+        if (a.year != b.year) return a.year.compareTo(b.year)
+        if (a.month != b.month) return a.month.compareTo(b.month)
+        return a.day.compareTo(b.day)
+    }
+
     @Test
     fun monthIsAlwaysOneToTwelve() {
         var d = start
@@ -63,11 +70,9 @@ class HijriCalendarTest {
         repeat(800) {
             d = d.plusDays(1)
             val now = HijriCalendar.from(d)
-            val before = listOf(prev.year, prev.month, prev.day)
-            val after = listOf(now.year, now.month, now.day)
             assertTrue(
-                "تراجع في $d: $before → $after",
-                before <= after || (now.month < prev.month && now.year > prev.year),
+                "تراجع في $d: $prev → $now",
+                compare(prev, now) <= 0,
             )
             prev = now
         }
@@ -89,9 +94,7 @@ class HijriCalendarTest {
     fun aPositiveOffsetNeverMovesTheDateBackwards() {
         val base = HijriCalendar.from(start)
         val plus = HijriCalendar.from(start, 1)
-        assertTrue(
-            listOf(base.year, base.month, base.day) <= listOf(plus.year, plus.month, plus.day),
-        )
+        assertTrue("الإزاحة الموجبة تقدّم التاريخ لا تؤخّره", compare(base, plus) <= 0)
     }
 
     @Test
