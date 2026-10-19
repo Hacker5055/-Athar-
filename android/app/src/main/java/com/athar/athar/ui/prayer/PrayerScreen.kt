@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -455,7 +456,18 @@ private fun PrayerStrip(
     val locale = com.athar.athar.i18n.LocalAppLocale.current
     val timeFmt = remember(locale) { timeFormat(locale) }
     val now = remember(day) { Instant.now() }
+    // ⚠️ **الموعدُ القادمُ في الأفق**: المواقيتُ ستّةٌ والشاشةُ
+    // تسعُ أربعةً منها، فالعصرُ أو المغربُ يكونانِ خارجَ
+    // الشاشة. والشريطُ يمرّرُ بنفسه إلى الموعدِ القادم، فلا
+    // يضطرّ المستخدمُ إلى البحثِ عنه.
+    val stripState = rememberLazyListState()
+    LaunchedEffect(next?.first, day) {
+        val target = next?.first ?: return@LaunchedEffect
+        val index = day.ordered.indexOfFirst { it.first == target }
+        if (index >= 0) stripState.animateScrollToItem(index)
+    }
     LazyRow(
+        state = stripState,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = AtharPageMargin, vertical = 4.dp),

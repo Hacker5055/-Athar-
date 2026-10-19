@@ -101,6 +101,7 @@ const Map<String, String> kStringsFr = {
   'tap_to_count': 'Appuyez pour compter',
   'complete_all': 'Série terminée',
   'reset': 'Réinitialiser',
+  'adhkar_section_done': 'Ce chapitre est terminé',
   'dua_library': 'Bibliothèque de douas',
   'source': 'Source',
 

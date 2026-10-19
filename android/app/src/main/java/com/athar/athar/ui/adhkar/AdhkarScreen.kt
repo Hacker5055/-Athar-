@@ -239,6 +239,14 @@ private fun SectionScreen(
             }
         }
 
+        // ⚠️ **تمَّ البابُ**: حين يُتمُّ ذكرُ البابِ كلُّهُ صارت
+        // الأذكارُ خضراءَ واحدةً تلو الأخرى — ولا يعلم المستخدمُ
+        // أنّه فرغ. فبطاقةٌ في آخرِ البابِ تقولُ له ذلك، وتُعيدُ
+        // العدَّ متى شاء.
+        val allDone = section.items.isNotEmpty() && section.items.indices.all { index ->
+            counts.getOrElse(index) { 0 } >= section.items[index].count
+        }
+
         // ⚠️ **الوزنُ لا الامتلاءُ**: القائمةُ تأخذُ ما بقي من
         // الشاشةِ بعد الشريطِ والعنوان، لا الشاشةَ كلَّها.
         LazyColumn(modifier = Modifier.weight(1f)) {
@@ -261,6 +269,46 @@ private fun SectionScreen(
                         }
                     },
                 )
+            }
+            if (allDone) {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        ),
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                Icons.Filled.Check,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                            Text(
+                                text = s.adhkarSectionDone,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 12.dp),
+                            )
+                            TextButton(
+                                onClick = {
+                                    counts = List(section.items.size) { 0 }
+                                    AdhkarProgressStore.reset(context, section.title)
+                                },
+                            ) {
+                                Text(s.reset)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

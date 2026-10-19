@@ -101,6 +101,7 @@ const Map<String, String> kStringsEn = {
   'tap_to_count': 'Tap to count',
   'complete_all': 'Set completed',
   'reset': 'Reset',
+  'adhkar_section_done': 'This chapter is complete',
   'dua_library': 'Supplications library',
   'source': 'Source',
 

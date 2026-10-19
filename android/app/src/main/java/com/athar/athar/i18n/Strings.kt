@@ -117,6 +117,7 @@ class Strings(val locale: AppLocale) {
             "tap_to_count" to "اضغط للتسبيح",
             "complete_all" to "أكملت المجموعة",
             "reset" to "تصفير",
+            "adhkar_section_done" to "تمّت أذكارُ هذا الباب",
             "dua_library" to "مكتبة الأدعية",
             "source" to "المصدر",
             "names_title" to "أسماء الله الحسنى",
@@ -720,6 +721,7 @@ class Strings(val locale: AppLocale) {
             "tap_to_count" to "Tap to count",
             "complete_all" to "Set completed",
             "reset" to "Reset",
+            "adhkar_section_done" to "This chapter is complete",
             "dua_library" to "Supplications library",
             "source" to "Source",
             "names_title" to "The 99 Names of Allah",
@@ -1323,6 +1325,7 @@ class Strings(val locale: AppLocale) {
             "tap_to_count" to "Appuyez pour compter",
             "complete_all" to "Série terminée",
             "reset" to "Réinitialiser",
+            "adhkar_section_done" to "Ce chapitre est terminé",
             "dua_library" to "Bibliothèque de douas",
             "source" to "Source",
             "names_title" to "Les 99 Noms d’Allah",
@@ -1931,6 +1934,7 @@ class Strings(val locale: AppLocale) {
     val tapToCount: String get() = t("tap_to_count")
     val completeAll: String get() = t("complete_all")
     val reset: String get() = t("reset")
+    val adhkarSectionDone: String get() = t("adhkar_section_done")
     val duaLibrary: String get() = t("dua_library")
     val source: String get() = t("source")
     val namesTitle: String get() = t("names_title")

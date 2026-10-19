@@ -101,6 +101,7 @@ const Map<String, String> kStringsAr = {
   'tap_to_count': 'اضغط للتسبيح',
   'complete_all': 'أكملت المجموعة',
   'reset': 'تصفير',
+  'adhkar_section_done': 'تمّت أذكارُ هذا الباب',
   'dua_library': 'مكتبة الأدعية',
   'source': 'المصدر',
 
