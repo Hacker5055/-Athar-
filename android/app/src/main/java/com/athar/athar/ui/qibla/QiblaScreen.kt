@@ -72,6 +72,10 @@ fun QiblaScreen(
     /// اسمُ المدينةِ التي تُحسبُ لها القبلة — وإلا صارت الأرقامُ
     /// غامضةً: اتجاهٌ من أين؟
     placeName: String = "",
+    /// ⚠️ العنوانُ اختياريّ: حين تكون القبلةُ **قسمًا في
+    /// «المزيد»** فشريطُ الأقسامِ فوقَه يقول «القبلة» فيكفي،
+    /// وتكرارُ العنوانِ عنوانين في صفحةٍ واحدة.
+    showTitle: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
     val bearing = remember(latitude, longitude) {
@@ -116,11 +120,13 @@ fun QiblaScreen(
     ) {
         // ⚠️ **عنوانُ الفصلّ**: القبلةُ كانت تبدأُ بالبوصلة
         // بلا عنوان، فكان نصفُ التطبيقِ بلا بابٍ.
-        AtharPageTitle(
-            title = s.tabQibla,
-            subtitle = placeName.takeIf { it.isNotBlank() },
-            modifier = Modifier.fillMaxWidth(),
-        )
+        if (showTitle) {
+            AtharPageTitle(
+                title = s.tabQibla,
+                subtitle = placeName.takeIf { it.isNotBlank() },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
         when {
             !compass.isAvailable -> {
                 Text(

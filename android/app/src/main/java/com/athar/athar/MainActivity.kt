@@ -18,6 +18,11 @@ class MainActivity : ComponentActivity() {
     /// في التركيب، فتدفع التحديث بلا إعادة بناء.
     private val shortcutTab = mutableIntStateOf(0)
 
+    /// ⚠️ **قسمُ «المزيد»**: القبلةُ لم تعد بندًا في الشريط، فصار
+    /// فتحُها فتحَ «المزيد» على قسمِها. فالاختصارُ بابٌ إليها
+    /// كما كان، لا走着ٌ إلى تبويبٍ مات.
+    private val shortcutSection = mutableIntStateOf(0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,8 +31,12 @@ class MainActivity : ComponentActivity() {
         // مضى عليه نصف ساعة.
         PrayerWidgetProvider.refresh(this)
         shortcutTab.intValue = tabFrom(intent)
+        shortcutSection.intValue = sectionFrom(intent)
         setContent {
-            AtharApp(initialTab = shortcutTab.intValue)
+            AtharApp(
+                initialTab = shortcutTab.intValue,
+                initialSection = shortcutSection.intValue,
+            )
         }
     }
 
@@ -37,6 +46,7 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         shortcutTab.intValue = tabFrom(intent)
+        shortcutSection.intValue = sectionFrom(intent)
     }
 
     /// ⚠️ **نقرأها مرّة**: لولا حذفُ الزيادة لبقيت في النية بعد كل
@@ -46,6 +56,14 @@ class MainActivity : ComponentActivity() {
         val tab = intent?.getIntExtra(EXTRA_TAB, 0) ?: 0
         intent?.removeExtra(EXTRA_TAB)
         return tab
+    }
+
+    /// ⚠️ القسمُ يُقرأ ويُحذفُ كما يُقرأ التبويب: إلا أن قُرِئ
+    /// مرّة، لعلا يقفز التطبيقُ إلى قسمٍ من أينما كان.
+    private fun sectionFrom(intent: Intent?): Int {
+        val section = intent?.getIntExtra(EXTRA_SECTION, 0) ?: 0
+        intent?.removeExtra(EXTRA_SECTION)
+        return section
     }
 
     /// ⚠️ أزرار الصوت **تُلتقط في شاشة السبحة وحدها** (E5): من
@@ -67,5 +85,8 @@ class MainActivity : ComponentActivity() {
     companion object {
         /// رقمُ التبويب الذي يفتحه الاختصار.
         const val EXTRA_TAB = "athar.tab"
+
+        /// رقمُ القسمِ داخل «المزيد» الذي يفتحه الاختصار.
+        const val EXTRA_SECTION = "athar.section"
     }
 }

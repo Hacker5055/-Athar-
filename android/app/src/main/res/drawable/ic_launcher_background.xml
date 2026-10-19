@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- ⚠️ **الخلفيةُ تدرّجٌ ليليٌّ**: لونُ الشعار — كحليٌّ في الأعلىِ
+     إلى أعمقَ في الأسفل. وحيدُ اللونِ كان يجعلُ الأيقونةَ كرتًا
+     مسطّحًا لا أثرًا. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="#0F6B5C" android:pathData="M0,0h108v108h-108z" />
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="54" android:startY="0"
+                android:endX="54" android:endY="108"
+                android:startColor="#143A63"
+                android:endColor="#0A1E38" />
+        </aapt:attr>
+    </path>
 </vector>

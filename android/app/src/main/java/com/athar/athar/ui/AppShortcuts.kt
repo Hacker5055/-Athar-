@@ -24,7 +24,10 @@ object AppShortcuts {
     /// أرقامُ التبويبات — نفسُ ترتيب `AppShell`.
     const val TAB_QURAN = 1
     const val TAB_TASBIH = 3
-    const val TAB_QIBLA = 4
+    /// ⚠️ القبلةُ **لم تعد بندًا**: صار الشريطُ خمسةَ بنودٍ، فنُقلت
+    /// القبلةُ إلى «المزيد». واختصارُها يفتحُ «المزيد» على قسمِها.
+    const val TAB_MORE = 4
+    const val SECTION_QIBLA = 9
 
     fun apply(context: Context, strings: Strings) {
         val shortcuts = listOf(
@@ -32,9 +35,10 @@ object AppShortcuts {
                 context,
                 "athar_shortcut_qibla",
                 ACTION_QIBLA,
-                TAB_QIBLA,
+                TAB_MORE,
                 strings.tabQibla,
                 R.drawable.ic_shortcut_qibla,
+                section = SECTION_QIBLA,
             ),
             shortcut(
                 context,
@@ -65,6 +69,7 @@ object AppShortcuts {
         tab: Int,
         label: String,
         icon: Int,
+        section: Int = 0,
     ): ShortcutInfoCompat =
         ShortcutInfoCompat.Builder(context, id)
             .setShortLabel(label)
@@ -75,7 +80,8 @@ object AppShortcuts {
             .setIntent(
                 Intent(context, MainActivity::class.java)
                     .setAction(action)
-                    .putExtra(MainActivity.EXTRA_TAB, tab),
+                    .putExtra(MainActivity.EXTRA_TAB, tab)
+                    .putExtra(MainActivity.EXTRA_SECTION, section),
             )
             .build()
 }

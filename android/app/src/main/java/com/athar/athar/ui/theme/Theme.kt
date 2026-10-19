@@ -34,6 +34,18 @@ private val LightColors = lightColorScheme(
     onSurface = AtharOnSurface,
     surfaceVariant = AtharSurfaceVariant,
     onSurfaceVariant = AtharOnSurfaceVariant,
+    // ⚠️ **الأسطحُ الحاويةُ دافئةٌ لا بنفسجية**:Material3
+    // يتركها بلونِه الافتراضيِّ (رماديٌّ مائلٌ إلى البنفسجي)،
+    // فصارت البطاقةُ على ورقٍ كريميٍّ بنفسجيّةً خفيفة. والورقُ
+    // الأبيضُ الدافئُ على الورقِ الكريميِّ هو وجهُ التطبيق.
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFFBF9F4),
+    surfaceContainer = Color(0xFFF2EFE8),
+    surfaceContainerHigh = Color(0xFFEBE7DE),
+    surfaceContainerHighest = Color(0xFFE4E0D6),
+    surfaceBright = Color(0xFFFDFBF7),
+    surfaceDim = Color(0xFFE2DFD6),
+    surfaceTint = AtharPrimary,
     outline = AtharOutline,
     outlineVariant = AtharOutlineVariant,
     error = AtharError,
@@ -44,8 +56,9 @@ private val LightColors = lightColorScheme(
     inverseOnSurface = Color(0xFFF1F1ED),
 )
 
-/// ⚠️ **داكنٌ أخضرُ لا أسودُ خالص**: الأسودُ على شاشاتِ OLED يجعل
-/// الحروفَ «تحترق» بتباينٍ حادّ، والأخضرُ العميقُ يهدّئه.
+/// ⚠️ **داكنٌ كحليٌّ لا أسودُ خالص**: الأسودُ على شاشاتِ OLED يجعل
+/// الحروفَ «تحترق» بتباينٍ حادّ، والكحليُّ العميقُ يهدّئه ويوافقُ
+/// لونَ الشعار.
 private val DarkColors = darkColorScheme(
     primary = Color(0xFF7FD3C0),
     onPrimary = Color(0xFF00382F),
@@ -60,14 +73,22 @@ private val DarkColors = darkColorScheme(
     onTertiary = Color(0xFF103544),
     tertiaryContainer = Color(0xFF274C5C),
     onTertiaryContainer = Color(0xFFC5E7FF),
-    background = Color(0xFF0E1512),
-    onBackground = Color(0xFFE2E3DF),
-    surface = Color(0xFF0E1512),
-    onSurface = Color(0xFFE2E3DF),
-    surfaceVariant = Color(0xFF3F4946),
-    onSurfaceVariant = Color(0xFFBFC9C5),
-    outline = Color(0xFF899390),
-    outlineVariant = Color(0xFF3F4946),
+    background = Color(0xFF0B1626),
+    onBackground = Color(0xFFE3E9F2),
+    surface = Color(0xFF0B1626),
+    onSurface = Color(0xFFE3E9F2),
+    surfaceVariant = Color(0xFF1B2839),
+    onSurfaceVariant = Color(0xFFB7C3D4),
+    surfaceContainerLowest = Color(0xFF060D16),
+    surfaceContainerLow = Color(0xFF121D2B),
+    surfaceContainer = Color(0xFF172334),
+    surfaceContainerHigh = Color(0xFF21303F),
+    surfaceContainerHighest = Color(0xFF2B3B4C),
+    surfaceBright = Color(0xFF2E3D52),
+    surfaceDim = Color(0xFF070E18),
+    surfaceTint = Color(0xFF7FD3C0),
+    outline = Color(0xFF6E7C90),
+    outlineVariant = Color(0xFF2A3849),
     error = Color(0xFFF2B8B5),
     onError = Color(0xFF601410),
     errorContainer = Color(0xFF8C1D18),

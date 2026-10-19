@@ -1,5 +1,7 @@
 package com.athar.athar.i18n
 
+import com.athar.athar.core.ArabicDigits
+
 /// ⚠️ **ملف مولَّد** — لا تُعدّله يدويًا.
 /// أعِد توليده بـ `python3 android/tool/gen_strings.py`.
 /// المصدر: `app/lib/core/l10n/bundles/` (٣٢١ مفتاحًا × ٣ لغات).
@@ -14,10 +16,27 @@ class Strings(val locale: AppLocale) {
         bundle()[key] ?: kStringsAr[key] ?: key
 
     /// Lookup مع استبدال متغيّرات على شكل `{name}`.
+    ///
+    /// ⚠️ **الأرقامُ بلغةِ الواجهة**: في العربية «١٥» لا «15».
+    /// والرقمانِ في نصٍّ واحدٍ يبدوان كأنّ التطبيقَ ناقصٌ من لغته،
+    /// و«فاضل 15 دقيقة» يقرأه العربيُّ كأنّه محرَّفٌ من تطبيقٍ غريب.
     fun tArgs(key: String, vararg pairs: Pair<String, Any>): String {
         var value = t(key)
-        for ((name, arg) in pairs) value = value.replace("{$name}", "$arg")
+        for ((name, arg) in pairs) {
+            value = value.replace("{$name}", render(arg))
+        }
         return value
+    }
+
+    /// يُحوّلُ قيمةَ المعاملِ إلى نصٍّ بلغةِ الواجهة: الأرقامُ
+    /// العربيةُ في العربية، واللاتينيةُ فيما سواها.
+    private fun render(arg: Any): String = when (arg) {
+        is Int -> if (locale.isRtl) ArabicDigits.of(arg) else arg.toString()
+        is Long -> if (locale.isRtl) ArabicDigits.of(arg) else arg.toString()
+        // ⚠️ النصُّ يُحوَّلُ بأرقامه لا بتمامِه: «دقيقتان 15» يجب أن
+        // تصير «دقيقتان ١٥» لا «١٥دقيقتان».
+        is String -> if (locale.isRtl) ArabicDigits.ofText(arg) else arg
+        else -> arg.toString()
     }
 
     private fun bundle(): Map<String, String> = when (locale) {
@@ -408,6 +427,8 @@ class Strings(val locale: AppLocale) {
             "tracker_today_empty" to "ما سجّلت شيء اليوم — ابدأ بواحدة",
             "tracker_days" to "يوم",
             "more_asma" to "أسماء الله الحسنى",
+            "more_names" to "الأسماء",
+            "more_zakat" to "الزكاة",
             "adhkar_after_prayer" to "أذكار بعد الصلاة",
             "asma_search_hint" to "ابحث بالاسم أو المعنى",
             "asma_count" to "٩٩ اسمًا",
@@ -1014,6 +1035,8 @@ class Strings(val locale: AppLocale) {
             "tracker_today_empty" to "Nothing logged today — start with one",
             "tracker_days" to "days",
             "more_asma" to "The 99 Names",
+            "more_names" to "Names",
+            "more_zakat" to "Zakat",
             "adhkar_after_prayer" to "Adhkar after prayer",
             "asma_search_hint" to "Search by name or meaning",
             "asma_count" to "99 names",
@@ -1620,6 +1643,8 @@ class Strings(val locale: AppLocale) {
             "tracker_today_empty" to "Rien aujourd’hui — commencez par une",
             "tracker_days" to "jours",
             "more_asma" to "Les 99 Noms",
+            "more_names" to "Noms",
+            "more_zakat" to "Zakat",
             "adhkar_after_prayer" to "Adhkar après la prière",
             "asma_search_hint" to "Rechercher par nom ou sens",
             "asma_count" to "99 noms",
@@ -2231,6 +2256,8 @@ class Strings(val locale: AppLocale) {
     val trackerTodayEmpty: String get() = t("tracker_today_empty")
     val trackerDays: String get() = t("tracker_days")
     val moreAsma: String get() = t("more_asma")
+    val moreNames: String get() = t("more_names")
+    val moreZakat: String get() = t("more_zakat")
     val adhkarAfterPrayer: String get() = t("adhkar_after_prayer")
     val asmaSearchHint: String get() = t("asma_search_hint")
     val asmaCount: String get() = t("asma_count")

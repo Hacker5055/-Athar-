@@ -6,15 +6,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,8 +37,9 @@ import com.athar.athar.notification.NotificationScheduler
 import com.athar.athar.notification.SilenceScheduler
 import com.athar.athar.prayer.PrayerSettingsStore
 import com.athar.athar.ui.adhkar.AdhkarScreen
+import com.athar.athar.ui.components.AtharNavBar
+import com.athar.athar.ui.components.AtharNavItem
 import com.athar.athar.ui.prayer.PrayerScreen
-import com.athar.athar.ui.qibla.QiblaScreen
 import com.athar.athar.ui.tasbih.TasbihScreen
 import com.athar.athar.ui.quran.QuranScreen
 import com.athar.athar.ui.settings.MoreScreen
@@ -61,14 +58,16 @@ private val kTabIcons: List<ImageVector> = listOf(
     // الحزمة `material-icons-extended` لا تُحصى، واسم يبدو بديهيًّا
     // قد لا يكون فيها — فالتخمين يكلّف دورة بناء.
     Icons.Filled.RestartAlt,
-    Icons.Filled.Explore,
+    // ⚠️ القبلةُ **لم تعد بندًا**: صار الشريطُ بخمسة بنودٍ أضيقَ
+    // من أن تُقرأ أسماؤه، فنُقلت إلى «المزيد» حيث تُذكَرُ مع سائر
+    // الأدواتِ لا كندٍ يُساوي المواقيتَ في الوزن.
     Icons.Filled.MoreHoriz,
 )
 
 /// الهيكل: خمس تبويبات. المواقيت على «الرئيسية» لأنها أكثر ما يُفتح
 /// يوميًا (قرار docs/02).
 @Composable
-fun AtharApp(initialTab: Int = 0) {
+fun AtharApp(initialTab: Int = 0, initialSection: Int = 0) {
     val context = LocalContext.current
     var locale by remember { mutableStateOf(LocaleStore.load(context)) }
     var appearance by remember { mutableStateOf(AppearanceStore.load(context)) }
@@ -91,6 +90,7 @@ fun AtharApp(initialTab: Int = 0) {
                     locale = locale,
                     appearance = appearance,
                     initialTab = initialTab,
+                    initialSection = initialSection,
                     onLocaleChange = { next ->
                         locale = next
                         LocaleStore.save(context, next)
@@ -113,6 +113,7 @@ private fun AppShell(
     locale: AppLocale,
     appearance: Appearance,
     initialTab: Int = 0,
+    initialSection: Int = 0,
     onLocaleChange: (AppLocale) -> Unit,
     onAppearanceChange: (Appearance) -> Unit,
 ) {
@@ -147,22 +148,18 @@ private fun AppShell(
     }
 
     val labels = listOf(
-        s.tabHome, s.tabQuran, s.tabAdhkar, s.tabTasbih, s.tabQibla, s.tabMore,
+        s.tabHome, s.tabQuran, s.tabAdhkar, s.tabTasbih, s.tabMore,
     )
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                labels.forEachIndexed { index, label ->
-                    NavigationBarItem(
-                        selected = index == selected,
-                        onClick = { selected = index },
-                        icon = { Icon(kTabIcons[index], contentDescription = label) },
-                        label = { Text(label) },
-                        alwaysShowLabel = true,
-                    )
-                }
-            }
+            AtharNavBar(
+                items = labels.mapIndexed { index, label ->
+                    AtharNavItem(icon = kTabIcons[index], label = label)
+                },
+                selectedIndex = selected,
+                onSelect = { selected = it },
+            )
         },
     ) { innerPadding ->
         // ⚠️ **تلاشٍ بين التبويبات**: انتقالٌ فوريٌّ يُقرأ كقفزة،
@@ -202,17 +199,15 @@ private fun AppShell(
                     )
                     2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
                     3 -> TasbihScreen(modifier = Modifier.padding(innerPadding))
-                    4 -> QiblaScreen(
-                        latitude = settings.latitude,
-                        longitude = settings.longitude,
-                        placeName = settings.placeName,
-                        modifier = Modifier.padding(innerPadding),
-                    )
-                    5 -> MoreScreen(
+                    4 -> MoreScreen(
                         locale = locale,
                         appearance = appearance,
                         onLocaleChange = onLocaleChange,
                         onAppearanceChange = onAppearanceChange,
+                        qiblaLatitude = settings.latitude,
+                        qiblaLongitude = settings.longitude,
+                        qiblaPlaceName = settings.placeName,
+                        initialSection = initialSection,
                         modifier = Modifier.padding(innerPadding),
                     )
                     else -> Box(

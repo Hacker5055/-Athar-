@@ -50,7 +50,14 @@ val AtharCream = Color(0xFFF7F5F0)
 
 val AtharGold = Color(0xFFC8A15A)
 
+/// الليليُّ — لونُ الشعار: كحليٌّ عميقٌ يجمعُ بين أزرقِ البحرِ
+/// وليلِ المدينة. وهو لونُ شريطِ التنقّلِ العائمِ ووجهُ الأيقونة.
+val AtharNavy = Color(0xFF143A63)
+val AtharNavyDeep = Color(0xFF0A1E38)
+val AtharNavyOn = Color(0xFFF2EADA)
+
 /// تدرّجُ البطل — نفسُ تدرّجِ بطاقة المشاركة (F6)، فالتطبيقُ
-/// منتَجٌ واحد.
-val AtharHeroTop = Color(0xFF0F6B5C)
-val AtharHeroBottom = Color(0xFF083E36)
+/// منتَجٌ واحد. وهو تدرّجُ الشعار: كحليٌّ في الأعلىِ إلى أعمقَ
+/// في الأسفل، لا أخضرُ مائلٌ إلى الفيروزيّ.
+val AtharHeroTop = Color(0xFF15456B)
+val AtharHeroBottom = Color(0xFF0A2036)
