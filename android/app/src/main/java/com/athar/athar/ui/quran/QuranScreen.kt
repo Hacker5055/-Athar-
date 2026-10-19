@@ -98,6 +98,7 @@ import com.athar.athar.ui.theme.ReaderPalette
 import com.athar.athar.ui.theme.ReaderTheme
 import android.content.Intent
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Search
 import com.athar.athar.ui.theme.AmiriFamily
 
 @Composable
@@ -386,6 +387,9 @@ fun QuranScreen(
                     value = query,
                     onValueChange = { query = it },
                     label = { Text(s.quranSearchHint) },
+                    // ⚠️ **أيقونةُ البحث**: حقلٌ بلا أيقونةٍ يبدو
+                    // حقلًا فارغًا، والأيقونةُ تقول ما هو.
+                    leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp, vertical = 8.dp),

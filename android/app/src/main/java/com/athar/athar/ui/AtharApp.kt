@@ -3,6 +3,8 @@ package com.athar.athar.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
@@ -162,45 +164,55 @@ private fun AppShell(
             }
         },
     ) { innerPadding ->
-        when (selected) {
-            0 -> PrayerScreen(
-                settings = settings,
-                onContinueReading = { surah, ayah ->
-                    quranTarget = surah to ayah
-                    selected = 1
-                },
-                onSettingsChange = { newSettings ->
-                    settings = newSettings
-                    PrayerSettingsStore.save(context, newSettings)
-                    NotificationScheduler.rescheduleFromStored(context)
-                },
-                modifier = Modifier.padding(innerPadding),
-            )
-            1 -> QuranScreen(
-                readerTheme = appearance.readerTheme,
-                target = quranTarget,
-                onTargetConsumed = { quranTarget = null },
-                modifier = Modifier.padding(innerPadding),
-            )
-            2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
-            3 -> TasbihScreen(modifier = Modifier.padding(innerPadding))
-            4 -> QiblaScreen(
-                latitude = settings.latitude,
-                longitude = settings.longitude,
-                modifier = Modifier.padding(innerPadding),
-            )
-            5 -> MoreScreen(
-                locale = locale,
-                appearance = appearance,
-                onLocaleChange = onLocaleChange,
-                onAppearanceChange = onAppearanceChange,
-                modifier = Modifier.padding(innerPadding),
-            )
-            else -> Box(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = labels[selected])
+        // ⚠️ **تلاشٍ بين التبويبات**: انتقالٌ فوريٌّ يُقرأ كقفزة،
+        // والتلاشي البطيء (٢٢٠ جزءًا من الثانية) يجعل التنقّل
+        // انسيابيًّا — وهو ما يقتضيه نظامُ التصميم (٢٠٠–٣٠٠ جزء
+        // من الثانية).
+        Crossfade(
+            targetState = selected,
+            animationSpec = tween(durationMillis = 220),
+            label = "tab",
+        ) { tab ->
+            when (tab) {
+                0 -> PrayerScreen(
+                    settings = settings,
+                    onContinueReading = { surah, ayah ->
+                        quranTarget = surah to ayah
+                        selected = 1
+                    },
+                    onSettingsChange = { newSettings ->
+                        settings = newSettings
+                        PrayerSettingsStore.save(context, newSettings)
+                        NotificationScheduler.rescheduleFromStored(context)
+                    },
+                    modifier = Modifier.padding(innerPadding),
+                )
+                1 -> QuranScreen(
+                    readerTheme = appearance.readerTheme,
+                    target = quranTarget,
+                    onTargetConsumed = { quranTarget = null },
+                    modifier = Modifier.padding(innerPadding),
+                )
+                2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
+                3 -> TasbihScreen(modifier = Modifier.padding(innerPadding))
+                4 -> QiblaScreen(
+                    latitude = settings.latitude,
+                    longitude = settings.longitude,
+                    modifier = Modifier.padding(innerPadding),
+                )
+                5 -> MoreScreen(
+                    locale = locale,
+                    appearance = appearance,
+                    onLocaleChange = onLocaleChange,
+                    onAppearanceChange = onAppearanceChange,
+                    modifier = Modifier.padding(innerPadding),
+                )
+                else -> Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = labels[tab])
+                }
             }
         }
     }
