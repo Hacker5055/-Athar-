@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.ui.theme.AppearanceTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.019">
+<testsuite name="com.athar.athar.ui.theme.AppearanceTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.018">
   <properties/>
   <testcase name="fontScalesIncreaseMonotonically" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.001"/>
-  <testcase name="nightAndSepiaAreCustomThemes" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.013"/>
+  <testcase name="nightAndSepiaAreCustomThemes" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.012"/>
   <testcase name="defaultAppearanceIsNeutral" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
   <testcase name="themeModeOffersThreeChoices" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
   <testcase name="normalFontScaleChangesNothing" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
-  <testcase name="nightIsNotPureBlack" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
+  <testcase name="nightIsNotPureBlack" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.001"/>
   <testcase name="nightIsDarkerThanSepia" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
-  <testcase name="normalReaderThemeIsTransparent" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.001"/>
+  <testcase name="normalReaderThemeIsTransparent" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
   <testcase name="readerBackgroundsAreDistinct" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
   <testcase name="scalesStraddleTheNeutralPoint" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
   <testcase name="smallestScaleStaysReadable" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.0"/>
-  <testcase name="customThemesHaveReadableContrast" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.002"/>
+  <testcase name="customThemesHaveReadableContrast" classname="com.athar.athar.ui.theme.AppearanceTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

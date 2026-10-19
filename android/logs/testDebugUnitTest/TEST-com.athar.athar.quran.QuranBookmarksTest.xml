@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranBookmarksTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.014">
+<testsuite name="com.athar.athar.quran.QuranBookmarksTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.013">
   <properties/>
-  <testcase name="outOfRangeAyahsAreDropped" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.009"/>
-  <testcase name="encodeSortsBySurahThenAyah" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.002"/>
+  <testcase name="outOfRangeAyahsAreDropped" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.01"/>
+  <testcase name="encodeSortsBySurahThenAyah" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.001"/>
   <testcase name="toggleAddsThenRemoves" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
   <testcase name="keyCarriesBothSurahAndAyah" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
   <testcase name="encodeDropsInvalidKeys" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
   <testcase name="toggleKeepsTheOthers" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
-  <testcase name="decodeIsIdempotent" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
+  <testcase name="decodeIsIdempotent" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.001"/>
   <testcase name="validAyahSurvivesBesideAnInvalidOne" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
   <testcase name="garbageDecodesToEmptyNotException" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
   <testcase name="nullAndBlankDecodeToEmpty" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.tasbih.TasbihSessionTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.003">
+<testsuite name="com.athar.athar.tasbih.TasbihSessionTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.003">
   <properties/>
   <testcase name="theGapIsTwoMinutes" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
-  <testcase name="theNewestSessionComesFirst" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="theNewestSessionComesFirst" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.001"/>
   <testcase name="theFirstTapOpensASession" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
-  <testcase name="anEmptyLogHasAnEmptySummary" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="anEmptyLogHasAnEmptySummary" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.001"/>
   <testcase name="theBestSessionIsTheLongestOne" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
   <testcase name="aLongPauseOpensANewSession" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
   <testcase name="theLogIsCapped" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.001"/>

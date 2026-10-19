@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranSearchTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:55:33" hostname="runnervm8k3b6" time="0.007">
+<testsuite name="com.athar.athar.quran.QuranSearchTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.007">
   <properties/>
-  <testcase name="findsWithDiacritics" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
+  <testcase name="findsWithDiacritics" classname="com.athar.athar.quran.QuranSearchTest" time="0.002"/>
   <testcase name="stripsUthmaniSukunAndDaggerAlef" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="respectsTheLimit" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
   <testcase name="findsWithoutDiacritics" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
-  <testcase name="searchesAcrossSurahs" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
+  <testcase name="searchesAcrossSurahs" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="returnedTextIsUntouched" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <testcase name="emptyQueryYieldsNothing" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
   <testcase name="noMatchYieldsNothing" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
-  <testcase name="carriesSurahName" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
-  <testcase name="loadsEachSurahExactlyOnce" classname="com.athar.athar.quran.QuranSearchTest" time="0.002"/>
+  <testcase name="carriesSurahName" classname="com.athar.athar.quran.QuranSearchTest" time="0.001"/>
+  <testcase name="loadsEachSurahExactlyOnce" classname="com.athar.athar.quran.QuranSearchTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
