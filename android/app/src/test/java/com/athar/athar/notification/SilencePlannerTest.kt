@@ -5,6 +5,7 @@ import com.athar.athar.prayer.PrayerSlot
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -98,7 +99,10 @@ class SilencePlannerTest {
             now = midnight(day),
         )
         for (window in plan) {
-            assertEquals(30, window.end.epochSecond - window.start.epochSecond)
+            // ⚠️ **بالدقائق**: الفرقُ بالثواني (١٨٠٠) لا (٣٠)،
+            // فالاختبارُ الذي يقارن الدقائقَ بالثواني يمرّ أو يفشل
+            // على غيرِ معناه.
+            assertEquals(30L, Duration.between(window.start, window.end).toMinutes())
         }
     }
 
@@ -135,7 +139,7 @@ class SilencePlannerTest {
             now = midnight(day),
         )
         val fajr = plan.first { it.prayer == PrayerSlot.FAJR }
-        assertEquals(15, fajr.end.epochSecond - fajr.start.epochSecond)
+        assertEquals(15L, Duration.between(fajr.start, fajr.end).toMinutes())
     }
 
     // ── التداخل ─────────────────────────────────────────────
