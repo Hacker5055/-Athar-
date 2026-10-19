@@ -8,14 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -42,6 +38,7 @@ import com.athar.athar.quran.HifzStore
 import com.athar.athar.quran.QuranMeta
 import com.athar.athar.quran.QuranRepository
 import com.athar.athar.ui.theme.AmiriFamily
+import com.athar.athar.ui.components.AtharTopBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -104,21 +101,10 @@ fun HifzScreen(
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        AtharTopBar(
+            title = s.hifzTitle,
+            onBack = onBack,
         ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
-            }
-            Text(
-                s.hifzTitle,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-            )
             TextButtonSmall(s.hifzChange) {
                 HifzStore.clearPlan(context)
                 plan = null
@@ -236,7 +222,9 @@ fun HifzScreen(
 
         HorizontalDivider()
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        // ⚠️ **الوزنُ لا الامتلاءُ**: القائمةُ تأخذُ ما بقيَ من الشاشةِ
+        // بعدَ العناوين، لا الشاشةَ كلَّها.
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(ids) { id ->
                 VerseRow(
                     verseId = id,
@@ -324,20 +312,10 @@ private fun PlanPicker(
             .fillMaxSize()
             .padding(16.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
-            }
-            Text(
-                s.hifzTitle,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-            )
-        }
+        AtharTopBar(
+            title = s.hifzTitle,
+            onBack = onBack,
+        )
 
         Text(
             s.hifzBody,
@@ -355,6 +333,7 @@ private fun PlanPicker(
                 value = fromSurah,
                 onValueChange = { fromSurah = it.filter(Char::isDigit).take(3) },
                 label = { Text(s.hifzSurah) },
+                shape = MaterialTheme.shapes.small,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
             )
@@ -362,6 +341,7 @@ private fun PlanPicker(
                 value = fromAyah,
                 onValueChange = { fromAyah = it.filter(Char::isDigit).take(3) },
                 label = { Text(s.hifzAyah) },
+                shape = MaterialTheme.shapes.small,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
             )
@@ -377,6 +357,7 @@ private fun PlanPicker(
                 value = toSurah,
                 onValueChange = { toSurah = it.filter(Char::isDigit).take(3) },
                 label = { Text(s.hifzSurah) },
+                shape = MaterialTheme.shapes.small,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
             )
@@ -384,6 +365,7 @@ private fun PlanPicker(
                 value = toAyah,
                 onValueChange = { toAyah = it.filter(Char::isDigit).take(3) },
                 label = { Text(s.hifzAyah) },
+                shape = MaterialTheme.shapes.small,
                 modifier = Modifier.weight(1f),
                 singleLine = true,
             )

@@ -27,13 +27,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.athar.athar.backup.AtharBackup
 import com.athar.athar.backup.BackupCodec
 import com.athar.athar.backup.BackupStore
 import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.ui.components.SectionTitle
 import java.time.LocalDate
 
 /// شاشة النسخ الاحتياطي (F6 وF7 من docs/02).
@@ -75,7 +74,7 @@ fun BackupScreen(modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(s.backupTitle, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+        SectionTitle(title = s.backupTitle)
         Text(
             s.backupBody,
             style = MaterialTheme.typography.bodySmall,

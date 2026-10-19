@@ -16,12 +16,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,6 +57,10 @@ import com.athar.athar.adhkar.AdhkarSources
 import com.athar.athar.adhkar.Dhikr
 import com.athar.athar.prayer.CitySearch
 import com.athar.athar.ui.theme.AmiriFamily
+import com.athar.athar.ui.components.AtharTopBar
+import com.athar.athar.ui.components.EmptyState
+import com.athar.athar.ui.components.SectionTitle
+import com.athar.athar.ui.components.AtharSearchField
 
 @Composable
 fun AdhkarScreen(modifier: Modifier = Modifier) {
@@ -87,27 +90,19 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
 
     val list = sections
     Column(modifier = modifier.fillMaxSize()) {
-        Text(
-            text = s.tabAdhkar,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(16.dp),
-        )
+        SectionTitle(title = s.tabAdhkar, modifier = Modifier.padding(horizontal = 16.dp))
 
         if (list == null) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            // ⚠️ **الوزنُ لا الامتلاءُ**: الامتلاءُ يأخذُ ارتفاعَ
+            // الشاشةِ كلَّه فوقَ العنوانِ فيُقصَّ ما تحته.
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         } else {
-            OutlinedTextField(
+            AtharSearchField(
                 value = query,
                 onValueChange = { query = it },
-                label = { Text(s.adhkarSearchHint) },
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                singleLine = true,
+                label = s.adhkarSearchHint,
             )
 
             val q = CitySearch.normalize(query.trim())
@@ -125,7 +120,7 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
                 if (q.isEmpty()) AdhkarSections.postPrayer(list) else null
             }
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier.weight(1f)) {
                 // ⚠️ «أذكاري» **أولًا**: ما كتبه المستخدم يبحث عنه
                 // أكثر مما يبحث في الأبواب، وهو ملكه وحده.
                 if (q.isEmpty()) {
@@ -188,16 +183,12 @@ private fun SectionScreen(
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
-            }
-            Text(
-                text = section.title,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-            )
+        AtharTopBar(
+            title = section.title,
+            onBack = onBack,
+            titleSize = 18.sp,
+            divider = true,
+        ) {
             if (counts.any { it > 0 }) {
                 IconButton(onClick = {
                     counts = List(section.items.size) { 0 }
@@ -207,9 +198,10 @@ private fun SectionScreen(
                 }
             }
         }
-        HorizontalDivider()
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        // ⚠️ **الوزنُ لا الامتلاءُ**: القائمةُ تأخذُ ما بقي من
+        // الشاشةِ بعد الشريطِ والعنوان، لا الشاشةَ كلَّها.
+        LazyColumn(modifier = Modifier.weight(1f)) {
             itemsIndexed(section.items) { index, dhikr ->
                 DhikrCard(
                     dhikr = dhikr,
@@ -340,12 +332,10 @@ private fun CustomAdhkarScreen(
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
-            }
-            Text(text = s.adhkarMine, style = MaterialTheme.typography.titleMedium)
-        }
+        AtharTopBar(
+            title = s.adhkarMine,
+            onBack = onBack,
+        )
 
         // ⚖️ التنبيه **دائم** لا مرة واحدة: كل ذكر هنا بلا تخريج،
         // والنصّ يزول مع التمرير، والتكرار هو ما يبقى.
@@ -366,6 +356,7 @@ private fun CustomAdhkarScreen(
                 value = draft,
                 onValueChange = { draft = it },
                 label = { Text(s.adhkarAddHint) },
+                shape = MaterialTheme.shapes.small,
                 modifier = Modifier.weight(1f),
                 maxLines = 4,
             )
@@ -412,19 +403,17 @@ private fun CustomAdhkarScreen(
         }
 
         if (mine.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = s.adhkarMineEmpty,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+            EmptyState(
+                icon = Icons.Filled.Edit,
+                title = s.adhkarMineEmpty,
+                modifier = Modifier.weight(1f),
+            )
             return@Column
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        // ⚠️ **الوزنُ لا الامتلاءُ**: القائمةُ تأخذُ ما بقي من
+        // الشاشةِ بعد الحقول، لا الشاشةَ كلَّها.
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(mine, key = { it.id }) { item ->
                 val current = done[item.id] ?: 0
                 Row(

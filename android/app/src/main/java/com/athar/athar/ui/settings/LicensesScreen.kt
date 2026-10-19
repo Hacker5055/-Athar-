@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.quran.QuranSources
+import com.athar.athar.ui.components.SectionTitle
 
 /// مصدر خارجي واحد — ما يلزم المستخدم ليعرف من أين جاء ما يقرأ.
 ///
@@ -80,7 +81,7 @@ fun LicensesScreen(modifier: Modifier = Modifier) {
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        Text(s.sources, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        SectionTitle(title = s.sources)
 
         // ⚠️ كل مصدر يُذكر باسمه ورخصته، لا بـ «من مصادر عامة».
         // النسبة بلا اسم صاحبها ليست نسبة.

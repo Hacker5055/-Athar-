@@ -11,10 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.athar.athar.ui.theme.AmiriFamily
 import com.athar.athar.i18n.localDigits
+import com.athar.athar.ui.components.AtharTopBar
 
 /// وضع المصحف (B2 من docs/02) — قراءةً صفحةً صفحة.
 ///
@@ -71,35 +70,21 @@ fun MushafScreen(
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        AtharTopBar(
+            title = s.tArgs("mushaf_page", "n" to digits(page)),
+            subtitle = "${s.t("mushaf_of")} · ${s.quranJuz} ${digits(content?.juz ?: 0)}",
+            onBack = onBack,
+            divider = true,
         ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = s.tArgs("mushaf_page", "n" to digits(page)),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "${s.t("mushaf_of")} · ${s.quranJuz} ${digits(content?.juz ?: 0)}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
             IconButton(onClick = { jumping = true }) {
                 Icon(Icons.Filled.Search, contentDescription = s.mushafJump)
             }
         }
-        HorizontalDivider()
 
         val loaded = content
         if (loaded == null) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -111,7 +96,7 @@ fun MushafScreen(
             // الشاشة، لا نصٌّ ملتصقٌ بالحافة.
             Card(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .weight(1f)
                     .padding(14.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = CardDefaults.cardColors(
@@ -269,6 +254,7 @@ private fun JumpDialog(
                 onValueChange = { text = it.filter { c -> c.isDigit() }.take(4) },
                 singleLine = true,
                 label = { Text(s.mushafJump) },
+                shape = MaterialTheme.shapes.small,
             )
         },
         confirmButton = {

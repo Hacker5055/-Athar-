@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +25,8 @@ import com.athar.athar.ui.theme.ReaderPalette
 import com.athar.athar.ui.theme.ReaderTheme
 import com.athar.athar.ui.theme.ThemeMode
 import com.athar.athar.ui.theme.AmiriFamily
+import com.athar.athar.ui.components.SectionTitle
+import com.athar.athar.ui.components.SubHeading
 
 /// شاشة المظهر: الثيم · حجم الخط · ثيم القراءة.
 ///
@@ -46,8 +47,10 @@ fun AppearanceScreen(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
+        SectionTitle(title = s.appearance)
+
         // ── الثيم ────────────────────────────────────────
-        Text(s.themeMode, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+        SubHeading(s.themeMode)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             ThemeMode.entries.forEach { mode ->
                 FilterChip(
@@ -59,8 +62,8 @@ fun AppearanceScreen(
         }
 
         // ── حجم الخط ─────────────────────────────────────
-        Column(modifier = Modifier.padding(top = 20.dp)) {
-            Text(s.fontSize, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+        Column {
+            SubHeading(s.fontSize)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FontScaleLevel.entries.forEach { level ->
                     FilterChip(
@@ -82,8 +85,8 @@ fun AppearanceScreen(
         }
 
         // ── ثيم القراءة ──────────────────────────────────
-        Column(modifier = Modifier.padding(top = 20.dp)) {
-            Text(s.readerTheme, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+        Column {
+            SubHeading(s.readerTheme)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 ReaderTheme.entries.forEach { theme ->
                     FilterChip(

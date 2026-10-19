@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Widgets
 import com.athar.athar.ui.zakah.ZakahScreen
+import com.athar.athar.ui.components.SectionTitle
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.size
 
@@ -54,11 +55,9 @@ fun MoreScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp)) {
-            Text(s.language, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-            Text(
-                s.chooseLanguage,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            SectionTitle(
+                title = s.language,
+                subtitle = s.chooseLanguage,
             )
             androidx.compose.foundation.layout.Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

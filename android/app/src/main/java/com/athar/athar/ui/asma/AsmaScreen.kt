@@ -14,8 +14,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +36,10 @@ import com.athar.athar.asma.AsmaSearch
 import com.athar.athar.ui.theme.AmiriFamily
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.i18n.localDigits
+import com.athar.athar.ui.components.EmptyState
+import com.athar.athar.ui.components.SectionTitle
+import com.athar.athar.ui.components.AtharSearchField
+import androidx.compose.foundation.layout.PaddingValues
 
 /// الأسماء الحسنى — قائمة تبحث بالاسم أو بالمعنى.
 ///
@@ -49,26 +54,26 @@ fun AsmaScreen(modifier: Modifier = Modifier) {
     val all = remember { AsmaRepository(context).names() }
     val shown = remember(query, all) { AsmaSearch.search(query, all) }
 
-    Column(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-        OutlinedTextField(
+    Column(modifier = modifier.fillMaxSize()) {
+        SectionTitle(title = s.moreAsma, modifier = Modifier.padding(horizontal = 16.dp))
+        AtharSearchField(
             value = query,
             onValueChange = { query = it },
-            label = { Text(s.asmaSearchHint) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+            label = s.asmaSearchHint,
         )
 
         if (shown.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    s.asmaEmpty,
-                    textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(24.dp),
-                )
-            }
+            EmptyState(
+                icon = Icons.Filled.Search,
+                title = s.asmaEmpty,
+                modifier = Modifier.weight(1f),
+            )
         } else {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+            ) {
                 items(shown) { name -> NameCard(name) }
                 item {
                     Text(
@@ -78,7 +83,7 @@ fun AsmaScreen(modifier: Modifier = Modifier) {
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 16.dp, horizontal = 8.dp),
+                            .padding(vertical = 16.dp),
                     )
                 }
             }

@@ -55,6 +55,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import com.athar.athar.hijri.HijriCalendar
 import com.athar.athar.hijri.HijriStore
 import com.athar.athar.ui.hijri.hijriText
+import com.athar.athar.ui.components.SectionTitle
+import com.athar.athar.ui.components.SubHeading
 import java.time.LocalDate
 
 /// ⚠️ الشروق **مذكور** بصف «لا أذان — ليست صلاة» لا مخفيًا: إخفاؤه
@@ -108,18 +110,13 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text(
-                s.notifications,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
+            SectionTitle(title = s.notifications)
         }
 
         // ⚖️ ضبط الهجري **شرط لا تفضّل** (G2): الرؤية تختلف ببلد،
         // ولا نملك أن نفرض على المستخدم تقويم بلد آخر.
         item {
-            Text(s.hijriAdjust, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            SubHeading(s.hijriAdjust)
             Text(
                 s.hijriAdjustBody,
                 style = MaterialTheme.typography.bodySmall,

@@ -1,7 +1,6 @@
 package com.athar.athar.ui.prayer
 
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Share
@@ -45,6 +43,7 @@ import com.athar.athar.share.MonthCards
 import com.athar.athar.share.MonthImage
 import com.athar.athar.share.ShareImage
 import com.athar.athar.i18n.localDigits
+import com.athar.athar.ui.components.AtharTopBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -128,21 +127,10 @@ fun MonthScreen(
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        AtharTopBar(
+            title = s.monthlyCalendar,
+            onBack = onBack,
         ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
-            }
-            Text(
-                text = s.monthlyCalendar,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-            )
             // ⚠️ **مشاركةُ الجدول صورةً**: جدولٌ يُعلَّق على الحائط
             // أنفع من جدولٍ يُقرأ ويُنسى.
             IconButton(onClick = { share() }, enabled = !busy) {
@@ -217,7 +205,9 @@ fun MonthScreen(
 
         HorizontalDivider()
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        // ⚠️ **الوزنُ لا الامتلاءُ**: الجدولُ يأخذُ ما بقي بعد
+        // الشريطِ والترويسة، لا الشاشةَ كلَّها.
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(rows) { row ->
                 MonthRowView(row = row, locale = locale, today = base)
                 HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)

@@ -19,12 +19,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
@@ -38,7 +38,6 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -100,6 +99,9 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Search
 import com.athar.athar.ui.theme.AmiriFamily
 import com.athar.athar.i18n.localDigits
+import com.athar.athar.ui.components.AtharTopBar
+import com.athar.athar.ui.components.EmptyState
+import com.athar.athar.ui.components.AtharSearchField
 
 @Composable
 fun QuranScreen(
@@ -383,17 +385,14 @@ fun QuranScreen(
             )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(modifier = Modifier.fillMaxSize()) {
-                OutlinedTextField(
+                // ⚠️ **حقلُ بحثٍ واحد**: أيقونةُ البحثِ في «القرآن»
+                // و«الأذكار» و«الأسماء» و«المدينة» — حقلٌ واحدٌ
+                // بأيقونةٍ واحدة، لا أربعةُ حقولٍ بأربعِ صور.
+                AtharSearchField(
                     value = query,
                     onValueChange = { query = it },
-                    label = { Text(s.quranSearchHint) },
-                    // ⚠️ **أيقونةُ البحث**: حقلٌ بلا أيقونةٍ يبدو
-                    // حقلًا فارغًا، والأيقونةُ تقول ما هو.
-                    leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    singleLine = true,
+                    label = s.quranSearchHint,
+                    gutter = 12.dp,
                 )
                 Box(modifier = Modifier.weight(1f)) {
                     if (query.isBlank()) {
@@ -566,10 +565,10 @@ private fun SearchResults(
     // في نصّ القرآن لا يجد «الكهف» في اسمها، فيظنّ القارئ أنّ
     // التطبيق لا يعرف هذه السورة.
     if (hits.isEmpty() && surahHits.isEmpty()) {
-        Text(
-            text = s.quranSearchEmpty,
-            modifier = Modifier.padding(24.dp),
-            textAlign = TextAlign.Center,
+        EmptyState(
+            icon = Icons.Filled.Search,
+            title = s.quranSearchEmpty,
+            modifier = Modifier.fillMaxSize(),
         )
         return
     }
@@ -714,14 +713,23 @@ private fun SurahList(
     modifier: Modifier = Modifier,
 ) {
     val s = LocalStrings.current
-    LazyColumn(modifier = modifier.fillMaxSize()) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+        contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp),
+    ) {
         items(surahs) { surah ->
-            TextButton(
+            // ⚠️ **الفهرسُ كروتٌ**: سطرٌ عريضٌ بلا حدٍّ يبدو جدولًا،
+            // والبطاقةُ تجعل «السورةُ اسمٌ يُقرأ» لا رقمًا في قائمة.
+            // وهي نفسُ شكلِ نتيجةِ البحثِ فليس قسمان لشيءٍ واحد.
+            Card(
                 onClick = { onOpen(surah) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                    modifier = Modifier.padding(14.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -770,7 +778,6 @@ private fun SurahList(
                     }
                 }
             }
-            HorizontalDivider()
         }
         item {
             // ⚖️ النسبة شرط الرخصة
@@ -854,34 +861,24 @@ private fun ReaderView(
             .fillMaxSize()
             .then(if (palette.isCustom) Modifier.background(palette.background) else Modifier),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = surah.nameAr,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    // ⚠️ **نسخٌ لاسم السورة**: عنوانُ المصحف.
-                    fontFamily = AmiriFamily,
-                )
-                // ⚠️ الموضع مذكور دائمًا: بلا «الجزء / الصفحة» لا يعرف
-                // القارئ أين هو في المصحف الورقي الذي يتابع عليه.
-                Text(
-                    text = "${s.quranJuz} $juz · ${s.quranPage} $page",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (palette.isCustom) {
-                        palette.onBackground.copy(alpha = 0.72f)
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                )
-            }
-        }
+        // ⚠️ **لونُ الرأسِ يتبعُ ثيمَ القراءة**: في الليليّ
+        // والسيبيّا عنوانُ السورةِ لونُ الورق لا لونُ التطبيق.
+        AtharTopBar(
+            title = surah.nameAr,
+            // ⚠️ الموضع مذكور دائمًا: بلا «الجزء / الصفحة» لا يعرف
+            // القارئ أين هو في المصحف الورقي الذي يتابع عليه.
+            subtitle = "${s.quranJuz} $juz · ${s.quranPage} $page",
+            onBack = onBack,
+            // ⚠️ **نسخٌ لاسم السورة**: عنوانُ المصحف.
+            titleFont = AmiriFamily,
+            titleSize = 22.sp,
+            titleColor = if (palette.isCustom) palette.onBackground else MaterialTheme.colorScheme.onSurface,
+            subtitleColor = if (palette.isCustom) {
+                palette.onBackground.copy(alpha = 0.72f)
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
+        )
 
         // ⚠️ أفقي قابل للتمرير: ثلاث شرائح بثلاث لغات تتجاوز عرض الشاشة
         // على الأجهزة الصغيرة، والقصّ الصامت أسوأ من التمرير.
@@ -1168,32 +1165,21 @@ private fun BookmarksView(
     }.sortedWith(compareBy({ it.first }, { it.second }))
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = s.back)
-            }
-            Text(text = s.quranBookmarks, style = MaterialTheme.typography.titleMedium)
-        }
+        AtharTopBar(
+            title = s.quranBookmarks,
+            onBack = onBack,
+        )
         if (ordered.isEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(text = s.quranBookmarksEmpty, style = MaterialTheme.typography.titleMedium)
-                Text(
-                    text = s.quranBookmarksEmptyBody,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-            }
+            EmptyState(
+                icon = Icons.Filled.BookmarkBorder,
+                title = s.quranBookmarksEmpty,
+                body = s.quranBookmarksEmptyBody,
+                modifier = Modifier.weight(1f),
+            )
         } else {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            // ⚠️ **الوزنُ لا الامتلاءُ**: الامتلاءُ يأخذُ ارتفاعَ
+            // الشاشةِ كلَّه فوقَ الشريطِ فيُقصَّ آخرُ العلامات.
+            LazyColumn(modifier = Modifier.weight(1f)) {
                 items(ordered) { (surah, ayah, key) ->
                     val name = surahs.firstOrNull { it.id == surah }?.nameAr ?: "$surah"
                     // ⚠️ **المحفوظاتُ بطاقاتٌ كنتائج البحث**: سطرٌ

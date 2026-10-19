@@ -49,6 +49,8 @@ import com.athar.athar.ruqya.RuqyaSections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.athar.athar.ui.theme.AmiriFamily
+import com.athar.athar.ui.components.SectionTitle
+import com.athar.athar.ui.components.SubHeading
 
 /// الرقية الشرعية (C9 من docs/02).
 ///
@@ -89,12 +91,7 @@ fun RuqyaScreen(modifier: Modifier = Modifier) {
     val sections = adhkar
 
     Column(modifier = modifier.fillMaxSize()) {
-        Text(
-            text = s.ruqyaTitle,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-        )
+        SectionTitle(title = s.ruqyaTitle, modifier = Modifier.padding(horizontal = 16.dp))
         Text(
             text = s.ruqyaNote,
             style = MaterialTheme.typography.bodySmall,
@@ -103,15 +100,19 @@ fun RuqyaScreen(modifier: Modifier = Modifier) {
         )
 
         if (texts == null || sections == null) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            // ⚠️ **الوزنُ لا الامتلاءُ**: المؤشِّرُ في وسطِ ما
+            // بقي من الشاشة، لا في وسطِ الشاشةِ كلِّها.
+            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
             return@Column
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        // ⚠️ **الوزنُ لا الامتلاءُ**: القائمةُ تأخذُ ما بقي بعد
+        // العنوانِ والملاحظة، لا الشاشةَ كلَّها.
+        LazyColumn(modifier = Modifier.weight(1f)) {
             item {
-                SectionTitle(s.ruqyaQuranTitle)
+                SubHeading(s.ruqyaQuranTitle, Modifier.padding(horizontal = 16.dp))
             }
             items(RuqyaSelections.ALL) { selection ->
                 val verses = RuqyaSelections.verses(selection, texts[selection.id].orEmpty())
@@ -124,7 +125,7 @@ fun RuqyaScreen(modifier: Modifier = Modifier) {
             }
 
             item {
-                SectionTitle(s.ruqyaAdhkarTitle)
+                SubHeading(s.ruqyaAdhkarTitle, Modifier.padding(horizontal = 16.dp))
             }
             items(RuqyaSections.sections(sections)) { section ->
                 AdhkarCard(section = section)
@@ -143,16 +144,6 @@ fun RuqyaScreen(modifier: Modifier = Modifier) {
             }
         }
     }
-}
-
-@Composable
-private fun SectionTitle(text: String) {
-    Text(
-        text = text,
-        fontSize = 17.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 6.dp),
-    )
 }
 
 /// مقتطفٌ قرآنيّ مع تلاوته.

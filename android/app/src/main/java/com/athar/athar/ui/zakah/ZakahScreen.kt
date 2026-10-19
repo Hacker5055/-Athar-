@@ -1,7 +1,6 @@
 package com.athar.athar.ui.zakah
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,13 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -24,13 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.zakah.Zakah
+import com.athar.athar.ui.components.AtharTopBar
+import com.athar.athar.ui.components.SectionTitle
 import java.util.Locale
 
 /// حاسبة الزكاة (G5 من docs/02).
@@ -69,26 +64,23 @@ fun ZakahScreen(
     val fPrice = foodPrice.toDoubleOrNull() ?: 0.0
 
     Column(modifier = modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (onBack != null) {
-                IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = s.back)
-                }
-            }
-            Text(
-                text = s.zakahTitle,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+        // ⚠️ **في «المزيد» لا رجوعٌ إلى**: فالعنوانُ عنوانُ قسمٍ
+        // كسائرِ الأقسام، لا رأسُ شاشةٍ مستقلّة.
+        if (onBack != null) {
+            AtharTopBar(
+                title = s.zakahTitle,
+                onBack = onBack,
+                divider = true,
             )
+        } else {
+            SectionTitle(title = s.zakahTitle, modifier = Modifier.padding(horizontal = 16.dp))
         }
-        HorizontalDivider()
 
+        // ⚠️ **الوزنُ لا الامتلاءُ**: `fillMaxSize` هنا يأخذُ
+        // ارتفاعَ الشاشةِ كلَّه فوقَ العنوانِ فيُقصَّ المحتوى.
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
         ) {
@@ -226,6 +218,7 @@ private fun AmountField(
         value = value,
         onValueChange = { onChange(it.filter { c -> c.isDigit() || c == '.' }.take(12)) },
         label = { Text(label) },
+        shape = MaterialTheme.shapes.small,
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
     )

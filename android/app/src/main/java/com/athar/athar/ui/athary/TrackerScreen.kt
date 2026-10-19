@@ -44,6 +44,8 @@ import com.athar.athar.athary.WeeklySummaries
 import com.athar.athar.share.ShareCards
 import com.athar.athar.share.ShareImage
 import com.athar.athar.i18n.localDigits
+import com.athar.athar.ui.components.SectionTitle
+import com.athar.athar.ui.components.SubHeading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -68,16 +70,9 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            Text(
-                s.trackerTitle,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
-            Text(
-                s.trackerSub,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            SectionTitle(
+                title = s.trackerTitle,
+                subtitle = s.trackerSub,
             )
         }
 
@@ -127,7 +122,7 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        item { Text(s.habits, fontSize = 17.sp, fontWeight = FontWeight.Bold) }
+        item { SubHeading(s.habits) }
 
         items(HabitId.entries) { habit ->
             Card(modifier = Modifier.fillMaxWidth()) {
