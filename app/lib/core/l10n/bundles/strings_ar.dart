@@ -396,6 +396,7 @@ const Map<String, String> kStringsAr = {
   'qibla_turn_left': 'أدر الهاتف يسارًا {deg}°',
   'qibla_bearing_geo': 'القبلة على {deg}° من الشمال الجغرافي',
   'quran_load_failed': 'تعذّر تحميل القرآن',
+  'quran_load_failed_body': 'حدث خطأٌ أثناء التحميل. أعد المحاولة.',
   'quran_uthmani_source': 'النص العثماني: {source}',
   'minutes_short': '{n} د',
 

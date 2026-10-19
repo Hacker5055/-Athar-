@@ -374,6 +374,7 @@ class Strings(val locale: AppLocale) {
             "qibla_turn_left" to "أدر الهاتف يسارًا {deg}°",
             "qibla_bearing_geo" to "القبلة على {deg}° من الشمال الجغرافي",
             "quran_load_failed" to "تعذّر تحميل القرآن",
+            "quran_load_failed_body" to "حدث خطأٌ أثناء التحميل. أعد المحاولة.",
             "quran_uthmani_source" to "النص العثماني: {source}",
             "minutes_short" to "{n} د",
             "habit_fajr" to "صلاة الفجر في وقتها",
@@ -978,6 +979,7 @@ class Strings(val locale: AppLocale) {
             "qibla_turn_left" to "Turn the phone left {deg}°",
             "qibla_bearing_geo" to "Qibla is at {deg}° from true north",
             "quran_load_failed" to "Failed to load the Quran",
+            "quran_load_failed_body" to "Something went wrong while loading. Try again.",
             "quran_uthmani_source" to "Uthmani text: {source}",
             "minutes_short" to "{n} min",
             "habit_fajr" to "Fajr on time",
@@ -1582,6 +1584,7 @@ class Strings(val locale: AppLocale) {
             "qibla_turn_left" to "Tournez le téléphone à gauche de {deg}°",
             "qibla_bearing_geo" to "La Qibla est à {deg}° du nord géographique",
             "quran_load_failed" to "Échec du chargement du Coran",
+            "quran_load_failed_body" to "Une erreur est survenue au chargement. Réessayez.",
             "quran_uthmani_source" to "Texte othmanien : {source}",
             "minutes_short" to "{n} min",
             "habit_fajr" to "Fajr à l’heure",
@@ -2191,6 +2194,7 @@ class Strings(val locale: AppLocale) {
     val qiblaTurnLeft: String get() = t("qibla_turn_left")
     val qiblaBearingGeo: String get() = t("qibla_bearing_geo")
     val quranLoadFailed: String get() = t("quran_load_failed")
+    val quranLoadFailedBody: String get() = t("quran_load_failed_body")
     val quranUthmaniSource: String get() = t("quran_uthmani_source")
     val minutesShort: String get() = t("minutes_short")
     val habitFajr: String get() = t("habit_fajr")

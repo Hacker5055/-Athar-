@@ -32,6 +32,10 @@ fun EmptyState(
     title: String,
     modifier: Modifier = Modifier,
     body: String? = null,
+    /// فعلٌ اختياريٌّ تحتَ الحالة — «أعد المحاولة» في خطأِ
+    /// التحميل مثلًا. فالحالةُ التي لا عملَ فيها تُركتْ
+    /// للمستخدمِ حائرًا أمامَ ما لا يُشفي.
+    action: (@Composable () -> Unit)? = null,
 ) {
     // ⚠️ **العرضُ فقطُ لا الارتفاعُ**: `fillMaxSize` داخل عمودٍ
     // يأخذُ ارتفاعَ العمودِ كلَّه فيُزيحُ ما فوقَه. فالارتفاعُ
@@ -70,6 +74,11 @@ fun EmptyState(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 6.dp),
             )
+        }
+        if (action != null) {
+            Box(modifier = Modifier.padding(top = 16.dp)) {
+                action()
+            }
         }
     }
 }

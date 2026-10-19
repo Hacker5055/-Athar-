@@ -397,6 +397,7 @@ const Map<String, String> kStringsFr = {
   'qibla_turn_left': 'Tournez le téléphone à gauche de {deg}°',
   'qibla_bearing_geo': 'La Qibla est à {deg}° du nord géographique',
   'quran_load_failed': 'Échec du chargement du Coran',
+  'quran_load_failed_body': 'Une erreur est survenue au chargement. Réessayez.',
   'quran_uthmani_source': 'Texte othmanien : {source}',
   'minutes_short': '{n} min',
 

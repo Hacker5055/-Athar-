@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import android.Manifest
+import android.util.Log
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -37,6 +38,7 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
@@ -236,7 +238,12 @@ fun QuranScreen(
     // أُعيد تحليل ميجابايت عند كل حرف
     val translationRepo = remember { QuranTranslationRepository(context) }
 
-    LaunchedEffect(Unit) {
+    // ⚠️ **مفتاحُ إعادةِ التحميل**: زرُّ «إعادة المحاولة» لا
+    // يُعيدُ التحميلَ بنفسه، بل يزيدُ المفتاحَ فيُعادُ تشغيلُ
+    // ما يعتمدُ عليه. فبدونه كان الزرُّ صورةً بلا عمل.
+    var reloadKey by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(Unit, reloadKey) {
         runCatching {
             withContext(Dispatchers.IO) {
                 val repo = QuranRepository(context)
@@ -247,14 +254,22 @@ fun QuranScreen(
         }.onSuccess { (list, basm) ->
             surahs = list
             basmala = basm
-        }.onFailure { error = it.message }
+        }.onFailure { failure ->
+            // ⚠️ سببُ الخطأ يُسجَّلُ ولا يُعرض: «FileNotFoundException»
+            // ليست رسالةً لمستخدمِ تطبيقٍ دينيّ.
+            Log.e("Athar/Quran", "load failed", failure)
+            error = failure.message
+        }
     }
 
-    LaunchedEffect(opened) {
+    LaunchedEffect(opened, reloadKey) {
         val target = opened ?: return@LaunchedEffect
         runCatching {
             withContext(Dispatchers.IO) { QuranRepository(context).ayahsOf(target.id) }
-        }.onSuccess { ayahs = it }.onFailure { error = it.message }
+        }.onSuccess { ayahs = it }.onFailure { failure ->
+            Log.e("Athar/Quran", "ayahs failed", failure)
+            error = failure.message
+        }
     }
 
     // ⚠️ البحث على `Dispatchers.IO`: ٦٢٣٦ آية، والنصّ ١٫٧ ميجابايت
@@ -291,10 +306,25 @@ fun QuranScreen(
 
     Box(modifier = modifier.fillMaxSize()) {
         when {
-            error != null -> Text(
-                text = "${s.quranLoadFailed}: $error",
-                modifier = Modifier.align(Alignment.Center).padding(24.dp),
-                textAlign = TextAlign.Center,
+            // ⚠️ **الخطأُ شاشةٌ كسائرِ الشاشات**: كان سطرًا
+            // واحدًا فيه استثناءُ البرمجةِ كما هو — «تعذّر تحميل
+            // القرآن: FileNotFoundException…». فصارت حالةً
+            // مُشتركةً فيها أيقونةٌ ورسالةٌ وزرُّ إعادة.
+            error != null -> EmptyState(
+                icon = Icons.Filled.Warning,
+                title = s.quranLoadFailed,
+                body = s.quranLoadFailedBody,
+                modifier = Modifier.align(Alignment.Center),
+                action = {
+                    TextButton(
+                        onClick = {
+                            error = null
+                            reloadKey++
+                        },
+                    ) {
+                        Text(s.retry)
+                    }
+                },
             )
             opened != null -> ReaderView(
                 surah = opened!!,
