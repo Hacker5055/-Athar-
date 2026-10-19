@@ -98,7 +98,7 @@ fun MushafScreen(
                 modifier = Modifier
                     .weight(1f)
                     .padding(14.dp),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 ),

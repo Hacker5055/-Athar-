@@ -409,6 +409,23 @@ fun QuranScreen(
                         // الصفّ والقائمة فيه جنبًا إلى جنب — يحتاجان
                         // Column يوزّع الارتفاع بينهما.
                         Column(modifier = Modifier.fillMaxSize()) {
+                            // ⚠️ **«تابع القراءة» أوّلُ ما في تبويبِ
+                            // القرآن**: موضعُ القراءةِ كان معروفًا في
+                            // الرئيسيةِ وحدَها، فمن فتح تبويبَ القرآن
+                            // ليقرأ لم يجدْ موضعَه إلا برجوعٍ إلى
+                            // التبويبِ الأوّل.
+                            val last = remember { QuranProgressStore.load(context) }
+                            ContinueReadingCard(
+                                last = last,
+                                onOpen = { surah, ayah ->
+                                    opened = surahs?.firstOrNull { it.id == surah }
+                                    openAyah = ayah
+                                },
+                                modifier = Modifier.padding(
+                                    horizontal = AtharPageMargin,
+                                    vertical = 4.dp,
+                                ),
+                            )
                             // ⚠️ **الأفعالُ الأربعةُ أيقوناتٌ لا روابط**:
                             // رابطٌ نصّيٌّ بين آلاف النصوصِ التي
                             // ستُقرأ ليس فعلًا، بل سطرٌ ضائع.
@@ -1269,12 +1286,12 @@ private fun RowScope.QuranAction(
     Column(
         modifier = Modifier
             .weight(1f)
-            .clip(RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surface)
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(18.dp),
+                shape = RoundedCornerShape(20.dp),
             )
             .clickable(onClick = onClick)
             .padding(vertical = 12.dp),

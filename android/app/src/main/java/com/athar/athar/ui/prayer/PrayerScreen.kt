@@ -33,7 +33,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -71,7 +70,6 @@ import com.athar.athar.hijri.HijriStore
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.ui.hijri.hijriText
 import java.time.format.FormatStyle
-import com.athar.athar.quran.QuranProgress
 import com.athar.athar.quran.QuranProgressStore
 import com.athar.athar.hijri.IslamicEvents
 import com.athar.athar.prayer.PrayerDay
@@ -88,6 +86,7 @@ import com.athar.athar.ui.theme.AtharPrimaryContainer
 import com.athar.athar.hijri.HijriCalendar
 import java.time.temporal.ChronoUnit
 import com.athar.athar.ui.theme.AtharPageMargin
+import com.athar.athar.ui.quran.ContinueReadingCard
 
 /// ⚠️ **الوقتُ بلغةِ التطبيق**: `ofPattern` بلا لغةٍ يتبع لغةَ
 /// الجهاز، فيرى مستخدمُ العربية على هاتفٍ إنجليزيٍّ أوقاتَه
@@ -265,45 +264,11 @@ fun PrayerScreen(
         // القارئ. وهي تظهر بلا مفتاح إن لم يُقرأ شيء — اختصارٌ إلى
         // لا شيء ليس اختصارًا.
         val last = remember(hijriOffset) { QuranProgressStore.load(context) }
-        if (last != null) {
-            Card(
-                onClick = { onContinueReading(last.surah, last.ayah) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = s.continueReading,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = "${last.surahName} · ${s.quranAyah} ${last.ayah}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    Text(
-                        text = "${QuranProgress.percent(last.surah, last.ayah)}%",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
-                // ⚠️ **شريطُ التقدّمِ تحتِ السطر**: الرقمُ يقول «كم
-                // بقي» والشريطُ يقول «من أين بدأ» — والاثنان
-                // يُقرآن بنظرة.
-                LinearProgressIndicator(
-                    progress = { QuranProgress.percent(last.surah, last.ayah) / 100f },
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                )
-            }
-        }
+        ContinueReadingCard(
+            last = last,
+            onOpen = { surah, ayah -> onContinueReading(surah, ayah) },
+            modifier = Modifier.padding(horizontal = AtharPageMargin, vertical = 4.dp),
+        )
 
         // ⚠️ المناسبات **بعد التاريخ الهجري** لا قبله: العدّاد
         // التنازلي لا يُفهم إلا بجانب التاريخ الذي يُحسب منه.
@@ -384,7 +349,7 @@ private fun HeroCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(32.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
@@ -502,7 +467,7 @@ private fun PrayerStrip(
             Column(
                 modifier = Modifier
                     .width(76.dp)
-                    .clip(RoundedCornerShape(18.dp))
+                    .clip(RoundedCornerShape(20.dp))
                     .background(
                         if (isNext) {
                             MaterialTheme.colorScheme.primaryContainer
@@ -517,7 +482,7 @@ private fun PrayerStrip(
                             Modifier.border(
                                 width = 1.dp,
                                 color = MaterialTheme.colorScheme.outlineVariant,
-                                shape = RoundedCornerShape(18.dp),
+                                shape = RoundedCornerShape(20.dp),
                             )
                         },
                     )
