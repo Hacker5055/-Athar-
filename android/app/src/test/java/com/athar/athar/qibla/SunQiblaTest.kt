@@ -150,7 +150,7 @@ class SunQiblaTest {
         for (lat in listOf(paris, newYork)) {
             val bearing = SunQibla.qiblaBearing(lat.first, lat.second)
             for (day in SunQibla.qiblaSunDays(2026, lat.first, lat.second)) {
-                val noon = day.atTime(12, 0).toInstant(ZoneId.of("UTC"))
+                val noon = day.atTime(12, 0).atZone(ZoneId.of("UTC")).toInstant()
                 val declination = SunQibla.declination(noon)
                 val sunrise = SunQibla.sunriseAzimuth(lat.first, declination)
                 val difference = abs(sunrise - bearing)
