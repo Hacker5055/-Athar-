@@ -12,8 +12,13 @@ object QuranShare {
     fun ayah(surahName: String, ayahNumber: Int, ayahText: String): String =
         "«$ayahText» ﴿$ayahNumber﴾\nسورة $surahName\n\n${credit()}"
 
-    /// ⚠️ بلا سطر فارغ في المنتصف: نصّ يُلصق في رسالة لا يحتاج
-    /// فقرة إسناد كاملة، لكن الإسناد يبقى — في سطر واحد أخير.
+    /// ⚠️ بلا سطر فارغ ولا كلمة «سورة»: نصّ يُلصق في رسالة لا يحتاج
+    /// فقرة إسناد كاملة ولا لقبًا، لكن **الإسناد يبقى** — في سطر
+    /// واحد أخير.
+    ///
+    /// ⚠️ والاسم «مختصرة» يصدق بالأحرف لا بالنية: حذفتُ السطر
+    /// الفارغ وحده فكانت أطول من الكاملة بحرف، لأن « — » ثلاثة
+    /// أحرف والسطر الفارغ حرفان. فحذفتُ معه كلمة «سورة».
     fun ayahCompact(surahName: String, ayahNumber: Int, ayahText: String): String =
-        "«$ayahText» ﴿$ayahNumber﴾ — سورة $surahName\n${credit()}"
+        "«$ayahText» ﴿$ayahNumber﴾ — $surahName\n${credit()}"
 }
