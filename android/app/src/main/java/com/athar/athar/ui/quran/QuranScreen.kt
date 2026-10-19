@@ -104,6 +104,7 @@ import com.athar.athar.ui.components.AtharTopBar
 import com.athar.athar.ui.components.EmptyState
 import com.athar.athar.ui.components.AtharSearchField
 import com.athar.athar.ui.components.AtharPageTitle
+import com.athar.athar.ui.components.SubHeading
 import com.athar.athar.ui.theme.AtharPageMargin
 import com.athar.athar.ui.theme.AtharGold
 import androidx.compose.ui.text.style.TextOverflow
@@ -485,6 +486,10 @@ fun QuranScreen(
                             }
                             // ⚠️ الأجزاء قبل القائمة: من يقرأ «جزء عمّ»
                             // لا يبحث عن سورة النبأ — يبحث عن الجزء نفسه.
+                            // ⚠️ **عنوانٌ للصفّين معًا**: كان للأجزاءِ
+                            // عنوانٌ وللأحزابِ عنوانٌ آخرُ نصٌّ صغير —
+                            // فبدا كأنّهما قسمانِ مختلفان.
+                            SubHeading(s.quranTabJuz)
                             JuzRow { juz ->
                                 val (surah, ayah) = QuranMeta.startOfJuz(juz)
                                 opened = surahs!!.firstOrNull { it.id == surah }
@@ -494,15 +499,7 @@ fun QuranScreen(
                             // الجزء أعمّ والحزب أدقّ، ومن يحفظ
                             // ترتيب الأجزاء يصلها من الصفّ الأوّل،
                             // ومن يقرأ بالحزب يجد ما يريد تحته.
-                            Text(
-                                s.quranHizb,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(
-                                    horizontal = AtharPageMargin,
-                                    vertical = 2.dp,
-                                ),
-                            )
+                            SubHeading(s.quranTabHizb)
                             HizbRow { hizb ->
                                 val (surah, ayah) = QuranMeta.startOfHizb(hizb)
                                 opened = surahs!!.firstOrNull { it.id == surah }

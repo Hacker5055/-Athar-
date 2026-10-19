@@ -49,7 +49,6 @@ import com.athar.athar.ruqya.RuqyaSections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.athar.athar.ui.theme.AmiriFamily
-import com.athar.athar.ui.components.SectionTitle
 import com.athar.athar.ui.components.SubHeading
 
 /// الرقية الشرعية (C9 من docs/02).
@@ -91,12 +90,13 @@ fun RuqyaScreen(modifier: Modifier = Modifier) {
     val sections = adhkar
 
     Column(modifier = modifier.fillMaxSize()) {
-        SectionTitle(title = s.ruqyaTitle, modifier = Modifier.padding(horizontal = 16.dp))
+        // ⚠️ **لا عنوانَ في «المزيد»**: اسمُ القسمِ معروضٌ في
+        // شريطِ الأقسامِ فوقَه. ويبقى الشرحُ تحتَه.
         Text(
             text = s.ruqyaNote,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp),
         )
 
         if (texts == null || sections == null) {

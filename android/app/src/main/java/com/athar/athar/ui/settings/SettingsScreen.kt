@@ -55,7 +55,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import com.athar.athar.hijri.HijriCalendar
 import com.athar.athar.hijri.HijriStore
 import com.athar.athar.ui.hijri.hijriText
-import com.athar.athar.ui.components.SectionTitle
 import com.athar.athar.ui.components.SubHeading
 import java.time.LocalDate
 
@@ -109,9 +108,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item {
-            SectionTitle(title = s.notifications)
-        }
+        // ⚠️ **لا عنوانَ في «المزيد»**: اسمُ القسمِ معروضٌ في
+        // شريطِ الأقسامِ فوقَه.
 
         // ⚖️ ضبط الهجري **شرط لا تفضّل** (G2): الرؤية تختلف ببلد،
         // ولا نملك أن نفرض على المستخدم تقويم بلد آخر.

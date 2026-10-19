@@ -32,7 +32,6 @@ import com.athar.athar.backup.AtharBackup
 import com.athar.athar.backup.BackupCodec
 import com.athar.athar.backup.BackupStore
 import com.athar.athar.i18n.LocalStrings
-import com.athar.athar.ui.components.SectionTitle
 import java.time.LocalDate
 
 /// شاشة النسخ الاحتياطي (F6 وF7 من docs/02).
@@ -74,7 +73,8 @@ fun BackupScreen(modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        SectionTitle(title = s.backupTitle)
+        // ⚠️ **لا عنوانَ في «المزيد»**: اسمُ القسمِ معروضٌ في
+        // شريطِ الأقسامِ فوقَه.
         Text(
             s.backupBody,
             style = MaterialTheme.typography.bodySmall,

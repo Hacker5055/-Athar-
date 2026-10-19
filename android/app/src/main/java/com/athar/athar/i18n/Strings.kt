@@ -305,6 +305,7 @@ class Strings(val locale: AppLocale) {
             "widget_add_hint" to "اضغط مطوّلًا على الشاشة الرئيسية ← ودجت ← أثر",
             "quran_tab_surah" to "السور",
             "quran_tab_juz" to "الأجزاء",
+            "quran_tab_hizb" to "الأحزاب",
             "quran_tab_page" to "الصفحات",
             "quran_empty_title" to "القرآن ليس محمّلًا على جهازك",
             "quran_empty_body" to "نص القرآن لا يُرفق مع التطبيق — قرار متعمّد لحماية حقوق النص والتحقّق منه. استورد ملفًا واحدًا مرة واحدة، وبعدها يشتغل بلا إنترنت تمامًا.",
@@ -907,6 +908,7 @@ class Strings(val locale: AppLocale) {
             "widget_add_hint" to "Long-press your home screen → Widgets → Athar",
             "quran_tab_surah" to "Surahs",
             "quran_tab_juz" to "Juz",
+            "quran_tab_hizb" to "Hizbs",
             "quran_tab_page" to "Pages",
             "quran_empty_title" to "The Quran is not on your device yet",
             "quran_empty_body" to "The Quranic text is not bundled with the app — a deliberate choice to protect and verify the text. Import one file once, and it works fully offline afterwards.",
@@ -1509,6 +1511,7 @@ class Strings(val locale: AppLocale) {
             "widget_add_hint" to "Appui long sur l’écran d’accueil → Widgets → Athar",
             "quran_tab_surah" to "Sourates",
             "quran_tab_juz" to "Juz",
+            "quran_tab_hizb" to "Hizb",
             "quran_tab_page" to "Pages",
             "quran_empty_title" to "Le Coran n’est pas encore sur votre appareil",
             "quran_empty_body" to "Le texte coranique n’est pas fourni avec l’application — un choix délibéré pour protéger et vérifier le texte. Importez un fichier une seule fois, puis tout fonctionne hors ligne.",
@@ -2116,6 +2119,7 @@ class Strings(val locale: AppLocale) {
     val widgetAddHint: String get() = t("widget_add_hint")
     val quranTabSurah: String get() = t("quran_tab_surah")
     val quranTabJuz: String get() = t("quran_tab_juz")
+    val quranTabHizb: String get() = t("quran_tab_hizb")
     val quranTabPage: String get() = t("quran_tab_page")
     val quranEmptyTitle: String get() = t("quran_empty_title")
     val quranEmptyBody: String get() = t("quran_empty_body")

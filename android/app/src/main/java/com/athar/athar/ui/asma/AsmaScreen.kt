@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
@@ -37,7 +39,6 @@ import com.athar.athar.ui.theme.AmiriFamily
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.i18n.localDigits
 import com.athar.athar.ui.components.EmptyState
-import com.athar.athar.ui.components.SectionTitle
 import com.athar.athar.ui.components.AtharSearchField
 import androidx.compose.foundation.layout.PaddingValues
 
@@ -55,7 +56,9 @@ fun AsmaScreen(modifier: Modifier = Modifier) {
     val shown = remember(query, all) { AsmaSearch.search(query, all) }
 
     Column(modifier = modifier.fillMaxSize()) {
-        SectionTitle(title = s.moreAsma, modifier = Modifier.padding(horizontal = 16.dp))
+        // ⚠️ **لا عنوانَ في «المزيد»**: اسمُ القسمِ معروضٌ في
+        // شريطِ الأقسامِ فوقَه، وتكرارُه هنا يُعيدُ الكلمةَ مرّتين.
+        Spacer(Modifier.height(6.dp))
         AtharSearchField(
             value = query,
             onValueChange = { query = it },

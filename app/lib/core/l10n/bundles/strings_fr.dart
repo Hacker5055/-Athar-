@@ -324,6 +324,7 @@ const Map<String, String> kStringsFr = {
   // ══ القرآن · القارئ (أسبوع ٦) ══
   'quran_tab_surah': 'Sourates',
   'quran_tab_juz': 'Juz',
+  'quran_tab_hizb': 'Hizb',
   'quran_tab_page': 'Pages',
   'quran_empty_title': 'Le Coran n’est pas encore sur votre appareil',
   'quran_empty_body': 'Le texte coranique n’est pas fourni avec l’application — un choix délibéré pour protéger et vérifier le texte. Importez un fichier une seule fois, puis tout fonctionne hors ligne.',

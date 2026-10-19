@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.zakah.Zakah
 import com.athar.athar.ui.components.AtharTopBar
-import com.athar.athar.ui.components.SectionTitle
 import java.util.Locale
 
 /// حاسبة الزكاة (G5 من docs/02).
@@ -64,16 +63,15 @@ fun ZakahScreen(
     val fPrice = foodPrice.toDoubleOrNull() ?: 0.0
 
     Column(modifier = modifier.fillMaxSize()) {
-        // ⚠️ **في «المزيد» لا رجوعٌ إلى**: فالعنوانُ عنوانُ قسمٍ
-        // كسائرِ الأقسام، لا رأسُ شاشةٍ مستقلّة.
+        // ⚠️ **في «المزيد» لا رجوعٌ ولا عنوانُ**: فالعنوانُ
+        // اسمُ قسمٍ معروضٌ في شريطِ الأقسامِ فوقَه، وسهمُ الرجوعِ
+        // في قسمٍ لا شاشةٍ يحيّر.
         if (onBack != null) {
             AtharTopBar(
                 title = s.zakahTitle,
                 onBack = onBack,
                 divider = true,
             )
-        } else {
-            SectionTitle(title = s.zakahTitle, modifier = Modifier.padding(horizontal = 16.dp))
         }
 
         // ⚠️ **الوزنُ لا الامتلاءُ**: `fillMaxSize` هنا يأخذُ

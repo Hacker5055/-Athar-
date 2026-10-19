@@ -25,7 +25,6 @@ import com.athar.athar.ui.theme.ReaderPalette
 import com.athar.athar.ui.theme.ReaderTheme
 import com.athar.athar.ui.theme.ThemeMode
 import com.athar.athar.ui.theme.AmiriFamily
-import com.athar.athar.ui.components.SectionTitle
 import com.athar.athar.ui.components.SubHeading
 
 /// شاشة المظهر: الثيم · حجم الخط · ثيم القراءة.
@@ -47,7 +46,8 @@ fun AppearanceScreen(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 12.dp),
     ) {
-        SectionTitle(title = s.appearance)
+        // ⚠️ **لا عنوانَ في «المزيد»**: اسمُ القسمِ معروضٌ في
+        // شريطِ الأقسامِ فوقَه.
 
         // ── الثيم ────────────────────────────────────────
         SubHeading(s.themeMode)

@@ -44,7 +44,6 @@ import com.athar.athar.athary.WeeklySummaries
 import com.athar.athar.share.ShareCards
 import com.athar.athar.share.ShareImage
 import com.athar.athar.i18n.localDigits
-import com.athar.athar.ui.components.SectionTitle
 import com.athar.athar.ui.components.SubHeading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -70,9 +69,12 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            SectionTitle(
-                title = s.trackerTitle,
-                subtitle = s.trackerSub,
+            // ⚠️ **لا عنوانَ في «المزيد»**: اسمُ القسمِ معروضٌ في
+            // شريطِ الأقسامِ فوقَه، ويبقى وصفُه تحتَه.
+            Text(
+                text = s.trackerSub,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
