@@ -102,6 +102,9 @@ import com.athar.athar.i18n.localDigits
 import com.athar.athar.ui.components.AtharTopBar
 import com.athar.athar.ui.components.EmptyState
 import com.athar.athar.ui.components.AtharSearchField
+import com.athar.athar.ui.components.AtharPageTitle
+import com.athar.athar.ui.theme.AtharPageMargin
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun QuranScreen(
@@ -385,6 +388,13 @@ fun QuranScreen(
             )
             surahs == null -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(modifier = Modifier.fillMaxSize()) {
+                // ⚠️ **عنوانُ الفصلّ**: كلُّ تبويبٍ له عنوانُه،
+                // والأذكارُ والسبحةُ والقبلةُ والمزيدُ تبدأُ بمحتواها
+                // مباشرةً — فكان نصفُ التطبيقِ بلا بابٍ.
+                AtharPageTitle(
+                    title = s.tabQuran,
+                    modifier = Modifier.padding(horizontal = AtharPageMargin),
+                )
                 // ⚠️ **حقلُ بحثٍ واحد**: أيقونةُ البحثِ في «القرآن»
                 // و«الأذكار» و«الأسماء» و«المدينة» — حقلٌ واحدٌ
                 // بأيقونةٍ واحدة، لا أربعةُ حقولٍ بأربعِ صور.
@@ -392,7 +402,6 @@ fun QuranScreen(
                     value = query,
                     onValueChange = { query = it },
                     label = s.quranSearchHint,
-                    gutter = 12.dp,
                 )
                 Box(modifier = Modifier.weight(1f)) {
                     if (query.isBlank()) {
@@ -410,7 +419,10 @@ fun QuranScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                                    .padding(
+                                        horizontal = AtharPageMargin,
+                                        vertical = 6.dp,
+                                    ),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
                                 QuranAction(
@@ -458,7 +470,10 @@ fun QuranScreen(
                                 s.quranHizb,
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+                                modifier = Modifier.padding(
+                                    horizontal = AtharPageMargin,
+                                    vertical = 2.dp,
+                                ),
                             )
                             HizbRow { hizb ->
                                 val (surah, ayah) = QuranMeta.startOfHizb(hizb)
@@ -513,7 +528,7 @@ private fun HizbRow(onPick: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = AtharPageMargin, vertical = 4.dp)
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -533,7 +548,7 @@ private fun JuzRow(onPick: (Int) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(horizontal = AtharPageMargin, vertical = 4.dp)
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -591,7 +606,7 @@ private fun SearchResults(
                     onClick = { onOpenSurah(surah) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 3.dp),
+                        .padding(horizontal = AtharPageMargin, vertical = 3.dp),
                 ) {
                     Row(
                         modifier = Modifier.padding(14.dp),
@@ -643,7 +658,7 @@ private fun SearchResults(
                     onClick = { onOpen(hit) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 3.dp),
+                        .padding(horizontal = AtharPageMargin, vertical = 3.dp),
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
                         Row(
@@ -726,7 +741,7 @@ private fun SurahList(
                 onClick = { onOpen(surah) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
+                    .padding(horizontal = AtharPageMargin),
             ) {
                 Row(
                     modifier = Modifier.padding(14.dp),
@@ -1292,6 +1307,11 @@ private fun RowScope.QuranAction(
             text = label,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface,
+            // ⚠️ **سطر واحد وقطعً بثلاث نقاط**: الأسماء تقول عند المعرب،
+            // فلو اقتطً سطرين لما الأسماء يقطع نصفه، فبقي معًًا متققً.
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 6.dp),
         )
     }

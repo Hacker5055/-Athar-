@@ -36,6 +36,8 @@ import com.athar.athar.ui.zakah.ZakahScreen
 import com.athar.athar.ui.components.SectionTitle
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.size
+import com.athar.athar.ui.components.AtharPageTitle
+import com.athar.athar.ui.theme.AtharPageMargin
 
 /// تبويب «المزيد» — المدخل إلى ما لا يحتاج تبويبًا خاصًا به
 /// (`docs/03`: المتتبع · الإعدادات · عن التطبيق).
@@ -54,7 +56,17 @@ fun MoreScreen(
     var section by remember { mutableIntStateOf(0) }
 
     Column(modifier = modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp)) {
+        // ⚠️ **عنوانُ الفصلّ**: المزيدُ كان يبدأُ بشريطِ الأقسام
+        // بلا عنوان، فكان نصفُ التطبيقِ بلا بابٍ.
+        AtharPageTitle(
+            title = s.tabMore,
+            modifier = Modifier.padding(horizontal = AtharPageMargin),
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = AtharPageMargin, vertical = 10.dp),
+        ) {
             SectionTitle(
                 title = s.language,
                 subtitle = s.chooseLanguage,

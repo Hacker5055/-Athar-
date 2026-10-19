@@ -71,6 +71,8 @@ import com.athar.athar.ui.theme.AtharPrimaryContainer
 import com.athar.athar.i18n.localDigits
 import java.time.LocalDate
 import java.time.ZoneId
+import com.athar.athar.ui.components.AtharPageTitle
+import com.athar.athar.ui.theme.AtharPageMargin
 
 /// السبحة (E1–E4 من docs/02).
 ///
@@ -198,9 +200,15 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+            .padding(horizontal = AtharPageMargin, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // ⚠️ **عنوانُ الفصلّ**: السبحةُ كانت تبدأُ بدائرتها
+        // بلا عنوان، فكان نصفُ التطبيقِ بلا بابٍ.
+        AtharPageTitle(
+            title = s.tabTasbih,
+            modifier = Modifier.fillMaxWidth(),
+        )
         Text(
             // ⚠️ النصّ عربي ثابت: التسبيح يُقال بالعربية في كل لغة
             text = phrase.arabic,

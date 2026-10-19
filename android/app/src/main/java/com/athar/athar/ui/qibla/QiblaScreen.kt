@@ -56,6 +56,8 @@ import com.batoulapps.adhan.Qibla
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
+import com.athar.athar.ui.components.AtharPageTitle
+import com.athar.athar.ui.theme.AtharPageMargin
 
 /// ⚠️ نُدير **الوردة** عكس اتجاه الهاتف، لا المؤشّر: فتبقى علامة
 /// «شمال» حيث الشمال فعلًا، ويبقى مؤشّر القبلة مثبتًا على الوردة عند
@@ -82,9 +84,15 @@ fun QiblaScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(horizontal = AtharPageMargin, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // ⚠️ **عنوانُ الفصلّ**: القبلةُ كانت تبدأُ بالبوصلة
+        // بلا عنوان، فكان نصفُ التطبيقِ بلا بابٍ.
+        AtharPageTitle(
+            title = s.tabQibla,
+            modifier = Modifier.fillMaxWidth(),
+        )
         when {
             !compass.isAvailable -> {
                 Text(

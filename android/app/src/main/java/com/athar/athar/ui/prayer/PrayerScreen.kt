@@ -87,6 +87,7 @@ import com.athar.athar.ui.theme.AtharHeroTop
 import com.athar.athar.ui.theme.AtharPrimaryContainer
 import com.athar.athar.hijri.HijriCalendar
 import java.time.temporal.ChronoUnit
+import com.athar.athar.ui.theme.AtharPageMargin
 
 /// ⚠️ **الوقتُ بلغةِ التطبيق**: `ofPattern` بلا لغةٍ يتبع لغةَ
 /// الجهاز، فيرى مستخدمُ العربية على هاتفٍ إنجليزيٍّ أوقاتَه
@@ -492,7 +493,7 @@ private fun PrayerStrip(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
+            .padding(horizontal = AtharPageMargin, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(day.ordered) { (slot, instant) ->

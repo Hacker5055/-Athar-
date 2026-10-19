@@ -59,8 +59,9 @@ import com.athar.athar.prayer.CitySearch
 import com.athar.athar.ui.theme.AmiriFamily
 import com.athar.athar.ui.components.AtharTopBar
 import com.athar.athar.ui.components.EmptyState
-import com.athar.athar.ui.components.SectionTitle
 import com.athar.athar.ui.components.AtharSearchField
+import com.athar.athar.ui.components.AtharPageTitle
+import com.athar.athar.ui.theme.AtharPageMargin
 
 @Composable
 fun AdhkarScreen(modifier: Modifier = Modifier) {
@@ -90,7 +91,13 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
 
     val list = sections
     Column(modifier = modifier.fillMaxSize()) {
-        SectionTitle(title = s.tabAdhkar, modifier = Modifier.padding(horizontal = 16.dp))
+        // ⚠️ **عنوانُ الفصلّ**: الأذكارُ وحدَها كانت تبدأُ
+        // بعنوان، والقرآنُ والسبحةُ والقبلةُ والمزيدُ تبدأُ بمحتواها
+        // مباشرةً — فكان نصفُ التطبيقِ بلا بابٍ.
+        AtharPageTitle(
+            title = s.tabAdhkar,
+            modifier = Modifier.padding(horizontal = AtharPageMargin),
+        )
 
         if (list == null) {
             // ⚠️ **الوزنُ لا الامتلاءُ**: الامتلاءُ يأخذُ ارتفاعَ
@@ -481,7 +488,7 @@ private fun AdhkarSectionCard(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 3.dp),
+            .padding(horizontal = AtharPageMargin, vertical = 3.dp),
     ) {
         Row(
             modifier = Modifier
