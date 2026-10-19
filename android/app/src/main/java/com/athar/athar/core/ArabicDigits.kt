@@ -10,6 +10,19 @@ object ArabicDigits {
 
     fun of(value: Int): String = of(value.toLong())
 
+    /// نصٌّ **جاهز** بأرقامه العربية: يحوّل كلّ رقم لاتيني
+    /// في النصّ ويبقي ما عداه كما هو.
+    ///
+    /// ⚠️ لماذا لا `of(value.toLong())`؟ لأنّ **التصفير** يضيع:
+    /// «٠٥» يجب أن يبقى «٠٥»، و`of(5)` تعطي «٥».
+    fun ofText(text: String): String {
+        val out = StringBuilder(text.length)
+        for (ch in text) {
+            out.append(if (ch in '0'..'9') DIGITS[ch - '0'] else ch)
+        }
+        return out.toString()
+    }
+
     fun of(value: Long): String {
         if (value == 0L) return "٠"
         val negative = value < 0

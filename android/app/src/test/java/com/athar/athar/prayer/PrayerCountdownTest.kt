@@ -25,7 +25,7 @@ class PrayerCountdownTest {
         assertEquals(1L, c.hours)
         assertEquals(20L, c.minutes)
         assertEquals(30L, c.seconds)
-        assertEquals(3630L, c.totalSeconds)
+        assertEquals(4830L, c.totalSeconds)
     }
 
     @Test

@@ -43,12 +43,20 @@ object PrayerCountdown {
     /// ⚠️ **الأرقام بلغة الواجهة**: العربية الشرقية في العربية
     /// واللاتينية في الإنجليزية والفرنسية.
     fun text(countdown: Countdown, locale: AppLocale): String {
-        val hours = digits(countdown.hours, locale)
-        val minutes = digits(countdown.minutes, locale)
-        val seconds = digits(countdown.seconds, locale)
+        val hours = digits(countdown.hours, locale, pad = false)
+        val minutes = digits(countdown.minutes, locale, pad = countdown.hours > 0)
+        val seconds = digits(countdown.seconds, locale, pad = true)
         return if (countdown.hours > 0) "$hours:$minutes:$seconds" else "$minutes:$seconds"
     }
 
-    private fun digits(value: Long, locale: AppLocale): String =
-        if (locale.isRtl) ArabicDigits.of(value) else value.toString()
+    /// ⚠️ **التصفير**: «٠:٠٥» لا «٠:٥».
+    ///
+    /// السبب في القراءة لا في الشكل: عدٌّ يتحرّك كلّ ثانية، فالثانية
+    /// العارية «٥» تقفز في موضعها فتُقرأ خطأً، والمُثبَّت «٠٥» لا
+    /// يتزحزح. والدقائق تُصفَّر **فقط** مع الساعات، وإلا صارت
+    /// «٠٢:٠٥» تُقرأ كساعةٍ لا دقيقتين.
+    private fun digits(value: Long, locale: AppLocale, pad: Boolean): String {
+        val text = if (pad && value < 10) "0$value" else value.toString()
+        return if (locale.isRtl) ArabicDigits.ofText(text) else text
+    }
 }
