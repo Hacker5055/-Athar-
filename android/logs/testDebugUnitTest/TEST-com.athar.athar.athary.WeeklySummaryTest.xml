@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.athar.athar.athary.WeeklySummaryTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-19T06:26:26" hostname="runnervm8k3b6" time="0.025">
+  <properties/>
+  <testcase name="twoFullDaysAreTwoSeventhsNotAHundred" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.003"/>
+  <testcase name="thePreviousWeekIsTheSevenDaysBefore" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="theWindowEndsToday" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="perHabitCoversEveryHabit" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="itOnlyCountsTheLastSevenDays" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="theStreakIsCarriedFromTheTracker" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="completionNeverExceedsAHundred" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.006"/>
+  <testcase name="activeDaysCountsDaysNotActs" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.005"/>
+  <testcase name="theWeeksDoNotOverlap" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.003"/>
+  <testcase name="anEmptyTrackerGivesAnEmptySummary" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="theBoundaryDayIsIncluded" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="perHabitIsSortedByMostDone" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="completionIsOutOfSevenFullDays" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.001"/>
+  <testcase name="theDayBeforeTheBoundaryIsNot" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="improvementIsMeasuredAgainstTheWeekBefore" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="theBestDayIsTheRichestOne" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

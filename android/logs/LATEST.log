@@ -45,12 +45,12 @@ Daemon will be stopped at the end of the build
 > Task :app:mergeReleaseResources
 > Task :app:packageReleaseResources
 > Task :app:createReleaseCompatibleScreenManifests
-> Task :app:extractDeepLinksRelease
 > Task :app:parseReleaseLocalResources
+> Task :app:extractDeepLinksRelease
 > Task :app:processReleaseMainManifest
 > Task :app:processReleaseManifest
-> Task :app:javaPreCompileRelease
 > Task :app:processReleaseManifestForPackage
+> Task :app:javaPreCompileRelease
 > Task :app:preReleaseUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileReleaseUnitTest
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
@@ -105,28 +105,39 @@ w: file:///home/runner/work/-Athar-/-Athar-/android/app/src/main/java/com/athar/
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:mergeDebugJavaResource
 > Task :app:compileReleaseUnitTestKotlin
+
 > Task :app:testDebugUnitTest
-> Task :app:compileReleaseUnitTestJavaWithJavac NO-SOURCE
-> Task :app:processReleaseUnitTestJavaRes
 
-> Task :app:testReleaseUnitTest FAILED
+PrayerCountdownTest > anHourAndTwentyMinutesAndThirtySeconds FAILED
+    java.lang.AssertionError at PrayerCountdownTest.kt:28
 
-PrayerAdjustmentsTest > theRealCalculationIsShifted FAILED
-    java.lang.AssertionError at PrayerAdjustmentsTest.kt:146
+PrayerCountdownTest > arabicUsesEasternDigits FAILED
+    org.junit.ComparisonFailure at PrayerCountdownTest.kt:116
 
-455 tests completed, 1 failed
+PrayerCountdownTest > theSecondsAreAlwaysTwoDigits FAILED
+    org.junit.ComparisonFailure at PrayerCountdownTest.kt:138
+
+PrayerCountdownTest > englishAndFrenchUseLatinDigits FAILED
+    org.junit.ComparisonFailure at PrayerCountdownTest.kt:122
+
+PrayerCountdownTest > withoutHoursOnlyMinutesAndSeconds FAILED
+    org.junit.ComparisonFailure at PrayerCountdownTest.kt:129
+
+490 tests completed, 5 failed
+
+> Task :app:testDebugUnitTest FAILED
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':app:testReleaseUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/-Athar-/-Athar-/android/app/build/reports/tests/testReleaseUnitTest/index.html
+Execution failed for task ':app:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///home/runner/work/-Athar-/-Athar-/android/app/build/reports/tests/testDebugUnitTest/index.html
 
 * Try:
 > Run with --scan to get full insights.
 
 * Exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:testReleaseUnitTest'.
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:testDebugUnitTest'.
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:130)
 	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:293)
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:128)
@@ -158,7 +169,7 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:tes
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
-Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There were failing tests. See the report at: file:///home/runner/work/-Athar-/-Athar-/android/app/build/reports/tests/testReleaseUnitTest/index.html
+Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There were failing tests. See the report at: file:///home/runner/work/-Athar-/-Athar-/android/app/build/reports/tests/testDebugUnitTest/index.html
 	at org.gradle.api.tasks.testing.AbstractTestTask.handleTestFailures(AbstractTestTask.java:705)
 	at org.gradle.api.tasks.testing.AbstractTestTask.handleCollectedResults(AbstractTestTask.java:539)
 	at org.gradle.api.tasks.testing.AbstractTestTask.executeTests(AbstractTestTask.java:534)
@@ -286,5 +297,5 @@ Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 
 
-BUILD FAILED in 3m 38s
-54 actionable tasks: 54 executed
+BUILD FAILED in 2m 47s
+52 actionable tasks: 52 executed

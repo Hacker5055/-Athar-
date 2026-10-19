@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.athar.athar.ramadan.RamadanTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T06:26:26" hostname="runnervm8k3b6" time="0.001">
+  <properties/>
+  <testcase name="bothLengthsActuallyOccur" classname="com.athar.athar.ramadan.RamadanTest" time="0.001"/>
+  <testcase name="theDayIsOnlyGivenInsideRamadan" classname="com.athar.athar.ramadan.RamadanTest" time="0.0"/>
+  <testcase name="theLastTenIncludesLaylatAlQadr" classname="com.athar.athar.ramadan.RamadanTest" time="0.0"/>
+  <testcase name="theFirstDayIsNotInTheLastTen" classname="com.athar.athar.ramadan.RamadanTest" time="0.0"/>
+  <testcase name="theLastTenStartAtTheTwentyFirst" classname="com.athar.athar.ramadan.RamadanTest" time="0.0"/>
+  <testcase name="theLengthIsTwentyNineOrThirty" classname="com.athar.athar.ramadan.RamadanTest" time="0.0"/>
+  <testcase name="ramadanIsTheNinthMonth" classname="com.athar.athar.ramadan.RamadanTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

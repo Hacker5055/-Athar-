@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.athar.athar.asma.AsmaSearchTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-19T06:26:26" hostname="runnervm8k3b6" time="0.007">
+  <properties/>
+  <testcase name="findsByUndiacritizedName" classname="com.athar.athar.asma.AsmaSearchTest" time="0.001"/>
+  <testcase name="parseToleratesCorruptInput" classname="com.athar.athar.asma.AsmaSearchTest" time="0.003"/>
+  <testcase name="parseReadsTheSchema" classname="com.athar.athar.asma.AsmaSearchTest" time="0.001"/>
+  <testcase name="parseFallsBackWhenDiacritizedFieldIsMissing" classname="com.athar.athar.asma.AsmaSearchTest" time="0.0"/>
+  <testcase name="findsByMeaning" classname="com.athar.athar.asma.AsmaSearchTest" time="0.0"/>
+  <testcase name="emptyQueryReturnsAllNames" classname="com.athar.athar.asma.AsmaSearchTest" time="0.0"/>
+  <testcase name="parseSkipsIncompleteEntries" classname="com.athar.athar.asma.AsmaSearchTest" time="0.0"/>
+  <testcase name="findsByDiacritizedName" classname="com.athar.athar.asma.AsmaSearchTest" time="0.0"/>
+  <testcase name="noMatchYieldsNothing" classname="com.athar.athar.asma.AsmaSearchTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
