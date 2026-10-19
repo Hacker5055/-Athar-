@@ -101,42 +101,44 @@ fun MushafScreen(
             }
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-                item {
-                    // ⚠️ عنوان السورة **فقط إن بدأت في هذه الصفحة**:
-                    // صفحة تبدأ في آخر البقرة لا تُسمّى «البقرة»
-                    // وحدها، فيظنّ القارئ أن ما بعد آخر آية منها
-                    // لسورة البقرة.
-                    if (MushafPage.startsSurah(page) && loaded.surahName != null) {
-                        Text(
-                            text = loaded.surahName,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-                            textAlign = TextAlign.Center,
-                        )
+                // ⚠️ **عنوان لكل سورة تبدأ داخل الصفحة** لا عنوان
+                // واحد: المصحف يطبع السور القصيرة جنبًا إلى جنب،
+                // فصفحةٌ في آخر القرآن تحوي ثلاث سور. ولو اكتفينا
+                // بعنوانٍ واحد لبقيت سورتان بلا اسم.
+                loaded.segments.forEach { segment ->
+                    if (segment.startsHere && segment.name.isNotBlank()) {
+                        item(key = "title-${segment.name}") {
+                            Text(
+                                text = segment.name,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
-                }
-                items(loaded.verses) { verse ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        // ⚠️ رقم الآية **خارج النصّ**: الترقيم جزء من
-                        // نسخ المصحف لا من النصّ القرآني، وإدخاله
-                        // يغيّر النصّ.
-                        Text(
-                            text = verse.number.toString(),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 8.dp),
-                        )
-                        Text(
-                            text = verse.text,
-                            fontSize = 19.sp,
-                            lineHeight = 32.sp,
-                            textAlign = TextAlign.Start,
-                            modifier = Modifier.weight(1f),
-                        )
+                    items(segment.verses, key = { "${it.surah}-${it.number}" }) { verse ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            // ⚠️ رقم الآية **خارج النصّ**: الترقيم جزء
+                            // من نسخ المصحف لا من النصّ القرآني،
+                            // وإدخاله يغيّر النصّ.
+                            Text(
+                                text = verse.number.toString(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(end = 8.dp),
+                            )
+                            Text(
+                                text = verse.text,
+                                fontSize = 19.sp,
+                                lineHeight = 32.sp,
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
                     }
                 }
                 item {
@@ -181,9 +183,17 @@ fun MushafScreen(
 
 /// محتوى صفحة واحدة — يُحمَّل في الخلفية.
 private data class PageContent(
-    val verses: List<Ayah>,
-    val surahName: String?,
+    /// أجزاء الصفحة، كلّ جزء سورة — **وتُسمّى في الشاشة**.
+    val segments: List<PageSegment>,
     val juz: Int,
+)
+
+/// جزءٌ معروض: سورةٌ وأسماؤها.
+private data class PageSegment(
+    val name: String,
+    val verses: List<Ayah>,
+    /// هل تبدأ السورة **في هذه الصفحة**؟ (لا أنّها بدأت قبلها)
+    val startsHere: Boolean,
 )
 
 /// ⚠️ القراءة **بالسور لا بالصفحة**: صفحة واحدة قد تمسّ سورتين،
@@ -191,20 +201,27 @@ private data class PageContent(
 private fun loadPage(context: Context, page: Int): PageContent? {
     if (!MushafPage.isValid(page)) return null
     val first = MushafPage.firstVerseId(page)
-    val last = MushafPage.lastVerseId(page)
     val repository = QuranRepository(context)
-    val verses = ArrayList<Ayah>()
-    for (surahId in MushafPage.surahsOnPage(page)) {
-        for (ayah in repository.ayahsOf(surahId)) {
-            val id = QuranMeta.verseId(ayah.surah, ayah.number)
-            if (id in first..last) verses.add(ayah)
+    val names = repository.surahs().associateBy { it.id }
+    val segments = ArrayList<PageSegment>()
+    for (segment in MushafPage.segmentsOf(page)) {
+        val verses = ArrayList<Ayah>()
+        for (surahId in segment.surah..segment.surah) {
+            for (ayah in repository.ayahsOf(surahId)) {
+                val id = QuranMeta.verseId(ayah.surah, ayah.number)
+                if (id in segment.firstVerseId..segment.lastVerseId) verses.add(ayah)
+            }
         }
+        segments.add(
+            PageSegment(
+                name = names[segment.surah]?.nameAr ?: "",
+                verses = verses,
+                startsHere = segment.startsHere,
+            ),
+        )
     }
-    val firstSurah = MushafPage.firstSurah(page)
-    val name = repository.surahs().firstOrNull { it.id == firstSurah }?.nameAr
     return PageContent(
-        verses = verses,
-        surahName = name,
+        segments = segments,
         juz = QuranMeta.juzOfId(first),
     )
 }

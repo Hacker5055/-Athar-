@@ -77,13 +77,29 @@ class MushafPageTest {
     // ── السور على الصفحة ─────────────────────────────────
 
     @Test
-    fun aPageNeverSpansMoreThanTwoSurahs() {
-        // ⚠️ في المصحف المدينة: صفحة واحدة تعبر **حدّ سورة**
-        // واحدة على الأكثر. ولو عبرت ثلاثًا لكانت الصفحة
-        // أطول من صفحة المصحف، والمعطيات غلط.
+    fun aPageNeverSpansMoreThanThreeSurahs() {
+        // ⚠️ المصحف المدني يطبع السور القصيرة **جنبًا إلى جنب**،
+        // فالصفحة قد تحوي ثلاثًا — famouslyً في آخر القرآن حيث
+        // السور قصيرة كلّها. ولو افترضنا سورتين لبقيت سورة
+        // بلا عنوان.
         for (page in 1..MushafPage.COUNT) {
             val span = MushafPage.surahsOnPage(page)
-            assertTrue("page $page spans ${span.first}..${span.last}", span.last - span.first <= 1)
+            assertTrue("page $page spans ${span.first}..${span.last}", span.last - span.first <= 2)
+        }
+    }
+
+    @Test
+    fun aPageWithThreeSurahsHasOnlyShortOnes() {
+        // ⚠️ **العلاقة لا الرقم**: الصفحة التي تحوي ثلاث سور
+        // لا تحوي إلا سورًا قصيرة، لأنّ المصحف لا يضع سورة
+        // طويلة جنبًا إلى جنب. ولو كانت طويلة لكانت الصفحة
+        // مزدحمة.
+        for (page in 1..MushafPage.COUNT) {
+            val span = MushafPage.surahsOnPage(page)
+            if (span.last - span.first < 2) continue
+            for (surah in span) {
+                assertTrue("surah $surah on page $page", QuranMeta.ayahCount(surah) <= 30)
+            }
         }
     }
 
@@ -151,12 +167,90 @@ class MushafPageTest {
 
     @Test
     fun theNeighboursOfAPageAreOneAway() {
-        // ⚠️ التحقّق من **الحدود** لا من أن ١ ناقص ١ يساوي ١.
+        // ⚠️ التحقّق من **حدود النطاق** لا من هوية الأرقام:
+        // كل صفحة داخلة جارتان صالحتان، والصفحة قبلها أو بعدها
+        // قد تكون صالحة أيضًا — والعبرة أنّ ما خارج [١، ٦٠٤] مرفوض.
         for (page in 2 until MushafPage.COUNT) {
             assertTrue(MushafPage.isValid(page - 1))
             assertTrue(MushafPage.isValid(page + 1))
-            assertFalse(MushafPage.isValid(page - 2))
-            assertFalse(MushafPage.isValid(page + 2))
         }
+    }
+
+    @Test
+    fun exactlyTheKnownNumberOfPagesIsValid() {
+        // ⚠️ **الحدّان** لا الأرقام: أوّل صفحة صالحة ١ وآخرها
+        // ٦٠٤، وما عداها مرفوض — لا «حوالي ٦٠٤».
+        assertTrue(MushafPage.isValid(1))
+        assertTrue(MushafPage.isValid(MushafPage.COUNT))
+        assertFalse(MushafPage.isValid(0))
+        assertFalse(MushafPage.isValid(MushafPage.COUNT + 1))
+        val valid = (0..MushafPage.COUNT + 1).count { MushafPage.isValid(it) }
+        assertEquals(MushafPage.COUNT, valid)
+    }
+
+    // ── تقسيم الصفحة إلى أجزاء ──────────────────────────
+
+    @Test
+    fun theSegmentsOfAPageAreItsSurahsInOrder() {
+        for (page in 1..MushafPage.COUNT) {
+            val segments = MushafPage.segmentsOf(page)
+            assertTrue("page $page", segments.isNotEmpty())
+            val surahs = segments.map { it.surah }
+            assertEquals("page $page", surahs.sorted(), surahs)
+            assertEquals("page $page", surahs.distinct(), surahs)
+        }
+    }
+
+    @Test
+    fun theSegmentsCoverEveryVerseOfThePageExactlyOnce() {
+        for (page in 1..MushafPage.COUNT) {
+            val segments = MushafPage.segmentsOf(page)
+            val covered = segments.sumOf { it.verseCount }
+            assertEquals("page $page", MushafPage.verseCount(page), covered)
+            assertEquals("page $page", MushafPage.firstVerseId(page), segments.first().firstVerseId)
+            assertEquals("page $page", MushafPage.lastVerseId(page), segments.last().lastVerseId)
+        }
+    }
+
+    @Test
+    fun theSegmentsAreContiguous() {
+        // ⚠️ لا فراغ **بين** الأجزاء: آخر جزءٍ ينتهي حيث
+        // يبدأ الذي يليه.
+        for (page in 1..MushafPage.COUNT) {
+            val segments = MushafPage.segmentsOf(page)
+            for (i in 0 until segments.size - 1) {
+                assertEquals(
+                    "page $page segment $i",
+                    segments[i].lastVerseId + 1,
+                    segments[i + 1].firstVerseId,
+                )
+            }
+        }
+    }
+
+    @Test
+    fun onlyTheFirstSegmentCanBeContinued() {
+        // ⚠️ **سورةٌ واحدة فقط** تُكمل من الصفحة السابقة:
+        // ما بعد ذلك سورٌ بدأت في الصفحة.
+        for (page in 1..MushafPage.COUNT) {
+            val segments = MushafPage.segmentsOf(page)
+            for (i in 1 until segments.size) {
+                assertTrue("page $page segment $i", segments[i].startsHere)
+            }
+        }
+    }
+
+    @Test
+    fun theFirstSegmentContinuesExactlyWhenThePageDoesNotStartASurah() {
+        for (page in 1..MushafPage.COUNT) {
+            val first = MushafPage.segmentsOf(page).first()
+            assertEquals("page $page", MushafPage.startsSurah(page), first.startsHere)
+        }
+    }
+
+    @Test
+    fun anImpossiblePageHasNoSegments() {
+        assertTrue(MushafPage.segmentsOf(0).isEmpty())
+        assertTrue(MushafPage.segmentsOf(605).isEmpty())
     }
 }

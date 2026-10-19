@@ -58,4 +58,62 @@ object MushafPage {
     /// عدد آيات الصفحة.
     fun verseCount(page: Int): Int =
         if (isValid(page)) lastVerseId(page) - firstVerseId(page) + 1 else 0
+
+    /// تقسيم الصفحة إلى **أجزاء، كلّ جزء سورة واحدة**.
+    ///
+    /// ⚠️ **الصفحة قد تحوي أكثر من سورتين**: المصحف المدني
+    /// يطبع السور القصيرة **جنبًا إلى جنب**، فصفحةٌ في آخر
+    /// القرآن تحوي ثلاث سور. ولو افترضنا سورتين لَبِتْ سورةً
+    /// بلا عنوان.
+    fun segmentsOf(page: Int): List<MushafSegment> {
+        if (!isValid(page)) return emptyList()
+        val segments = ArrayList<MushafSegment>()
+        var currentSurah = 0
+        var segmentStart = 0
+        for (id in verseIds(page)) {
+            val surah = QuranMeta.surahAyahOf(id).first
+            if (surah != currentSurah) {
+                if (currentSurah != 0) {
+                    segments.add(
+                        MushafSegment(
+                            surah = currentSurah,
+                            firstVerseId = segmentStart,
+                            lastVerseId = id - 1,
+                            // ⚠️ `startsHere` = السورة تبدأ **عند الآية ١**
+                            // من سورتها. فالسورة التي تُكمل من الصفحة
+                            // السابقة تبدأ من آيةٍ أبعد، ولا عنوان لها.
+                            startsHere = QuranMeta.surahAyahOf(segmentStart).second == 1,
+                        ),
+                    )
+                }
+                currentSurah = surah
+                segmentStart = id
+            }
+        }
+        if (currentSurah != 0) {
+            segments.add(
+                MushafSegment(
+                    surah = currentSurah,
+                    firstVerseId = segmentStart,
+                    lastVerseId = lastVerseId(page),
+                    startsHere = QuranMeta.surahAyahOf(segmentStart).second == 1,
+                ),
+            )
+        }
+        return segments
+    }
+}
+
+/// جزءٌ من صفحة: سورةٌ كاملة أو بعضها.
+///
+/// ⚠️ `startsHere` **مهمّ**: سورةٌ تبدأ قبل الصفحة وتُكمل فيها
+/// ليست كسورةٍ تبدأ في الصفحة — الأولى بلا عنوان في المصحف
+/// والثانية بعنوان.
+data class MushafSegment(
+    val surah: Int,
+    val firstVerseId: Int,
+    val lastVerseId: Int,
+    val startsHere: Boolean,
+) {
+    val verseCount: Int get() = lastVerseId - firstVerseId + 1
 }
