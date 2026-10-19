@@ -646,4 +646,7 @@ const Map<String, String> kStringsFr = {
   'silence_need_access': 'L’application a besoin de l’accès « Ne pas déranger » pour couper les médias et les notifications. Touchez pour l’autoriser dans les réglages du système.',
   'silence_allow': 'Autoriser l’accès',
   'silence_minutes': 'Durée du silence',
+  'month_share': 'Partager le tableau',
+  'month_share_text': 'Le tableau des heures de prière.',
+  'month_share_footer': 'Heures de prière — {place} — Athar',
 };

@@ -621,6 +621,9 @@ class Strings(val locale: AppLocale) {
             "silence_need_access" to "يحتاج التطبيق إذن «عدم الإزعاج» ليرفع الصوت عن الوسائط والتنبيهات. اضغط للسماح به من إعدادات النظام.",
             "silence_allow" to "السماح بالوصول",
             "silence_minutes" to "مدة الصمت",
+            "month_share" to "مشاركة الجدول",
+            "month_share_text" to "جدول مواقيت الصلاة.",
+            "month_share_footer" to "مواقيت الصلاة — {place} — أثر",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -1216,6 +1219,9 @@ class Strings(val locale: AppLocale) {
             "silence_need_access" to "The app needs “Do Not Disturb” access to mute media and notifications. Tap to allow it in the system settings.",
             "silence_allow" to "Allow access",
             "silence_minutes" to "Silence duration",
+            "month_share" to "Share the timetable",
+            "month_share_text" to "The prayer timetable.",
+            "month_share_footer" to "Prayer times — {place} — Athar",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1811,6 +1817,9 @@ class Strings(val locale: AppLocale) {
             "silence_need_access" to "L’application a besoin de l’accès « Ne pas déranger » pour couper les médias et les notifications. Touchez pour l’autoriser dans les réglages du système.",
             "silence_allow" to "Autoriser l’accès",
             "silence_minutes" to "Durée du silence",
+            "month_share" to "Partager le tableau",
+            "month_share_text" to "Le tableau des heures de prière.",
+            "month_share_footer" to "Heures de prière — {place} — Athar",
         )
     }
 
@@ -2411,4 +2420,7 @@ class Strings(val locale: AppLocale) {
     val silenceNeedAccess: String get() = t("silence_need_access")
     val silenceAllow: String get() = t("silence_allow")
     val silenceMinutes: String get() = t("silence_minutes")
+    val monthShare: String get() = t("month_share")
+    val monthShareText: String get() = t("month_share_text")
+    val monthShareFooter: String get() = t("month_share_footer")
 }

@@ -39,11 +39,13 @@ object ShareImage {
     // ⚠️ **ألوانٌ ثابتة لا من الثيم**: الصورة تُشارَك خارج
     // التطبيق، فلا يتبعها ثيمُه ولا الوضعُ الليلي. فيكون
     // لونُها واحدًا دائمًا.
-    private const val BG_TOP = 0xFF0F6B5C.toInt()
-    private const val BG_BOTTOM = 0xFF083E36.toInt()
-    private const val CREAM = 0xFFF7F5F0.toInt()
-    private const val MINT = 0xFFBFE8DC.toInt()
-    private const val GOLD = 0xFFC8A15A.toInt()
+    // ⚠️ **مشتركةٌ مع `MonthImage`**: الهويةُ واحدة — فالتطبيقُ
+    // منتَجٌ واحد لا منتَجان.
+    internal const val BG_TOP = 0xFF0F6B5C.toInt()
+    internal const val BG_BOTTOM = 0xFF083E36.toInt()
+    internal const val CREAM = 0xFFF7F5F0.toInt()
+    internal const val MINT = 0xFFBFE8DC.toInt()
+    internal const val GOLD = 0xFFC8A15A.toInt()
     private const val EMPTY_CELL = 0xFF14564B.toInt()
 
     /// يرسمُ البطاقة ويُعيدها صورةً.

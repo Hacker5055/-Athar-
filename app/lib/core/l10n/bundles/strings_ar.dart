@@ -645,4 +645,7 @@ const Map<String, String> kStringsAr = {
   'silence_need_access': 'يحتاج التطبيق إذن «عدم الإزعاج» ليرفع الصوت عن الوسائط والتنبيهات. اضغط للسماح به من إعدادات النظام.',
   'silence_allow': 'السماح بالوصول',
   'silence_minutes': 'مدة الصمت',
+  'month_share': 'مشاركة الجدول',
+  'month_share_text': 'جدول مواقيت الصلاة.',
+  'month_share_footer': 'مواقيت الصلاة — {place} — أثر',
 };

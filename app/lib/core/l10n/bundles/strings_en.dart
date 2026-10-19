@@ -646,4 +646,7 @@ const Map<String, String> kStringsEn = {
   'silence_need_access': 'The app needs “Do Not Disturb” access to mute media and notifications. Tap to allow it in the system settings.',
   'silence_allow': 'Allow access',
   'silence_minutes': 'Silence duration',
+  'month_share': 'Share the timetable',
+  'month_share_text': 'The prayer timetable.',
+  'month_share_footer': 'Prayer times — {place} — Athar',
 };
