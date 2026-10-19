@@ -77,6 +77,7 @@ import kotlinx.coroutines.withContext
 import com.athar.athar.quran.QuranTranslationRepository
 import com.athar.athar.quran.QuranTranslation
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Card
 import androidx.compose.foundation.lazy.rememberLazyListState
 import com.athar.athar.quran.QuranMeta
 import com.athar.athar.quran.QuranAudioController
@@ -578,20 +579,46 @@ private fun SearchResults(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
             }
+            // ⚠️ **نتيجةُ البحثِ بطاقةٌ كالفهرس**: السورةُ التي
+            // يبحث عنها الناسُ اسمًا لها، فلها شكلُ الفهرس نفسه —
+            // وإلا بدا قسمان لشيءٍ واحد.
             items(surahHits) { surah ->
-                TextButton(
+                Card(
                     onClick = { onOpenSurah(surah) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 3.dp),
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(surah.nameAr, fontSize = 18.sp, fontWeight = FontWeight.Medium)
-                        Text(
-                            text = "${surah.ayahCount} ${s.verses}",
-                            style = MaterialTheme.typography.bodySmall,
-                        )
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = surah.nameAr,
+                                fontSize = 21.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = AmiriFamily,
+                            )
+                            Text(
+                                text = "${surah.ayahCount} ${s.verses}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primaryContainer),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = ArabicDigits.of(surah.id),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
                     }
                 }
             }
@@ -605,31 +632,42 @@ private fun SearchResults(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
             }
+            // ⚠️ **نتيجةُ النصّ بطاقةٌ كذلك**: الآيةُ تُقرأ بنصّها
+            // لا سطرًا، فسطرٌ عريضٌ بلا حدٍّ يجعلها سطرًا.
             items(hits) { hit ->
-                TextButton(onClick = { onOpen(hit) }, modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                Card(
+                    onClick = { onOpen(hit) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 3.dp),
+                ) {
+                    Column(modifier = Modifier.padding(14.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Text(hit.surahNameAr, style = MaterialTheme.typography.bodySmall)
+                            Text(
+                                text = hit.surahNameAr,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
                             Text(
                                 "${hit.ayah.surah}:${hit.ayah.number}",
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                         Text(
                             // ⚠️ النص **كما هو** بلا أي تعديل — شرط الرخصة
                             text = hit.ayah.text,
-                            fontSize = 18.sp,
-                            lineHeight = 30.sp,
+                            fontSize = 19.sp,
+                            lineHeight = 32.sp,
                             fontFamily = AmiriFamily,
                             textAlign = TextAlign.Start,
-                            modifier = Modifier.padding(top = 4.dp),
+                            modifier = Modifier.padding(top = 6.dp),
                         )
                     }
                 }
-                HorizontalDivider()
             }
         }
     }

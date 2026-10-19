@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -101,56 +104,73 @@ fun MushafScreen(
                 Text(s.loading, style = MaterialTheme.typography.bodySmall)
             }
         } else {
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-                // ⚠️ **عنوان لكل سورة تبدأ داخل الصفحة** لا عنوان
-                // واحد: المصحف يطبع السور القصيرة جنبًا إلى جنب،
-                // فصفحةٌ في آخر القرآن تحوي ثلاث سور. ولو اكتفينا
-                // بعنوانٍ واحد لبقيت سورتان بلا اسم.
-                loaded.segments.forEach { segment ->
-                    if (segment.startsHere && segment.name.isNotBlank()) {
-                        item(key = "title-${segment.name}") {
-                            Text(
-                                text = segment.name,
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = AmiriFamily,
-                                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-                                textAlign = TextAlign.Center,
-                            )
+            // ⚠️ **الصفحةُ ورقةٌ**: تُحاطُ ببطاقةٍ بلونٍ مغاير
+            // للخلفية، فتخطيطُ المصحف واضحٌ — صفحةٌ في وسط
+            // الشاشة، لا نصٌّ ملتصقٌ بالحافة.
+            Card(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(14.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                ),
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                ) {
+                    // ⚠️ **عنوان لكل سورة تبدأ داخل الصفحة** لا عنوان
+                    // واحد: المصحف يطبع السور القصيرة جنبًا إلى جنب،
+                    // فصفحةٌ في آخر القرآن تحوي ثلاث سور. ولو اكتفينا
+                    // بعنوانٍ واحد لبقيت سورتان بلا اسم.
+                    loaded.segments.forEach { segment ->
+                        if (segment.startsHere && segment.name.isNotBlank()) {
+                            item(key = "title-${segment.name}") {
+                                Text(
+                                    text = segment.name,
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = AmiriFamily,
+                                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+                        items(segment.verses, key = { "${it.surah}-${it.number}" }) { verse ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                // ⚠️ رقم الآية **خارج النصّ**: الترقيم جزء
+                                // من نسخ المصحف لا من النصّ القرآني،
+                                // وإدخاله يغيّر النصّ.
+                                Text(
+                                    text = verse.number.toString(),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(end = 8.dp),
+                                )
+                                Text(
+                                    text = verse.text,
+                                    fontSize = 19.sp,
+                                    lineHeight = 32.sp,
+                                    fontFamily = AmiriFamily,
+                                    textAlign = TextAlign.Start,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
                         }
                     }
-                    items(segment.verses, key = { "${it.surah}-${it.number}" }) { verse ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                        ) {
-                            // ⚠️ رقم الآية **خارج النصّ**: الترقيم جزء
-                            // من نسخ المصحف لا من النصّ القرآني،
-                            // وإدخاله يغيّر النصّ.
-                            Text(
-                                text = verse.number.toString(),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(end = 8.dp),
-                            )
-                            Text(
-                                text = verse.text,
-                                fontSize = 19.sp,
-                                lineHeight = 32.sp,
-                                fontFamily = AmiriFamily,
-                                textAlign = TextAlign.Start,
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
+                    item {
+                        Text(
+                            text = s.mushafNote,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 16.dp),
+                        )
                     }
-                }
-                item {
-                    Text(
-                        text = s.mushafNote,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(vertical = 16.dp),
-                    )
                 }
             }
         }

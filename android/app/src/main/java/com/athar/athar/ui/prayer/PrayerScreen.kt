@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -275,6 +276,15 @@ fun PrayerScreen(
                         color = MaterialTheme.colorScheme.primary,
                     )
                 }
+                // ⚠️ **شريطُ التقدّمِ تحتِ السطر**: الرقمُ يقول «كم
+                // بقي» والشريطُ يقول «من أين بدأ» — والاثنان
+                // يُقرآن بنظرة.
+                LinearProgressIndicator(
+                    progress = { QuranProgress.percent(last.surah, last.ayah) / 100f },
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
             }
         }
 
