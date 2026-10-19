@@ -61,6 +61,8 @@ import com.athar.athar.tasbih.TasbihSessions
 import com.athar.athar.tasbih.TasbihSpeech
 import com.athar.athar.tasbih.TasbihSpeechStore
 import com.athar.athar.tasbih.TasbihStore
+import com.athar.athar.tasbih.TasbihVolumeStore
+import com.athar.athar.tasbih.VolumeCounter
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -100,6 +102,10 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
     // قد لا يريد صوته. والمحرّك **لا يُشغَّل أصلًا** إلا إن
     // طلبه المستخدم — ويُحرَّر بمغادرة الشاشة أو إطفائه.
     var speakEnabled by remember { mutableStateOf(TasbihSpeechStore.isEnabled(context)) }
+
+    // ⚠️ **أزرار الصوت** (E5): تُلتقط في هذه الشاشة وحدها، ومطفأةٌ
+    // افتراضيًا. فمن يريدها فعّلها، والباقي يعمل كالمعتاد.
+    var volumeEnabled by remember { mutableStateOf(TasbihVolumeStore.isEnabled(context)) }
     val speaker = remember(speakEnabled, context) {
         if (speakEnabled) Speaker(context) else null
     }
@@ -124,6 +130,41 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
 
     fun persist() = TasbihStore.save(context, phraseId, target, state)
 
+    /// ⚠️ **العدُّ noble واحد** من مكانين: نقرةٌ على الدائرة أو
+    /// ضغطةُ زرّ الصوت (E5). فلو تفرّقت صار في الشاشة عدّادان
+    /// لا يعملان معًا — والإجمالي يخطئ.
+    fun countOne() {
+        val result = TasbihCounter.tap(state, target)
+        state = result.state
+        if (result.completed) {
+            buzz(context)
+            markTasbihHabit()
+        }
+        // ⚠️ الجلسة **تُغلق قبل أن تبدأ الجديدة**: فنقرة
+        // بعد انقطاعٍ طويل تُنهي الجلسة السابقة وتبدأ
+        // أخرى، فلا تُنسَب إلى الأولى.
+        val now = System.currentTimeMillis()
+        val closed = TasbihSessions.closeIfStale(session, now)
+        if (closed != null) {
+            sessions = TasbihSessions.add(sessions, closed)
+            // ⚠️ السجلّ **لا يُكتب كل نقرة**: لا يتغيّر
+            // إلا حين تُغلق جلسة. وكاتبةُ ملفٍ كاملٍ في
+            // كل نقرةٍ إهدارٌ للبطارية.
+            TasbihSessionStore.save(context, sessions)
+        }
+        session = TasbihSessions.onTap(session, now, target)
+        persist()
+        TasbihSessionStore.saveCurrent(context, session)
+        // ⚠️ **العدد المنطوق هو الذي بلغه العدّاد**، لا
+        // ما يعرضه بعد التصفير: عند إتمام دورة يعود
+        // العدّاد إلى صفر، ومن يسمع «صفر» يظنّ أن عدّه
+        // ضاع.
+        val spoken = TasbihSpeech.spokenCount(result, target)
+        if (TasbihSpeech.shouldSpeak(speakEnabled, spoken)) {
+            speaker?.speak(TasbihSpeech.text(spoken))
+        }
+    }
+
     /// يُعلّم «أثري» أن دورةَ تسبيحٍ اكتملت (E6 ← دمج).
     ///
     /// ⚠️ **إضافةٌ لا تبديل**: فمن أتمّ دورتين اليوم لا تُلغى
@@ -132,6 +173,18 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
         val today = LocalDate.now()
         val next = TrackerStore.load(context).mark(today, HabitId.TASBIH).pruned(today)
         TrackerStore.save(context, next)
+    }
+
+    // ⚠️ **الالتقاطُ مؤقّت**: يتعلّق بالظهور ويُلغى بالمغادرة.
+    // فمن مرّ على السبحة ثم انتقل إلى القرآن لا يجوز أن تُلتقط
+    // أزرار الصوت هناك — ومن لا يعرف لماذا يتغيّر الصوت؟!
+    DisposableEffect(volumeEnabled) {
+        if (volumeEnabled) {
+            VolumeCounter.attach { countOne() }
+        } else {
+            VolumeCounter.detach()
+        }
+        onDispose { VolumeCounter.detach() }
     }
 
     Column(
@@ -158,37 +211,7 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 // ⚠️ `clickable` على الدائرة كلها، و`role` يخبر قارئ
                 // الشاشة أنها زرّ لا صورة.
-                .clickable(role = Role.Button) {
-                    val result = TasbihCounter.tap(state, target)
-                    state = result.state
-                    if (result.completed) {
-                        buzz(context)
-                        markTasbihHabit()
-                    }
-                    // ⚠️ الجلسة **تُغلق قبل أن تبدأ الجديدة**: فنقرة
-                    // بعد انقطاعٍ طويل تُنهي الجلسة السابقة وتبدأ
-                    // أخرى، فلا تُنسَب إلى الأولى.
-                    val now = System.currentTimeMillis()
-                    val closed = TasbihSessions.closeIfStale(session, now)
-                    if (closed != null) {
-                        sessions = TasbihSessions.add(sessions, closed)
-                        // ⚠️ السجلّ **لا يُكتب كل نقرة**: لا يتغيّر
-                        // إلا حين تُغلق جلسة. وكاتبةُ ملفٍ كاملٍ في
-                        // كل نقرةٍ إهدارٌ للبطارية.
-                        TasbihSessionStore.save(context, sessions)
-                    }
-                    session = TasbihSessions.onTap(session, now, target)
-                    persist()
-                    TasbihSessionStore.saveCurrent(context, session)
-                    // ⚠️ **العدد المنطوق هو الذي بلغه العدّاد**، لا
-                    // ما يعرضه بعد التصفير: عند إتمام دورة يعود
-                    // العدّاد إلى صفر، ومن يسمع «صفر» يظنّ أن عدّه
-                    // ضاع.
-                    val spoken = TasbihSpeech.spokenCount(result, target)
-                    if (TasbihSpeech.shouldSpeak(speakEnabled, spoken)) {
-                        speaker?.speak(TasbihSpeech.text(spoken))
-                    }
-                },
+                .clickable(role = Role.Button) { countOne() },
             contentAlignment = Alignment.Center,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -316,6 +339,33 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
                 onCheckedChange = {
                     speakEnabled = it
                     TasbihSpeechStore.setEnabled(context, it)
+                },
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // ⚠️ **زرُّ الصوت يصير عدّادًا** في هذه الشاشة وحدها (E5).
+        // والعوض أن يبتلع التطبيقُ زرَّ المستخدم: فمن أراد تغيير
+        // الصوت يفعلها من إعدادات الجهاز — ويبقى التطبيق صامتًا
+        // عن السبب.
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(s.tasbihVolume, style = MaterialTheme.typography.labelLarge)
+                Text(
+                    text = s.tasbihVolumeHint,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Switch(
+                checked = volumeEnabled,
+                onCheckedChange = {
+                    volumeEnabled = it
+                    TasbihVolumeStore.setEnabled(context, it)
                 },
             )
         }

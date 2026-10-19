@@ -380,6 +380,14 @@ class Strings(val locale: AppLocale) {
             "habit_sadaqa" to "صدقة",
             "habit_fasting" to "صيام",
             "habit_tasbih" to "تسبيح مكتمل",
+            "athary_share" to "مشاركة ملخّص الأسبوع",
+            "share_week" to "هذا الأسبوع",
+            "share_active_days" to "أيامٌ نشطة",
+            "share_acts" to "عبادة",
+            "share_streak" to "أيامٌ متّصلة",
+            "share_footer" to "خلّي أثرك باقي — أثر",
+            "share_text" to "هذا أسبوعي في أثر.",
+            "share_failed" to "تعذّر إنشاء الصورة.",
             "tracker_today_empty" to "ما سجّلت شيء اليوم — ابدأ بواحدة",
             "tracker_days" to "يوم",
             "more_asma" to "أسماء الله الحسنى",
@@ -595,6 +603,8 @@ class Strings(val locale: AppLocale) {
             "tasbih_sessions_today" to "جلسات اليوم",
             "tasbih_week" to "آخر ٧ أيام",
             "tasbih_speak_hint" to "ينطق العدد بصوت عالٍ عند كل نقرة — أطفئه إن أزعجك.",
+            "tasbih_volume" to "العدّ بأزرار الصوت",
+            "tasbih_volume_hint" to "أزرار الصوت تعدّ ذكرًا بدلًا من تغيير الصوت — غيّر الصوت من إعدادات الجهاز.",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -949,6 +959,14 @@ class Strings(val locale: AppLocale) {
             "habit_sadaqa" to "Charity",
             "habit_fasting" to "Fasting",
             "habit_tasbih" to "Completed tasbih",
+            "athary_share" to "Share the week summary",
+            "share_week" to "This week",
+            "share_active_days" to "Active days",
+            "share_acts" to "Acts",
+            "share_streak" to "Day streak",
+            "share_footer" to "Leave your trace — Athar",
+            "share_text" to "This is my week in Athar.",
+            "share_failed" to "Could not create the image.",
             "tracker_today_empty" to "Nothing logged today — start with one",
             "tracker_days" to "days",
             "more_asma" to "The 99 Names",
@@ -1164,6 +1182,8 @@ class Strings(val locale: AppLocale) {
             "tasbih_sessions_today" to "Sessions today",
             "tasbih_week" to "Last 7 days",
             "tasbih_speak_hint" to "Speaks the count aloud on every tap — turn it off if it gets in the way.",
+            "tasbih_volume" to "Count with volume buttons",
+            "tasbih_volume_hint" to "Volume buttons count a dhikr instead of changing the volume — change the volume in the device settings.",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1518,6 +1538,14 @@ class Strings(val locale: AppLocale) {
             "habit_sadaqa" to "Aumône",
             "habit_fasting" to "Jeûne",
             "habit_tasbih" to "Tasbih complet",
+            "athary_share" to "Partager le résumé de la semaine",
+            "share_week" to "Cette semaine",
+            "share_active_days" to "Jours actifs",
+            "share_acts" to "Actes",
+            "share_streak" to "Jours d’affilée",
+            "share_footer" to "Laisse ta trace — Athar",
+            "share_text" to "Voici ma semaine dans Athar.",
+            "share_failed" to "Impossible de créer l’image.",
             "tracker_today_empty" to "Rien aujourd’hui — commencez par une",
             "tracker_days" to "jours",
             "more_asma" to "Les 99 Noms",
@@ -1733,6 +1761,8 @@ class Strings(val locale: AppLocale) {
             "tasbih_sessions_today" to "Sessions du jour",
             "tasbih_week" to "7 derniers jours",
             "tasbih_speak_hint" to "Prononce le compte à chaque appui — désactivez-le s’il gêne.",
+            "tasbih_volume" to "Compter avec les boutons de volume",
+            "tasbih_volume_hint" to "Les boutons de volume comptent un dhikr au lieu de changer le volume — changez le volume dans les réglages.",
         )
     }
 
@@ -2092,6 +2122,14 @@ class Strings(val locale: AppLocale) {
     val habitSadaqa: String get() = t("habit_sadaqa")
     val habitFasting: String get() = t("habit_fasting")
     val habitTasbih: String get() = t("habit_tasbih")
+    val atharyShare: String get() = t("athary_share")
+    val shareWeek: String get() = t("share_week")
+    val shareActiveDays: String get() = t("share_active_days")
+    val shareActs: String get() = t("share_acts")
+    val shareStreak: String get() = t("share_streak")
+    val shareFooter: String get() = t("share_footer")
+    val shareText: String get() = t("share_text")
+    val shareFailed: String get() = t("share_failed")
     val trackerTodayEmpty: String get() = t("tracker_today_empty")
     val trackerDays: String get() = t("tracker_days")
     val moreAsma: String get() = t("more_asma")
@@ -2307,4 +2345,6 @@ class Strings(val locale: AppLocale) {
     val tasbihSessionsToday: String get() = t("tasbih_sessions_today")
     val tasbihWeek: String get() = t("tasbih_week")
     val tasbihSpeakHint: String get() = t("tasbih_speak_hint")
+    val tasbihVolume: String get() = t("tasbih_volume")
+    val tasbihVolumeHint: String get() = t("tasbih_volume_hint")
 }

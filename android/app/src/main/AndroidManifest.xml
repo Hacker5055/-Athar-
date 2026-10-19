@@ -65,13 +65,26 @@
                 android:resource="@xml/prayer_widget_info" />
         </receiver>
 
-        <receiver
-            android:name=".notification.BootReceiver"
-            android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+            <receiver
+                android:name=".notification.BootReceiver"
+                android:exported="true"
+                android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+                <intent-filter>
+                    <action android:name="android.intent.action.BOOT_COMPLETED" />
+                </intent-filter>
+            </receiver>
+
+        <!-- ⚠️ مشاركةُ صورةِ الملخّص (F6): لا يُشارَك مسارُ ملفٍّ
+             مباشرةً منذ أندرويد ٧ — فيسقط التطبيق. وFileProvider
+             يعطي `content://` مع إذنٍ مؤقّتٍ للقراءة وحده. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 </manifest>

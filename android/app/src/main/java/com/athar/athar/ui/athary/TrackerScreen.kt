@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,9 +37,18 @@ import com.athar.athar.athary.DayLevel
 import com.athar.athar.athary.HabitId
 import com.athar.athar.athary.TrackerState
 import com.athar.athar.athary.TrackerStore
+import com.athar.athar.core.ArabicDigits
+import com.athar.athar.i18n.AppLocale
+import com.athar.athar.i18n.LocalAppLocale
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.athary.WeeklySummaries
+import com.athar.athar.share.ShareCards
+import com.athar.athar.share.ShareImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.util.Locale
 
 @Composable
 fun TrackerScreen(modifier: Modifier = Modifier) {
@@ -75,6 +86,12 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
             // أين أنت الآن، والملخّص يقول إلى أين تمشي. ومن يرى
             // الرقم قبل المسار يحسب اليوم الواحد نتيجة.
             WeeklyCard(state = state, today = today)
+        }
+
+        item {
+            // ⚠️ **المشاركةُ بعد الملخّص**: فمن يريد أن يشارك
+            // أسبوعه يريد أن يرى أوّلًا ما سيُشارك.
+            ShareWeekCard(state = state, today = today)
         }
 
         item {
@@ -139,6 +156,83 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
         }
     }
 }
+
+/// بطاقةُ مشاركةِ الأسبوع (F6).
+///
+/// ⚠️ **الرسمُ في الخلفية**: صورةٌ ١٠٨٠×١٢٠٠ تُرسم على الخيط
+/// الرئيسيّ تتجمّد الشاشة ثانيةً كاملة. و`startActivity` **بعد**
+/// الرسم لا داخله — النيةُ تُرسل من خيط الواجهة.
+@Composable
+private fun ShareWeekCard(state: TrackerState, today: LocalDate) {
+    val s = LocalStrings.current
+    val context = LocalContext.current
+    val locale = LocalAppLocale.current
+    val scope = rememberCoroutineScope()
+    var message by remember { mutableStateOf<String?>(null) }
+    var busy by remember { mutableStateOf(false) }
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Button(
+                onClick = {
+                    if (busy) return@Button
+                    busy = true
+                    message = null
+                    scope.launch {
+                        val data = ShareCards.dataOf(
+                            state = state,
+                            today = today,
+                            locale = Locale.forLanguageTag(locale.code),
+                            title = s.appName,
+                            subtitle = s.shareWeek,
+                            footer = s.shareFooter,
+                            activeLabel = s.shareActiveDays,
+                            actsLabel = s.shareActs,
+                            streakLabel = s.shareStreak,
+                        )
+                        val uri = withContext(Dispatchers.Default) {
+                            runCatching {
+                                ShareImage.save(context, ShareImage.render(data, digitsOf(locale)))
+                            }.getOrNull()
+                        }
+                        busy = false
+                        if (uri == null) {
+                            message = s.shareFailed
+                        } else {
+                            val started = runCatching {
+                                context.startActivity(
+                                    ShareImage.shareIntent(uri, s.shareText),
+                                )
+                            }.isSuccess
+                            if (!started) message = s.shareFailed
+                        }
+                    }
+                },
+                enabled = !busy,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(s.atharyShare)
+            }
+            message?.let { text ->
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+        }
+    }
+}
+
+/// ⚠️ **الأرقامُ بحسب اللغة**: العربيةُ شرقية، وما دونها لاتينية.
+/// وصورةٌ تُشارَك بالإنجليزية وأرقامُها عربيةٌ شرقية تبدو خطأً.
+private fun digitsOf(locale: AppLocale): (Int) -> String =
+    if (locale.isRtl) {
+        { value -> ArabicDigits.of(value) }
+    } else {
+        { value -> value.toString() }
+    }
 
 @Composable
 private fun Statistic(value: String, label: String) {
