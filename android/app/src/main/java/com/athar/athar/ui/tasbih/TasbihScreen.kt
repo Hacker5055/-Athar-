@@ -73,6 +73,12 @@ import java.time.LocalDate
 import java.time.ZoneId
 import com.athar.athar.ui.components.AtharPageTitle
 import com.athar.athar.ui.theme.AtharPageMargin
+import android.view.HapticFeedbackConstants
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 
 /// السبحة (E1–E4 من docs/02).
 ///
@@ -153,6 +159,12 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
     /// ضغطةُ زرّ الصوت (E5). فلو تفرّقت صار في الشاشة عدّادان
     /// لا يعملان معًا — والإجمالي يخطئ.
     fun countOne() {
+        // ⚠️ **كلُّ نقرةٍ تُحسّ**: تغيُّرُ الرقمِ وحدَه لا يكفي
+        // لئل يَعلمَ المستخدمُ أنّ يدَه ضربت، خاصةً والعينُ على
+        // السبحةِ فالعَونُ يمرّ. فنبضةٌ خفيفةٌ من النظامِ نفسِه،
+        // تحترمُ إعدادَ المستخدمِ في الاهتزاز، ولا إذنَ ولا
+        // استثناء.
+        view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
         val result = TasbihCounter.tap(state, target)
         state = result.state
         if (result.completed) {
@@ -220,33 +232,45 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // ⚠️ **حلقةُ التقدّمِ خارجَ الدائرة**: الرقمُ وحدَه
+        // يقولُ «كم» ولا يقولُ «كم بقي». والحلقةُ تملأُ مع كلِّ
+        // نقرةٍ فيرى المستخدمُ قربَ الهدفِ بعينِه لا بالعدِّ في
+        // رأسِه.
         Box(
-            modifier = Modifier
-                .size(220.dp)
-                .clip(CircleShape)
-                // ⚠️ **التدرّجُ نفسُه** الذي في بطاقة البطل: التطبيقُ
-                // منتَجٌ واحد، فلونُه واحدٌ في كل مكان.
-                .background(
-                    Brush.verticalGradient(listOf(AtharHeroTop, AtharHeroBottom)),
-                )
-                // ⚠️ `clickable` على الدائرة كلها، و`role` يخبر قارئ
-                // الشاشة أنها زرّ لا صورة.
-                .clickable(role = Role.Button) { countOne() },
+            modifier = Modifier.size(244.dp),
             contentAlignment = Alignment.Center,
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = digits(state.count),
-                    fontSize = 72.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = AmiriFamily,
-                    color = AtharCream,
-                )
-                Text(
-                    text = "${digits(state.count)} / ${digits(target)}",
-                    fontSize = 12.sp,
-                    color = AtharPrimaryContainer,
-                )
+            TasbihProgressRing(
+                progress = if (target > 0) state.count.toFloat() / target else 0f,
+            )
+            Box(
+                modifier = Modifier
+                    .size(220.dp)
+                    .clip(CircleShape)
+                    // ⚠️ **التدرّجُ نفسُه** الذي في بطاقة البطل: التطبيقُ
+                    // منتَجٌ واحد، فلونُه واحدٌ في كل مكان.
+                    .background(
+                        Brush.verticalGradient(listOf(AtharHeroTop, AtharHeroBottom)),
+                    )
+                    // ⚠️ `clickable` على الدائرة كلها، و`role` يخبر قارئ
+                    // الشاشة أنها زرّ لا صورة.
+                    .clickable(role = Role.Button) { countOne() },
+                contentAlignment = Alignment.Center,
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = digits(state.count),
+                        fontSize = 72.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = AmiriFamily,
+                        color = AtharCream,
+                    )
+                    Text(
+                        text = "${digits(state.count)} / ${digits(target)}",
+                        fontSize = 12.sp,
+                        color = AtharPrimaryContainer,
+                    )
+                }
             }
         }
 
@@ -483,6 +507,39 @@ private fun Stat(label: String, value: String) {
             text = label,
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/// حلقةُ التقدّمِ حولَ دائرةِ التسبيح.
+///
+/// ⚠️ **المسارُ باهتٌ والحلقةُ ملوّنة**: بلا مسارٍ يُرى أينَ
+/// بدأ، فلا يُعرف أينَ انتهى. واللونُ من النظامِ فيتبعُ
+/// الفاتحَ والداكنَ كما تتبعُه بقيّةُ التطبيق.
+@Composable
+private fun TasbihProgressRing(progress: Float) {
+    val color = MaterialTheme.colorScheme.primary
+    Canvas(modifier = Modifier.size(236.dp)) {
+        val stroke = 6.dp.toPx()
+        val inset = stroke / 2f
+        val arc = Size(size.width - stroke, size.height - stroke)
+        drawArc(
+            color = color.copy(alpha = 0.18f),
+            startAngle = -90f,
+            sweepAngle = 360f,
+            useCenter = false,
+            topLeft = Offset(inset, inset),
+            size = arc,
+            style = Stroke(width = stroke, cap = StrokeCap.Round),
+        )
+        drawArc(
+            color = color,
+            startAngle = -90f,
+            sweepAngle = 360f * progress.coerceIn(0f, 1f),
+            useCenter = false,
+            topLeft = Offset(inset, inset),
+            size = arc,
+            style = Stroke(width = stroke, cap = StrokeCap.Round),
         )
     }
 }

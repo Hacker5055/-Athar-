@@ -13,7 +13,7 @@
 
 | | |
 |---|---|
-| **أحدث إصدار** | [v0.67.0](https://github.com/Hacker5055/-Athar-/releases/latest) |
+| **أحدث إصدار** | [v0.68.0](https://github.com/Hacker5055/-Athar-/releases/latest) |
 | **الملفات** | `app-release.apk` (موقَّع) · `app-debug.apk` |
 | **التثبيت** | فعِّل «تثبيت من مصادر غير معروفة» ثم افتح الـ APK |
 | **الحدّ الأدنى** | أندرويد ٨ فأعلى |

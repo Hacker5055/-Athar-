@@ -58,6 +58,9 @@ import kotlin.math.cos
 import kotlin.math.sin
 import com.athar.athar.ui.components.AtharPageTitle
 import com.athar.athar.ui.theme.AtharPageMargin
+import android.view.HapticFeedbackConstants
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalView
 
 /// ⚠️ نُدير **الوردة** عكس اتجاه الهاتف، لا المؤشّر: فتبقى علامة
 /// «شمال» حيث الشمال فعلًا، ويبقى مؤشّر القبلة مثبتًا على الوردة عند
@@ -80,6 +83,27 @@ fun QiblaScreen(
 
     val azimuth by compass.azimuth.collectAsState()
     val accuracy by compass.accuracy.collectAsState()
+
+    // ⚠️ **اهتزازٌ عند الاستقامة**: من يُحرّكُ الهاتفَ نحوَ
+    // القبلةِ يريدُ أن يَعلمَ أنّه بلغَ، لا أن يقرأَ رقمًا من
+    // الشاشة. فنبضةٌ واحدةٌ عند بلوغِ الهدف، لا نبضةٌ كلَّ
+    // ثانيةٍ وأنت واقفٌ في مكانِه. والانحرافُ الذي يتجاوزُ ٨
+    // درجاتٍ يُعيدُ翻身َها، فلا تفقدُ النبضةُ معناها إن خرجت
+    // ثم عدت.
+    val view = LocalView.current
+    val buzzed = remember { mutableStateOf(false) }
+    val degreesNow = azimuth?.let {
+        abs(QiblaMath.offsetTo(bearing, it.toDouble())).toInt()
+    }
+    LaunchedEffect(degreesNow) {
+        val d = degreesNow ?: return@LaunchedEffect
+        if (d > 8) {
+            buzzed.value = false
+        } else if (d <= 2 && !buzzed.value) {
+            buzzed.value = true
+            view.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+        }
+    }
 
     Column(
         // ⚠️ **قابل للتمرير**: البوصلة ٢٨٠ بكسل والبطاقة تحتها،
