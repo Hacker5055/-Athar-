@@ -62,6 +62,7 @@ import com.athar.athar.ui.components.EmptyState
 import com.athar.athar.ui.components.AtharSearchField
 import com.athar.athar.ui.components.AtharPageTitle
 import com.athar.athar.ui.theme.AtharPageMargin
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun AdhkarScreen(modifier: Modifier = Modifier) {
@@ -148,6 +149,7 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
                                 "n" to pinned.items.size,
                             ),
                             onClick = { openSection = pinned },
+                            preview = pinned.items.firstOrNull()?.text,
                         )
                     }
                 }
@@ -159,6 +161,7 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
                             "n" to section.items.size,
                         ),
                         onClick = { openSection = section },
+                        preview = section.items.firstOrNull()?.text,
                     )
                 }
                 item {
@@ -483,6 +486,8 @@ private fun AdhkarSectionCard(
     title: String,
     subtitle: String,
     onClick: () -> Unit,
+    /// أوّلُ ذكرٍ في الباب — سطرٌ واحدٌ منه.
+    preview: String? = null,
 ) {
     Card(
         onClick = onClick,
@@ -490,30 +495,46 @@ private fun AdhkarSectionCard(
             .fillMaxWidth()
             .padding(horizontal = AtharPageMargin, vertical = 3.dp),
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Start,
-                )
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Start,
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Start,
+                    )
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Start,
+                    )
+                }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (preview != null) {
+                // ⚠️ **عيّنةٌ من البابِ بسطرٍ واحد**: الاسمُ والعددُ
+                // يقولان كم في الباب، ولا يقولان ماذا فيه. فمن يبحث
+                // عن ذكرٍ بعينه كان عليه فتحُ كلِّ بابٍ حتى يجده.
+                // وهي بأميري، لأنها كلمةُ ذِكر.
+                Text(
+                    text = preview,
+                    fontFamily = AmiriFamily,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
+            }
         }
     }
 }

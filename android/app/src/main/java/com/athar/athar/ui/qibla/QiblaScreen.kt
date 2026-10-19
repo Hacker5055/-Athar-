@@ -66,6 +66,9 @@ import com.athar.athar.ui.theme.AtharPageMargin
 fun QiblaScreen(
     latitude: Double,
     longitude: Double,
+    /// اسمُ المدينةِ التي تُحسبُ لها القبلة — وإلا صارت الأرقامُ
+    /// غامضةً: اتجاهٌ من أين؟
+    placeName: String = "",
     modifier: Modifier = Modifier,
 ) {
     val bearing = remember(latitude, longitude) {
@@ -91,6 +94,7 @@ fun QiblaScreen(
         // بلا عنوان، فكان نصفُ التطبيقِ بلا بابٍ.
         AtharPageTitle(
             title = s.tabQibla,
+            subtitle = placeName.takeIf { it.isNotBlank() },
             modifier = Modifier.fillMaxWidth(),
         )
         when {

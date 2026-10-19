@@ -49,6 +49,7 @@ import com.athar.athar.ui.settings.MoreScreen
 import com.athar.athar.ui.theme.Appearance
 import com.athar.athar.ui.theme.AppearanceStore
 import com.athar.athar.ui.theme.AtharTheme
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 
 private val kTabIcons: List<ImageVector> = listOf(
     Icons.Filled.Home,
@@ -168,50 +169,58 @@ private fun AppShell(
         // والتلاشي البطيء (٢٢٠ جزءًا من الثانية) يجعل التنقّل
         // انسيابيًّا — وهو ما يقتضيه نظامُ التصميم (٢٠٠–٣٠٠ جزء
         // من الثانية).
+        // ⚠️ **التمريرُ يبقى في موضعه**: التلاشي يُخرج محتوى
+        // التبويبِ القديم، فتفقد القوائمُ موضعَها. فمَن كان في
+        // السورةِ الخمسينَ ثم ذهب إلى الأذكارِ ورجع وجد نفسه في
+        // الأولى — وهو تطبيقٌ يبدّل موضعَك دون أن يطلب.
+        val stateHolder = rememberSaveableStateHolder()
         Crossfade(
             targetState = selected,
             animationSpec = tween(durationMillis = 220),
             label = "tab",
         ) { tab ->
-            when (tab) {
-                0 -> PrayerScreen(
-                    settings = settings,
-                    onContinueReading = { surah, ayah ->
-                        quranTarget = surah to ayah
-                        selected = 1
-                    },
-                    onSettingsChange = { newSettings ->
-                        settings = newSettings
-                        PrayerSettingsStore.save(context, newSettings)
-                        NotificationScheduler.rescheduleFromStored(context)
-                    },
-                    modifier = Modifier.padding(innerPadding),
-                )
-                1 -> QuranScreen(
-                    readerTheme = appearance.readerTheme,
-                    target = quranTarget,
-                    onTargetConsumed = { quranTarget = null },
-                    modifier = Modifier.padding(innerPadding),
-                )
-                2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
-                3 -> TasbihScreen(modifier = Modifier.padding(innerPadding))
-                4 -> QiblaScreen(
-                    latitude = settings.latitude,
-                    longitude = settings.longitude,
-                    modifier = Modifier.padding(innerPadding),
-                )
-                5 -> MoreScreen(
-                    locale = locale,
-                    appearance = appearance,
-                    onLocaleChange = onLocaleChange,
-                    onAppearanceChange = onAppearanceChange,
-                    modifier = Modifier.padding(innerPadding),
-                )
-                else -> Box(
-                    modifier = Modifier.fillMaxSize().padding(innerPadding),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(text = labels[tab])
+            stateHolder.SaveableStateProvider(tab.toString()) {
+                when (tab) {
+                    0 -> PrayerScreen(
+                        settings = settings,
+                        onContinueReading = { surah, ayah ->
+                            quranTarget = surah to ayah
+                            selected = 1
+                        },
+                        onSettingsChange = { newSettings ->
+                            settings = newSettings
+                            PrayerSettingsStore.save(context, newSettings)
+                            NotificationScheduler.rescheduleFromStored(context)
+                        },
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                    1 -> QuranScreen(
+                        readerTheme = appearance.readerTheme,
+                        target = quranTarget,
+                        onTargetConsumed = { quranTarget = null },
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                    2 -> AdhkarScreen(modifier = Modifier.padding(innerPadding))
+                    3 -> TasbihScreen(modifier = Modifier.padding(innerPadding))
+                    4 -> QiblaScreen(
+                        latitude = settings.latitude,
+                        longitude = settings.longitude,
+                        placeName = settings.placeName,
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                    5 -> MoreScreen(
+                        locale = locale,
+                        appearance = appearance,
+                        onLocaleChange = onLocaleChange,
+                        onAppearanceChange = onAppearanceChange,
+                        modifier = Modifier.padding(innerPadding),
+                    )
+                    else -> Box(
+                        modifier = Modifier.fillMaxSize().padding(innerPadding),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(text = labels[tab])
+                    }
                 }
             }
         }
