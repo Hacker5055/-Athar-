@@ -64,6 +64,18 @@ fun PrayerScreen(
     val context = LocalContext.current
     val today = LocalDate.now()
     var pickingCity by remember { mutableStateOf(false) }
+    var showMonth by remember { mutableStateOf(false) }
+
+    if (showMonth) {
+        MonthScreen(
+            settings = settings,
+            locale = com.athar.athar.i18n.LocalAppLocale.current,
+            hijriOffset = HijriStore.load(context),
+            onBack = { showMonth = false },
+            modifier = modifier,
+        )
+        return
+    }
 
     if (pickingCity) {
         CityPickerScreen(
@@ -270,6 +282,13 @@ fun PrayerScreen(
                     )
                 }
             }
+        }
+
+        TextButton(
+            onClick = { showMonth = true },
+            modifier = Modifier.padding(horizontal = 8.dp),
+        ) {
+            Text(s.monthlyCalendar)
         }
 
         LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {

@@ -501,6 +501,8 @@ class Strings(val locale: AppLocale) {
             "hl_middle" to "وسط الليل",
             "hl_seventh" to "سُبع الليل",
             "hl_twilight" to "زاوية الشفق",
+            "month_prev" to "الشهر الماضي",
+            "month_next" to "الشهر التالي",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -976,6 +978,8 @@ class Strings(val locale: AppLocale) {
             "hl_middle" to "Middle of night",
             "hl_seventh" to "Seventh of night",
             "hl_twilight" to "Twilight angle",
+            "month_prev" to "Previous month",
+            "month_next" to "Next month",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1451,6 +1455,8 @@ class Strings(val locale: AppLocale) {
             "hl_middle" to "Milieu de la nuit",
             "hl_seventh" to "Septième de la nuit",
             "hl_twilight" to "Angle crépusculaire",
+            "month_prev" to "Mois précédent",
+            "month_next" to "Mois suivant",
         )
     }
 
@@ -1931,4 +1937,6 @@ class Strings(val locale: AppLocale) {
     val hlMiddle: String get() = t("hl_middle")
     val hlSeventh: String get() = t("hl_seventh")
     val hlTwilight: String get() = t("hl_twilight")
+    val monthPrev: String get() = t("month_prev")
+    val monthNext: String get() = t("month_next")
 }

@@ -526,4 +526,6 @@ const Map<String, String> kStringsFr = {
   'hl_middle': 'Milieu de la nuit',
   'hl_seventh': 'Septième de la nuit',
   'hl_twilight': 'Angle crépusculaire',
+  'month_prev': 'Mois précédent',
+  'month_next': 'Mois suivant',
 };

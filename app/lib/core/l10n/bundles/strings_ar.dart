@@ -525,4 +525,6 @@ const Map<String, String> kStringsAr = {
   'hl_middle': 'وسط الليل',
   'hl_seventh': 'سُبع الليل',
   'hl_twilight': 'زاوية الشفق',
+  'month_prev': 'الشهر الماضي',
+  'month_next': 'الشهر التالي',
 };
