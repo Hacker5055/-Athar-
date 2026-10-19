@@ -528,6 +528,20 @@ class Strings(val locale: AppLocale) {
             "hifz_repeats_of" to "التكرار {a} من {b}",
             "hifz_finished" to "حفظت النطاق كلّه",
             "quran_hizb" to "الأحزاب — حزبان في كل جزء",
+            "ramadan_day" to "اليوم {a} من رمضان",
+            "ramadan_iftar" to "الإفطار",
+            "ramadan_suhur" to "آخر وقت السحور",
+            "ramadan_last_ten" to "العشر الأواخر",
+            "weekly_title" to "ملخّص الأسبوع",
+            "weekly_range" to "{a} — {b}",
+            "weekly_acts" to "{n} عبادة في {d} يوم",
+            "weekly_completion" to "نسبة الإتمام: {n}٪",
+            "weekly_better" to "أكثر من الأسبوع الذي قبله",
+            "weekly_worse" to "أقلّ من الأسبوع الذي قبله",
+            "weekly_same" to "مثل الأسبوع الذي قبله",
+            "weekly_streak" to "السلسلة الآن: {n} يومًا",
+            "weekly_best_streak" to "أطول سلسلة: {n} يومًا",
+            "weekly_top" to "أكثر ما فعلته",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -1030,6 +1044,20 @@ class Strings(val locale: AppLocale) {
             "hifz_repeats_of" to "Repeat {a} of {b}",
             "hifz_finished" to "You memorized the whole range",
             "quran_hizb" to "Hizbs — two per juz",
+            "ramadan_day" to "Day {a} of Ramadan",
+            "ramadan_iftar" to "Iftar",
+            "ramadan_suhur" to "Suhoor ends",
+            "ramadan_last_ten" to "The last ten nights",
+            "weekly_title" to "Weekly summary",
+            "weekly_range" to "{a} — {b}",
+            "weekly_acts" to "{n} acts in {d} days",
+            "weekly_completion" to "Completion: {n}%",
+            "weekly_better" to "More than the week before",
+            "weekly_worse" to "Less than the week before",
+            "weekly_same" to "Same as the week before",
+            "weekly_streak" to "Streak now: {n} days",
+            "weekly_best_streak" to "Best streak: {n} days",
+            "weekly_top" to "What you did most",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1532,6 +1560,20 @@ class Strings(val locale: AppLocale) {
             "hifz_repeats_of" to "Répétition {a} sur {b}",
             "hifz_finished" to "Vous avez mémorisé toute la plage",
             "quran_hizb" to "Hizbs — deux par juz",
+            "ramadan_day" to "Jour {a} du Ramadan",
+            "ramadan_iftar" to "Iftar",
+            "ramadan_suhur" to "Fin du souhour",
+            "ramadan_last_ten" to "Les dix dernières nuits",
+            "weekly_title" to "Résumé hebdomadaire",
+            "weekly_range" to "{a} — {b}",
+            "weekly_acts" to "{n} actes en {d} jours",
+            "weekly_completion" to "Achèvement : {n} %",
+            "weekly_better" to "Plus que la semaine précédente",
+            "weekly_worse" to "Moins que la semaine précédente",
+            "weekly_same" to "Comme la semaine précédente",
+            "weekly_streak" to "Série actuelle : {n} jours",
+            "weekly_best_streak" to "Meilleure série : {n} jours",
+            "weekly_top" to "Ce que vous avez le plus fait",
         )
     }
 
@@ -2039,4 +2081,18 @@ class Strings(val locale: AppLocale) {
     val hifzRepeatsOf: String get() = t("hifz_repeats_of")
     val hifzFinished: String get() = t("hifz_finished")
     val quranHizb: String get() = t("quran_hizb")
+    val ramadanDay: String get() = t("ramadan_day")
+    val ramadanIftar: String get() = t("ramadan_iftar")
+    val ramadanSuhur: String get() = t("ramadan_suhur")
+    val ramadanLastTen: String get() = t("ramadan_last_ten")
+    val weeklyTitle: String get() = t("weekly_title")
+    val weeklyRange: String get() = t("weekly_range")
+    val weeklyActs: String get() = t("weekly_acts")
+    val weeklyCompletion: String get() = t("weekly_completion")
+    val weeklyBetter: String get() = t("weekly_better")
+    val weeklyWorse: String get() = t("weekly_worse")
+    val weeklySame: String get() = t("weekly_same")
+    val weeklyStreak: String get() = t("weekly_streak")
+    val weeklyBestStreak: String get() = t("weekly_best_streak")
+    val weeklyTop: String get() = t("weekly_top")
 }

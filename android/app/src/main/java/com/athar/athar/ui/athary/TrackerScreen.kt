@@ -36,6 +36,7 @@ import com.athar.athar.athary.HabitId
 import com.athar.athar.athary.TrackerState
 import com.athar.athar.athary.TrackerStore
 import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.athary.WeeklySummaries
 import java.time.LocalDate
 
 @Composable
@@ -67,6 +68,13 @@ fun TrackerScreen(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+
+        item {
+            // ⚠️ الملخّص **قبل الإحصاءات اليومية**: الإحصاءات تقول
+            // أين أنت الآن، والملخّص يقول إلى أين تمشي. ومن يرى
+            // الرقم قبل المسار يحسب اليوم الواحد نتيجة.
+            WeeklyCard(state = state, today = today)
         }
 
         item {
@@ -180,3 +188,58 @@ private fun levelColor(level: DayLevel, primary: androidx.compose.ui.graphics.Co
         DayLevel.HIGH -> primary.copy(alpha = 0.76f)
         DayLevel.FULL -> primary
     }
+
+/// ملخّص الأسبوع — وصف لا حكم.
+///
+/// ⚠️ ولا نقول «أحسنت» ولا «قصّرت»: عبادة تُقاس برقم يراها صاحبها
+/// غاية لا وسيلة، والتطبيق لا يعرف عنك ما يعرفه ربّك.
+@Composable
+private fun WeeklyCard(state: TrackerState, today: java.time.LocalDate) {
+    val s = LocalStrings.current
+    val current = remember(state, today) { WeeklySummaries.of(state, today) }
+    val previous = remember(state, today) { WeeklySummaries.previousOf(state, today) }
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(s.weeklyTitle, fontWeight = FontWeight.Bold)
+            Text(
+                s.tArgs("weekly_acts", "n" to current.totalActs, "d" to current.activeDays),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                s.tArgs("weekly_completion", "n" to current.completion),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                // ⚠️ المقارنة **بالأسبوع الذي قبله مباشرة** لا
+                // بمتوسط ولا بمثالية: من يقارن نفسه بالمثالية
+                // يرى نفسه مقصّرًا دائمًا، ومن يقارنها بنفسه يرى
+                // جهده.
+                when {
+                    WeeklySummaries.improved(current, previous) -> s.weeklyBetter
+                    WeeklySummaries.improved(previous, current) -> s.weeklyWorse
+                    else -> s.weeklySame
+                },
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            val top = current.perHabit.firstOrNull { it.second > 0 }
+            if (top != null) {
+                Text(
+                    "${s.weeklyTop}: ${s.t(top.first.stringKey)} (${top.second})",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+            Text(
+                s.tArgs("weekly_streak", "n" to current.streak),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            Text(
+                s.tArgs("weekly_best_streak", "n" to current.bestStreak),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}

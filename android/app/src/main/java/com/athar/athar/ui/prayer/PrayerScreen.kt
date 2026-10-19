@@ -46,6 +46,9 @@ import java.time.format.FormatStyle
 import com.athar.athar.quran.QuranProgress
 import com.athar.athar.quran.QuranProgressStore
 import com.athar.athar.hijri.IslamicEvents
+import com.athar.athar.prayer.PrayerDay
+import com.athar.athar.ramadan.Ramadan
+import com.athar.athar.hijri.HijriCalendar
 import java.time.temporal.ChronoUnit
 
 private val timeFormat: DateTimeFormatter =
@@ -160,6 +163,19 @@ fun PrayerScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+        }
+
+        // ⚠️ بطاقة رمضان **تحت البطاقة الرئيسية** لا داخلها:
+        // هي فرع على المواقيت لا بديلًا عنها — ومن لم يكن صائمًا
+        // لا يفقد شيئًا، فهي لا تظهر إلا في رمضان.
+        val hijriDate = remember(today, hijriOffset) { HijriCalendar.from(today, hijriOffset) }
+        val ramadanDay = Ramadan.dayOf(hijriDate)
+        if (ramadanDay != null) {
+            RamadanCard(
+                day = day,
+                ramadanDay = ramadanDay,
+                length = Ramadan.lengthOf(hijriDate.year),
+            )
         }
 
         // ⚠️ «تابع القراءة» **تحت البطاقة مباشرة** لا في قسم: أكثر
@@ -331,3 +347,74 @@ private fun gregorianText(date: LocalDate, locale: AppLocale): String =
             .withLocale(java.util.Locale.forLanguageTag(locale.code))
             .format(date)
     }.getOrDefault(date.toString())
+
+/// بطاقة رمضان: الإفطار وآخر وقت السحور.
+///
+/// ⚠️ **وصف لا حكم**: البطاقة تعرض الوقت، ولا تهنّئ ولا تعاتب.
+/// ومن كان مسافرًا أو مريضًا فعذره عنده، والتطبيق الذي يزعم أنه
+/// يعرف حالك أكبر من أن يصدق.
+@Composable
+private fun RamadanCard(
+    day: PrayerDay,
+    ramadanDay: Int,
+    length: Int,
+) {
+    val s = LocalStrings.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                s.tArgs("ramadan_day", "a" to ramadanDay),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+            )
+            // ⚠️ العشر الأواخر تُذكر **بعد اليوم الحادي والعشرين**
+            // لا بـ «باقي عشرة أيام»: العدّ التنازلي يبدأ في سنة
+            // ٢٩ يومًا من اليوم ٢٠، واليوم العشرون ليس من الأواخر.
+            if (Ramadan.isLastTen(ramadanDay)) {
+                Text(
+                    s.ramadanLastTen,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column {
+                    Text(s.ramadanIftar, style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        timeFormat.format(day.maghrib),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                Column {
+                    Text(s.ramadanSuhur, style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        timeFormat.format(day.fajr),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+            // ⚠️ عدد الأيام من **السنة الهجريّة نفسها**: الشهر قمريّ،
+            // وعدّته ٢٩ أو ٣٠ بحسب الرؤية.
+            Text(
+                "$ramadanDay / $length",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp),
+            )
+        }
+    }
+}
