@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Upload
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.athar.athar.backup.AtharBackup
 import com.athar.athar.backup.BackupCodec
 import com.athar.athar.backup.BackupStore
@@ -89,7 +90,7 @@ fun BackupScreen(modifier: Modifier = Modifier) {
                 onClick = { exportLauncher.launch("athar-${LocalDate.now()}.json") },
                 modifier = Modifier.weight(1f),
             ) {
-                Icon(Icons.AutoMirrored.Filled.Upload, contentDescription = null)
+                Icon(Icons.Filled.Upload, contentDescription = null)
                 Text("  " + s.backupExport)
             }
             Button(
