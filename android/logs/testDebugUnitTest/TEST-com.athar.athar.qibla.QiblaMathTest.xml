@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.qibla.QiblaMathTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.017">
+<testsuite name="com.athar.athar.qibla.QiblaMathTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.008">
   <properties/>
   <testcase name="bearingPointsTheRightWay" classname="com.athar.athar.qibla.QiblaMathTest" time="0.002"/>
-  <testcase name="agreesWithIndependentBearing" classname="com.athar.athar.qibla.QiblaMathTest" time="0.011"/>
+  <testcase name="agreesWithIndependentBearing" classname="com.athar.athar.qibla.QiblaMathTest" time="0.005"/>
   <testcase name="canvasAngleOffsetsByNinety" classname="com.athar.athar.qibla.QiblaMathTest" time="0.0"/>
-  <testcase name="normalizeWraps" classname="com.athar.athar.qibla.QiblaMathTest" time="0.0"/>
+  <testcase name="normalizeWraps" classname="com.athar.athar.qibla.QiblaMathTest" time="0.001"/>
   <testcase name="declinationIsApplied" classname="com.athar.athar.qibla.QiblaMathTest" time="0.0"/>
   <testcase name="offsetTakesShortestTurn" classname="com.athar.athar.qibla.QiblaMathTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>

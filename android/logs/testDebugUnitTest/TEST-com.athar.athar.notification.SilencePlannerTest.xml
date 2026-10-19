@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.notification.SilencePlannerTest" tests="11" skipped="0" failures="2" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.018">
+<testsuite name="com.athar.athar.notification.SilencePlannerTest" tests="11" skipped="0" failures="2" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.006">
   <properties/>
-  <testcase name="theSunriseHasNoWindow" classname="com.athar.athar.notification.SilencePlannerTest" time="0.004"/>
+  <testcase name="theSunriseHasNoWindow" classname="com.athar.athar.notification.SilencePlannerTest" time="0.001"/>
   <testcase name="theWindowsAreInOrder" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0"/>
   <testcase name="theFeatureIsOffByDefault" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0"/>
   <testcase name="theWindowStartsAfterTheAdhan" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0"/>
-  <testcase name="theWindowLastsTheChosenMinutes" classname="com.athar.athar.notification.SilencePlannerTest" time="0.01">
+  <testcase name="theWindowLastsTheChosenMinutes" classname="com.athar.athar.notification.SilencePlannerTest" time="0.003">
     <failure message="java.lang.AssertionError: expected:&lt;30&gt; but was:&lt;1800&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;30&gt; but was:&lt;1800&gt;
 	at org.junit.Assert.fail(Assert.java:89)
 	at org.junit.Assert.failNotEquals(Assert.java:835)
@@ -57,9 +57,9 @@
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="aWindowThatAlreadyEndedIsNotPlanned" classname="com.athar.athar.notification.SilencePlannerTest" time="0.003"/>
+  <testcase name="aWindowThatAlreadyEndedIsNotPlanned" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0"/>
   <testcase name="overlappingWindowsAreMerged" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0"/>
-  <testcase name="anUnknownDurationFallsBackToTheDefault" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0">
+  <testcase name="anUnknownDurationFallsBackToTheDefault" classname="com.athar.athar.notification.SilencePlannerTest" time="0.001">
     <failure message="java.lang.AssertionError: expected:&lt;15&gt; but was:&lt;900&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;15&gt; but was:&lt;900&gt;
 	at org.junit.Assert.fail(Assert.java:89)
 	at org.junit.Assert.failNotEquals(Assert.java:835)
@@ -111,7 +111,7 @@
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="nothingIsPlannedWhenTheFeatureIsOff" classname="com.athar.athar.notification.SilencePlannerTest" time="0.001"/>
+  <testcase name="nothingIsPlannedWhenTheFeatureIsOff" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0"/>
   <testcase name="aWindowInProgressIsStillPlanned" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0"/>
   <testcase name="everyPrayerHasAWindow" classname="com.athar.athar.notification.SilencePlannerTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.ruqya.RuqyaSelectionsTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.004">
+<testsuite name="com.athar.athar.ruqya.RuqyaSelectionsTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.001">
   <properties/>
-  <testcase name="whatIsNotInTheSourceIsNotInvented" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.002"/>
+  <testcase name="whatIsNotInTheSourceIsNotInvented" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>
   <testcase name="theVersesOutsideTheRangeAreExcluded" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>
   <testcase name="theThreeQulsAreComplete" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>
   <testcase name="theVersesComeInOrder" classname="com.athar.athar.ruqya.RuqyaSelectionsTest" time="0.0"/>

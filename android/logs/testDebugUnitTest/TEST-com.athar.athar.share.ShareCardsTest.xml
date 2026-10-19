@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.share.ShareCardsTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.013">
+<testsuite name="com.athar.athar.share.ShareCardsTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.018">
   <properties/>
   <testcase name="theNewestDayComesFirst" classname="com.athar.athar.share.ShareCardsTest" time="0.0"/>
-  <testcase name="theActiveDaysAreCounted" classname="com.athar.athar.share.ShareCardsTest" time="0.008"/>
-  <testcase name="theStreakIsTheCurrentOne" classname="com.athar.athar.share.ShareCardsTest" time="0.0"/>
-  <testcase name="theLevelsFollowTheCounts" classname="com.athar.athar.share.ShareCardsTest" time="0.001"/>
+  <testcase name="theActiveDaysAreCounted" classname="com.athar.athar.share.ShareCardsTest" time="0.01"/>
+  <testcase name="theStreakIsTheCurrentOne" classname="com.athar.athar.share.ShareCardsTest" time="0.001"/>
+  <testcase name="theLevelsFollowTheCounts" classname="com.athar.athar.share.ShareCardsTest" time="0.0"/>
   <testcase name="theWeekIsSevenDays" classname="com.athar.athar.share.ShareCardsTest" time="0.0"/>
   <testcase name="thereAreSevenDayNames" classname="com.athar.athar.share.ShareCardsTest" time="0.0"/>
-  <testcase name="theDayNamesStartWithToday" classname="com.athar.athar.share.ShareCardsTest" time="0.003"/>
+  <testcase name="theDayNamesStartWithToday" classname="com.athar.athar.share.ShareCardsTest" time="0.006"/>
   <testcase name="theOldestDayIsSixDaysBack" classname="com.athar.athar.share.ShareCardsTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

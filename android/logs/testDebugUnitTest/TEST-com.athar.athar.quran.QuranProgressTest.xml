@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranProgressTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:43:56" hostname="runnervm8k3b6" time="0.002">
+<testsuite name="com.athar.athar.quran.QuranProgressTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.002">
   <properties/>
-  <testcase name="theEndIsAfterTheBeginning" classname="com.athar.athar.quran.QuranProgressTest" time="0.001"/>
+  <testcase name="theEndIsAfterTheBeginning" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
   <testcase name="outOfRangeSurahIsRejected" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
   <testcase name="percentOfAnInvalidPositionIsZero" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
   <testcase name="percentStartsAtZeroAndEndsAtHundred" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
   <testcase name="ayahBeyondTheSurahIsRejected" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
   <testcase name="validPositionsAreAccepted" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
-  <testcase name="percentIsBetweenZeroAndHundred" classname="com.athar.athar.quran.QuranProgressTest" time="0.001"/>
-  <testcase name="percentNeverGoesBackwards" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
+  <testcase name="percentIsBetweenZeroAndHundred" classname="com.athar.athar.quran.QuranProgressTest" time="0.0"/>
+  <testcase name="percentNeverGoesBackwards" classname="com.athar.athar.quran.QuranProgressTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
