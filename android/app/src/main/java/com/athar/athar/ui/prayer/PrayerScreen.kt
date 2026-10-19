@@ -1,6 +1,7 @@
 package com.athar.athar.ui.prayer
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,9 +43,14 @@ import kotlinx.coroutines.delay
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -183,8 +189,11 @@ fun PrayerScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 4.dp),
+                // ⚠️ **النعناعيُّ لا الأزرق**: لونُ النسخة الثالثة
+                // أزرقٌ رماديٌّ، وهو لا ينتمي إلى التطبيق. فالبطاقةُ
+                // بلونِ الأساس.
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
                 ),
             ) {
                 Row(
@@ -196,19 +205,19 @@ fun PrayerScreen(
                     Icon(
                         Icons.Filled.Place,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                     Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
                         Text(
                             text = s.prayerPickLocation,
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                         Text(
                             text = s.prayerPickLocationBody,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     }
                 }
@@ -378,6 +387,33 @@ private fun HeroCard(
                     Brush.verticalGradient(listOf(AtharHeroTop, AtharHeroBottom)),
                 ),
         ) {
+            // ⚠️ **نجمةُ ثمانٍ في الركن**: مربّعانِ متقاطعان — وهي
+            // زخرفةُ «الخاتم» في العمارة الإسلامية. خفيفةٌ إلى حدّ
+            // أنها لا تُقرأ نصًّا، لكنها تقول إن هذا تطبيقٌ له هوية.
+            val ltr = LocalLayoutDirection.current == LayoutDirection.Ltr
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val cx = if (ltr) size.width * 0.86f else size.width * 0.14f
+                val cy = size.height * 0.5f
+                val r = size.minDimension * 0.62f
+                val stroke = 1.2.dp.toPx()
+                val line = AtharGold.copy(alpha = 0.18f)
+                rotate(0f, Offset(cx, cy)) {
+                    drawRect(
+                        color = line,
+                        topLeft = Offset(cx - r, cy - r),
+                        size = Size(r * 2, r * 2),
+                        style = Stroke(width = stroke),
+                    )
+                }
+                rotate(45f, Offset(cx, cy)) {
+                    drawRect(
+                        color = line,
+                        topLeft = Offset(cx - r, cy - r),
+                        size = Size(r * 2, r * 2),
+                        style = Stroke(width = stroke),
+                    )
+                }
+            }
             Column(modifier = Modifier.padding(22.dp)) {
                 Text(
                     text = s.prayerNextLabel,
