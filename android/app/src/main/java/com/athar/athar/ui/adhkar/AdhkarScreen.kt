@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -38,6 +39,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,6 +77,9 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
     var sections by remember { mutableStateOf<List<AdhkarSection>?>(null) }
     var query by remember { mutableStateOf("") }
     var openSection by remember { mutableStateOf<AdhkarSection?>(null) }
+    /// موضعُ الذكرِ الذي طابقَ البحثُ داخلَ الباب — يُمرَّرُ إلى
+    /// الشاشةِ الداخليةِ فتمضي إلى ذكرِه لا إلى أوّلِ الباب.
+    var matchIndex by remember { mutableIntStateOf(-1) }
     var showMine by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { sections = AdhkarRepository.load(context) }
@@ -89,6 +94,7 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
         SectionScreen(
             section = current,
             onBack = { openSection = null },
+            matchIndex = matchIndex,
             modifier = modifier,
         )
         return
@@ -144,11 +150,20 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
             )
 
             val q = CitySearch.normalize(query.trim())
+            // ⚠️ **البحثُ في نصّ الذكرِ لا في اسمِ البابِ وحده**:
+            // من كتب «أستغفر الله» يريدُ الذكرَ لا البابَ الذي
+            // عنوانُه «أذكارُ الاستغفار». وقبلَ هذا كان البحثُ
+            // في الأذكارِ بابًا لا يُفتح.
             val filtered = remember(q, list) {
                 if (q.isEmpty()) {
                     list
                 } else {
-                    list.filter { q in CitySearch.normalize(it.title) }
+                    list.filter { section ->
+                        q in CitySearch.normalize(section.title) ||
+                            section.items.any { item ->
+                                q in CitySearch.normalize(item.text)
+                            }
+                    }
                 }
             }
 
@@ -190,8 +205,11 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
                             "adhkar_items_count",
                             "n" to section.items.size,
                         ),
-                        onClick = { openSection = section },
-                        preview = section.items.firstOrNull()?.text,
+                        onClick = {
+                            openSection = section
+                            matchIndex = matchOf(section, q)
+                        },
+                        preview = previewOf(section, q),
                     )
                 }
                 item {
@@ -210,10 +228,31 @@ fun AdhkarScreen(modifier: Modifier = Modifier) {
     }
 }
 
+/// موضعُ الذكرِ الذي طابقَ البحثُ — أو -١ إن لم يطابقْ ذكرٌ.
+private fun matchOf(section: AdhkarSection, q: String): Int {
+    if (q.isEmpty()) return -1
+    return section.items.indexOfFirst { item -> q in CitySearch.normalize(item.text) }
+}
+
+/// سطرُ المعاينة: الذكرُ الذي طابقَ البحثُ، وإلّا أوّلُ ذكرٍ في
+/// الباب.
+///
+/// ⚠️ **الذكرُ المطابقُ لا أوّلُ الذكر**: من بحثَ عن «أستغفر الله»
+/// يريدُ أن يرى سطرَه في القائمة، لا سطرَ البابِ الأول.
+private fun previewOf(section: AdhkarSection, q: String): String? {
+    if (q.isNotEmpty()) {
+        section.items.firstOrNull { item -> q in CitySearch.normalize(item.text) }
+            ?.let { return it.text }
+    }
+    return section.items.firstOrNull()?.text
+}
+
 @Composable
 private fun SectionScreen(
     section: AdhkarSection,
     onBack: () -> Unit,
+    /// موضعُ المطابقة — يُمرَّرُ إلى القائمةِ فتمضي إليه.
+    matchIndex: Int = -1,
     modifier: Modifier = Modifier,
 ) {
     val s = LocalStrings.current
@@ -249,11 +288,21 @@ private fun SectionScreen(
 
         // ⚠️ **الوزنُ لا الامتلاءُ**: القائمةُ تأخذُ ما بقي من
         // الشاشةِ بعد الشريطِ والعنوان، لا الشاشةَ كلَّها.
-        LazyColumn(modifier = Modifier.weight(1f)) {
+        // ⚠️ **والتمريرُ إلى المطابقة**: من بحثَ عن ذكرٍ ثم فتحَ
+        // البابَ يريدُ أن يرى ذكرَه، لا أوّلَ الباب.
+        val listState = rememberLazyListState()
+        LaunchedEffect(section.title, matchIndex) {
+            if (matchIndex >= 0) listState.scrollToItem(matchIndex)
+        }
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.weight(1f),
+        ) {
             itemsIndexed(section.items) { index, dhikr ->
                 DhikrCard(
                     dhikr = dhikr,
                     done = counts.getOrElse(index) { 0 },
+                    highlighted = index == matchIndex,
                     onTap = {
                         val before = counts.getOrElse(index) { 0 }
                         val next = (before + 1).coerceAtMost(dhikr.count)
@@ -315,7 +364,14 @@ private fun SectionScreen(
 }
 
 @Composable
-private fun DhikrCard(dhikr: Dhikr, done: Int, onTap: () -> Unit) {
+private fun DhikrCard(
+    dhikr: Dhikr,
+    done: Int,
+    onTap: () -> Unit,
+    /// مطابقةُ البحث — تُبرَزُ البطاقةُ حتى يعرفَ المستخدمُ أيُّ
+    /// ذكرٍ جاءَ له.
+    highlighted: Boolean = false,
+) {
     val finished = done >= dhikr.count
     Card(
         onClick = onTap,
@@ -326,10 +382,12 @@ private fun DhikrCard(dhikr: Dhikr, done: Int, onTap: () -> Unit) {
             // بطاقاتٍ كلُّها بعرضٍ واحد.
             .padding(horizontal = 16.dp, vertical = 6.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (finished) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
+            containerColor = when {
+                finished -> MaterialTheme.colorScheme.primaryContainer
+                // ⚠️ **المطابقةُ بلَونٍ آخر**: الأخضرُ يعني «تمّ»،
+                // والذهبيُّ يعني «هذا ما بحثتَ عنه».
+                highlighted -> MaterialTheme.colorScheme.secondaryContainer
+                else -> MaterialTheme.colorScheme.surface
             },
         ),
     ) {
