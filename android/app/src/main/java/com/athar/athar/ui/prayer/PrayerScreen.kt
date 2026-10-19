@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.prayer.PrayerMethod
 import com.athar.athar.prayer.PrayerSettings
@@ -52,6 +53,7 @@ fun PrayerScreen(
     modifier: Modifier = Modifier,
 ) {
     val s = LocalStrings.current
+    val context = LocalContext.current
     val today = LocalDate.now()
     var pickingCity by remember { mutableStateOf(false) }
 
@@ -182,6 +184,8 @@ fun PrayerScreen(
         }
     }
 
+}
+
 /// التاريخ الميلادي بلغة المستخدم.
 ///
 /// ⚠️ `DateTimeFormatter` بلغة الواجهة لا بنمط ثابت: «١٩ أكتوبر»
@@ -194,4 +198,3 @@ private fun gregorianText(date: LocalDate, locale: AppLocale): String =
             .withLocale(java.util.Locale.forLanguageTag(locale.code))
             .format(date)
     }.getOrDefault(date.toString())
-}
