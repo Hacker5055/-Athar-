@@ -254,7 +254,7 @@ class SunQiblaTest {
         val date = LocalDate.of(2026, 6, 21)
         val moment = SunQibla.shadowMoment(date, newYork.first, newYork.second, ZoneId.of("UTC"))
         assertNotNull(moment)
-        val instant = date.atStartOfDay(ZoneId.of("UTC")).plusSeconds(moment!!.minutesOfDay * 60L)
+        val instant = date.atStartOfDay(ZoneId.of("UTC")).plusSeconds(moment!!.minutesOfDay * 60L).toInstant()
         assertTrue(
             SunQibla.shadowPointsToQibla(
                 instant, newYork.first, newYork.second, 0, toleranceDegrees = 2.0,

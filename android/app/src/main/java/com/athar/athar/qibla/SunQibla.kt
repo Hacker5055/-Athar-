@@ -3,7 +3,6 @@ package com.athar.athar.qibla
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZoneOffset
 import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
@@ -25,6 +24,13 @@ import kotlin.math.tan
 /// يتغيّر في كلّ يومٍ من السنة، والجدول ينتهي عند أول سنةٍ يُحرَّر
 /// فيها.
 object SunQibla {
+
+    /// المنطقة الزمنية المرجعية للحساب المجرّد.
+    ///
+    /// ⚠️ **ليست `ZoneOffset.UTC.toZoneId()`**: لا دالّةَ كهذه
+    /// في `kotlin.time.ZoneOffset` — والاستدلال عليها خطأٌ يظهر
+    /// وقت البناء لا قبله.
+    private val UTC: ZoneId = ZoneId.of("UTC")
 
     /// latitude الكعبة وخط طولها.
     const val KAABA_LATITUDE = 21.4225
@@ -166,8 +172,8 @@ object SunQibla {
         latitude: Double,
         longitude: Double,
         /// ⚠️ **منطقة زمنية** لا إزاحة: الإزاحة وحدها لا تعرف
-        /// التوقيت الصيفي، فيومٌ واحد يصحّ فيdux ويخطئ في آخر.
-        zone: ZoneId = ZoneOffset.UTC.toZoneId(),
+        /// التوقيت الصيفي، فيومٌ واحد يصحّ في دقّة ويخطئ في آخر.
+        zone: ZoneId = UTC,
     ): List<LocalDate> {
         val bearing = qiblaBearing(latitude, longitude)
         val target = requiredDeclination(latitude, bearing)
@@ -219,7 +225,7 @@ object SunQibla {
         date: LocalDate,
         latitude: Double,
         longitude: Double,
-        zone: ZoneId = ZoneOffset.UTC.toZoneId(),
+        zone: ZoneId = UTC,
     ): ShadowMoment? {
         val bearing = qiblaBearing(latitude, longitude)
         val target = QiblaMath.normalize(bearing + 180.0)
@@ -262,7 +268,7 @@ object SunQibla {
         for (candidate in candidates) {
             for (delta2 in -20..20) {
                 val minutes = candidate + delta2
-                val instant = date.atStartOfDay(zone).plusSeconds(minutes * 60L)
+                val instant = date.atStartOfDay(zone).plusSeconds(minutes * 60L).toInstant()
                 val position = position(
                     instant,
                     latitude,
