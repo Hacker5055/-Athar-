@@ -246,6 +246,7 @@ const Map<String, String> kStringsFr = {
   'prayer_tomorrow_fajr': 'Fajr demain',
   'prayer_now': 'Maintenant',
   'prayer_upcoming': 'Prochaine',
+  'prayer_calc_settings': 'Réglages des prières',
   'prayer_unavailable': 'Impossible de calculer les horaires de prière',
   'city_search_hint': 'Rechercher une ville…',
   'city_no_results': 'Aucun résultat',

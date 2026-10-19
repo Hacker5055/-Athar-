@@ -1,19 +1,28 @@
 package com.athar.athar.ui.prayer
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EditLocation
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Card
@@ -31,6 +40,9 @@ import kotlinx.coroutines.delay
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +70,12 @@ import com.athar.athar.prayer.PrayerAdjustments
 import com.athar.athar.prayer.PrayerCountdown
 import com.athar.athar.prayer.PrayerSlot
 import com.athar.athar.ramadan.Ramadan
+import com.athar.athar.ui.theme.AmiriFamily
+import com.athar.athar.ui.theme.AtharCream
+import com.athar.athar.ui.theme.AtharGold
+import com.athar.athar.ui.theme.AtharHeroBottom
+import com.athar.athar.ui.theme.AtharHeroTop
+import com.athar.athar.ui.theme.AtharPrimaryContainer
 import com.athar.athar.hijri.HijriCalendar
 import java.time.temporal.ChronoUnit
 
@@ -145,51 +163,29 @@ fun PrayerScreen(
     val day = remember(settings, today) { PrayerTimesCalculator.calculate(settings, today) }
     val next = remember(day) { day.nextAfter(Instant.now()) }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-            ),
-        ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(
-                    text = next?.let { "${s.prayerUpcoming}: ${s.t(it.first.stringKey)}" }
-                        ?: s.prayerNoneLeft,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-                if (next != null) {
-                    Text(
-                        text = timeFormat.format(next.second),
-                        style = MaterialTheme.typography.displayLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    // ⚠️ العدّ **تحت الوقت** لا فوقه: الوقت هو
-                    // المعلومة، والعدّ تفصيلٌ له.
-                    CountdownText(target = next.second)
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = placeLabel, style = MaterialTheme.typography.bodySmall)
-                    TextButton(onClick = { pickingCity = true }) {
-                        Icon(Icons.Filled.EditLocation, contentDescription = null)
-                        Text("  " + s.change)
-                    }
-                }
-                // ⚠️ التاريخ الهجري **مع الميلادي** لا بديلًا عنه:
-                // المستخدم يعيش بالتقويمين معًا، وربط المناسبات
-                // الدينية يحتاج الهجري وحده.
-                Text(
-                    text = "${gregorianText(today, locale)} · ${hijriText(today, hijriOffset)}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        // ⚠️ **البطلُ في الأعلى**: الموعدُ والوقتُ أوّلُ ما يُفتح
+        // التطبيقُ لأجله، فهما أولاً — لا تحت إعداداتِ الحساب ولا
+        // تحت قائمةِ المواقيت.
+        HeroCard(
+            prayerName = next?.let { s.t(it.first.stringKey) } ?: s.prayerNoneLeft,
+            time = next?.second?.let { timeFormat.format(it) } ?: "",
+            place = placeLabel,
+            date = "${gregorianText(today, locale)} · ${hijriText(today, hijriOffset)}",
+            target = next?.second,
+            onChangePlace = { pickingCity = true },
+        )
 
-        // ⚠️ بطاقة رمضان **تحت البطاقة الرئيسية** لا داخلها:
-        // هي فرع على المواقيت لا بديلًا عنها — ومن لم يكن صائمًا
-        // لا يفقد شيئًا، فهي لا تظهر إلا في رمضان.
+        // ⚠️ **شريطُ المواقيت**: ستّ صلواتٍ في صفٍّ واحدٍ يُقرأ في
+        // نظرة — ومن أراد تفاصيلِ اليوم فالقائمةُ تحته.
+        PrayerStrip(day = day, next = next, settings = settings)
+
+        // ⚠️ بطاقة رمضان **تحت البطل** لا داخله: هي فرعٌ على
+        // المواقيت لا بديلٌ عنها — ومن لم يكن صائمًا لا يفقد شيئًا.
         val hijriDate = remember(today, hijriOffset) { HijriCalendar.from(today, hijriOffset) }
         val ramadanDay = Ramadan.dayOf(hijriDate)
         if (ramadanDay != null) {
@@ -200,10 +196,10 @@ fun PrayerScreen(
             )
         }
 
-        // ⚠️ «تابع القراءة» **تحت البطاقة مباشرة** لا في قسم: أكثر
-        // ما يُفتح التطبيق لأجله بعد المواقيت هو العودة إلى حيث
-        // توقّف القارئ. وهي تظهر بلا مفتاح إن لم يُقرأ شيء —
-        // اختصار إلى لا شيء ليس اختصارًا.
+        // ⚠️ «تابع القراءة» **تحت المواقيت مباشرة**: أكثر ما يُفتح
+        // التطبيقُ لأجله بعد المواقيت هو العودةُ إلى حيث توقّف
+        // القارئ. وهي تظهر بلا مفتاح إن لم يُقرأ شيء — اختصارٌ إلى
+        // لا شيء ليس اختصارًا.
         val last = remember(hijriOffset) { QuranProgressStore.load(context) }
         if (last != null) {
             Card(
@@ -273,113 +269,261 @@ fun PrayerScreen(
             }
         }
 
-        LazyRow(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-            items(PrayerMethod.entries) { method ->
-                TextButton(onClick = { onSettingsChange(settings.copy(method = method)) }) {
-                    Text(
-                        text = method.name(s),
-                        color = if (method == settings.method) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                        fontWeight = if (method == settings.method) FontWeight.Bold else null,
-                    )
-                }
-            }
-        }
+        // ⚠️ **الإعداداتُ في بطاقةٍ واحدة** في أسفل الصفحة: طريقةُ
+        // الحساب وقاعدةُ خطوطِ العرض والتعديلُ والتقويمُ أدواتٌ
+        // تُفتح مرّةً في الشهر، لا تُترك في مجرى الصفحة تُزيح
+        // المواقيتَ تحتها.
+        CalculationCard(
+            settings = settings,
+            onMethod = { method ->
+                onSettingsChange(settings.copy(method = method))
+            },
+            onHighLatitude = { rule ->
+                onSettingsChange(settings.copy(highLatitude = rule))
+            },
+            onAdjust = { showAdjust = true },
+            onMonth = { showMonth = true },
+        )
 
-        // ⚠️ القاعدة **تحت طريقة الحساب** لا داخلها: هي تعديل
-        // عليها، ومن رآها وحدها ظنّها طريقة ثانية فيختار ما لا
-        // يفهمه. القرب يبيّن أنها فرع لا نظير.
-        Row(
+        Spacer(Modifier.height(16.dp))
+    }
+}
+
+/// بطاقةُ البطل: الصلاة القادمة بتدرّجٍ أخضرَ ووقتٍ ذهبيّ.
+///
+/// ⚠️ **الاسمُ أكبرُ من الوقت**: الوقتُ رقمٌ يُقرأ في ثانية،
+/// والاسمُ هو ما ينتظره المستخدم. والاسمُ بخطٍّ نسخيّ (أميري)
+/// فيتّسع المجالُ ويصير للصلاة هيبة.
+///
+/// ⚠️ **والتدرّجُ للبطلِ وحده**: لو تدرّجت كلُّ البطاقاتِ صار
+/// التطبيقُ شريطًا من الألوان، فقرأَه العينُ بلا ترتيب.
+@Composable
+private fun HeroCard(
+    prayerName: String,
+    time: String,
+    place: String,
+    date: String,
+    target: Instant?,
+    onChangePlace: () -> Unit,
+) {
+    val s = LocalStrings.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+    ) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .background(
+                    Brush.verticalGradient(listOf(AtharHeroTop, AtharHeroBottom)),
+                ),
         ) {
-            Text(
-                text = s.hlTitle,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(end = 8.dp),
-            )
-            HighLatitude.entries.forEach { rule ->
-                TextButton(
-                    onClick = { onSettingsChange(settings.copy(highLatitude = rule)) },
-                ) {
-                    Text(
-                        text = s.t(rule.nameKey),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = if (rule == settings.highLatitude) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                        fontWeight = if (rule == settings.highLatitude) FontWeight.Bold else null,
-                    )
-                }
-            }
-        }
-
-        // ⚠️ زر التعديل **تحت طريقة الحساب** لا كزر مستقلّ: هو
-        // تعديل على الحساب، ومن رآه فوقها ظنّه طريقة حساب ثالثة.
-        TextButton(
-            onClick = { showAdjust = true },
-            modifier = Modifier.padding(horizontal = 8.dp),
-        ) {
-            Text(s.adjustOpen)
-        }
-
-        TextButton(
-            onClick = { showMonth = true },
-            modifier = Modifier.padding(horizontal = 8.dp),
-        ) {
-            Text(s.monthlyCalendar)
-        }
-
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-            items(day.ordered) { (slot, instant) ->
-                val isNext = next?.first == slot
+            Column(modifier = Modifier.padding(22.dp)) {
+                Text(
+                    text = s.prayerNextLabel,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = AtharPrimaryContainer,
+                )
+                Text(
+                    text = prayerName,
+                    style = MaterialTheme.typography.displayMedium,
+                    color = AtharCream,
+                    fontFamily = AmiriFamily,
+                )
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.padding(top = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = s.t(slot.stringKey),
-                        fontWeight = if (isNext) FontWeight.Bold else null,
-                        color = if (isNext) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface,
+                        text = time,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = AtharGold,
+                        fontFamily = AmiriFamily,
                     )
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(
-                            text = timeFormat.format(instant),
-                            fontSize = 18.sp,
-                            fontWeight = if (isNext) FontWeight.Bold else null,
-                            color = if (isNext) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurface,
+                    if (target != null) {
+                        Spacer(Modifier.width(14.dp))
+                        CountdownText(target = target, color = AtharPrimaryContainer)
+                    }
+                }
+                Row(
+                    modifier = Modifier.padding(top = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "$place · $date",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = AtharPrimaryContainer,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = onChangePlace) {
+                        Icon(
+                            Icons.Filled.EditLocation,
+                            contentDescription = null,
+                            tint = AtharPrimaryContainer,
                         )
-                        // ⚠️ علامة «معدّل» **دائمًا** لا عند الغفلة:
-                        // من يرى وقتًا مخالفًا لمسجده ولا يعلم أنه
-                        // معدّل سيظنّ التطبيق مخطئًا.
-                        val delta = PrayerAdjustments.minutesOf(settings, slot)
-                        if (delta != 0) {
-                            Text(
-                                text = s.tArgs(
-                                    "adjust_minutes",
-                                    "n" to PrayerAdjustments.signed(delta),
-                                ),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.tertiary,
-                            )
-                        }
+                        Text("  " + s.change, color = AtharPrimaryContainer)
                     }
                 }
             }
         }
     }
+}
 
+/// شريطُ المواقيت: ستّ صلواتٍ في صفٍّ واحد.
+///
+/// ⚠️ **الصلاةُ القادمةُ مُلوَّنةٌ وحدها**: من رآها ملوّنةً عرف
+/// أين هو، ومن رآها كلها ملوّنةً لم يعرف.
+///
+/// ⚠️ **والماضيةُ باهتة**: ما فات لا يُعاد إلى التفصيل، والزمنُ
+/// يمرّ. فلا تتساوى الصلواتُ في الوزن.
+@Composable
+private fun PrayerStrip(
+    day: PrayerDay,
+    next: Pair<PrayerSlot, Instant>?,
+    settings: PrayerSettings,
+) {
+    val s = LocalStrings.current
+    val now = remember(day) { Instant.now() }
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items(day.ordered) { (slot, instant) ->
+            val isNext = next?.first == slot
+            val isPast = instant.isBefore(now)
+            Column(
+                modifier = Modifier
+                    .width(76.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(
+                        if (isNext) {
+                            MaterialTheme.colorScheme.primaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.surface
+                        },
+                    )
+                    .then(
+                        if (isNext) {
+                            Modifier
+                        } else {
+                            Modifier.border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                                shape = RoundedCornerShape(18.dp),
+                            )
+                        },
+                    )
+                    .padding(vertical = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = s.t(slot.stringKey),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = timeFormat.format(instant),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = if (isNext) FontWeight.Bold else null,
+                    color = when {
+                        isNext -> MaterialTheme.colorScheme.onPrimaryContainer
+                        isPast -> MaterialTheme.colorScheme.onSurfaceVariant
+                        else -> MaterialTheme.colorScheme.onSurface
+                    },
+                )
+                // ⚠️ علامة «معدّل» **دائمًا** لا عند الغفلة: من
+                // يرى وقتًا مخالفًا لمسجده ولا يعلم أنه معدّل
+                // سيظنّ التطبيق مخطئًا.
+                val delta = PrayerAdjustments.minutesOf(settings, slot)
+                if (delta != 0) {
+                    Text(
+                        text = s.tArgs(
+                            "adjust_minutes",
+                            "n" to PrayerAdjustments.signed(delta),
+                        ),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/// بطاقةُ إعدادات المواقيت: طريقةُ الحساب وقاعدةُ خطوطِ العرض
+/// والتعديلُ اليدويُّ والتقويمُ الشهريّ.
+@Composable
+private fun CalculationCard(
+    settings: PrayerSettings,
+    onMethod: (PrayerMethod) -> Unit,
+    onHighLatitude: (HighLatitude) -> Unit,
+    onAdjust: () -> Unit,
+    onMonth: () -> Unit,
+) {
+    val s = LocalStrings.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = s.prayerCalcSettings,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+            )
+
+            // ⚠️ طريقةُ الحساب **في صفٍّ يُمرَّر**: طرقُ الحساب
+            // سبعٌ، والصفُّ أعرضُ من الشاشة.
+            LazyRow(
+                modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                items(PrayerMethod.entries) { method ->
+                    FilterChip(
+                        selected = method == settings.method,
+                        onClick = { onMethod(method) },
+                        label = { Text(method.name(s)) },
+                    )
+                }
+            }
+
+            // ⚠️ القاعدة **تحت طريقة الحساب** لا داخلها: هي تعديل
+            // عليها، ومن رآها وحدها ظنّها طريقة ثانية فيختار ما
+            // لا يفهمه. القرب يبيّن أنها فرعٌ لا نظير.
+            Text(
+                text = s.hlTitle,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 10.dp),
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                HighLatitude.entries.forEach { rule ->
+                    FilterChip(
+                        selected = rule == settings.highLatitude,
+                        onClick = { onHighLatitude(rule) },
+                        label = { Text(s.t(rule.nameKey)) },
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                // ⚠️ زر التعديل **تحت طريقة الحساب** لا كزرٍ مستقلّ:
+                // هو تعديلٌ على الحساب.
+                TextButton(onClick = onAdjust) { Text(s.adjustOpen) }
+                TextButton(onClick = onMonth) { Text(s.monthlyCalendar) }
+            }
+        }
+    }
 }
 
 /// العدّ التنازلي حتى الصلاة القادمة.
@@ -391,7 +535,10 @@ fun PrayerScreen(
 /// ⚠️ والحلقة **لا تتوقّف**: `delay` داخل `LaunchedEffect` تُلغى
 /// تلقائيًّا حين يخرج التأليف من الشاشة.
 @Composable
-private fun CountdownText(target: Instant) {
+private fun CountdownText(
+    target: Instant,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+) {
     val s = LocalStrings.current
     val locale = com.athar.athar.i18n.LocalAppLocale.current
     var now by remember { mutableStateOf(Instant.now()) }
@@ -409,7 +556,7 @@ private fun CountdownText(target: Instant) {
             "${s.prayerRemaining}: ${PrayerCountdown.text(countdown, locale)}"
         },
         style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = color,
     )
 }
 

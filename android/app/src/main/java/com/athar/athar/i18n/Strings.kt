@@ -232,6 +232,7 @@ class Strings(val locale: AppLocale) {
             "prayer_tomorrow_fajr" to "فجر الغد",
             "prayer_now" to "الآن",
             "prayer_upcoming" to "القادمة",
+            "prayer_calc_settings" to "إعدادات المواقيت",
             "prayer_unavailable" to "تعذّر حساب المواقيت",
             "city_search_hint" to "ابحث عن مدينة…",
             "city_no_results" to "مفيش نتائج",
@@ -830,6 +831,7 @@ class Strings(val locale: AppLocale) {
             "prayer_tomorrow_fajr" to "Fajr tomorrow",
             "prayer_now" to "Now",
             "prayer_upcoming" to "Next",
+            "prayer_calc_settings" to "Prayer settings",
             "prayer_unavailable" to "Could not calculate prayer times",
             "city_search_hint" to "Search for a city…",
             "city_no_results" to "No results",
@@ -1428,6 +1430,7 @@ class Strings(val locale: AppLocale) {
             "prayer_tomorrow_fajr" to "Fajr demain",
             "prayer_now" to "Maintenant",
             "prayer_upcoming" to "Prochaine",
+            "prayer_calc_settings" to "Réglages des prières",
             "prayer_unavailable" to "Impossible de calculer les horaires de prière",
             "city_search_hint" to "Rechercher une ville…",
             "city_no_results" to "Aucun résultat",
@@ -2031,6 +2034,7 @@ class Strings(val locale: AppLocale) {
     val prayerTomorrowFajr: String get() = t("prayer_tomorrow_fajr")
     val prayerNow: String get() = t("prayer_now")
     val prayerUpcoming: String get() = t("prayer_upcoming")
+    val prayerCalcSettings: String get() = t("prayer_calc_settings")
     val prayerUnavailable: String get() = t("prayer_unavailable")
     val citySearchHint: String get() = t("city_search_hint")
     val cityNoResults: String get() = t("city_no_results")

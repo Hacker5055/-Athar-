@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
@@ -63,6 +64,11 @@ import com.athar.athar.tasbih.TasbihSpeechStore
 import com.athar.athar.tasbih.TasbihStore
 import com.athar.athar.tasbih.TasbihVolumeStore
 import com.athar.athar.tasbih.VolumeCounter
+import com.athar.athar.ui.theme.AmiriFamily
+import com.athar.athar.ui.theme.AtharCream
+import com.athar.athar.ui.theme.AtharHeroBottom
+import com.athar.athar.ui.theme.AtharHeroTop
+import com.athar.athar.ui.theme.AtharPrimaryContainer
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -199,6 +205,7 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
             text = phrase.arabic,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
+            fontFamily = AmiriFamily,
             textAlign = TextAlign.Center,
         )
 
@@ -208,7 +215,11 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .size(220.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                // ⚠️ **التدرّجُ نفسُه** الذي في بطاقة البطل: التطبيقُ
+                // منتَجٌ واحد، فلونُه واحدٌ في كل مكان.
+                .background(
+                    Brush.verticalGradient(listOf(AtharHeroTop, AtharHeroBottom)),
+                )
                 // ⚠️ `clickable` على الدائرة كلها، و`role` يخبر قارئ
                 // الشاشة أنها زرّ لا صورة.
                 .clickable(role = Role.Button) { countOne() },
@@ -219,12 +230,13 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
                     text = ArabicDigits.of(state.count),
                     fontSize = 72.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontFamily = AmiriFamily,
+                    color = AtharCream,
                 )
                 Text(
                     text = "${ArabicDigits.of(state.count)} / ${ArabicDigits.of(target)}",
                     fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = AtharPrimaryContainer,
                 )
             }
         }
