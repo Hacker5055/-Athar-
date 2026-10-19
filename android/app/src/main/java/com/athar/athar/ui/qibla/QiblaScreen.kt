@@ -146,7 +146,7 @@ fun QiblaScreen(
                         offset > 0 -> s.tArgs("qibla_turn_right", "deg" to degrees)
                         else -> s.tArgs("qibla_turn_left", "deg" to degrees)
                     },
-                    fontSize = 19.sp,
+                    fontSize = 21.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 20.dp),
                 )
@@ -345,14 +345,14 @@ private fun CompassRose(
 
         // ⚠️ ندير كل لقبلة بعكس دوران الوردة ليبقى النصّ معتدلًا
         val upright = deviceAzimuth.toFloat()
-        Text(s.north, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+        Text(s.north, fontSize = 12.sp, fontWeight = FontWeight.Bold,
             color = AtharCream,
             modifier = Modifier.align(Alignment.TopCenter).rotate(upright))
-        Text(s.south, fontSize = 13.sp, color = AtharCream,
+        Text(s.south, fontSize = 12.sp, color = AtharCream,
             modifier = Modifier.align(Alignment.BottomCenter).rotate(upright))
-        Text(s.east, fontSize = 13.sp, color = AtharCream,
+        Text(s.east, fontSize = 12.sp, color = AtharCream,
             modifier = Modifier.align(Alignment.CenterEnd).rotate(upright))
-        Text(s.west, fontSize = 13.sp, color = AtharCream,
+        Text(s.west, fontSize = 12.sp, color = AtharCream,
             modifier = Modifier.align(Alignment.CenterStart).rotate(upright))
     }
 }

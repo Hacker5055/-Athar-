@@ -168,7 +168,7 @@ fun KhatmahScreen(
             if (active.doneUpTo >= QuranMeta.TOTAL_VERSES) {
                 Text(
                     text = s.khatmahFinished,
-                    fontSize = 18.sp,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 20.dp),
                 )
@@ -223,7 +223,7 @@ fun KhatmahScreen(
                             )
                             Text(
                                 text = "${surahNames[fromSurah] ?: num(fromSurah)} · ${num(fromAyah)}",
-                                fontSize = 18.sp,
+                                fontSize = 17.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = AmiriFamily,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -240,7 +240,7 @@ fun KhatmahScreen(
                             )
                             Text(
                                 text = "${surahNames[toSurah] ?: num(toSurah)} · ${num(toAyah)}",
-                                fontSize = 18.sp,
+                                fontSize = 17.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = AmiriFamily,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,

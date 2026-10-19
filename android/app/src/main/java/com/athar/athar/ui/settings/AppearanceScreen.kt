@@ -123,7 +123,7 @@ private fun ReaderPreview(theme: ReaderTheme, sample: String) {
 
     Text(
         text = "﴿ $sample ﴾",
-        fontSize = 20.sp,
+        fontSize = 22.sp,
         // ⚠️ **المعاينةُ بخطّها الحقيقي**: أميري هو الذي سيُقرأ
         // به النصّ، ومعاينةٌ بخطٍّ آخر تُدخل في الذهن صورةً
         // خاطئةً عن شكل القراءة.

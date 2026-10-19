@@ -94,7 +94,7 @@ fun LicensesScreen(modifier: Modifier = Modifier) {
                 Text(credit.title, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                 Text(
                     text = credit.body,
-                    fontSize = 13.sp,
+                    fontSize = 12.sp,
                     lineHeight = 20.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp),

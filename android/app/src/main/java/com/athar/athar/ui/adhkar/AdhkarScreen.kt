@@ -262,7 +262,7 @@ private fun DhikrCard(dhikr: Dhikr, done: Int, onTap: () -> Unit) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = dhikr.text,
-                    fontSize = 18.sp,
+                    fontSize = 17.sp,
                     lineHeight = 30.sp,
                     fontFamily = AmiriFamily,
                     textAlign = TextAlign.Start,

@@ -59,6 +59,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -104,6 +105,7 @@ import com.athar.athar.ui.components.EmptyState
 import com.athar.athar.ui.components.AtharSearchField
 import com.athar.athar.ui.components.AtharPageTitle
 import com.athar.athar.ui.theme.AtharPageMargin
+import com.athar.athar.ui.theme.AtharGold
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.key
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -641,7 +643,7 @@ private fun SearchResults(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = surah.nameAr,
-                                fontSize = 21.sp,
+                                fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = AmiriFamily,
                             )
@@ -783,7 +785,7 @@ private fun SurahList(
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
                         Text(
                             text = surah.nameAr,
-                            fontSize = 21.sp,
+                            fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
                             // ⚠️ **نسخٌ لأسماء السور**: فهرسُ المصحف
                             // أسماءُ سورٍ تُكتبُ وتُنطق، فخطُّ الشاشات
@@ -896,6 +898,14 @@ private fun ReaderView(
 
     val firstVisible = listState.firstVisibleItemIndex
 
+    // ⚠️ **الآيةُ المسموعةُ معروفة**: المشغّلُ يحملُ رقمَ الآيةِ
+    // التي تسمعُها الآن، فكان الجوابُ في متناولِ الواجهةِ ولا
+    // تُظهرُه. والقارئُ يسمعُ السورةَ ويقرأُها، فلا بدّ أن يعرف
+    // أين يقفُ المؤشّرُ.
+    val spokenAyah = remember(audioState, surah.id) {
+        if (audioState.surahOrNull == surah.id) audioState.ayahOrNull else null
+    }
+
     // ⚠️ الحفظ مع كل تمرير لا عند الخروج: من أُغلق تطبيقه فجأة يجب
     // أن يعود إلى حيث كان، لا إلى أول السورة. و`apply` لا `commit`
     // فلا تعرقل الكتابة الإطار.
@@ -911,6 +921,20 @@ private fun ReaderView(
     }
     // ⚠️ **رقمُ الآيةِ مع البسملة**: `ayahs` لا يسعُ البسملة،
     // والقائمةُ تسعُها — فالفرقُ واحدٌ في كلِّ سورةٍ لها بسملة.
+    // ⚠️ **القراءةُ تتبعُ التلاوةَ ولا تفرضُها**: إن كانت الآيةُ
+    // أمامَ العينِ لم نُحرّك شيئًا — فالقارئُ الذي يقرأُ متقدّمًا
+    // يُرادُ أن يُترك. وإن خرجت من الشاشةِ تبعها، فالتلاوةُ
+    // والقراءةُ معًا كما وعدنا.
+    LaunchedEffect(spokenAyah, surah.id) {
+        val target = spokenAyah ?: return@LaunchedEffect
+        val index = target - 1 + basmalaOffset
+        if (index < 0 || index > ayahs.size) return@LaunchedEffect
+        val visible = listState.layoutInfo.visibleItemsInfo.any { it.index == index }
+        if (!visible) {
+            listState.animateScrollToItem(index)
+        }
+    }
+
     val currentAyah = ayahs.getOrNull(firstVisible - basmalaOffset)?.number ?: 1
     val juz = QuranMeta.juzOf(surah.id, currentAyah)
     val page = QuranMeta.pageOf(surah.id, currentAyah)
@@ -1107,6 +1131,10 @@ private fun ReaderView(
                 }
             }
             items(ayahs) { ayah ->
+                // ⚠️ **الآيةُ المسموعةُ مظلَّلةٌ**: ظلٌّ دافئٌ خلفَ
+                // النصّ لا تلوينٌ له — فتلوينُ الآيةِ يُنقِصُ من
+                // قراءتها، والظلُّ يعلوها ويُبقيها.
+                val spoken = spokenAyah != null && ayah.number == spokenAyah
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "${ayah.text} ﴿${ayah.number}﴾",
@@ -1117,7 +1145,17 @@ private fun ReaderView(
                         // علاماتِه تتفرّق حركاتُه عن حروفها.
                         fontFamily = AmiriFamily,
                         textAlign = TextAlign.Justify,
-                        modifier = Modifier.weight(1f).padding(vertical = 8.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(vertical = 8.dp)
+                            .background(
+                                color = if (spoken) {
+                                    AtharGold.copy(alpha = 0.22f)
+                                } else {
+                                    Color.Transparent
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                            ),
                     )
                     // ⚠️ المشاركة على السطر نفسه لا في قائمة منبثقة:
                     // الآية أمام العين حين يقرّر مشاركتها.
@@ -1233,7 +1271,7 @@ private fun ReaderView(
                                 )
                                 Text(
                                     text = nextSurah.nameAr,
-                                    fontSize = 21.sp,
+                                    fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
                                     // ⚠️ **نسخٌ لأسماء السور**:
                                     // اسمٌ يُقرأ لا رقمٌ يُكتب.

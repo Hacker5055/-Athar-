@@ -256,7 +256,7 @@ private fun DhikrText(dhikr: Dhikr) {
     Column {
         Text(
             text = dhikr.text,
-            fontSize = 18.sp,
+            fontSize = 17.sp,
             lineHeight = 30.sp,
             fontFamily = AmiriFamily,
             textAlign = TextAlign.Start,

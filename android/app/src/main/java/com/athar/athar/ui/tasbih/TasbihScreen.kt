@@ -244,7 +244,7 @@ fun TasbihScreen(modifier: Modifier = Modifier) {
                 )
                 Text(
                     text = "${digits(state.count)} / ${digits(target)}",
-                    fontSize = 13.sp,
+                    fontSize = 12.sp,
                     color = AtharPrimaryContainer,
                 )
             }

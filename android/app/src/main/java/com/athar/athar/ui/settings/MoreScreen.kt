@@ -162,7 +162,7 @@ private fun WidgetScreen(modifier: Modifier = Modifier) {
         )
         Text(
             text = s.widgetAdd,
-            fontSize = 18.sp,
+            fontSize = 17.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 16.dp),
         )

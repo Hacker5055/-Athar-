@@ -121,7 +121,7 @@ private fun NameCard(name: AsmaName, modifier: Modifier = Modifier) {
             Column(modifier = Modifier.padding(start = 12.dp)) {
                 Text(
                     name.nameArabic,
-                    fontSize = 24.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     // ⚠️ **نسخٌ لا سانس`: اسمُ الله اسمٌ يُكتب
                     // ويُنطق، فيستحقّ خطًّا يكتبُه لا خطَّ شاشات.
