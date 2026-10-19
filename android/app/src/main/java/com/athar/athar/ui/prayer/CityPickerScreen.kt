@@ -70,6 +70,7 @@ fun CityPickerScreen(
         }
     }
 
+    val locale = com.athar.athar.i18n.LocalAppLocale.current
     Column(modifier = modifier.fillMaxSize()) {
         AtharTopBar(
             title = s.prayerChooseCity,
@@ -122,7 +123,9 @@ fun CityPickerScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(city.nameAr, fontSize = 17.sp)
+                            // ⚠️ **اسمُ المدينةِ بلغتها**: «القاهرة»
+                            // في تطبيقٍ فرنسيٍّ بالكامل عيبٌ ظاهر.
+                            Text(city.nameFor(locale), fontSize = 17.sp)
                             Text(
                                 "${city.nameEn} · ${city.countryCode}",
                                 style = MaterialTheme.typography.bodySmall,

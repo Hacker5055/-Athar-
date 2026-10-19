@@ -602,11 +602,19 @@ private fun HizbRow(onPick: (Int) -> Unit) {
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
+        // ⚠️ **أرقامُ الواجهة**: «١٩-١» في العربية و«19-1» في غيرها.
+        val digits = localDigits()
         (1..QuranMeta.HIZB_COUNT).forEach { hizb ->
             FilterChip(
                 selected = false,
                 onClick = { onPick(hizb) },
-                label = { Text("${QuranMeta.juzOfHizb(hizb)}-${if (QuranMeta.isSecondHalf(hizb)) 2 else 1}") },
+                label = {
+                    Text(
+                        digits(QuranMeta.juzOfHizb(hizb)) +
+                            "-" +
+                            digits(if (QuranMeta.isSecondHalf(hizb)) 2 else 1),
+                    )
+                },
             )
         }
     }

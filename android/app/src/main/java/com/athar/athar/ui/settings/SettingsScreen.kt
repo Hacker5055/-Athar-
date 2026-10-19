@@ -57,6 +57,7 @@ import com.athar.athar.hijri.HijriStore
 import com.athar.athar.ui.hijri.hijriText
 import com.athar.athar.ui.components.SubHeading
 import java.time.LocalDate
+import com.athar.athar.i18n.localDigits
 
 /// ⚠️ الشروق **مذكور** بصف «لا أذان — ليست صلاة» لا مخفيًا: إخفاؤه
 /// يوهم المستخدم أن التطبيق نسيه، وشرح السبب أصدق من الصمت.
@@ -79,6 +80,13 @@ private val kModes = listOf(
     ModeOption(PrayerAlertMode.SILENT, "notifications_mode_silent"),
     ModeOption(PrayerAlertMode.OFF, "notifications_mode_off"),
 )
+
+/// علامةُ العَزلِ اللاتينيّ: تُبقي ما داخلَها على اتّجاهِه
+/// اللاتينيّ مهما كانت صفحةُ التطبيقِ عربية.
+private const val LRI = "\u2066"
+
+/// علامةُ إغلاقِ العَزل.
+private const val PDI = "\u2069"
 
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
@@ -124,6 +132,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                val digits = localDigits()
                 for (n in -HijriCalendar.MAX_OFFSET..HijriCalendar.MAX_OFFSET) {
                     FilterChip(
                         selected = hijriOffset == n,
@@ -134,7 +143,20 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         // ⚠️ الأثر **معروض** لا موصوف: المستخدم لا
                         // يعرف ما «+١»، ويرى فورًا إن صار التاريخ
                         // موافقًا لما يعرفه.
-                        label = { Text("${if (n > 0) "+" else ""}$n") },
+                        // ⚠️ **أرقامُ الواجهة**: «+٢» في العربية و«+2» في
+                        // غيرها.
+                        // ⚠️ **والإشارةُ داخلَ عَزلٍ لاتينيّ**: الصفحةُ
+                        // عربيةٌ فيقلبُ اتجاهُ العَزلِ الإشارةَ
+                        // («١+» بدل «+١»)، فالعَزلُ يحفظُ ترتيبَها
+                        // كما يُراد.
+                        label = {
+                            Text(
+                                LRI +
+                                    (if (n > 0) "+" else "") +
+                                    digits(n) +
+                                    PDI,
+                            )
+                        },
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
