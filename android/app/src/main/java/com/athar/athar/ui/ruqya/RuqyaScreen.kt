@@ -72,6 +72,10 @@ fun RuqyaScreen(modifier: Modifier = Modifier) {
     var adhkar by remember { mutableStateOf<List<AdhkarSection>?>(null) }
     val audioState by QuranAudioController.state.collectAsState()
 
+    // ⚠️ **اللغةُ تُقرأ هنا لا في الدالة**: زرُّ التلاوة دالةٌ
+    // مُغلَّقةٌ لا دالةٌ تركيبية، فلا يُسنَدُ فيها `LocalAppLocale`.
+    val locale = LocalAppLocale.current
+
     LaunchedEffect(Unit) {
         // ⚠️ القراءة **في الخلفية**: `uthmani.json` ميجابايتان،
         // وقراءتُهما على الخيط الرئيسيّ تُجمّد الشاشة.
@@ -197,7 +201,7 @@ private fun AyahCard(
                             fromAyah = selection.fromAyah,
                             toAyah = selection.toAyah,
                             title = "${s.t(selection.titleKey)} · " +
-                                reciter.displayName(LocalAppLocale.current),
+                                reciter.displayName(locale),
                         )
                     },
                 ) {
