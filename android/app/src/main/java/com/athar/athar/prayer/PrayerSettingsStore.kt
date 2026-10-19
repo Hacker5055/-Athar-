@@ -26,6 +26,7 @@ object PrayerSettingsStore {
             // والاسم ثابت.
             highLatitude = HighLatitude.fromName(p.getString("highLatitude", null)),
             adjustments = readAdjustments(p.getString("adjust", null)),
+            locationChosen = p.getBoolean("chosen", false),
         )
     }
 
@@ -38,6 +39,7 @@ object PrayerSettingsStore {
             .putString("cityId", settings.cityId)
             .putString("place", settings.placeName)
             .putString("highLatitude", settings.highLatitude.name)
+            .putBoolean("chosen", settings.locationChosen)
             .putString("adjust", writeAdjustments(settings.adjustments))
             .apply()
     }

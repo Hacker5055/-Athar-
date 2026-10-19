@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EditLocation
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -118,6 +119,9 @@ fun PrayerScreen(
                         longitude = city.longitude,
                         cityId = city.id,
                         placeName = "",
+                        // ⚠️ **المكانُ اختير**: فسؤالُ «حدّد مدينتك»
+                        // لا يعود.
+                        locationChosen = true,
                     ),
                 )
                 pickingCity = false
@@ -129,6 +133,7 @@ fun PrayerScreen(
                         longitude = lng,
                         cityId = null,
                         placeName = "",
+                        locationChosen = true,
                     ),
                 )
                 pickingCity = false
@@ -168,6 +173,47 @@ fun PrayerScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
     ) {
+        // ⚠️ **سؤالُ المكانِ فوقَ البطل**: الموقعُ الافتراضيُّ
+        // القاهرة، فمن لم يختار مكانه يرى مواقيتَ القاهرة ويظنّها
+        // مواقيتَ مدينته — فلا يصحُّ أن يبدأ من البطاقةِ الصامتة.
+        if (!settings.locationChosen) {
+            Card(
+                onClick = { pickingCity = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                ),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        Icons.Filled.Place,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                    )
+                    Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
+                        Text(
+                            text = s.prayerPickLocation,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        )
+                        Text(
+                            text = s.prayerPickLocationBody,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                        )
+                    }
+                }
+            }
+        }
+
         // ⚠️ **البطلُ في الأعلى**: الموعدُ والوقتُ أوّلُ ما يُفتح
         // التطبيقُ لأجله، فهما أولاً — لا تحت إعداداتِ الحساب ولا
         // تحت قائمةِ المواقيت.

@@ -126,6 +126,9 @@ object BackupCodec {
             placeName = o.optString("placeName", ""),
             highLatitude = HighLatitude.fromName(o.optString("highLatitude", null)),
             adjustments = adjustmentsOf(o.optJSONObject("adjust")),
+            // ⚠️ **«اختار مكانَه» تُنتقلُ معه**: فمن استعاد نسخته
+            // لا يُعاد إليه سؤالُ «حدّد مدينتك».
+            locationChosen = o.optBoolean("chosen", false),
         )
     }
 
@@ -230,6 +233,7 @@ object BackupCodec {
         put("lng", p.longitude)
         p.cityId?.let { put("cityId", it) }
         put("placeName", p.placeName)
+        put("chosen", p.locationChosen)
         put("highLatitude", p.highLatitude.name)
         put("adjust", adjustmentsJson(p.adjustments))
     }

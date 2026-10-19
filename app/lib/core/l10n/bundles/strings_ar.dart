@@ -246,6 +246,8 @@ const Map<String, String> kStringsAr = {
   'prayer_now': 'الآن',
   'prayer_upcoming': 'القادمة',
   'prayer_calc_settings': 'إعدادات المواقيت',
+  'prayer_pick_location': 'حدِّد مدينتك',
+  'prayer_pick_location_body': 'المواقيتُ تُحسب لمدينتك أنت.',
   'prayer_unavailable': 'تعذّر حساب المواقيت',
   'city_search_hint': 'ابحث عن مدينة…',
   'city_no_results': 'مفيش نتائج',

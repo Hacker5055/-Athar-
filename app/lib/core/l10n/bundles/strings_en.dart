@@ -247,6 +247,8 @@ const Map<String, String> kStringsEn = {
   'prayer_now': 'Now',
   'prayer_upcoming': 'Next',
   'prayer_calc_settings': 'Prayer settings',
+  'prayer_pick_location': 'Choose your city',
+  'prayer_pick_location_body': 'Prayer times are calculated for your city.',
   'prayer_unavailable': 'Could not calculate prayer times',
   'city_search_hint': 'Search for a city…',
   'city_no_results': 'No results',
