@@ -2,6 +2,7 @@ package com.athar.athar.ui.settings
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -45,6 +46,10 @@ import com.athar.athar.notification.NotificationScheduler
 import com.athar.athar.notification.NotificationSettings
 import com.athar.athar.notification.NotificationSettingsStore
 import com.athar.athar.notification.PrayerAlertMode
+import com.athar.athar.notification.SilenceController
+import com.athar.athar.notification.SilenceScheduler
+import com.athar.athar.notification.SilenceSettings
+import com.athar.athar.notification.SilenceStore
 import com.athar.athar.prayer.PrayerSlot
 import androidx.compose.runtime.mutableIntStateOf
 import com.athar.athar.hijri.HijriCalendar
@@ -219,6 +224,10 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         }
 
         item {
+            SilenceCard()
+        }
+
+        item {
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(14.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -362,4 +371,116 @@ private fun hasNotificationPermission(context: Context): Boolean {
         context,
         Manifest.permission.POST_NOTIFICATIONS,
     ) == PackageManager.PERMISSION_GRANTED
+}
+
+/// ⚠️ **الطلبُ في صفحة النظام**: إذنُ «عدم الإزعاج» لا يُمنح من
+/// داخل التطبيق، فالزرُّ يفتح صفحة النظام نفسها — ولا يعد
+/// التطبيقُ بأن يعمل قبل أن يصدّق النظام.
+@Composable
+private fun SilenceCard() {
+    val s = LocalStrings.current
+    val context = LocalContext.current
+    var settings by remember { mutableStateOf(SilenceStore.load(context)) }
+    var granted by remember { mutableStateOf(false) }
+    // ⚠️ **نيّةُ التفعيل محفوظة**: من ضغط المفتاح وذهب إلى النظام
+    // فلما رجع بصلاحية، فالأمرُ الأولُ لم يضيع عليه.
+    var wanted by remember { mutableStateOf(false) }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) {
+        granted = SilenceController.hasAccess(context)
+        // ⚠️ رجع المستخدمُ بصلاحية: نُتمّ ما بدأه — فلا يُبقى
+        // عليه أن يضغط المفتاح مرتين.
+        if (granted && wanted) {
+            wanted = false
+            settings = settings.copy(enabled = true)
+            SilenceStore.save(context, settings)
+            SilenceScheduler.reschedule(context)
+        }
+    }
+
+    LaunchedEffect(Unit) { granted = SilenceController.hasAccess(context) }
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(s.silenceTitle, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        s.silenceBody,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(
+                    checked = settings.enabled,
+                    onCheckedChange = { on ->
+                        if (on && !granted) {
+                            // ⚠️ بلا إذنٍ لا صمت: نفتح صفحة النظام.
+                            wanted = true
+                            launcher.launch(
+                                Intent(
+                                    android.provider.Settings
+                                        .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS,
+                                ),
+                            )
+                            return@Switch
+                        }
+                        settings = settings.copy(enabled = on)
+                        SilenceStore.save(context, settings)
+                        if (!on) {
+                            // ⚠️ إطفاؤه الآن **يرفع الصمت فورًا**:
+                            // الانتظارَ حتى آخر نافذةٍ يجعل المستخدم
+                            // ينتظر صمتًا أطفأه بنفسه.
+                            SilenceController.restore(context)
+                        }
+                        SilenceScheduler.reschedule(context)
+                    },
+                )
+            }
+            if (!granted) {
+                Text(
+                    s.silenceNeedAccess,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+                Button(
+                    onClick = {
+                        launcher.launch(
+                            Intent(
+                                android.provider.Settings
+                                    .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS,
+                            ),
+                        )
+                    },
+                    modifier = Modifier.padding(top = 8.dp),
+                ) {
+                    Text(s.silenceAllow)
+                }
+            }
+            if (settings.enabled && granted) {
+                Text(
+                    s.silenceMinutes,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    SilenceSettings.MINUTE_CHOICES.forEach { minutes ->
+                        FilterChip(
+                            selected = settings.minutes == minutes,
+                            onClick = {
+                                settings = settings.copy(minutes = minutes)
+                                SilenceStore.save(context, settings)
+                                SilenceScheduler.reschedule(context)
+                            },
+                            label = { Text(s.tArgs("minutes_short", "n" to minutes)) },
+                        )
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1,15 +1,23 @@
 package com.athar.athar
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.mutableIntStateOf
 import com.athar.athar.tasbih.VolumeCounter
 import com.athar.athar.ui.AtharApp
 import com.athar.athar.widget.PrayerWidgetProvider
 
 class MainActivity : ComponentActivity() {
+
+    /// ⚠️ **حالةٌ مرصودة**: الاختصارُ يفتح التبويبَ، وقد يكون
+    /// التطبيقُ مفتوحًا فيأتي الطلبُ من نيةٍ جديدة. والحالةُ تُقرأ
+    /// في التركيب، فتدفع التحديث بلا إعادة بناء.
+    private val shortcutTab = mutableIntStateOf(0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -17,9 +25,27 @@ class MainActivity : ComponentActivity() {
         // من فتح التطبيق يرى ودجتًا مطابقًا لما بالداخل، لا ودجتًا
         // مضى عليه نصف ساعة.
         PrayerWidgetProvider.refresh(this)
+        shortcutTab.intValue = tabFrom(intent)
         setContent {
-            AtharApp()
+            AtharApp(initialTab = shortcutTab.intValue)
         }
+    }
+
+    /// ⚠️ التطبيقُ مفتوحٌ بالفعل فنستقبل نيةً جديدة لا إنشاءً
+    /// جديدًا — ولولا هذا لبقي المستخدم حيث هو.
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        shortcutTab.intValue = tabFrom(intent)
+    }
+
+    /// ⚠️ **نقرأها مرّة**: لولا حذفُ الزيادة لبقيت في النية بعد كل
+    /// تدويرٍ للشاشة، فيقفز التطبيقُ إلى تبويب الاختصار من أينما
+    /// كان المستخدم.
+    private fun tabFrom(intent: Intent?): Int {
+        val tab = intent?.getIntExtra(EXTRA_TAB, 0) ?: 0
+        intent?.removeExtra(EXTRA_TAB)
+        return tab
     }
 
     /// ⚠️ أزرار الصوت **تُلتقط في شاشة السبحة وحدها** (E5): من
@@ -36,5 +62,10 @@ class MainActivity : ComponentActivity() {
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    companion object {
+        /// رقمُ التبويب الذي يفتحه الاختصار.
+        const val EXTRA_TAB = "athar.tab"
     }
 }

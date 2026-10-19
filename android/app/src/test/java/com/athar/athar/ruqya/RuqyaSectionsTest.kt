@@ -34,7 +34,7 @@ class RuqyaSectionsTest {
     @Test
     fun theOrderOfTheBookIsKept() {
         // ⚠️ **ترتيبُ الكتاب هو ترتيبُ الناس للرقية**: فمن
-        // رتّبناهم على markersٍ أخرى لzt الأمام.
+        // رتّبناهم على markersٍ أخرى لاختلط الترتيب.
         val all = ruqyaTitles.map { section(it) } + section("أَذْكَارُ الصَّبَاحِ")
         val found = RuqyaSections.sections(all)
         assertEquals(ruqyaTitles, found.map { it.title })

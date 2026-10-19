@@ -641,4 +641,9 @@ const Map<String, String> kStringsEn = {
   'tasbih_speak_hint': 'Speaks the count aloud on every tap — turn it off if it gets in the way.',
   'tasbih_volume': 'Count with volume buttons',
   'tasbih_volume_hint': 'Volume buttons count a dhikr instead of changing the volume — change the volume in the device settings.',
+  'silence_title': 'Silence during prayer',
+  'silence_body': 'Mutes media and vibration during the prayer window. It starts two minutes after the adhan so the adhan itself stays audible, and it ends when the window ends. It stays off until you allow it.',
+  'silence_need_access': 'The app needs “Do Not Disturb” access to mute media and notifications. Tap to allow it in the system settings.',
+  'silence_allow': 'Allow access',
+  'silence_minutes': 'Silence duration',
 };

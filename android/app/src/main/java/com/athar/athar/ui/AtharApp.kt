@@ -32,9 +32,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import com.athar.athar.i18n.AppLocale
 import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.i18n.Strings
 import com.athar.athar.i18n.LocaleStore
 import com.athar.athar.i18n.ProvideStrings
 import com.athar.athar.notification.NotificationScheduler
+import com.athar.athar.notification.SilenceScheduler
 import com.athar.athar.prayer.PrayerSettingsStore
 import com.athar.athar.ui.adhkar.AdhkarScreen
 import com.athar.athar.ui.prayer.PrayerScreen
@@ -63,7 +65,7 @@ private val kTabIcons: List<ImageVector> = listOf(
 /// الهيكل: خمس تبويبات. المواقيت على «الرئيسية» لأنها أكثر ما يُفتح
 /// يوميًا (قرار docs/02).
 @Composable
-fun AtharApp() {
+fun AtharApp(initialTab: Int = 0) {
     val context = LocalContext.current
     var locale by remember { mutableStateOf(LocaleStore.load(context)) }
     var appearance by remember { mutableStateOf(AppearanceStore.load(context)) }
@@ -85,6 +87,7 @@ fun AtharApp() {
                 AppShell(
                     locale = locale,
                     appearance = appearance,
+                    initialTab = initialTab,
                     onLocaleChange = { next ->
                         locale = next
                         LocaleStore.save(context, next)
@@ -106,12 +109,25 @@ fun AtharApp() {
 private fun AppShell(
     locale: AppLocale,
     appearance: Appearance,
+    initialTab: Int = 0,
     onLocaleChange: (AppLocale) -> Unit,
     onAppearanceChange: (Appearance) -> Unit,
 ) {
     val s = LocalStrings.current
     val context = LocalContext.current
-    var selected by rememberSaveable { mutableIntStateOf(0) }
+    var selected by rememberSaveable { mutableIntStateOf(initialTab) }
+
+    // ⚠️ **الاختصارُ يفتح تبويبًا**: ولا يكفي أن يبدأ التطبيقُ
+    // عليه، بل لا بدّ من القفز إليه إن كان التطبيقُ مفتوحًا.
+    LaunchedEffect(initialTab) {
+        if (initialTab != 0) selected = initialTab
+    }
+
+    // ⚠️ الاختصاراتُ **تُنشر كلما تغيّرت اللغة**: عنوانُ الاختصار
+    // من حزمة الترجمة، فإلا نشرناها بغيرها لبقيت بلغةٍ قديمة.
+    LaunchedEffect(locale) {
+        AppShortcuts.apply(context, Strings(locale))
+    }
     // ⚠️ الهدف في الأب لا في الشاشة: «تابع القراءة» على الرئيسية
     // يفتح القرآن، ولا سبيل إلى ذلك إلا بحالة يملكها من يملك
     // اختيار التبويب. والموضع يُقرأ من مخزنه، لا يُمرَّر.
@@ -120,7 +136,12 @@ private fun AppShell(
 
     /// ⚠️ إعادة الجدولة عند كل فتح: النظام ينسى التنبيهات بعد الإقلاع،
     /// والمواقيت تتغيّر يوميًا، والمستخدم قد يغيّر مدينته.
-    LaunchedEffect(Unit) { NotificationScheduler.rescheduleFromStored(context) }
+    LaunchedEffect(Unit) {
+        NotificationScheduler.rescheduleFromStored(context)
+        // ⚠️ نوافذُ الصمت تُجدَّد مع التنبيهات: بعد كل إعادة
+        // تشغيلٍ للجهاز، ومنبّهٌ ماضٍّ يُطلق فورًا.
+        SilenceScheduler.reschedule(context)
+    }
 
     val labels = listOf(
         s.tabHome, s.tabQuran, s.tabAdhkar, s.tabTasbih, s.tabQibla, s.tabMore,

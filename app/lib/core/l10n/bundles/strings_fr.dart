@@ -641,4 +641,9 @@ const Map<String, String> kStringsFr = {
   'tasbih_speak_hint': 'Prononce le compte à chaque appui — désactivez-le s’il gêne.',
   'tasbih_volume': 'Compter avec les boutons de volume',
   'tasbih_volume_hint': 'Les boutons de volume comptent un dhikr au lieu de changer le volume — changez le volume dans les réglages.',
+  'silence_title': 'Silence pendant la prière',
+  'silence_body': 'Coupe les médias et les vibrations pendant la fenêtre de prière. Commence deux minutes après l’adhan pour que l’adhan reste audible, et finit à la fin de la fenêtre. Désactivé tant que vous ne l’autorisez pas.',
+  'silence_need_access': 'L’application a besoin de l’accès « Ne pas déranger » pour couper les médias et les notifications. Touchez pour l’autoriser dans les réglages du système.',
+  'silence_allow': 'Autoriser l’accès',
+  'silence_minutes': 'Durée du silence',
 };

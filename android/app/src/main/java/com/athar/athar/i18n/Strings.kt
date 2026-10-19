@@ -616,6 +616,11 @@ class Strings(val locale: AppLocale) {
             "tasbih_speak_hint" to "ينطق العدد بصوت عالٍ عند كل نقرة — أطفئه إن أزعجك.",
             "tasbih_volume" to "العدّ بأزرار الصوت",
             "tasbih_volume_hint" to "أزرار الصوت تعدّ ذكرًا بدلًا من تغيير الصوت — غيّر الصوت من إعدادات الجهاز.",
+            "silence_title" to "وضع الصمت أثناء الصلاة",
+            "silence_body" to "كتمُ الوسائط والاهتزاز في نافذة الصلاة. يبدأ بعد الأذان بدقيقتين ليبقى صوتُ الأذان مسموعًا، وينتهي بانتهاء النافذة. وهو معطّلٌ حتى توافق عليه.",
+            "silence_need_access" to "يحتاج التطبيق إذن «عدم الإزعاج» ليرفع الصوت عن الوسائط والتنبيهات. اضغط للسماح به من إعدادات النظام.",
+            "silence_allow" to "السماح بالوصول",
+            "silence_minutes" to "مدة الصمت",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -1206,6 +1211,11 @@ class Strings(val locale: AppLocale) {
             "tasbih_speak_hint" to "Speaks the count aloud on every tap — turn it off if it gets in the way.",
             "tasbih_volume" to "Count with volume buttons",
             "tasbih_volume_hint" to "Volume buttons count a dhikr instead of changing the volume — change the volume in the device settings.",
+            "silence_title" to "Silence during prayer",
+            "silence_body" to "Mutes media and vibration during the prayer window. It starts two minutes after the adhan so the adhan itself stays audible, and it ends when the window ends. It stays off until you allow it.",
+            "silence_need_access" to "The app needs “Do Not Disturb” access to mute media and notifications. Tap to allow it in the system settings.",
+            "silence_allow" to "Allow access",
+            "silence_minutes" to "Silence duration",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1796,6 +1806,11 @@ class Strings(val locale: AppLocale) {
             "tasbih_speak_hint" to "Prononce le compte à chaque appui — désactivez-le s’il gêne.",
             "tasbih_volume" to "Compter avec les boutons de volume",
             "tasbih_volume_hint" to "Les boutons de volume comptent un dhikr au lieu de changer le volume — changez le volume dans les réglages.",
+            "silence_title" to "Silence pendant la prière",
+            "silence_body" to "Coupe les médias et les vibrations pendant la fenêtre de prière. Commence deux minutes après l’adhan pour que l’adhan reste audible, et finit à la fin de la fenêtre. Désactivé tant que vous ne l’autorisez pas.",
+            "silence_need_access" to "L’application a besoin de l’accès « Ne pas déranger » pour couper les médias et les notifications. Touchez pour l’autoriser dans les réglages du système.",
+            "silence_allow" to "Autoriser l’accès",
+            "silence_minutes" to "Durée du silence",
         )
     }
 
@@ -2391,4 +2406,9 @@ class Strings(val locale: AppLocale) {
     val tasbihSpeakHint: String get() = t("tasbih_speak_hint")
     val tasbihVolume: String get() = t("tasbih_volume")
     val tasbihVolumeHint: String get() = t("tasbih_volume_hint")
+    val silenceTitle: String get() = t("silence_title")
+    val silenceBody: String get() = t("silence_body")
+    val silenceNeedAccess: String get() = t("silence_need_access")
+    val silenceAllow: String get() = t("silence_allow")
+    val silenceMinutes: String get() = t("silence_minutes")
 }
