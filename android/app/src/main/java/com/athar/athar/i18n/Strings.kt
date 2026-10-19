@@ -511,6 +511,22 @@ class Strings(val locale: AppLocale) {
             "backup_restored" to "استُعيدت النسخة",
             "backup_bad_file" to "هذا الملف ليس نسخة أثر، أو هو من إصدار أحدث",
             "backup_failed" to "تعذّرت العملية",
+            "hifz_title" to "وضع الحفظ",
+            "hifz_body" to "يُخفي التطبيق الآية كلمة كلمة كلّما كرّرتها، حتّى تسترجعها من ذاكرتِك وحدها.",
+            "hifz_from" to "من",
+            "hifz_to" to "إلى",
+            "hifz_surah" to "السورة",
+            "hifz_ayah" to "الآية",
+            "hifz_count" to "عدد الآيات: {n}",
+            "hifz_start" to "ابدأ الحفظ",
+            "hifz_change" to "تغيير النطاق",
+            "hifz_reveal" to "أظهر",
+            "hifz_hide" to "أخفِ",
+            "hifz_repeat" to "كرّرت",
+            "hifz_memorized" to "محفوظة",
+            "hifz_progress" to "{a} من {b}",
+            "hifz_repeats_of" to "التكرار {a} من {b}",
+            "hifz_finished" to "حفظت النطاق كلّه",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -996,6 +1012,22 @@ class Strings(val locale: AppLocale) {
             "backup_restored" to "Backup restored",
             "backup_bad_file" to "This file is not an Athar backup, or it is from a newer version",
             "backup_failed" to "The operation failed",
+            "hifz_title" to "Memorization",
+            "hifz_body" to "The app hides the verse word by word each time you repeat it, until you recall it from memory alone.",
+            "hifz_from" to "From",
+            "hifz_to" to "To",
+            "hifz_surah" to "Surah",
+            "hifz_ayah" to "Verse",
+            "hifz_count" to "{n} verses",
+            "hifz_start" to "Start memorizing",
+            "hifz_change" to "Change range",
+            "hifz_reveal" to "Reveal",
+            "hifz_hide" to "Hide",
+            "hifz_repeat" to "I repeated it",
+            "hifz_memorized" to "Memorized",
+            "hifz_progress" to "{a} of {b}",
+            "hifz_repeats_of" to "Repeat {a} of {b}",
+            "hifz_finished" to "You memorized the whole range",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1481,6 +1513,22 @@ class Strings(val locale: AppLocale) {
             "backup_restored" to "Sauvegarde restaurée",
             "backup_bad_file" to "Ce fichier n’est pas une sauvegarde Athar, ou provient d’une version plus récente",
             "backup_failed" to "L’opération a échoué",
+            "hifz_title" to "Mémorisation",
+            "hifz_body" to "L’application masque le verset mot à mot à chaque répétition, jusqu’à ce que vous le rappeliez de mémoire.",
+            "hifz_from" to "De",
+            "hifz_to" to "À",
+            "hifz_surah" to "Sourate",
+            "hifz_ayah" to "Verset",
+            "hifz_count" to "{n} versets",
+            "hifz_start" to "Commencer",
+            "hifz_change" to "Changer la plage",
+            "hifz_reveal" to "Afficher",
+            "hifz_hide" to "Masquer",
+            "hifz_repeat" to "J’ai répété",
+            "hifz_memorized" to "Mémorisé",
+            "hifz_progress" to "{a} sur {b}",
+            "hifz_repeats_of" to "Répétition {a} sur {b}",
+            "hifz_finished" to "Vous avez mémorisé toute la plage",
         )
     }
 
@@ -1971,4 +2019,20 @@ class Strings(val locale: AppLocale) {
     val backupRestored: String get() = t("backup_restored")
     val backupBadFile: String get() = t("backup_bad_file")
     val backupFailed: String get() = t("backup_failed")
+    val hifzTitle: String get() = t("hifz_title")
+    val hifzBody: String get() = t("hifz_body")
+    val hifzFrom: String get() = t("hifz_from")
+    val hifzTo: String get() = t("hifz_to")
+    val hifzSurah: String get() = t("hifz_surah")
+    val hifzAyah: String get() = t("hifz_ayah")
+    val hifzCount: String get() = t("hifz_count")
+    val hifzStart: String get() = t("hifz_start")
+    val hifzChange: String get() = t("hifz_change")
+    val hifzReveal: String get() = t("hifz_reveal")
+    val hifzHide: String get() = t("hifz_hide")
+    val hifzRepeat: String get() = t("hifz_repeat")
+    val hifzMemorized: String get() = t("hifz_memorized")
+    val hifzProgress: String get() = t("hifz_progress")
+    val hifzRepeatsOf: String get() = t("hifz_repeats_of")
+    val hifzFinished: String get() = t("hifz_finished")
 }

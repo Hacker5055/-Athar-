@@ -175,6 +175,7 @@ fun QuranScreen(
     }
 
     var showKhatmah by remember { mutableStateOf(false) }
+    var showHifz by remember { mutableStateOf(false) }
 
     var withdrawn by remember { mutableStateOf(emptySet<String>()) }
     LaunchedEffect(Unit) { withdrawn = ReciterWithdrawalStore.refresh(context) }
@@ -312,6 +313,10 @@ fun QuranScreen(
                 },
                 onStop = { QuranAudioController.stop() },
             )
+            showHifz -> HifzScreen(
+                onBack = { showHifz = false },
+                modifier = Modifier.fillMaxSize(),
+            )
             showKhatmah -> KhatmahScreen(
                 onBack = { showKhatmah = false },
                 onRead = { surahId, ayah ->
@@ -355,6 +360,12 @@ fun QuranScreen(
                             // له وقت، والذي فات لا يُستدرك.
                             TextButton(onClick = { showKhatmah = true }) {
                                 Text(s.khatmahTitle)
+                            }
+                            // ⚠️ الحفظ بعد الختمة: الورد يُقرأ،
+                            // والحفظ يُستظهَر — وكلاهما التزام
+                            // يوميّ، فقُرِنا في موضع واحد.
+                            TextButton(onClick = { showHifz = true }) {
+                                Text(s.hifzTitle)
                             }
                             if (bookmarks.isNotEmpty()) {
                                 TextButton(onClick = { showBookmarks = true }) {
