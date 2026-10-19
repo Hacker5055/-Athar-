@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranAudioTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:03:54" hostname="runnervm8k3b6" time="0.003">
+<testsuite name="com.athar.athar.quran.QuranAudioTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.007">
   <properties/>
-  <testcase name="ayahUrlUsesAyahPath" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
+  <testcase name="ayahUrlUsesAyahPath" classname="com.athar.athar.quran.QuranAudioTest" time="0.001"/>
   <testcase name="surahUrlUsesSurahPathAndReciterBitrate" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
   <testcase name="defaultReciterIsInCatalog" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
   <testcase name="differentRecitersGetTheirOwnBitrate" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
@@ -12,11 +12,11 @@
   <testcase name="surahUrlCoversEverySurah" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
   <testcase name="reciterIdsAreUrlSafe" classname="com.athar.athar.quran.QuranAudioTest" time="0.001"/>
   <testcase name="bothModesAreRepresented" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
-  <testcase name="bitratesAreOnesTheCdnServes" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
+  <testcase name="bitratesAreOnesTheCdnServes" classname="com.athar.athar.quran.QuranAudioTest" time="0.001"/>
   <testcase name="surahUrlRejectsOutOfRangeSurah" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
   <testcase name="surahModeRecitersBuildSurahUrls" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
   <testcase name="everyReciterUsesAMeasuredBitrate" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
-  <testcase name="reciterIdsAreUnique" classname="com.athar.athar.quran.QuranAudioTest" time="0.001"/>
+  <testcase name="reciterIdsAreUnique" classname="com.athar.athar.quran.QuranAudioTest" time="0.003"/>
   <testcase name="lookingUpUnknownIdGivesNull" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
   <testcase name="ayahUrlRejectsOutOfRangeVerseId" classname="com.athar.athar.quran.QuranAudioTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>

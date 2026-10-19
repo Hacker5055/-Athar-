@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.core.ArabicDigitsTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:03:54" hostname="runnervm8k3b6" time="0.006">
+<testsuite name="com.athar.athar.core.ArabicDigitsTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.007">
   <properties/>
-  <testcase name="negativeKeepsTheSign" classname="com.athar.athar.core.ArabicDigitsTest" time="0.0"/>
+  <testcase name="negativeKeepsTheSign" classname="com.athar.athar.core.ArabicDigitsTest" time="0.001"/>
   <testcase name="zeroIsItsOwnCase" classname="com.athar.athar.core.ArabicDigitsTest" time="0.0"/>
-  <testcase name="noLatinDigitsLeak" classname="com.athar.athar.core.ArabicDigitsTest" time="0.005"/>
+  <testcase name="noLatinDigitsLeak" classname="com.athar.athar.core.ArabicDigitsTest" time="0.004"/>
   <testcase name="longOverloadMatchesInt" classname="com.athar.athar.core.ArabicDigitsTest" time="0.0"/>
-  <testcase name="singleAndMultiDigit" classname="com.athar.athar.core.ArabicDigitsTest" time="0.001"/>
+  <testcase name="singleAndMultiDigit" classname="com.athar.athar.core.ArabicDigitsTest" time="0.0"/>
   <testcase name="largeValuesKeepEveryDigit" classname="com.athar.athar.core.ArabicDigitsTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

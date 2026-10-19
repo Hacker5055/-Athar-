@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.adhkar.CustomAdhkarTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:03:53" hostname="runnervm8k3b6" time="0.017">
+<testsuite name="com.athar.athar.adhkar.CustomAdhkarTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:45" hostname="runnervm8k3b6" time="0.014">
   <properties/>
-  <testcase name="emptyAndNullDecodeToEmpty" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.004"/>
+  <testcase name="emptyAndNullDecodeToEmpty" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.002"/>
   <testcase name="targetIsClamped" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.003"/>
   <testcase name="separatorsInUserTextAreStrippedNotFatal" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.0"/>
   <testcase name="textWithCommasAndPipesSurvives" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.001"/>
   <testcase name="doneIsKeyedByIdNotByPosition" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.004"/>
   <testcase name="separatorIsPrintableNotAControlChar" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.001"/>
   <testcase name="zeroCountsAreDropped" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.0"/>
-  <testcase name="roundTripKeepsTextAndTarget" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.002"/>
+  <testcase name="roundTripKeepsTextAndTarget" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.001"/>
   <testcase name="doneSurvivesDeletingTheItemAboveIt" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.001"/>
   <testcase name="blankItemsAreNotEncoded" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.0"/>
-  <testcase name="doneOfEmptyIsEmpty" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.0"/>
+  <testcase name="doneOfEmptyIsEmpty" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.001"/>
   <testcase name="invalidRecordsAreDropped" classname="com.athar.athar.adhkar.CustomAdhkarTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

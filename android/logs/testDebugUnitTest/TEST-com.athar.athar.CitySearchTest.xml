@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.CitySearchTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:03:53" hostname="runnervm8k3b6" time="0.075">
+<testsuite name="com.athar.athar.CitySearchTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:45" hostname="runnervm8k3b6" time="0.041">
   <properties/>
-  <testcase name="cityDataIsSane" classname="com.athar.athar.CitySearchTest" time="0.043"/>
-  <testcase name="findsWithLooseSpelling" classname="com.athar.athar.CitySearchTest" time="0.017"/>
-  <testcase name="ignoresDiacritics" classname="com.athar.athar.CitySearchTest" time="0.005"/>
+  <testcase name="cityDataIsSane" classname="com.athar.athar.CitySearchTest" time="0.023"/>
+  <testcase name="findsWithLooseSpelling" classname="com.athar.athar.CitySearchTest" time="0.007"/>
+  <testcase name="ignoresDiacritics" classname="com.athar.athar.CitySearchTest" time="0.002"/>
   <testcase name="findsByLatin" classname="com.athar.athar.CitySearchTest" time="0.002"/>
-  <testcase name="emptyQueryReturnsEverything" classname="com.athar.athar.CitySearchTest" time="0.003"/>
+  <testcase name="emptyQueryReturnsEverything" classname="com.athar.athar.CitySearchTest" time="0.0"/>
   <testcase name="findsByArabic" classname="com.athar.athar.CitySearchTest" time="0.001"/>
-  <testcase name="unifiesAlefVariants" classname="com.athar.athar.CitySearchTest" time="0.003"/>
+  <testcase name="unifiesAlefVariants" classname="com.athar.athar.CitySearchTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

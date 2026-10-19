@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.athar.athar.tasbih.TasbihRangesTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.012">
+  <properties/>
+  <testcase name="theDayEndsAtTheNextMidnight" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.001"/>
+  <testcase name="theDayStartsAtMidnight" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
+  <testcase name="theWeekCoversSevenDays" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
+  <testcase name="theDayIsHalfOpen" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
+  <testcase name="theWeekStartsSixDaysBeforeToday" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
+  <testcase name="theRangeFollowsTheDeviceZone" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.01"/>
+  <testcase name="theWeekIncludesToday" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
+  <testcase name="aSessionOfTodayIsInBothRanges" classname="com.athar.athar.tasbih.TasbihRangesTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

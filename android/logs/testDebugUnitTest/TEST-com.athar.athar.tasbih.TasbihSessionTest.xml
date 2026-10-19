@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.athar.athar.tasbih.TasbihSessionTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:54:46" hostname="runnervm8k3b6" time="0.006">
+  <properties/>
+  <testcase name="theGapIsTwoMinutes" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="theNewestSessionComesFirst" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.001"/>
+  <testcase name="theFirstTapOpensASession" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="anEmptyLogHasAnEmptySummary" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.002"/>
+  <testcase name="theBestSessionIsTheLongestOne" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="aLongPauseOpensANewSession" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="theLogIsCapped" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.001"/>
+  <testcase name="theDayBoundariesAreHalfOpen" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="theSummaryCountsTheRangeAndTheTotal" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="thereIsNothingToCloseWithoutASession" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="theDurationIsNeverNegative" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="aSessionIsClosedAfterTheGap" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="aSessionIsNotClosedWhileItIsActive" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.0"/>
+  <testcase name="closeTapsStayInOneSession" classname="com.athar.athar.tasbih.TasbihSessionTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
