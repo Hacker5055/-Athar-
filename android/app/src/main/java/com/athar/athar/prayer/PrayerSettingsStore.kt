@@ -25,6 +25,7 @@ object PrayerSettingsStore {
             // ⚠️ بالاسم لا بالترتيب: ترتيب التعداد قد يتغيّر،
             // والاسم ثابت.
             highLatitude = HighLatitude.fromName(p.getString("highLatitude", null)),
+            adjustments = readAdjustments(p.getString("adjust", null)),
         )
     }
 
@@ -37,6 +38,26 @@ object PrayerSettingsStore {
             .putString("cityId", settings.cityId)
             .putString("place", settings.placeName)
             .putString("highLatitude", settings.highLatitude.name)
+            .putString("adjust", writeAdjustments(settings.adjustments))
             .apply()
     }
 }
+
+    /// ⚠️ المفتاح **اسم التعداد** لا ترتيبه: الترتيب يتغيّر إن
+    /// أُعيد ترتيب الثوابت، والاسم يبقى.
+    private fun writeAdjustments(map: Map<PrayerSlot, Int>): String =
+        map.entries
+            .filter { it.value != 0 }
+            .joinToString(",") { "${it.key.name}:${PrayerAdjustments.clamp(it.value)}" }
+
+    private fun readAdjustments(raw: String?): Map<PrayerSlot, Int> {
+        if (raw.isNullOrBlank()) return emptyMap()
+        return raw.split(',').mapNotNull { part ->
+            val bits = part.split(':')
+            val slot = bits.getOrNull(0)
+                ?.let { name -> runCatching { PrayerSlot.valueOf(name) }.getOrNull() }
+                ?: return@mapNotNull null
+            val minutes = bits.getOrNull(1)?.toIntOrNull() ?: return@mapNotNull null
+            slot to PrayerAdjustments.clamp(minutes)
+        }.toMap()
+    }

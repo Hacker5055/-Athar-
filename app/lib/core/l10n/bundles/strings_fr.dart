@@ -567,4 +567,9 @@ const Map<String, String> kStringsFr = {
   'weekly_streak': 'Série actuelle : {n} jours',
   'weekly_best_streak': 'Meilleure série : {n} jours',
   'weekly_top': 'Ce que vous avez le plus fait',
+  'adjust_title': 'Ajuster les horaires',
+  'adjust_body': 'Si le calcul d’Athar diffère de votre mosquée, décalez-le de quelques minutes. Trente est le plafond : au-delà, ce n’est plus un écart d’horaire.',
+  'adjust_reset': 'Tout réinitialiser',
+  'adjust_minutes': '{n} min',
+  'adjust_open': 'Ajuster',
 };

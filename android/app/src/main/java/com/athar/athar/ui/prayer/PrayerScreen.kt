@@ -11,6 +11,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EditLocation
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -47,6 +52,8 @@ import com.athar.athar.quran.QuranProgress
 import com.athar.athar.quran.QuranProgressStore
 import com.athar.athar.hijri.IslamicEvents
 import com.athar.athar.prayer.PrayerDay
+import com.athar.athar.prayer.PrayerAdjustments
+import com.athar.athar.prayer.PrayerSlot
 import com.athar.athar.ramadan.Ramadan
 import com.athar.athar.hijri.HijriCalendar
 import java.time.temporal.ChronoUnit
@@ -68,6 +75,7 @@ fun PrayerScreen(
     val today = LocalDate.now()
     var pickingCity by remember { mutableStateOf(false) }
     var showMonth by remember { mutableStateOf(false) }
+    var showAdjust by remember { mutableStateOf(false) }
 
     if (showMonth) {
         MonthScreen(
@@ -108,6 +116,14 @@ fun PrayerScreen(
             modifier = modifier,
         )
         return
+    }
+
+    if (showAdjust) {
+        AdjustmentDialog(
+            settings = settings,
+            onChange = onSettingsChange,
+            onDismiss = { showAdjust = false },
+        )
     }
 
     /// ⚠️ اسم المدينة يُقرأ باللغة الحالية — «القاهرة» داخل تطبيق
@@ -300,6 +316,15 @@ fun PrayerScreen(
             }
         }
 
+        // ⚠️ زر التعديل **تحت طريقة الحساب** لا كزر مستقلّ: هو
+        // تعديل على الحساب، ومن رآه فوقها ظنّه طريقة حساب ثالثة.
+        TextButton(
+            onClick = { showAdjust = true },
+            modifier = Modifier.padding(horizontal = 8.dp),
+        ) {
+            Text(s.adjustOpen)
+        }
+
         TextButton(
             onClick = { showMonth = true },
             modifier = Modifier.padding(horizontal = 8.dp),
@@ -321,13 +346,29 @@ fun PrayerScreen(
                         color = if (isNext) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurface,
                     )
-                    Text(
-                        text = timeFormat.format(instant),
-                        fontSize = 18.sp,
-                        fontWeight = if (isNext) FontWeight.Bold else null,
-                        color = if (isNext) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface,
-                    )
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = timeFormat.format(instant),
+                            fontSize = 18.sp,
+                            fontWeight = if (isNext) FontWeight.Bold else null,
+                            color = if (isNext) MaterialTheme.colorScheme.primary
+                            else MaterialTheme.colorScheme.onSurface,
+                        )
+                        // ⚠️ علامة «معدّل» **دائمًا** لا عند الغفلة:
+                        // من يرى وقتًا مخالفًا لمسجده ولا يعلم أنه
+                        // معدّل سيظنّ التطبيق مخطئًا.
+                        val delta = PrayerAdjustments.minutesOf(settings, slot)
+                        if (delta != 0) {
+                            Text(
+                                text = s.tArgs(
+                                    "adjust_minutes",
+                                    "n" to PrayerAdjustments.signed(delta),
+                                ),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -417,4 +458,93 @@ private fun RamadanCard(
             )
         }
     }
+}
+
+/// نافذة التعديل اليدوي للمواقيت (A4).
+///
+/// ⚠️ **الثلاثون سقفًا** معروضة في النصّ لا في السلوك وحده: من
+/// يعدّل مئة دقيقة يريد أن يعرف أن التطبيق لم يطعه.
+///
+/// ⚠️ والتعديل **لكل صلاة على حدة**: من تأخّر فجره في مسجده
+/// لا يلزمه أن يتأخّر عصره، ومن عدّل المغرب لا يلمس العشاء.
+@Composable
+private fun AdjustmentDialog(
+    settings: PrayerSettings,
+    onChange: (PrayerSettings) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val s = LocalStrings.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(s.adjustTitle) },
+        text = {
+            Column {
+                Text(
+                    text = s.adjustBody,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                PrayerSlot.entries.forEach { slot ->
+                    val minutes = PrayerAdjustments.minutesOf(settings, slot)
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = s.t(slot.stringKey),
+                            modifier = Modifier.weight(1f),
+                        )
+                        IconButton(
+                            onClick = {
+                                onChange(
+                                    PrayerAdjustments.withAdjustment(
+                                        settings, slot, minutes - 1,
+                                    ),
+                                )
+                            },
+                        ) {
+                            Icon(Icons.Filled.Remove, contentDescription = null)
+                        }
+                        Text(
+                            text = s.tArgs(
+                                "adjust_minutes",
+                                "n" to PrayerAdjustments.signed(minutes),
+                            ),
+                            modifier = Modifier.padding(horizontal = 4.dp),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = if (minutes != 0) FontWeight.Bold else null,
+                            color = if (minutes != 0) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                        )
+                        IconButton(
+                            onClick = {
+                                onChange(
+                                    PrayerAdjustments.withAdjustment(
+                                        settings, slot, minutes + 1,
+                                    ),
+                                )
+                            },
+                        ) {
+                            Icon(Icons.Filled.Add, contentDescription = null)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(s.ok) }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onChange(settings.copy(adjustments = emptyMap()))
+                    onDismiss()
+                },
+            ) { Text(s.adjustReset) }
+        },
+    )
 }

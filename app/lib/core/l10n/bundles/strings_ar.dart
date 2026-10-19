@@ -566,4 +566,9 @@ const Map<String, String> kStringsAr = {
   'weekly_streak': 'السلسلة الآن: {n} يومًا',
   'weekly_best_streak': 'أطول سلسلة: {n} يومًا',
   'weekly_top': 'أكثر ما فعلته',
+  'adjust_title': 'تعديل المواقيت',
+  'adjust_body': 'إن اختلف حساب أثر عن توقيت مسجدك، عدّل الفرق بالدقائق. والثلاثون سقفًا: ما جاوزها ليس فرق توقيت.',
+  'adjust_reset': 'تصفير الكل',
+  'adjust_minutes': '{n} د',
+  'adjust_open': 'تعديل',
 };

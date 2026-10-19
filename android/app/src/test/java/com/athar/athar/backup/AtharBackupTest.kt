@@ -212,6 +212,42 @@ class AtharBackupTest {
     }
 
     @Test
+    fun thePrayerAdjustmentsSurvive() {
+        val with = sample.prayer.copy(
+            adjustments = mapOf(
+                com.athar.athar.prayer.PrayerSlot.FAJR to 7,
+                com.athar.athar.prayer.PrayerSlot.ISHA to -4,
+            ),
+        )
+        val back = BackupCodec.read(BackupCodec.write(sample.copy(prayer = with)))!!
+        assertEquals(7, back.prayer.adjustments[com.athar.athar.prayer.PrayerSlot.FAJR])
+        assertEquals(-4, back.prayer.adjustments[com.athar.athar.prayer.PrayerSlot.ISHA])
+        assertEquals(2, back.prayer.adjustments.size)
+    }
+
+    @Test
+    fun adjustmentsAreClampedOnImport() {
+        // ⚠️ ملف معدَّل بـ ٩٠٠ دقيقة لا يجعل الفجر بعد الظهر
+        val bad = org.json.JSONObject(BackupCodec.write(sample)).apply {
+            put("prayer", org.json.JSONObject()
+                .put("method", "EGYPTIAN")
+                .put("adjust", org.json.JSONObject().put("FAJR", 900)))
+        }.toString()
+        val minutes = BackupCodec.read(bad)!!.prayer.adjustments[com.athar.athar.prayer.PrayerSlot.FAJR]!!
+        assertTrue(minutes <= com.athar.athar.prayer.PrayerAdjustments.MAX)
+    }
+
+    @Test
+    fun anUnknownSlotNameIsDropped() {
+        val bad = org.json.JSONObject(BackupCodec.write(sample)).apply {
+            put("prayer", org.json.JSONObject()
+                .put("method", "EGYPTIAN")
+                .put("adjust", org.json.JSONObject().put("صلاة-لا-توجد", 5)))
+        }.toString()
+        assertTrue(BackupCodec.read(bad)!!.prayer.adjustments.isEmpty())
+    }
+
+    @Test
     fun theVersionIsWritten() {
         assertTrue(BackupCodec.write(sample).contains("\"version\":${BackupCodec.VERSION}"))
     }

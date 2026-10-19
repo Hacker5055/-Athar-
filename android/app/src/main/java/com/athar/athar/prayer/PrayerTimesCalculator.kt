@@ -28,14 +28,19 @@ object PrayerTimesCalculator {
         }
 
         val times = PrayerTimes(coordinates, dateComponents, parameters)
-        return PrayerDay(
-            date = date,
-            fajr = times.fajr.toInstant(),
-            sunrise = times.sunrise.toInstant(),
-            dhuhr = times.dhuhr.toInstant(),
-            asr = times.asr.toInstant(),
-            maghrib = times.maghrib.toInstant(),
-            isha = times.isha.toInstant(),
+        // ⚠️ التعديل **بعد** الحساب لا داخله: نحسب ثم نزيح، فلا
+        // تختلط الإزاحة على مكتبة الفلك.
+        return PrayerAdjustments.applyTo(
+            PrayerDay(
+                date = date,
+                fajr = times.fajr.toInstant(),
+                sunrise = times.sunrise.toInstant(),
+                dhuhr = times.dhuhr.toInstant(),
+                asr = times.asr.toInstant(),
+                maghrib = times.maghrib.toInstant(),
+                isha = times.isha.toInstant(),
+            ),
+            settings,
         )
     }
 }

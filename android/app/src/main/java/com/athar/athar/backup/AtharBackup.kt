@@ -4,7 +4,9 @@ import com.athar.athar.adhkar.CustomDhikr
 import com.athar.athar.athary.HabitId
 import com.athar.athar.prayer.HighLatitude
 import com.athar.athar.prayer.PrayerMethod
+import com.athar.athar.prayer.PrayerAdjustments
 import com.athar.athar.prayer.PrayerSettings
+import com.athar.athar.prayer.PrayerSlot
 import com.athar.athar.quran.Khatmah
 import com.athar.athar.quran.KhatmahStore
 import com.athar.athar.quran.LastRead
@@ -114,7 +116,21 @@ object BackupCodec {
             cityId = cityId,
             placeName = o.optString("placeName", ""),
             highLatitude = HighLatitude.fromName(o.optString("highLatitude", null)),
+            adjustments = adjustmentsOf(o.optJSONObject("adjust")),
         )
+    }
+
+    /// ⚠️ التعديلات **تُقصّ عند القراءة**: ملف معدَّل بـ ٩٠٠ دقيقة
+    /// لا يجعل الفجر بعد الظهر.
+    private fun adjustmentsOf(o: JSONObject?): Map<PrayerSlot, Int> {
+        if (o == null) return emptyMap()
+        val out = LinkedHashMap<PrayerSlot, Int>()
+        for (name in o.keys()) {
+            val slot = runCatching { PrayerSlot.valueOf(name) }.getOrNull() ?: continue
+            val minutes = o.optInt(name, 0)
+            if (minutes != 0) out[slot] = PrayerAdjustments.clamp(minutes)
+        }
+        return out
     }
 
     /// ⚠️ الموضع **يُتحقَّق منه**: سورة من نسخة أقدم قد لا تكون
@@ -206,6 +222,15 @@ object BackupCodec {
         p.cityId?.let { put("cityId", it) }
         put("placeName", p.placeName)
         put("highLatitude", p.highLatitude.name)
+        put("adjust", jsonOf(p.adjustments))
+    }
+
+    /// ⚠️ التعديلات **بالاسم لا بالترتيب**: ترتيب التعداد قد
+    /// يتغيّر، واسم الثابت يبقى.
+    private fun jsonOf(adjustments: Map<PrayerSlot, Int>): JSONObject = JSONObject().apply {
+        adjustments.forEach { (slot, minutes) ->
+            if (minutes != 0) put(slot.name, PrayerAdjustments.clamp(minutes))
+        }
     }
 
     private fun jsonOf(r: LastRead): JSONObject = JSONObject().apply {

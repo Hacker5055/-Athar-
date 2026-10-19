@@ -567,4 +567,9 @@ const Map<String, String> kStringsEn = {
   'weekly_streak': 'Streak now: {n} days',
   'weekly_best_streak': 'Best streak: {n} days',
   'weekly_top': 'What you did most',
+  'adjust_title': 'Adjust the times',
+  'adjust_body': 'If Athar’s calculation differs from your mosque, shift it by minutes. Thirty is the cap: beyond that it is not a time difference.',
+  'adjust_reset': 'Reset all',
+  'adjust_minutes': '{n} min',
+  'adjust_open': 'Adjust',
 };

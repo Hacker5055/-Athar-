@@ -542,6 +542,11 @@ class Strings(val locale: AppLocale) {
             "weekly_streak" to "السلسلة الآن: {n} يومًا",
             "weekly_best_streak" to "أطول سلسلة: {n} يومًا",
             "weekly_top" to "أكثر ما فعلته",
+            "adjust_title" to "تعديل المواقيت",
+            "adjust_body" to "إن اختلف حساب أثر عن توقيت مسجدك، عدّل الفرق بالدقائق. والثلاثون سقفًا: ما جاوزها ليس فرق توقيت.",
+            "adjust_reset" to "تصفير الكل",
+            "adjust_minutes" to "{n} د",
+            "adjust_open" to "تعديل",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -1058,6 +1063,11 @@ class Strings(val locale: AppLocale) {
             "weekly_streak" to "Streak now: {n} days",
             "weekly_best_streak" to "Best streak: {n} days",
             "weekly_top" to "What you did most",
+            "adjust_title" to "Adjust the times",
+            "adjust_body" to "If Athar’s calculation differs from your mosque, shift it by minutes. Thirty is the cap: beyond that it is not a time difference.",
+            "adjust_reset" to "Reset all",
+            "adjust_minutes" to "{n} min",
+            "adjust_open" to "Adjust",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1574,6 +1584,11 @@ class Strings(val locale: AppLocale) {
             "weekly_streak" to "Série actuelle : {n} jours",
             "weekly_best_streak" to "Meilleure série : {n} jours",
             "weekly_top" to "Ce que vous avez le plus fait",
+            "adjust_title" to "Ajuster les horaires",
+            "adjust_body" to "Si le calcul d’Athar diffère de votre mosquée, décalez-le de quelques minutes. Trente est le plafond : au-delà, ce n’est plus un écart d’horaire.",
+            "adjust_reset" to "Tout réinitialiser",
+            "adjust_minutes" to "{n} min",
+            "adjust_open" to "Ajuster",
         )
     }
 
@@ -2095,4 +2110,9 @@ class Strings(val locale: AppLocale) {
     val weeklyStreak: String get() = t("weekly_streak")
     val weeklyBestStreak: String get() = t("weekly_best_streak")
     val weeklyTop: String get() = t("weekly_top")
+    val adjustTitle: String get() = t("adjust_title")
+    val adjustBody: String get() = t("adjust_body")
+    val adjustReset: String get() = t("adjust_reset")
+    val adjustMinutes: String get() = t("adjust_minutes")
+    val adjustOpen: String get() = t("adjust_open")
 }
