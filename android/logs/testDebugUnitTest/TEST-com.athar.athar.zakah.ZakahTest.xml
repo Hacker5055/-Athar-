@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.zakah.ZakahTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.002">
+<testsuite name="com.athar.athar.zakah.ZakahTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:37" hostname="runnervm8k3b6" time="0.001">
   <properties/>
-  <testcase name="noPeopleMeansNoFitr" classname="com.athar.athar.zakah.ZakahTest" time="0.001"/>
+  <testcase name="noPeopleMeansNoFitr" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="aZeroPriceMeansNoNisabAndNoLiability" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="theNisabIsWorthTheNisabWeight" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>
   <testcase name="cashAboveTheNisabIsLiable" classname="com.athar.athar.zakah.ZakahTest" time="0.0"/>

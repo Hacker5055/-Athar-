@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.athary.TrackerStateTest" tests="34" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.029">
+<testsuite name="com.athar.athar.athary.TrackerStateTest" tests="34" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.014">
   <properties/>
-  <testcase name="pruneDropsOlderThanRetention" classname="com.athar.athar.athary.TrackerStateTest" time="0.004"/>
-  <testcase name="unknownIdsAndKeysAreDropped" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
+  <testcase name="pruneDropsOlderThanRetention" classname="com.athar.athar.athary.TrackerStateTest" time="0.002"/>
+  <testcase name="unknownIdsAndKeysAreDropped" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="markDoesNotTouchAnotherDay" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
-  <testcase name="toggleAddsThenRemoves" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
+  <testcase name="toggleAddsThenRemoves" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="markKeepsTheOtherHabits" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="corruptedInputYieldsEmpty" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
-  <testcase name="dayFromKeyRoundTrips" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
+  <testcase name="dayFromKeyRoundTrips" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="dayFromKeyRejectsBadInput" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
   <testcase name="toggleDoesNotAffectAnotherDay" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="bestStreakOfEmptyHistoryIsZero" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
@@ -16,25 +16,25 @@
   <testcase name="emptyDayIsNotStored" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
   <testcase name="suggestionReturnsFirstMissingHabitInOrder" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="pruningEmptyDoesNotCrash" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
-  <testcase name="emptyStateHasZeroStreak" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
+  <testcase name="emptyStateHasZeroStreak" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="toleranceRuleCountsFromYesterdayWhenTodayEmpty" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="markTwiceDoesNotUndoTheFirst" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="bestStreakRemembersThePast" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
   <testcase name="recordForUnknownDayIsEmptyNotMissing" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
-  <testcase name="habitFromIdToleratesUnknown" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
+  <testcase name="habitFromIdToleratesUnknown" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="totalInWindow" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="windowHas30DaysEndingToday" classname="com.athar.athar.athary.TrackerStateTest" time="0.002"/>
   <testcase name="nineHabitsWithUniqueIds" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="windowCrossesMonthAndYear" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="completeDay" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="contiguousStreak" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
-  <testcase name="emptyDaysAreDroppedAfterDecode" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
-  <testcase name="encodeDecodeRoundTrip" classname="com.athar.athar.athary.TrackerStateTest" time="0.002"/>
-  <testcase name="densityLevels" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
+  <testcase name="emptyDaysAreDroppedAfterDecode" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
+  <testcase name="encodeDecodeRoundTrip" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
+  <testcase name="densityLevels" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
   <testcase name="dayKeyIsZeroPadded" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <testcase name="previousDayCrossesMonthAndYear" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
-  <testcase name="markSurvivesTheRoundTrip" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
-  <testcase name="idIsDecoupledFromEnumName" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
+  <testcase name="markSurvivesTheRoundTrip" classname="com.athar.athar.athary.TrackerStateTest" time="0.001"/>
+  <testcase name="idIsDecoupledFromEnumName" classname="com.athar.athar.athary.TrackerStateTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

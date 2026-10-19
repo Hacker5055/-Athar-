@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.athary.WeeklySummaryTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.02">
+<testsuite name="com.athar.athar.athary.WeeklySummaryTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.019">
   <properties/>
-  <testcase name="twoFullDaysAreTwoSeventhsNotAHundred" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.001"/>
+  <testcase name="twoFullDaysAreTwoSeventhsNotAHundred" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.002"/>
   <testcase name="thePreviousWeekIsTheSevenDaysBefore" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
   <testcase name="theWindowEndsToday" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
-  <testcase name="perHabitCoversEveryHabit" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.001"/>
+  <testcase name="perHabitCoversEveryHabit" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
   <testcase name="itOnlyCountsTheLastSevenDays" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
   <testcase name="theStreakIsCarriedFromTheTracker" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.001"/>
-  <testcase name="completionNeverExceedsAHundred" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.003"/>
-  <testcase name="activeDaysCountsDaysNotActs" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.007"/>
-  <testcase name="theWeeksDoNotOverlap" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.002"/>
+  <testcase name="completionNeverExceedsAHundred" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.005"/>
+  <testcase name="activeDaysCountsDaysNotActs" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.005"/>
+  <testcase name="theWeeksDoNotOverlap" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.001"/>
   <testcase name="anEmptyTrackerGivesAnEmptySummary" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
   <testcase name="theBoundaryDayIsIncluded" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
-  <testcase name="perHabitIsSortedByMostDone" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
+  <testcase name="perHabitIsSortedByMostDone" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.001"/>
   <testcase name="completionIsOutOfSevenFullDays" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
   <testcase name="theDayBeforeTheBoundaryIsNot" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>
   <testcase name="improvementIsMeasuredAgainstTheWeekBefore" classname="com.athar.athar.athary.WeeklySummaryTest" time="0.0"/>

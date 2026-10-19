@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.i18n.StringsTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.009">
+<testsuite name="com.athar.athar.i18n.StringsTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:36" hostname="runnervm8k3b6" time="0.014">
   <properties/>
-  <testcase name="everyValueIsTranslatedNotCopiedFromArabic" classname="com.athar.athar.i18n.StringsTest" time="0.005"/>
+  <testcase name="everyValueIsTranslatedNotCopiedFromArabic" classname="com.athar.athar.i18n.StringsTest" time="0.007"/>
   <testcase name="everyPrayerMethodHasAKeyInEveryLocale" classname="com.athar.athar.i18n.StringsTest" time="0.0"/>
-  <testcase name="allLocalesHaveTheSameKeys" classname="com.athar.athar.i18n.StringsTest" time="0.002"/>
-  <testcase name="arabicIsReferenceAndNotEmpty" classname="com.athar.athar.i18n.StringsTest" time="0.0"/>
+  <testcase name="allLocalesHaveTheSameKeys" classname="com.athar.athar.i18n.StringsTest" time="0.003"/>
+  <testcase name="arabicIsReferenceAndNotEmpty" classname="com.athar.athar.i18n.StringsTest" time="0.001"/>
   <testcase name="unknownKeyReturnsTheKeyNotBlank" classname="com.athar.athar.i18n.StringsTest" time="0.0"/>
-  <testcase name="eachLocaleReturnsItsOwnText" classname="com.athar.athar.i18n.StringsTest" time="0.001"/>
-  <testcase name="everyPrayerSlotHasAKeyInEveryLocale" classname="com.athar.athar.i18n.StringsTest" time="0.0"/>
+  <testcase name="eachLocaleReturnsItsOwnText" classname="com.athar.athar.i18n.StringsTest" time="0.0"/>
+  <testcase name="everyPrayerSlotHasAKeyInEveryLocale" classname="com.athar.athar.i18n.StringsTest" time="0.001"/>
   <testcase name="tArgsSubstitutesPlaceholders" classname="com.athar.athar.i18n.StringsTest" time="0.001"/>
   <testcase name="localeDetectionIsForgiving" classname="com.athar.athar.i18n.StringsTest" time="0.0"/>
   <testcase name="onlyArabicIsRightToLeft" classname="com.athar.athar.i18n.StringsTest" time="0.0"/>

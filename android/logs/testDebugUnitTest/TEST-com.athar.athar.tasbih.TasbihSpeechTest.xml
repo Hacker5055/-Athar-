@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.tasbih.TasbihSpeechTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-19T08:44:00" hostname="runnervm8k3b6" time="0.0">
+<testsuite name="com.athar.athar.tasbih.TasbihSpeechTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-19T15:23:37" hostname="runnervm8k3b6" time="0.001">
   <properties/>
-  <testcase name="theTargetIsSpokenWhenARoundCompletes" classname="com.athar.athar.tasbih.TasbihSpeechTest" time="0.0"/>
+  <testcase name="theTargetIsSpokenWhenARoundCompletes" classname="com.athar.athar.tasbih.TasbihSpeechTest" time="0.001"/>
   <testcase name="theSpokenTextIsArabicDigits" classname="com.athar.athar.tasbih.TasbihSpeechTest" time="0.0"/>
   <testcase name="theCurrentCountIsSpoken" classname="com.athar.athar.tasbih.TasbihSpeechTest" time="0.0"/>
   <testcase name="nothingIsSpokenWhenItIsTurnedOff" classname="com.athar.athar.tasbih.TasbihSpeechTest" time="0.0"/>
