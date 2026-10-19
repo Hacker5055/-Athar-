@@ -470,6 +470,21 @@ class Strings(val locale: AppLocale) {
             "hijri_adjust_body" to "بعض البلدان ترى الهلال قبل غيرها. اختر الإزاحة إن كان التاريخ عندك مختلفًا.",
             "hijri_today" to "اليوم",
             "quran_ayah" to "آية",
+            "khatmah_title" to "الختمة",
+            "khatmah_start" to "ابدأ ختمة",
+            "khatmah_plan" to "مدة الختمة",
+            "khatmah_days" to "{n} يومًا",
+            "khatmah_today" to "ورد اليوم",
+            "khatmah_from" to "من",
+            "khatmah_to" to "إلى",
+            "khatmah_read" to "اقرأ الورد",
+            "khatmah_done" to "أنجزت الورد",
+            "khatmah_progress" to "أنجزت {n} من {m}",
+            "khatmah_restart" to "إعادة البداية",
+            "khatmah_stop" to "إلغاء الخطة",
+            "khatmah_finished" to "أتممت الختمة",
+            "khatmah_finished_body" to "الحمد لله. ابدأ ختمة أخرى متى شئت.",
+            "khatmah_per_day" to "{n} آية كل يوم",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -914,6 +929,21 @@ class Strings(val locale: AppLocale) {
             "hijri_adjust_body" to "Some countries sight the crescent before others. Pick the offset if your date differs.",
             "hijri_today" to "Today",
             "quran_ayah" to "Verse",
+            "khatmah_title" to "Khatmah",
+            "khatmah_start" to "Start a khatmah",
+            "khatmah_plan" to "Duration",
+            "khatmah_days" to "{n} days",
+            "khatmah_today" to "Today’s portion",
+            "khatmah_from" to "From",
+            "khatmah_to" to "To",
+            "khatmah_read" to "Read the portion",
+            "khatmah_done" to "Mark as read",
+            "khatmah_progress" to "{n} of {m} done",
+            "khatmah_restart" to "Restart",
+            "khatmah_stop" to "Cancel plan",
+            "khatmah_finished" to "You completed the khatmah",
+            "khatmah_finished_body" to "All praise is for God. Begin another whenever you like.",
+            "khatmah_per_day" to "{n} verses a day",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1358,6 +1388,21 @@ class Strings(val locale: AppLocale) {
             "hijri_adjust_body" to "Certains pays observent le croissant avant d’autres. Choisissez le décalage si votre date diffère.",
             "hijri_today" to "Aujourd’hui",
             "quran_ayah" to "Verset",
+            "khatmah_title" to "Khatma",
+            "khatmah_start" to "Commencer une khatma",
+            "khatmah_plan" to "Durée",
+            "khatmah_days" to "{n} jours",
+            "khatmah_today" to "Portion du jour",
+            "khatmah_from" to "De",
+            "khatmah_to" to "À",
+            "khatmah_read" to "Lire la portion",
+            "khatmah_done" to "Marquer comme lu",
+            "khatmah_progress" to "{n} sur {m} accomplis",
+            "khatmah_restart" to "Recommencer",
+            "khatmah_stop" to "Annuler le plan",
+            "khatmah_finished" to "Vous avez achevé la khatma",
+            "khatmah_finished_body" to "Louange à Dieu. Commencez-en une autre quand vous voulez.",
+            "khatmah_per_day" to "{n} versets par jour",
         )
     }
 
@@ -1807,4 +1852,19 @@ class Strings(val locale: AppLocale) {
     val hijriAdjustBody: String get() = t("hijri_adjust_body")
     val hijriToday: String get() = t("hijri_today")
     val quranAyah: String get() = t("quran_ayah")
+    val khatmahTitle: String get() = t("khatmah_title")
+    val khatmahStart: String get() = t("khatmah_start")
+    val khatmahPlan: String get() = t("khatmah_plan")
+    val khatmahDays: String get() = t("khatmah_days")
+    val khatmahToday: String get() = t("khatmah_today")
+    val khatmahFrom: String get() = t("khatmah_from")
+    val khatmahTo: String get() = t("khatmah_to")
+    val khatmahRead: String get() = t("khatmah_read")
+    val khatmahDone: String get() = t("khatmah_done")
+    val khatmahProgress: String get() = t("khatmah_progress")
+    val khatmahRestart: String get() = t("khatmah_restart")
+    val khatmahStop: String get() = t("khatmah_stop")
+    val khatmahFinished: String get() = t("khatmah_finished")
+    val khatmahFinishedBody: String get() = t("khatmah_finished_body")
+    val khatmahPerDay: String get() = t("khatmah_per_day")
 }

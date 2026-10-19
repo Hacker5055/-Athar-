@@ -174,6 +174,8 @@ fun QuranScreen(
         onTargetConsumed()
     }
 
+    var showKhatmah by remember { mutableStateOf(false) }
+
     var withdrawn by remember { mutableStateOf(emptySet<String>()) }
     LaunchedEffect(Unit) { withdrawn = ReciterWithdrawalStore.refresh(context) }
     LaunchedEffect(withdrawn) {
@@ -310,6 +312,15 @@ fun QuranScreen(
                 },
                 onStop = { QuranAudioController.stop() },
             )
+            showKhatmah -> KhatmahScreen(
+                onBack = { showKhatmah = false },
+                onRead = { surahId, ayah ->
+                    showKhatmah = false
+                    opened = surahs?.firstOrNull { it.id == surahId }
+                    openAyah = ayah
+                },
+                modifier = Modifier.fillMaxSize(),
+            )
             showBookmarks -> BookmarksView(
                 bookmarks = bookmarks,
                 texts = bookmarkTexts,
@@ -340,6 +351,11 @@ fun QuranScreen(
                         Column(modifier = Modifier.fillMaxSize()) {
                             // ⚠️ المفضلة قبل الأجزاء: من حفظ آية يريدها
                             // في ضغطة، لا أن يمرّ بثلاثين جزءًا ليصلها.
+                            // ⚠️ الختمة قبل المفضلة: ورد اليوم
+                            // له وقت، والذي فات لا يُستدرك.
+                            TextButton(onClick = { showKhatmah = true }) {
+                                Text(s.khatmahTitle)
+                            }
                             if (bookmarks.isNotEmpty()) {
                                 TextButton(onClick = { showBookmarks = true }) {
                                     Text("${s.quranBookmarks} (${bookmarks.size})")
