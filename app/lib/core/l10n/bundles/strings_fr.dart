@@ -528,4 +528,12 @@ const Map<String, String> kStringsFr = {
   'hl_twilight': 'Angle crépusculaire',
   'month_prev': 'Mois précédent',
   'month_next': 'Mois suivant',
+  'backup_title': 'Sauvegarde',
+  'backup_body': 'Tout ce que vous possédez dans Athar : les horaires et leurs réglages, la dernière position de lecture, les signets, votre plan de khatma, le suivi, le compteur et les invocations ajoutées.',
+  'backup_export': 'Exporter la sauvegarde',
+  'backup_import': 'Restaurer depuis un fichier',
+  'backup_exported': 'Sauvegarde enregistrée',
+  'backup_restored': 'Sauvegarde restaurée',
+  'backup_bad_file': 'Ce fichier n’est pas une sauvegarde Athar, ou provient d’une version plus récente',
+  'backup_failed': 'L’opération a échoué',
 };

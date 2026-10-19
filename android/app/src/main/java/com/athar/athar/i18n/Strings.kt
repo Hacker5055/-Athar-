@@ -503,6 +503,14 @@ class Strings(val locale: AppLocale) {
             "hl_twilight" to "زاوية الشفق",
             "month_prev" to "الشهر الماضي",
             "month_next" to "الشهر التالي",
+            "backup_title" to "النسخ الاحتياطي",
+            "backup_body" to "كل ما تملكه في أثر: المواقيت وإعداداتها، آخر موضع قراءة، العلامات، الختمة، أثري، السبحة، والأذكار التي أضفتها.",
+            "backup_export" to "تصدير نسخة",
+            "backup_import" to "استعادة من ملف",
+            "backup_exported" to "حُفظت النسخة",
+            "backup_restored" to "استُعيدت النسخة",
+            "backup_bad_file" to "هذا الملف ليس نسخة أثر، أو هو من إصدار أحدث",
+            "backup_failed" to "تعذّرت العملية",
         )
 
         val kStringsEn: Map<String, String> = mapOf(
@@ -980,6 +988,14 @@ class Strings(val locale: AppLocale) {
             "hl_twilight" to "Twilight angle",
             "month_prev" to "Previous month",
             "month_next" to "Next month",
+            "backup_title" to "Backup",
+            "backup_body" to "Everything you own in Athar: prayer times and their settings, last reading position, bookmarks, your khatmah plan, the tracker, the counter, and the adhkar you added.",
+            "backup_export" to "Export backup",
+            "backup_import" to "Restore from file",
+            "backup_exported" to "Backup saved",
+            "backup_restored" to "Backup restored",
+            "backup_bad_file" to "This file is not an Athar backup, or it is from a newer version",
+            "backup_failed" to "The operation failed",
         )
 
         val kStringsFr: Map<String, String> = mapOf(
@@ -1457,6 +1473,14 @@ class Strings(val locale: AppLocale) {
             "hl_twilight" to "Angle crépusculaire",
             "month_prev" to "Mois précédent",
             "month_next" to "Mois suivant",
+            "backup_title" to "Sauvegarde",
+            "backup_body" to "Tout ce que vous possédez dans Athar : les horaires et leurs réglages, la dernière position de lecture, les signets, votre plan de khatma, le suivi, le compteur et les invocations ajoutées.",
+            "backup_export" to "Exporter la sauvegarde",
+            "backup_import" to "Restaurer depuis un fichier",
+            "backup_exported" to "Sauvegarde enregistrée",
+            "backup_restored" to "Sauvegarde restaurée",
+            "backup_bad_file" to "Ce fichier n’est pas une sauvegarde Athar, ou provient d’une version plus récente",
+            "backup_failed" to "L’opération a échoué",
         )
     }
 
@@ -1939,4 +1963,12 @@ class Strings(val locale: AppLocale) {
     val hlTwilight: String get() = t("hl_twilight")
     val monthPrev: String get() = t("month_prev")
     val monthNext: String get() = t("month_next")
+    val backupTitle: String get() = t("backup_title")
+    val backupBody: String get() = t("backup_body")
+    val backupExport: String get() = t("backup_export")
+    val backupImport: String get() = t("backup_import")
+    val backupExported: String get() = t("backup_exported")
+    val backupRestored: String get() = t("backup_restored")
+    val backupBadFile: String get() = t("backup_bad_file")
+    val backupFailed: String get() = t("backup_failed")
 }

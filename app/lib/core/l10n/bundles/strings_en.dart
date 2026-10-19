@@ -528,4 +528,12 @@ const Map<String, String> kStringsEn = {
   'hl_twilight': 'Twilight angle',
   'month_prev': 'Previous month',
   'month_next': 'Next month',
+  'backup_title': 'Backup',
+  'backup_body': 'Everything you own in Athar: prayer times and their settings, last reading position, bookmarks, your khatmah plan, the tracker, the counter, and the adhkar you added.',
+  'backup_export': 'Export backup',
+  'backup_import': 'Restore from file',
+  'backup_exported': 'Backup saved',
+  'backup_restored': 'Backup restored',
+  'backup_bad_file': 'This file is not an Athar backup, or it is from a newer version',
+  'backup_failed': 'The operation failed',
 };

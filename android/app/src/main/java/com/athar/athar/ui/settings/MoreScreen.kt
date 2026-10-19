@@ -109,6 +109,11 @@ fun MoreScreen(
                 onClick = { section = 5 },
                 label = { Text(s.widgetAdd) },
             )
+            FilterChip(
+                selected = section == 6,
+                onClick = { section = 6 },
+                label = { Text(s.backupTitle) },
+            )
         }
 
         // ⚠️ `weight` يعطي الشاشة الداخلية ارتفاعًا محدودًا فتعمل
@@ -127,7 +132,8 @@ fun MoreScreen(
                     onChange = onAppearanceChange,
                 )
                 4 -> LicensesScreen()
-                else -> WidgetScreen()
+                5 -> WidgetScreen()
+                else -> BackupScreen()
             }
         }
     }

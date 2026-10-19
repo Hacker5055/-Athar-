@@ -527,4 +527,12 @@ const Map<String, String> kStringsAr = {
   'hl_twilight': 'زاوية الشفق',
   'month_prev': 'الشهر الماضي',
   'month_next': 'الشهر التالي',
+  'backup_title': 'النسخ الاحتياطي',
+  'backup_body': 'كل ما تملكه في أثر: المواقيت وإعداداتها، آخر موضع قراءة، العلامات، الختمة، أثري، السبحة، والأذكار التي أضفتها.',
+  'backup_export': 'تصدير نسخة',
+  'backup_import': 'استعادة من ملف',
+  'backup_exported': 'حُفظت النسخة',
+  'backup_restored': 'استُعيدت النسخة',
+  'backup_bad_file': 'هذا الملف ليس نسخة أثر، أو هو من إصدار أحدث',
+  'backup_failed': 'تعذّرت العملية',
 };
