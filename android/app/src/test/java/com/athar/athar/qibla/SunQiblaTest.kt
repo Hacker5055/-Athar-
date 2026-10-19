@@ -93,14 +93,24 @@ class SunQiblaTest {
     }
 
     @Test
-    fun theKaabaBearingIsZeroAtTheKaaba() {
-        // ⚠️ **من الكعبة نفسها** لا شيء: زاوية غير معرّفة. فنتحقّق
-        // من النقطة القريبة جدًّا بدلها.
+    fun theKaabaIsDueEastFromAPointJustWestOfIt() {
+        // ⚠️ **من الكعبة نفسها** لا زاوية: الموضع معدوم. فنتحقّق
+        // من نقطةٍ **غرب** الكعبة بقليل — فالكعبة شرقًا منها،
+        // والزاوية تسعون درجة.
         val bearing = SunQibla.qiblaBearing(
             SunQibla.KAABA_LATITUDE,
             SunQibla.KAABA_LONGITUDE - 0.01,
         )
-        assertTrue("$bearing", bearing < 1.0 || bearing > 359.0)
+        assertEquals(90.0, bearing, 0.5)
+    }
+
+    @Test
+    fun theKaabaIsDueWestFromAPointJustEastOfIt() {
+        val bearing = SunQibla.qiblaBearing(
+            SunQibla.KAABA_LATITUDE,
+            SunQibla.KAABA_LONGITUDE + 0.01,
+        )
+        assertEquals(270.0, bearing, 0.5)
     }
 
     // ── الشروق ───────────────────────────────────────────
@@ -176,20 +186,49 @@ class SunQiblaTest {
 
     // ── موضع الشمس ───────────────────────────────────────
 
-    @Test
-    fun theSunIsDueSouthAtLocalNoonInTheNorth() {
-        // ⚠️ ظهيرةً شمسيًّا: الشمس **جنوبًا** في نصف الكرة
-        // الشماليّ (إلا حين يفوق الميل عرضَ المكان).
-        val noon = at("2026-10-19T10:00:00Z") // الظهر الشمسي في القاهرة
-        val position = SunQibla.position(noon, cairo.first, cairo.second, 7200)
-        assertEquals(180.0, position.azimuth, 3.0)
+    /// أعلى نقطةٍ للشمس في اليوم — **هي الظهر الشمسيّ**.
+    ///
+    /// ⚠️ الظهر الشمسيّ **ليس ١٢:٠٠ بالضبط**: خطّ الطول
+    /// وفرق التوقيت يجعلانه قبلها أو بعدها بدقائق. فمن افترض
+    /// الثانية تمامًا فشل. فنبحث عن **أعلى ارتفاعٍ** في اليوم،
+    /// وهو التعريف الصحيح.
+    private fun highestPoint(
+        date: String,
+        latitude: Double,
+        longitude: Double,
+        offsetSeconds: Int,
+    ): SunQibla.Position {
+        val start = at("${date}T00:00:00Z")
+        var best = SunQibla.position(start, latitude, longitude, offsetSeconds)
+        for (minute in 1 until 1440) {
+            val position = SunQibla.position(
+                start.plusSeconds(minute * 60L), latitude, longitude, offsetSeconds,
+            )
+            if (position.altitude > best.altitude) best = position
+        }
+        return best
     }
 
     @Test
-    fun theSunIsDueNorthAtLocalNoonInTheSouth() {
-        val noon = at("2026-10-19T04:00:00Z")
-        val position = SunQibla.position(noon, -33.87, 151.21, 0)
-        assertTrue("${position.azimuth}", position.azimuth < 3.0 || position.azimuth > 357.0)
+    fun theSunIsDueSouthAtSolarNoonInTheNorth() {
+        // ⚠️ ظهيرةً شمسيًّا: الشمس **جنوبًا** في نصف الكرة
+        // الشماليّ (إلا حين يفوق الميل عرضَ المكان).
+        val noon = highestPoint("2026-10-19", cairo.first, cairo.second, 7200)
+        assertEquals(180.0, noon.azimuth, 1.0)
+    }
+
+    @Test
+    fun theSunIsDueNorthAtSolarNoonInTheSouth() {
+        val noon = highestPoint("2026-10-19", -33.87, 151.21, 0)
+        assertTrue("${noon.azimuth}", noon.azimuth < 1.0 || noon.azimuth > 359.0)
+    }
+
+    @Test
+    fun theHighestPointOfTheDayIsInTheDaylight() {
+        // ⚠️ أعلى نقطةٍ **Above الأفق** دائمًا — فمن حسب وقتًا
+        // آخر وجد ارتفاعًا سالبًا.
+        val noon = highestPoint("2026-10-19", cairo.first, cairo.second, 7200)
+        assertTrue("${noon.altitude}", noon.altitude > 0)
     }
 
     @Test
