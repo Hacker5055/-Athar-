@@ -33,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.athar.athar.core.ArabicDigits
 import com.athar.athar.i18n.LocalAppLocale
+import com.athar.athar.i18n.digitsOf
 import com.athar.athar.i18n.LocalStrings
 import com.athar.athar.quran.Khatmah
 import com.athar.athar.quran.KhatmahStore
@@ -60,8 +61,7 @@ fun KhatmahScreen(
     var plan by remember { mutableStateOf(KhatmahStore.load(context)) }
     var draft by remember { mutableIntStateOf(Khatmah.DEFAULT_DAYS) }
 
-    fun num(value: Int): String =
-        if (locale.isRtl) ArabicDigits.of(value) else value.toString()
+    fun num(value: Int): String = digitsOf(locale, value)
 
     // ⚠️ **أسماءُ السور**: «٢:٢٥٥» رقمٌ لا يقول شيئًا، و«البقرة
     // ٢٥٥» يقول. تُقرأ من الفهرس مرّةً واحدة على خيطٍ آخر.

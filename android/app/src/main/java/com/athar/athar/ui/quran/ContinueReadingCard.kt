@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.athar.athar.i18n.LocalStrings
+import com.athar.athar.i18n.localDigits
 import com.athar.athar.quran.LastRead
 import com.athar.athar.quran.QuranProgress
 
@@ -34,6 +35,7 @@ fun ContinueReadingCard(
     modifier: Modifier = Modifier,
 ) {
     val s = LocalStrings.current
+    val digits = localDigits()
     if (last == null) return
     Card(
         onClick = { onOpen(last.surah, last.ayah) },
@@ -51,13 +53,13 @@ fun ContinueReadingCard(
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "${last.surahName} · ${s.quranAyah} ${last.ayah}",
+                    text = "${last.surahName} · ${s.quranAyah} ${digits(last.ayah)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Text(
-                text = "${QuranProgress.percent(last.surah, last.ayah)}%",
+                text = "${digits(QuranProgress.percent(last.surah, last.ayah))}%",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
             )

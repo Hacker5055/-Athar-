@@ -18,10 +18,14 @@ import com.athar.athar.core.ArabicDigits
 fun localDigits(): (Int) -> String {
     val locale = LocalAppLocale.current
     return remember(locale) {
-        if (locale.isRtl) {
-            { value -> ArabicDigits.of(value) }
-        } else {
-            { value -> value.toString() }
-        }
+        { value -> digitsOf(locale, value) }
     }
 }
+
+/// الأرقامُ بلغةٍ معيّنة — نسخةٌ بلا تركيبٍ للمَن لا يملك
+/// `@Composable`: الدوالُّ المحليةُ ونصوصُ البطاقات.
+///
+/// ⚠️ **الوحدةُ واحدة**: التحويلُ في مكانٍ واحد، فلا يختلف رقمٌ
+/// عن جاره في نفس الشاشة.
+fun digitsOf(locale: AppLocale, value: Int): String =
+    if (locale.isRtl) ArabicDigits.of(value) else value.toString()

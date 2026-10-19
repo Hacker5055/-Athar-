@@ -50,6 +50,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.athar.athar.ui.theme.AmiriFamily
 import com.athar.athar.ui.components.SubHeading
+import com.athar.athar.i18n.LocalAppLocale
+import com.athar.athar.quran.displayName
 
 /// الرقية الشرعية (C9 من docs/02).
 ///
@@ -194,7 +196,8 @@ private fun AyahCard(
                             surah = selection.surah,
                             fromAyah = selection.fromAyah,
                             toAyah = selection.toAyah,
-                            title = "${s.t(selection.titleKey)} · ${reciter.nameAr}",
+                            title = "${s.t(selection.titleKey)} · " +
+                                reciter.displayName(LocalAppLocale.current),
                         )
                     },
                 ) {

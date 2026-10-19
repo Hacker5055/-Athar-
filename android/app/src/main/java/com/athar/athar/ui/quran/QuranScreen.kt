@@ -117,6 +117,8 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import com.athar.athar.core.ArabicText
+import com.athar.athar.i18n.LocalAppLocale
+import com.athar.athar.quran.displayName
 
 @Composable
 fun QuranScreen(
@@ -386,7 +388,7 @@ fun QuranScreen(
                 audioState = audioState,
                 onPlayToggle = {
                     opened?.let { surah ->
-                        val title = "${surah.nameAr} · ${reciter.nameAr}"
+                        val title = "${surah.displayName(locale)} · ${reciter.displayName(locale)}"
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                             ContextCompat.checkSelfPermission(
                                 context, Manifest.permission.POST_NOTIFICATIONS,
@@ -642,6 +644,7 @@ private fun SearchResults(
     onOpen: (QuranSearch.Hit) -> Unit,
 ) {
     val s = LocalStrings.current
+    val digits = localDigits()
     if (searching) {
         CircularProgressIndicator(modifier = Modifier.padding(24.dp))
         return
@@ -671,7 +674,6 @@ private fun SearchResults(
             // يبحث عنها الناسُ اسمًا لها، فلها شكلُ الفهرس نفسه —
             // وإلا بدا قسمان لشيءٍ واحد.
             items(surahHits) { surah ->
-                val digits = localDigits()
                 Card(
                     onClick = { onOpenSurah(surah) },
                     modifier = Modifier
@@ -684,13 +686,17 @@ private fun SearchResults(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = surah.nameAr,
+                                text = surah.displayName(LocalAppLocale.current),
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
-                                fontFamily = AmiriFamily,
+                                fontFamily = if (LocalAppLocale.current.isRtl) {
+                                    AmiriFamily
+                                } else {
+                                    null
+                                },
                             )
                             Text(
-                                text = "${surah.ayahCount} ${s.verses}",
+                                text = "${digits(surah.ayahCount)} ${s.verses}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -741,7 +747,9 @@ private fun SearchResults(
                                 color = MaterialTheme.colorScheme.primary,
                             )
                             Text(
-                                "${hit.ayah.surah}:${hit.ayah.number}",
+                                // ⚠️ **المرجعُ بأرقامِ الواجهة**: «٢:٢٥٥»
+                                // في العربية و«2:255» في غيرها.
+                                "${digits(hit.ayah.surah)}:${digits(hit.ayah.number)}",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -904,15 +912,18 @@ private fun SurahList(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     val digits = localDigits()
+                    val locale = LocalAppLocale.current
                     Column(horizontalAlignment = Alignment.End, modifier = Modifier.weight(1f)) {
                         Text(
-                            text = surah.nameAr,
+                            text = surah.displayName(locale),
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
                             // ⚠️ **نسخٌ لأسماء السور**: فهرسُ المصحف
                             // أسماءُ سورٍ تُكتبُ وتُنطق، فخطُّ الشاشات
-                            // لا يليق بها.
-                            fontFamily = AmiriFamily,
+                            // لا يليق بها. والاسمُ اللاتينيُّ بخطِّ
+                            // الشاشات، فحرفُه اللاتينيُّ لا يخرجُ
+                            // عن إطاره.
+                            fontFamily = if (locale.isRtl) AmiriFamily else null,
                         )
                         Text(
                             text = "${digits(surah.ayahCount)} ${s.verses} · " +
@@ -994,6 +1005,7 @@ private fun ReaderView(
 ) {
     val context = LocalContext.current
     val s = LocalStrings.current
+    val digits = localDigits()
     // ⚠️ **السورةُ تبدأُ من أوّلها**: حالةُ التمريرِ كانت تُحفَظ
     // بين السور، فمن انتهى من سورةٍ وفتح ما بعدها وجد نفسه في
     // آخرِ السورةِ الأولى — أو في فراغٍ أبيض. فحالةُ التمريرِ
@@ -1072,14 +1084,16 @@ private fun ReaderView(
     ) {
         // ⚠️ **لونُ الرأسِ يتبعُ ثيمَ القراءة**: في الليليّ
         // والسيبيّا عنوانُ السورةِ لونُ الورق لا لونُ التطبيق.
+        val locale = LocalAppLocale.current
         AtharTopBar(
-            title = surah.nameAr,
+            title = surah.displayName(locale),
             // ⚠️ الموضع مذكور دائمًا: بلا «الجزء / الصفحة» لا يعرف
             // القارئ أين هو في المصحف الورقي الذي يتابع عليه.
             subtitle = "${s.quranJuz} $juz · ${s.quranPage} $page",
             onBack = onBack,
-            // ⚠️ **نسخٌ لاسم السورة**: عنوانُ المصحف.
-            titleFont = AmiriFamily,
+            // ⚠️ **نسخٌ لاسم السورة**: عنوانُ المصحف. والاسمُ
+            // اللاتينيُّ بخطِّ الشاشات.
+            titleFont = if (locale.isRtl) AmiriFamily else null,
             titleSize = 22.sp,
             titleColor = if (palette.isCustom) palette.onBackground else MaterialTheme.colorScheme.onSurface,
             subtitleColor = if (palette.isCustom) {
@@ -1145,11 +1159,12 @@ private fun ReaderView(
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                val locale = LocalAppLocale.current
                 availableReciters.forEach { option ->
                     FilterChip(
                         selected = option.id == reciter.id,
                         onClick = { onReciterChange(option) },
-                        label = { Text(option.nameAr) },
+                        label = { Text(option.displayName(locale)) },
                     )
                 }
             }
@@ -1195,9 +1210,9 @@ private fun ReaderView(
                             audioState is QuranAudioState.Paused ->
                                 label(reciter, s.quranResume, audioState.ayah)
                             audioState is QuranAudioState.Playing ->
-                                label(reciter, reciter.nameAr, audioState.ayah)
-                            isSaved -> "${reciter.nameAr} · ${s.quranOfflineReady}"
-                            else -> reciter.nameAr
+                                label(reciter, reciter.displayName(locale), audioState.ayah)
+                            isSaved -> "${reciter.displayName(locale)} · ${s.quranOfflineReady}"
+                            else -> reciter.displayName(locale)
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = if (audioState is QuranAudioState.Error) {
@@ -1290,7 +1305,9 @@ private fun ReaderView(
                     val spoken = spokenAyah != null && ayah.number == spokenAyah
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "${ayah.text} ﴿${ayah.number}﴾",
+                            // ⚠️ **رقمُ الآيةِ بأرقامِ الواجهة**:
+                            // «﴿٢٥٥﴾» في العربية و«﴿255﴾» في غيرها.
+                            text = "${ayah.text} ﴿${digits(ayah.number)}﴾",
                             // النص العثماني يحتاج مقاسًا أكبر وتباعدًا أوسع
                             fontSize = 24.sp,
                             lineHeight = 44.sp,
@@ -1423,7 +1440,7 @@ private fun ReaderView(
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                     Text(
-                                        text = nextSurah.nameAr,
+                                        text = nextSurah.displayName(locale),
                                         fontSize = 22.sp,
                                         fontWeight = FontWeight.Bold,
                                         // ⚠️ **نسخٌ لأسماء السور**:
