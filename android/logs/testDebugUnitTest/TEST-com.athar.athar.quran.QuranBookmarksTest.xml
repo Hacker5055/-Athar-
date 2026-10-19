@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.athar.athar.quran.QuranBookmarksTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T06:26:26" hostname="runnervm8k3b6" time="0.019">
+<testsuite name="com.athar.athar.quran.QuranBookmarksTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-10-19T07:03:54" hostname="runnervm8k3b6" time="0.012">
   <properties/>
-  <testcase name="outOfRangeAyahsAreDropped" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.014"/>
-  <testcase name="encodeSortsBySurahThenAyah" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.002"/>
+  <testcase name="outOfRangeAyahsAreDropped" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.009"/>
+  <testcase name="encodeSortsBySurahThenAyah" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.001"/>
   <testcase name="toggleAddsThenRemoves" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
-  <testcase name="keyCarriesBothSurahAndAyah" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
+  <testcase name="keyCarriesBothSurahAndAyah" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.001"/>
   <testcase name="encodeDropsInvalidKeys" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
   <testcase name="toggleKeepsTheOthers" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
   <testcase name="decodeIsIdempotent" classname="com.athar.athar.quran.QuranBookmarksTest" time="0.0"/>
