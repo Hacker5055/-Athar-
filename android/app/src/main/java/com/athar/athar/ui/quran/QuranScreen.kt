@@ -1160,6 +1160,7 @@ private fun BookmarksView(
     onBack: () -> Unit,
 ) {
     val s = LocalStrings.current
+    val digits = localDigits()
     val ordered = bookmarks.mapNotNull { key ->
         val surah = key.substringBefore(':').toIntOrNull() ?: return@mapNotNull null
         val ayah = key.substringAfter(':').toIntOrNull() ?: return@mapNotNull null
@@ -1195,30 +1196,57 @@ private fun BookmarksView(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(ordered) { (surah, ayah, key) ->
                     val name = surahs.firstOrNull { it.id == surah }?.nameAr ?: "$surah"
-                    TextButton(
+                    // ⚠️ **المحفوظاتُ بطاقاتٌ كنتائج البحث**: سطرٌ
+                    // عريضٌ بلا حدٍّ يبدو جدولًا، والبطاقةُ تجعل
+                    // ما اختاره المستخدمُ مجموعةً لا قائمة.
+                    Card(
                         onClick = { onOpen(surah, ayah) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 4.dp),
                     ) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 12.dp, end = 12.dp, top = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             Text(
-                                text = "$name — $ayah",
+                                text = name,
                                 style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                            // ⚠️ النص **كما جاء في المصحف** بلا اختصار
-                            // ولا إعادة تشكيل: الرخصة تمنع تعديل النصّ.
-                            Text(
-                                text = texts[key].orEmpty(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontSize = 19.sp,
-                                lineHeight = 32.sp,
+                                fontWeight = FontWeight.Bold,
                                 fontFamily = AmiriFamily,
-                                textAlign = TextAlign.End,
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.weight(1f),
                             )
+                            Box(
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.primaryContainer),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    text = digits(ayah),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
                         }
+                        // ⚠️ النص **كما جاء في المصحف** بلا اختصار
+                        // ولا إعادة تشكيل: الرخصة تمنع تعديل النصّ.
+                        Text(
+                            text = texts[key].orEmpty(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 19.sp,
+                            lineHeight = 32.sp,
+                            fontFamily = AmiriFamily,
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                        )
                     }
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 }
             }
         }
