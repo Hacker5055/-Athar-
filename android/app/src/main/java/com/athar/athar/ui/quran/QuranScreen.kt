@@ -78,11 +78,14 @@ import com.athar.athar.quran.QuranAudioOffline
 import com.athar.athar.quran.LastRead
 import com.athar.athar.quran.QuranBookmarkStore
 import com.athar.athar.quran.QuranProgressStore
+import com.athar.athar.quran.QuranShare
 import com.athar.athar.quran.QuranBookmarks
 import com.athar.athar.quran.QuranDownloader
 import com.athar.athar.quran.Reciters
 import com.athar.athar.ui.theme.ReaderPalette
 import com.athar.athar.ui.theme.ReaderTheme
+import android.content.Intent
+import androidx.compose.material.icons.filled.Share
 
 @Composable
 fun QuranScreen(
@@ -273,6 +276,20 @@ fun QuranScreen(
                 bookmarks = bookmarks,
                 onBookmarkToggle = { ayah ->
                     setBookmarks(QuranBookmarks.toggle(bookmarks, opened!!.id, ayah))
+                },
+                onShare = { ayah ->
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            QuranShare.ayah(opened!!.nameAr, ayah.number, ayah.text),
+                        )
+                    }
+                    // ⚠️ المشاركة بلا اسم التطبيق تجعل النصّ يبدو
+                    // مرسلًا من النظام لا من أثر، والنسبة تضيع.
+                    runCatching {
+                        context.startActivity(Intent.createChooser(intent, s.share))
+                    }
                 },
                 audioState = audioState,
                 onPlayToggle = {
@@ -502,6 +519,7 @@ private fun ReaderView(
     onDownloadToggle: () -> Unit,
     bookmarks: Set<String>,
     onBookmarkToggle: (Int) -> Unit,
+    onShare: (Ayah) -> Unit,
     audioState: QuranAudioState,
     onPlayToggle: () -> Unit,
     onStop: () -> Unit,
@@ -718,6 +736,15 @@ private fun ReaderView(
                         textAlign = TextAlign.Justify,
                         modifier = Modifier.weight(1f).padding(vertical = 8.dp),
                     )
+                    // ⚠️ المشاركة على السطر نفسه لا في قائمة منبثقة:
+                    // الآية أمام العين حين يقرّر مشاركتها.
+                    IconButton(onClick = { onShare(ayah) }) {
+                        Icon(
+                            Icons.Filled.Share,
+                            contentDescription = s.share,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                     // ⚠️ العلامة **على السطر نفسه** لا في قائمة منبثقة:
                     // ضغطة واحدة بدل ضغطتين، والآية أمام العين حين
                     // يقرّر حفظها لا بعد أن ينسى أي آية كانت.
