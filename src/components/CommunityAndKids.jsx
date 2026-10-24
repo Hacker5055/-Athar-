@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, MapPin, Gamepad2, Star, CheckCircle, Plus, ShieldCheck, Heart, Sparkles, ChevronLeft } from 'lucide-react';
+import { Users, MapPin, Gamepad2, Star, CheckCircle, Plus, ShieldCheck, Heart, Sparkles, ChevronLeft, Filter, RefreshCw } from 'lucide-react';
 
 export default function CommunityAndKids() {
   const [activeTab, setActiveTab] = useState('mosqueMap'); // 'mosqueMap', 'groupKhatma', 'interactiveKids'
@@ -27,15 +27,36 @@ export default function CommunityAndKids() {
       wheelchairAccess: true,
       elderlyChairs: true,
       reviewsCount: 45
+    },
+    {
+      id: 3,
+      name: 'جامع السلام',
+      distance: '2.1 كم',
+      rating: 4.7,
+      womenSection: true,
+      cleanWashrooms: true,
+      wheelchairAccess: false,
+      elderlyChairs: true,
+      reviewsCount: 89
     }
   ]);
+
+  // Mosque Facility Filters
+  const [facilityFilter, setFacilityFilter] = useState('all'); // 'all', 'womenSection', 'wheelchairAccess'
 
   // Khatma Group State
   const [khatmaProgress, setKhatmaProgress] = useState(68);
   const [userContribution, setUserContribution] = useState(2); // Parts read
 
   // Interactive Story State
+  const [selectedStory, setSelectedStory] = useState('honesty'); // 'honesty', 'patience'
   const [storyStep, setStoryStep] = useState('start'); // 'start', 'choiceA', 'choiceB'
+
+  const filteredMosques = mosques.filter(mosque => {
+    if (facilityFilter === 'womenSection') return mosque.womenSection;
+    if (facilityFilter === 'wheelchairAccess') return mosque.wheelchairAccess;
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -101,36 +122,70 @@ export default function CommunityAndKids() {
             </button>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            {mosques.map((mosque) => (
-              <div key={mosque.id} className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4 hover:border-purple-500/40 transition-all">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-bold text-white text-base">{mosque.name}</h4>
-                    <span className="text-xs text-slate-400">يبعد {mosque.distance} عن موقعك</span>
-                  </div>
-                  <div className="flex items-center gap-1 bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full text-xs font-bold border border-amber-500/30">
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                    {mosque.rating} ({mosque.reviewsCount})
-                  </div>
-                </div>
+          {/* Facility Filter Pills */}
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-slate-400 font-semibold flex items-center gap-1">
+              <Filter className="w-3.5 h-3.5 text-purple-400" />
+              تصفية حسب المرفق:
+            </span>
+            <button
+              onClick={() => setFacilityFilter('all')}
+              className={`px-3 py-1.5 rounded-lg transition-all ${
+                facilityFilter === 'all' ? 'bg-purple-600 text-white font-bold' : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+              }`}
+            >
+              جميع المساجد ({mosques.length})
+            </button>
+            <button
+              onClick={() => setFacilityFilter('womenSection')}
+              className={`px-3 py-1.5 rounded-lg transition-all ${
+                facilityFilter === 'womenSection' ? 'bg-purple-600 text-white font-bold' : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+              }`}
+            >
+              يتوفر مصلى سيدات 🕋
+            </button>
+            <button
+              onClick={() => setFacilityFilter('wheelchairAccess')}
+              className={`px-3 py-1.5 rounded-lg transition-all ${
+                facilityFilter === 'wheelchairAccess' ? 'bg-purple-600 text-white font-bold' : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
+              }`}
+            >
+              مدخل كبار السن وذوي الهمم ♿
+            </button>
+          </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs pt-2">
-                  <div className={`p-2 rounded-lg flex items-center gap-1.5 ${mosque.womenSection ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-500/20' : 'bg-slate-900 text-slate-500'}`}>
-                    <CheckCircle className="w-3.5 h-3.5" />
-                    مصلى سيدات
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredMosques.map((mosque) => (
+              <div key={mosque.id} className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4 hover:border-purple-500/40 transition-all flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-bold text-white text-base">{mosque.name}</h4>
+                      <span className="text-xs text-slate-400">يبعد {mosque.distance} عن موقعك</span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full text-xs font-bold border border-amber-500/30 shrink-0">
+                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      {mosque.rating} ({mosque.reviewsCount})
+                    </div>
                   </div>
-                  <div className={`p-2 rounded-lg flex items-center gap-1.5 ${mosque.cleanWashrooms ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-500/20' : 'bg-slate-900 text-slate-500'}`}>
-                    <CheckCircle className="w-3.5 h-3.5" />
-                    دورات مياه نظيفة
-                  </div>
-                  <div className={`p-2 rounded-lg flex items-center gap-1.5 ${mosque.wheelchairAccess ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-500/20' : 'bg-slate-900 text-slate-500'}`}>
-                    <CheckCircle className="w-3.5 h-3.5" />
-                    مدخل ذوي الهمم
-                  </div>
-                  <div className={`p-2 rounded-lg flex items-center gap-1.5 ${mosque.elderlyChairs ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-500/20' : 'bg-slate-900 text-slate-500'}`}>
-                    <CheckCircle className="w-3.5 h-3.5" />
-                    كراسي لكبار السن
+
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-2">
+                    <div className={`p-2 rounded-lg flex items-center gap-1.5 ${mosque.womenSection ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-500/20' : 'bg-slate-900 text-slate-500'}`}>
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      مصلى سيدات
+                    </div>
+                    <div className={`p-2 rounded-lg flex items-center gap-1.5 ${mosque.cleanWashrooms ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-500/20' : 'bg-slate-900 text-slate-500'}`}>
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      دورات مياه نظيفة
+                    </div>
+                    <div className={`p-2 rounded-lg flex items-center gap-1.5 ${mosque.wheelchairAccess ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-500/20' : 'bg-slate-900 text-slate-500'}`}>
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      مدخل ذوي الهمم
+                    </div>
+                    <div className={`p-2 rounded-lg flex items-center gap-1.5 ${mosque.elderlyChairs ? 'bg-emerald-950/50 text-emerald-300 border border-emerald-500/20' : 'bg-slate-900 text-slate-500'}`}>
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      كراسي لكبار السن
+                    </div>
                   </div>
                 </div>
               </div>
@@ -188,7 +243,7 @@ export default function CommunityAndKids() {
                     setUserContribution(userContribution + 1);
                     setKhatmaProgress(Math.min(100, khatmaProgress + 3));
                   }}
-                  className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg transition-all"
+                  className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg transition-all shadow-md"
                 >
                   تسجيل قراءة جزء جديد
                 </button>
@@ -201,93 +256,187 @@ export default function CommunityAndKids() {
       {/* TAB 3: INTERACTIVE KIDS STORIES */}
       {activeTab === 'interactiveKids' && (
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-6">
-          <div>
-            <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-              <Gamepad2 className="w-5 h-5 text-purple-400" />
-              القصص الأخلاقية التفاعلية (اختر مسارك بأخلاقك)
-            </h3>
-            <p className="text-slate-400 text-xs">
-              قصص تفاعلية للأطفال والشباب يتخذون فيها قرارات أخلاقية ويتعلمون الاقتداء بسيرة النبي ﷺ.
-            </p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+                <Gamepad2 className="w-5 h-5 text-purple-400" />
+                القصص الأخلاقية التفاعلية (اختر مسارك بأخلاقك)
+              </h3>
+              <p className="text-slate-400 text-xs">
+                قصص تفاعلية للأطفال والشباب يتخذون فيها قرارات أخلاقية ويتعلمون الاقتداء بسيرة النبي ﷺ.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-slate-400">اختر القصة:</span>
+              <select
+                value={selectedStory}
+                onChange={(e) => {
+                  setSelectedStory(e.target.value);
+                  setStoryStep('start');
+                }}
+                className="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-purple-500"
+              >
+                <option value="honesty">موقف الأمانة والصدق في الشراء 🛍️</option>
+                <option value="patience">موقف التسامح وحلم النبي ﷺ 🌸</option>
+              </select>
+            </div>
           </div>
 
           <div className="bg-gradient-to-br from-slate-950 via-purple-950/20 to-slate-950 p-6 rounded-2xl border border-purple-500/30 space-y-6 shadow-xl">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <span className="text-xs font-bold text-purple-300 flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-amber-400" />
-                موقف تفاعلي: الأمانة والصدق في الشراء
+                {selectedStory === 'honesty' ? 'موقف تفاعلي: الأمانة والصدق في الشراء' : 'موقف تفاعلي: العفو والرحمة عند القدرة'}
               </span>
               <span className="text-[10px] bg-purple-500/20 text-purple-300 px-2.5 py-0.5 rounded-full">للأطفال والناشئة</span>
             </div>
 
-            {storyStep === 'start' && (
-              <div className="space-y-6">
-                <p className="text-sm text-slate-200 leading-relaxed font-sans">
-                  "ذهبت لتبتاع بعض الفاكهة للبيت، وأعطيت البائع 50 ريالاً. أرجع لك البائع 30 ريالاً بالخطأ بدلاً من 20 ريالاً (زيادة 10 ريالات لم ينتبه لها البائع)... ماذا تفعل؟"
-                </p>
+            {selectedStory === 'honesty' ? (
+              <>
+                {storyStep === 'start' && (
+                  <div className="space-y-6">
+                    <p className="text-sm text-slate-200 leading-relaxed font-sans">
+                      "ذهبت لتبتاع بعض الفاكهة للبيت، وأعطيت البائع 50 ريالاً. أرجع لك البائع 30 ريالاً بالخطأ بدلاً من 20 ريالاً (زيادة 10 ريالات لم ينتبه لها البائع)... ماذا تفعل؟"
+                    </p>
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <button
-                    onClick={() => setStoryStep('choiceA')}
-                    className="p-4 bg-slate-900 hover:bg-emerald-950/60 border border-slate-700 hover:border-emerald-500/50 rounded-xl text-right transition-all text-xs space-y-1 group"
-                  >
-                    <span className="font-bold text-emerald-400 block group-hover:translate-x-1 transition-transform">
-                      الخيار (أ): تعيد الـ 10 ريالات فوراً للبائع وتخبره بالخطأ.
-                    </span>
-                    <span className="text-slate-400 text-[11px]">التصرف بالأمانة والصدق.</span>
-                  </button>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <button
+                        onClick={() => setStoryStep('choiceA')}
+                        className="p-4 bg-slate-900 hover:bg-emerald-950/60 border border-slate-700 hover:border-emerald-500/50 rounded-xl text-right transition-all text-xs space-y-1 group"
+                      >
+                        <span className="font-bold text-emerald-400 block group-hover:translate-x-1 transition-transform">
+                          الخيار (أ): تعيد الـ 10 ريالات فوراً للبائع وتخبره بالخطأ.
+                        </span>
+                        <span className="text-slate-400 text-[11px]">التصرف بالأمانة والصدق.</span>
+                      </button>
 
-                  <button
-                    onClick={() => setStoryStep('choiceB')}
-                    className="p-4 bg-slate-900 hover:bg-amber-950/60 border border-slate-700 hover:border-amber-500/50 rounded-xl text-right transition-all text-xs space-y-1 group"
-                  >
-                    <span className="font-bold text-amber-400 block group-hover:translate-x-1 transition-transform">
-                      الخيار (ب): تأخذ المال وتذهب دون إخباره متوقعاً أنها هبة.
-                    </span>
-                    <span className="text-slate-400 text-[11px]">الاحتفاظ بالمال الزائد.</span>
-                  </button>
-                </div>
-              </div>
-            )}
+                      <button
+                        onClick={() => setStoryStep('choiceB')}
+                        className="p-4 bg-slate-900 hover:bg-amber-950/60 border border-slate-700 hover:border-amber-500/50 rounded-xl text-right transition-all text-xs space-y-1 group"
+                      >
+                        <span className="font-bold text-amber-400 block group-hover:translate-x-1 transition-transform">
+                          الخيار (ب): تأخذ المال وتذهب دون إخباره متوقعاً أنها هبة.
+                        </span>
+                        <span className="text-slate-400 text-[11px]">الاحتفاظ بالمال الزائد.</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
 
-            {storyStep === 'choiceA' && (
-              <div className="bg-emerald-950/40 border border-emerald-500/40 p-5 rounded-xl space-y-3">
-                <h4 className="font-bold text-emerald-300 text-sm flex items-center gap-1.5">
-                  <CheckCircle className="w-5 h-5" />
-                  تصرف رائع ومبارك! كسبت خلق الأمانة 🌟
-                </h4>
-                <p className="text-xs text-emerald-100 leading-relaxed">
-                  فرح البائع بصدقك ودعا لك بالبركة. لقد اقتديت بالنبي ﷺ الذي كان يُلقب قبل البعثة بـ "الصادق الأمين".
-                </p>
-                <p className="text-[11px] text-emerald-300 font-semibold">
-                  قال رسول الله ﷺ: "إِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ وَإِنَّ الْبِرَّ يَهْدِي إِلَى الْجَنَّةِ".
-                </p>
+                {storyStep === 'choiceA' && (
+                  <div className="bg-emerald-950/40 border border-emerald-500/40 p-5 rounded-xl space-y-3">
+                    <h4 className="font-bold text-emerald-300 text-sm flex items-center gap-1.5">
+                      <CheckCircle className="w-5 h-5" />
+                      تصرف رائع ومبارك! كسبت خلق الأمانة 🌟
+                    </h4>
+                    <p className="text-xs text-emerald-100 leading-relaxed">
+                      فرح البائع بصدقك ودعا لك بالبركة. لقد اقتديت بالنبي ﷺ الذي كان يُلقب قبل البعثة بـ "الصادق الأمين".
+                    </p>
+                    <p className="text-[11px] text-emerald-300 font-semibold">
+                      قال رسول الله ﷺ: "إِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ وَإِنَّ الْبِرَّ يَهْدِي إِلَى الْجَنَّةِ".
+                    </p>
 
-                <button
-                  onClick={() => setStoryStep('start')}
-                  className="mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs rounded-lg border border-slate-700"
-                >
-                  إعادة القصة أو اختيار موقف آخر
-                </button>
-              </div>
-            )}
+                    <button
+                      onClick={() => setStoryStep('start')}
+                      className="mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs rounded-lg border border-slate-700 flex items-center gap-1.5"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      إعادة القصة
+                    </button>
+                  </div>
+                )}
 
-            {storyStep === 'choiceB' && (
-              <div className="bg-amber-950/40 border border-amber-500/40 p-5 rounded-xl space-y-3">
-                <h4 className="font-bold text-amber-300 text-sm">
-                  ⚠️ فكّر مجدداً... هل هذا مال حلال؟
-                </h4>
-                <p className="text-xs text-amber-100 leading-relaxed">
-                  أخذ ما ليس لك دون علم صاحبه يتعارض مع أمانة المسلم. الأمانة تجلب البركة في الرزق والراحة النفسية.
-                </p>
+                {storyStep === 'choiceB' && (
+                  <div className="bg-amber-950/40 border border-amber-500/40 p-5 rounded-xl space-y-3">
+                    <h4 className="font-bold text-amber-300 text-sm">
+                      ⚠️ فكّر مجدداً... هل هذا مال حلال؟
+                    </h4>
+                    <p className="text-xs text-amber-100 leading-relaxed">
+                      أخذ ما ليس لك دون علم صاحبه يتعارض مع أمانة المسلم. الأمانة تجلب البركة في الرزق والراحة النفسية.
+                    </p>
 
-                <button
-                  onClick={() => setStoryStep('start')}
-                  className="mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs rounded-lg border border-slate-700"
-                >
-                  حاول مرة أخرى واختر المسار الصحيح
-                </button>
-              </div>
+                    <button
+                      onClick={() => setStoryStep('start')}
+                      className="mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs rounded-lg border border-slate-700 flex items-center gap-1.5"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      حاول مرة أخرى واختر المسار الصحيح
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {storyStep === 'start' && (
+                  <div className="space-y-6">
+                    <p className="text-sm text-slate-200 leading-relaxed font-sans">
+                      "كنت تلعب في الفناء وكسر زميلك ألعابك بالخطأ ثم اعتذر لك واعتذر بحرارة... كيف تتصرف؟"
+                    </p>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <button
+                        onClick={() => setStoryStep('choiceA')}
+                        className="p-4 bg-slate-900 hover:bg-emerald-950/60 border border-slate-700 hover:border-emerald-500/50 rounded-xl text-right transition-all text-xs space-y-1 group"
+                      >
+                        <span className="font-bold text-emerald-400 block group-hover:translate-x-1 transition-transform">
+                          الخيار (أ): تقبل اعتذاره وتعفو عنه وتشاركه ألعاباً أخرى.
+                        </span>
+                        <span className="text-slate-400 text-[11px]">خلق العفو والتسامح.</span>
+                      </button>
+
+                      <button
+                        onClick={() => setStoryStep('choiceB')}
+                        className="p-4 bg-slate-900 hover:bg-amber-950/60 border border-slate-700 hover:border-amber-500/50 rounded-xl text-right transition-all text-xs space-y-1 group"
+                      >
+                        <span className="font-bold text-amber-400 block group-hover:translate-x-1 transition-transform">
+                          الخيار (ب): تغضب وترفض الحديث معه.
+                        </span>
+                        <span className="text-slate-400 text-[11px]">التعامل بالغضب.</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {storyStep === 'choiceA' && (
+                  <div className="bg-emerald-950/40 border border-emerald-500/40 p-5 rounded-xl space-y-3">
+                    <h4 className="font-bold text-emerald-300 text-sm flex items-center gap-1.5">
+                      <CheckCircle className="w-5 h-5" />
+                      خلق نبيل ومقتدٍ بالسنة النبوية 🌸
+                    </h4>
+                    <p className="text-xs text-emerald-100 leading-relaxed">
+                      العفو والصفح من شيم الكرام، قال تعالى: "وَلْيَعْفُوا وَلْيَصْفَحُوا أَلَا تُحِبُّونَ أَن يَغْفِرَ اللَّهُ لَكُمْ".
+                    </p>
+
+                    <button
+                      onClick={() => setStoryStep('start')}
+                      className="mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs rounded-lg border border-slate-700 flex items-center gap-1.5"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      إعادة القصة
+                    </button>
+                  </div>
+                )}
+
+                {storyStep === 'choiceB' && (
+                  <div className="bg-amber-950/40 border border-amber-500/40 p-5 rounded-xl space-y-3">
+                    <h4 className="font-bold text-amber-300 text-sm">
+                      ⚠️ الغضب ينزع الألفة والسرور...
+                    </h4>
+                    <p className="text-xs text-amber-100 leading-relaxed">
+                      قال رسول الله ﷺ للرجل الذي قال له أوصني: "لا تغضب، لا تغضب، لا تغضب".
+                    </p>
+
+                    <button
+                      onClick={() => setStoryStep('start')}
+                      className="mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs rounded-lg border border-slate-700 flex items-center gap-1.5"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      إعادة التجربة
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

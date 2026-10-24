@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Mic, MicOff, Volume2, CheckCircle2, AlertCircle, RefreshCw, BookOpen, Brain, Sparkles, ChevronLeft, ChevronRight, Layers } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mic, MicOff, Volume2, CheckCircle2, AlertCircle, RefreshCw, BookOpen, Brain, Sparkles, ChevronLeft, ChevronRight, Layers, Play, Check } from 'lucide-react';
 
 export default function QuranMemorization() {
   const [activeTab, setActiveTab] = useState('corrector'); // 'corrector', 'spaced', 'mindmap'
 
   // Audio Reciter State
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
   const [recordingResult, setRecordingResult] = useState(null);
 
   // Spaced Repetition State
@@ -13,14 +14,29 @@ export default function QuranMemorization() {
     { id: 1, surah: 'سورة الملك', ayats: '1 - 5', level: 'يحتاج مراجعة قريبة', interval: 'بعد 6 ساعات', progress: 40, status: 'warning' },
     { id: 2, surah: 'سورة الكهف', ayats: '10 - 20', level: 'مستقر نسبياً', interval: 'غداً', progress: 75, status: 'info' },
     { id: 3, surah: 'سورة مريم', ayats: '1 - 15', level: 'ممتاز - حفظ متقن', interval: 'بعد 5 أيام', progress: 95, status: 'success' },
+    { id: 4, surah: 'سورة النور', ayats: '35 - 40', level: 'مراجعة ثانية', interval: 'بعد 3 أيام', progress: 80, status: 'info' }
   ]);
 
   // Mind Map State
   const [selectedSurah, setSelectedSurah] = useState('الملك');
 
+  useEffect(() => {
+    let timer;
+    if (isRecording) {
+      timer = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      setRecordingTime(0);
+    }
+    return () => clearInterval(timer);
+  }, [isRecording]);
+
   const handleStartRecording = () => {
     setIsRecording(true);
     setRecordingResult(null);
+    setRecordingTime(0);
+
     setTimeout(() => {
       setIsRecording(false);
       setRecordingResult({
@@ -31,7 +47,23 @@ export default function QuranMemorization() {
           { word: "قَدِيرٌ", type: "تجويد", detail: "تفخيم غنة الإخفاء لأن القاف حرف استعلاء." }
         ]
       });
-    }, 3000);
+    }, 3500);
+  };
+
+  const reviewCard = (cardId) => {
+    setFlashcards(flashcards.map(card => {
+      if (card.id === cardId) {
+        const newProgress = Math.min(100, card.progress + 20);
+        return {
+          ...card,
+          progress: newProgress,
+          level: newProgress >= 90 ? 'حفظ متقن ممتاز' : 'مستقر نسبياً',
+          interval: newProgress >= 90 ? 'بعد 7 أيام' : 'بعد 24 ساعة',
+          status: newProgress >= 90 ? 'success' : 'info'
+        };
+      }
+      return card;
+    }));
   };
 
   const surahMindMaps = {
@@ -115,26 +147,38 @@ export default function QuranMemorization() {
               </p>
 
               {/* Record Button UI */}
-              <div className="flex flex-col items-center justify-center my-8">
+              <div className="flex flex-col items-center justify-center my-6 space-y-3">
                 <button
                   onClick={handleStartRecording}
                   disabled={isRecording}
                   className={`relative group p-6 rounded-full transition-all duration-300 ${
                     isRecording
-                      ? 'bg-red-500/20 text-red-400 border-2 border-red-500 animate-pulse'
-                      : 'bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border-2 border-emerald-500/50 hover:scale-105'
+                      ? 'bg-red-500/20 text-red-400 border-2 border-red-500 shadow-lg shadow-red-500/20'
+                      : 'bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border-2 border-emerald-500/50 hover:scale-105 shadow-lg shadow-emerald-500/10'
                   }`}
                 >
-                  {isRecording ? <MicOff className="w-10 h-10 animate-bounce" /> : <Mic className="w-10 h-10" />}
+                  {isRecording ? <MicOff className="w-10 h-10 animate-pulse" /> : <Mic className="w-10 h-10" />}
                 </button>
-                <p className="text-xs text-slate-400 mt-4">
-                  {isRecording ? "جاري الاستماع للآية ومطابقتها بالتجويد..." : "انقر لبدء التسميع والتصحيح"}
+
+                {/* Animated Wave visualizer when recording */}
+                {isRecording && (
+                  <div className="flex items-center gap-1.5 h-8">
+                    <span className="w-1.5 h-6 bg-red-500 rounded-full animate-bounce"></span>
+                    <span className="w-1.5 h-8 bg-red-400 rounded-full animate-bounce delay-100"></span>
+                    <span className="w-1.5 h-4 bg-red-500 rounded-full animate-bounce delay-200"></span>
+                    <span className="w-1.5 h-7 bg-red-400 rounded-full animate-bounce delay-300"></span>
+                    <span className="w-1.5 h-5 bg-red-500 rounded-full animate-bounce delay-150"></span>
+                  </div>
+                )}
+
+                <p className="text-xs text-slate-400">
+                  {isRecording ? `جاري الاستماع للآية (${recordingTime} ثانية)...` : "انقر لبدء التسميع والتصحيح الصوتي"}
                 </p>
               </div>
             </div>
 
             <div className="bg-slate-950/60 rounded-xl p-4 border border-slate-800 text-xs text-slate-400">
-              💡 <span className="text-slate-300 font-semibold">ملاحظة تقنية:</span> تعتمد الدقة العالية المباشرة للتجويد الفعلي على خوادم مخصصة لمعالجة الصوت ومخارج الحروف.
+              💡 <span className="text-slate-300 font-semibold">تنويه تقني:</span> التقييم المباشر لأحكام التجويد يستند لنماذج معالجة الإشارات الصوتية ومخارج الحروف.
             </div>
           </div>
 
@@ -180,7 +224,11 @@ export default function QuranMemorization() {
             </div>
 
             <div className="mt-6 flex justify-end">
-              <button className="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-700 flex items-center gap-1.5">
+              <button
+                onClick={handleStartRecording}
+                disabled={isRecording}
+                className="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-700 flex items-center gap-1.5"
+              >
                 <RefreshCw className="w-3.5 h-3.5" />
                 إعادة المحاولة
               </button>
@@ -202,44 +250,49 @@ export default function QuranMemorization() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {flashcards.map((card) => (
-              <div key={card.id} className="bg-slate-950 border border-slate-800 rounded-xl p-5 hover:border-emerald-500/40 transition-all shadow-md relative overflow-hidden group">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h4 className="font-bold text-white text-base">{card.surah}</h4>
-                    <span className="text-xs text-slate-400">الآيات: {card.ayats}</span>
+              <div key={card.id} className="bg-slate-950 border border-slate-800 rounded-xl p-5 hover:border-emerald-500/40 transition-all shadow-md relative overflow-hidden group flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 className="font-bold text-white text-base">{card.surah}</h4>
+                      <span className="text-xs text-slate-400">الآيات: {card.ayats}</span>
+                    </div>
+                    <span className={`text-[11px] px-2.5 py-1 rounded-full font-medium ${
+                      card.status === 'warning' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
+                      card.status === 'info' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' :
+                      'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                    }`}>
+                      {card.interval}
+                    </span>
                   </div>
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                    card.status === 'warning' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
-                    card.status === 'info' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' :
-                    'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                  }`}>
-                    {card.interval}
-                  </span>
-                </div>
 
-                <div className="space-y-2 mt-4">
-                  <div className="flex justify-between text-xs text-slate-400">
-                    <span>قوة الحفظ:</span>
-                    <span className="text-slate-200 font-semibold">{card.progress}%</span>
-                  </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full transition-all duration-500 ${
-                        card.status === 'warning' ? 'bg-amber-500' :
-                        card.status === 'info' ? 'bg-blue-500' : 'bg-emerald-500'
-                      }`}
-                      style={{ width: `${card.progress}%` }}
-                    ></div>
+                  <div className="space-y-2 mt-4">
+                    <div className="flex justify-between text-xs text-slate-400">
+                      <span>قوة الحفظ:</span>
+                      <span className="text-slate-200 font-semibold">{card.progress}%</span>
+                    </div>
+                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-500 ${
+                          card.status === 'warning' ? 'bg-amber-500' :
+                          card.status === 'info' ? 'bg-blue-500' : 'bg-emerald-500'
+                        }`}
+                        style={{ width: `${card.progress}%` }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
 
                 <div className="mt-5 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                  <span className="text-slate-400">{card.level}</span>
-                  <button className="text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                    بدء المراجعة
-                    <ChevronLeft className="w-4 h-4" />
+                  <span className="text-slate-400 text-[11px]">{card.level}</span>
+                  <button
+                    onClick={() => reviewCard(card.id)}
+                    className="text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 bg-emerald-950/40 px-2.5 py-1 rounded border border-emerald-500/20 transition-all hover:bg-emerald-900/40"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    تمت المراجعة
                   </button>
                 </div>
               </div>
