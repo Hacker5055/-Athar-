@@ -1,13 +1,30 @@
 import React, { useState } from 'react';
-import { Scale, FileText, Calculator, AlertTriangle, CheckCircle, RefreshCw, DollarSign, PieChart } from 'lucide-react';
+import { Scale, FileText, Calculator, AlertTriangle, CheckCircle, RefreshCw, DollarSign, PieChart, Layers } from 'lucide-react';
 
 export default function FinancialTools() {
   const [activeTab, setActiveTab] = useState('contractScanner'); // 'contractScanner', 'zakatCalc', 'inheritanceCalc'
 
+  // Contract Templates Presets
+  const contractTemplates = [
+    {
+      id: 'installment',
+      title: 'عقد تقسيط سيارة مع غرامة تأخير',
+      text: `في حال تأخر الطرف الثاني عن سداد القسط المالي في الموعد المحدد لمدة تتجاوز 15 يوماً، تُفرض غرامة تأخير قدرها 5% من قيمة القسط تضاف لحساب الشركة، كما يشترط شرط جزائي غير محدد القيمة.`
+    },
+    {
+      id: 'employment',
+      title: 'عقد عمل مع شرط عدم منافسة مفتوح',
+      text: `يحظر على الموظف العمل لدى أي منافس داخل أو خارج المملكة لأجل غير مسمى بعد انتهاء العقد، وفي حال مخالفة ذلك يلتزم بدفع تعويض مقداره 200,000 ريال دون إثبات الضرر المادي.`
+    },
+    {
+      id: 'murabaha',
+      title: 'عقد تمويل مرابحة إسلامي متوافق',
+      text: `تمت بضاعة التمويل بعد تملك البنك لها وقبضها حكماً، وتم بيعها للمشتري بمرابحة معلومة الأجل والربح دون أي غرامات مالية مشروطة على التأخير.`
+    }
+  ];
+
   // Contract Scanner State
-  const [contractText, setContractText] = useState(
-    `في حال تأخر الطرف الثاني عن سداد القسط المالي في الموعد المحدد لمدة تتجاوز 15 يوماً، تُفرض غرامة تأخير قدرها 5% من قيمة القسط تضاف لحساب الشركة، كما يشترط شرط جزائي غير محدد القيمة.`
-  );
+  const [contractText, setContractText] = useState(contractTemplates[0].text);
   const [scanAnalysis, setScanAnalysis] = useState(null);
 
   // Zakat Calculator State
@@ -26,6 +43,33 @@ export default function FinancialTools() {
   const [estateAmount, setEstateAmount] = useState(1200000);
 
   const handleScanContract = () => {
+    if (contractText.includes('مرابحة معلومة')) {
+      setScanAnalysis({
+        status: 'success',
+        issues: []
+      });
+      return;
+    }
+
+    if (contractText.includes('عقد عمل') || contractText.includes('الموظف')) {
+      setScanAnalysis({
+        status: 'warning',
+        issues: [
+          {
+            title: 'شرط عدم منافسة غير مقيد زمنياً ومكانياً (غرر وجهالة)',
+            description: 'اشتراط عدم المنافسة لأجل غير مسمى وفي كل المكان يسبب ضرراً بالغة بالعمالة ويتعارض مع الضوابط الشرعية ونظام العمل.',
+            alternative: 'البديل الشرعي: تقييد الشرط بمدة محددة (مثل سنة واحدة) ونطاق جغرافي محدد لحماية أسرار العمل فقط.'
+          },
+          {
+            title: 'مبالغة في التعويض التعسفي',
+            description: 'المراد تعويض ثابت دون إثبات حدوث ضياع أو ضرر فعلي مادي.',
+            alternative: 'البديل الشرعي: ربط التعويض بالضرر المادي المباشر والمثبت فعلياً.'
+          }
+        ]
+      });
+      return;
+    }
+
     setScanAnalysis({
       status: 'warning',
       issues: [
@@ -107,6 +151,25 @@ export default function FinancialTools() {
               </p>
             </div>
 
+            {/* Presets Selector */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] text-slate-400 font-semibold block">نماذج جاهزة للتجربة:</span>
+              <div className="flex flex-wrap gap-1.5">
+                {contractTemplates.map((template) => (
+                  <button
+                    key={template.id}
+                    onClick={() => {
+                      setContractText(template.text);
+                      setScanAnalysis(null);
+                    }}
+                    className="text-[11px] bg-slate-950 hover:bg-slate-800 text-amber-200/90 px-2.5 py-1 rounded-lg border border-slate-800 transition-colors"
+                  >
+                    {template.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <textarea
               rows={6}
               value={contractText}
@@ -133,23 +196,32 @@ export default function FinancialTools() {
 
             {scanAnalysis ? (
               <div className="space-y-3">
-                <div className="bg-amber-950/40 border border-amber-500/40 p-3 rounded-xl flex items-center gap-2 text-xs text-amber-300 font-semibold">
-                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                  تم العثور على 2 من المحاذير الشرعية المحتملة في نص العقد.
-                </div>
-
-                {scanAnalysis.issues.map((issue, idx) => (
-                  <div key={idx} className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 text-xs">
-                    <h4 className="font-bold text-red-400 flex items-center gap-1.5">
-                      ❌ {issue.title}
-                    </h4>
-                    <p className="text-slate-300 leading-relaxed">{issue.description}</p>
-                    <div className="bg-emerald-950/30 border border-emerald-500/30 p-2.5 rounded-lg text-emerald-300 mt-2">
-                      <span className="font-bold block mb-0.5">💡 البديل الشرعي المقترح:</span>
-                      {issue.alternative}
-                    </div>
+                {scanAnalysis.status === 'success' ? (
+                  <div className="bg-emerald-950/40 border border-emerald-500/40 p-4 rounded-xl flex items-center gap-2 text-xs text-emerald-300 font-semibold">
+                    <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
+                    العقد خلو من المحاذير الشرعية الظاهرة ومطابق لأحكام المعاملات المالية الإسلامية.
                   </div>
-                ))}
+                ) : (
+                  <>
+                    <div className="bg-amber-950/40 border border-amber-500/40 p-3 rounded-xl flex items-center gap-2 text-xs text-amber-300 font-semibold">
+                      <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                      تم العثور على {scanAnalysis.issues.length} من المحاذير الشرعية المحتملة في نص العقد.
+                    </div>
+
+                    {scanAnalysis.issues.map((issue, idx) => (
+                      <div key={idx} className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 text-xs">
+                        <h4 className="font-bold text-red-400 flex items-center gap-1.5">
+                          ❌ {issue.title}
+                        </h4>
+                        <p className="text-slate-300 leading-relaxed">{issue.description}</p>
+                        <div className="bg-emerald-950/30 border border-emerald-500/30 p-2.5 rounded-lg text-emerald-300 mt-2">
+                          <span className="font-bold block mb-0.5">💡 البديل الشرعي المقترح:</span>
+                          {issue.alternative}
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
               </div>
             ) : (
               <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-xl text-slate-500 p-6 text-center">
