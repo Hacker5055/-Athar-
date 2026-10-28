@@ -1,70 +1,98 @@
 import React from 'react';
-import { CheckCircle2, XCircle, AlertCircle, Sparkles, Cpu, Layers, ShieldAlert, Code2 } from 'lucide-react';
+import { CheckCircle2, XCircle, AlertCircle, Sparkles, Cpu, ShieldAlert, FileText, Check, ArrowRight } from 'lucide-react';
 
 export default function FeasibilityReport() {
   const feasibleFeatures = [
     {
+      id: 1,
       title: 'خطة مراجعة بنظام التكرار المتباعد (Spaced Repetition)',
-      reason: 'سهلة التنفيذ عبر خوارزميات التكرار (مثل SM-2 المستخدمة في Anki)، وتخزين بيانات حفظ المستخدم محلياً أو على خوادم سحابية.'
+      category: 'الحفظ والمراجعة',
+      reason: 'سهلة التنفيذ خوارزمياً عبر معادلات التكرار (مثل SM-2 / Anki algorithm)، مع تخزين سجل أخطاء المستخدم وحالة كل سورة محلياً أو سحابياً لتحديد الأوقات المثالية للمراجعة قبل النسيان.'
     },
     {
+      id: 2,
       title: 'الربط البصري والذهني للآيات (الخرائط الذهنية)',
-      reason: 'يعتمد على تصاميم بصرية وهياكل بيانات موضوعية مرتبطة برقم السورة والآيات، وهو مميز جداً وغير مكلف تقنياً.'
+      category: 'الحفظ والمراجعة',
+      reason: 'تعتمد على تنظيم وتصنيف المواضيع والقصص لكل سورة وتنسيقها بأسلوب بصري تفاعلي (UI/UX) يربط المتشابهات والتسلسل الموضوعي بفاعلية وبدون تعقيد تقني.'
     },
     {
-      title: 'الباحث الدلالي والنفسي للقرآن والسنة',
-      reason: 'يمكن تطبيقه بكفاءة عالية باستخدام نماذج تضمين النصوص (Text Embeddings/Vector Search) لربط الموقف الشعوري بالآيات والأحاديث المناسبة.'
+      id: 3,
+      title: 'الباحث الدلالي والنفسي (القرآن والسنة حسب حالتك)',
+      category: 'المعايشة والفهم',
+      reason: 'ممكنة بدقة عالية عبر نماذج تضمين النصوص (Text Embeddings & Vector Databases) لربط المشاعر والأحداث اليومية للمستخدم بالآيات والأحاديث والقصص النبوية وتفاسيرها.'
     },
     {
+      id: 4,
       title: 'التفسير التفاعلي وبطاقة السياق',
-      reason: 'تجميع واستعراض بيانات أسباب النزول والتفسير المعتمَد في بطاقات تفاعلية جذابة وسريعة الاستجابة.'
+      category: 'المعايشة والفهم',
+      reason: 'تجميع بيانات أسباب النزول والمعاني الغريبة والعهد (مكي/مدني) من أمهات التفاسير وعرضها في بطاقة سياق جذابة ومبسطة للمستخدم عند النقر على أي آية.'
     },
     {
+      id: 5,
       title: 'منظم اليوم المعتمد على الصلاة (Salah-Centric Planner)',
-      reason: 'حساب مواقيت الصلاة باستخدام معادلات الفلك أو APIs معروفة، وتوزيع قائمة المهام بين الصلوات ديناميكياً.'
+      category: 'إنتاجية المسلم',
+      reason: 'حساب مواقيت الصلاة الفلكية بدقة متناهية حسب الموقع الجغرافي أو عبر APIs موثوقة، وتقسيم قائمة المهام ديناميكياً بين الفترات (الفجر-الشروق، الظهر-العصر... إلخ).'
     },
     {
+      id: 6,
       title: 'حاسبة المواريث والزكاة التفاعلية',
-      reason: 'خوارزميات رياضية وفقهية واضحة ومحددة مع ربط بسعر الذهب المباشر عبر APIs مالية بسيطة.'
+      category: 'المعاملات المالية',
+      reason: 'تعتمد على خوارزميات حسابية وفق القواعد الفقهية الصريحة للفرائض والزكاة، مع إمكانية ربط أسعار الذهب والعملات اللحظية عبر APIs اقتصادية قياسية.'
     },
     {
+      id: 7,
       title: 'خريطة مرافق المساجد التفاعلية (Crowdsourced Map)',
-      reason: 'تعتمد على خدمات الخرائط المعتادة (مثل OpenStreetMap أو Google Maps API) ونظام تقييم ومراجعة من المستخدمين.'
+      category: 'المجتمع والعمل الجماعي',
+      reason: 'تعتمد على خراط OpenStreetMap أو Google Maps مع قاعدة بيانات تقييمية ومشاركات المصلين لمرافق المسجد (مصلى النساء، النظافة، كبار السن، ذوي الاحتياجات الخاصة).'
     },
     {
-      title: 'ختمات وتحديات العائلة والأصدقاء والقصص التفاعلية للأطفال',
-      reason: 'تعتمد على غرف خاصة (Realtime Database) وهياكل سيناريوهات تفاعلية (Branching Storytelling) ممتعة وآمنة.'
+      id: 8,
+      title: 'ختمات وتحديات العائلة والقصص التفاعلية للأطفال',
+      category: 'المجتمع والجيل الجديد',
+      reason: 'تعتمد على برمجيات الغرف الخاصة (Private Realtime Database) مع ميزة إخفاء الأسماء لمنع الرياء، وهياكل سيناريوهات القراءة القصصية التفاعلية (Branching Storytelling).'
     }
   ];
 
   const challengingFeatures = [
     {
+      id: 1,
       title: 'مصحح التلاوة الصوتي للتجويد المباشر (AI Tajweed Recitation Corrector)',
+      category: 'الحفظ والمراجعة',
       reasons: [
-        'تحدي دقة النموذج الصوتي: أحكام التجويد (كالمدود بالإشارات الزمنية الدقيقة، الغنة، القلقلة، ومخارج الحروف المتشابهة كالضاد والظاء) تتطلب نماذج صوتية مخصصة جداً (Highly Specialized Speech Recognition & Audio Signal Processing) مدربة على آلاف الساعات الترتيلية لمختلف القراء واللكنات.',
-        'الضوضاء وتنوع نبرات الصوت: اختلاف أداء المستخدمين وتجويدهم الفعلي والضوضاء المحيطة قد يؤدي إلى إنذارات خاطئة تسبب إرباك الحافظ بدلاً من تصحيحه.'
-      ]
+        'تحدي دقة النموذج الصوتي التجويدي: قياس أحكام التجويد الدقيقة (كالمدود بالزمن بالمللي ثانية، الغنة، القلقلة، ومخارج الحروف المتقاربة كالضاد والظاء أو الطاء والتاء) يتطلب نماذج معالجة صوتية مخصصة جداً (Highly Specialized Audio Signal Processing & Speech Recognition) مدربة على آلاف الساعات الترتيلية لمختلف اللكنات والأصوات.',
+        'الضوضاء واختلاف الأداء الصوتي: اختلاف نبرات صوت المستخدمين (أطفال، كبار سن، نساء) والضوضاء المحيطة قد يتسبب بإنذارات خاطئة تسبب إرباك الحافظ وتشتيته بدلاً من تصحيحه.'
+      ],
+      workaround: 'البديل الموصى به: الاعتماد أولاً على مطابقة الكلمات والتشكيل (Speech-to-Text Verses Matching) مع محاكاة إرشادات تجويدية للآيات وقراءات مرجعية.'
     },
     {
-      title: 'الوضع الهادئ التلقائي في المسجد بالخلفية (Geofencing & Background Silent Mode)',
+      id: 2,
+      title: 'الوضع الهادئ التلقائي في المسجد بالخلفية (Geofencing & Silent Mode)',
+      category: 'إنتاجية المسلم',
       reasons: [
-        'قيود أنظمة التشغيل (iOS & Android Permissions): تفرض أنظمة iOS و Android حديثاً قيوداً صارمة جداً على تطبيقات الخلفية (Background Services) وتغيير إعدادات النظام الصوتية تلقائياً دون تدخل يدوي مباشر من المستخدم لأسباب أمنية وللحفاظ على البطارية.',
-        'استهلاك البطارية ودقة الـ GPS: تتبع الموقع المستمر بدقة عالية للتعرف على دخول المسجد قد يستنزف بطارية الهاتف سريعاً، وقد تضعف إشارة الـ GPS داخل المباني الخرسانية.'
-      ]
+        'قيود نظم التشغيل الصارمة (iOS & Android Background Restrictions): تفرض أنظمة الهواتف الحديثة قيوداً شديدة لحماية الخصوصية والبطارية تمنع التطبيقات من تغيير وضع الصوت والتعديل على إعدادات النظام تلقائياً من الخلفية دون إذن صريح في كل مرة.',
+        'استهلاك البطارية ودقة الـ GPS: التتبع الدائم والمستمر لموقع المستخدم يستنزف البطارية سريعاً، كما أن إشارة الـ GPS تضعف كثيراً داخل المباني الخرسانية والمسابك مما قد يسبب خطأ في تحديد الدخول.'
+      ],
+      workaround: 'البديل الموصى به: إرسال إشعار تفاعلي سريع بنقرة واحدة عند الاقتراب من المسجد أو وقت الإقامة لتفعيل الوضع الصامت بنقرة واحدة.'
     },
     {
+      id: 3,
       title: 'أذكار ذكية تلقائية عبر المستشعرات (Automatic Sensor-Based Athkar)',
+      category: 'إنتاجية المسلم',
       reasons: [
-        'قيود الوصول للبلوتوث والمستشعرات في الخلفية: عدم إمكانية فتح التطبيق أو إظهار نوافذ منبثقة (Popups) أثناء قفل الشاشة إلا عبر إشعارات محدودة (Push Notifications) يقلل من سلاسة التجربة.',
-        'الإنذارات الخاطئة: الاقتران ببلوتوث مكبر صوت قد لا يكون سيارة، أو المرور بجانب مول دون دخوله قد يطلق إشعارات مزعجة غير مرغوبة.'
-      ]
+        'قيود الوصول للمستشعرات والبلوتوث في الخلفية: تمنع أنظمة التشغيل فتح نوافذ منبثقة أو تشغيل صوتي تلقائي عند قفل الشاشة، ويقتصر ذلك على إشعارات Push Notifications.',
+        'الإنذارات الخاطئة (False Positives): قد يتصل الهاتف ببلوتوث سماعة شخصية بدلاً من سيارة، أو يمر بجوار مركز تجاري دون دخوله، مما يطلق أذكاراً غير مناسبة للموقف وتسبب إزعاجاً.'
+      ],
+      workaround: 'البديل الموصى به: اعتماد إشعارات ذكية مجدولة ومربوطة بأحداث معينة بشرط تأكيد المستخدم أو تفاعله.'
     },
     {
+      id: 4,
       title: 'ماسح العقود والمعاملات المالية الشرعي (AI Financial Contract Legal Scanner)',
+      category: 'المعاملات المالية',
       reasons: [
-        'التحفظ الشرعي والتنفيذي: الاعتماد الكلي على الذكاء الاصطناعي في الفتوى وإصدار الأحكام القانونية والشرعية للعقود قد يترتب عليه مسؤولية قانونية وشرعية خطيرة في حال حدوث خطأ أو فهم خاطئ للبند العائدي.',
-        'تعقيد المصطلحات القانونية: صياغة العقود تتنوع بشكل واسع وتستخدم مصطلحات قانونية محلية تختلف من دولة لأخرى وتتطلب مراجعة بشرية مستمرة.'
-      ]
+        'المسؤولية الشرعية والقانونية: الاعتماد الكلي على الذكاء الاصطناعي لإصدار أحكام وفتاوى شرعية وبطلان عقود مالية قد يتسبب بمسؤولية قانونية وشرعية خطيرة في حال الفهم الخاطئ للبند أو السياق.',
+        'تعقيد اللغويات والمصطلحات القانونية المحلية: تنوع صياغة العقود بين الدول والأنظمة القانونية المحلية يتطلب تدقيقاً بشرياً من متخصصين ولا يكفي فيه التوليد الآلي النصي.'
+      ],
+      workaround: 'البديل الموصى به: استخراج البنود الحساسة للتنبيه كأداة مساعدة مع إظهار إخلاء مسؤولية والتوجيه لاستشارة أهل العلم والشرع.'
     }
   ];
 
@@ -72,34 +100,57 @@ export default function FeasibilityReport() {
     <div className="space-y-6">
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6 shadow-xl">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-xl border border-emerald-500/30">
-            <Cpu className="w-6 h-6" />
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30">
+              <Cpu className="w-7 h-7" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white">الدراسة التقنية وتقييم الجدوى المباشرة</h2>
+              <p className="text-xs text-slate-300 mt-1">
+                تحليل متكامل للميزات القابلة للإضافة المباشرة والميزات الصعبة مع التوضيح التقني والتنظيمي وأفضل البدائل الهندسية.
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-white">الدراسة التقنية وجدول تقييم الميزات</h2>
-            <p className="text-xs text-slate-300 mt-0.5">
-              تحليل تقني شامل ودقيق للميزات القابلة للإضافة المباشرة والميزات الصعبة مع توضيح الأسباب الهندسية والتنظيمية.
-            </p>
+
+          <div className="flex items-center gap-3">
+            <div className="bg-emerald-950/60 border border-emerald-500/40 px-3.5 py-2 rounded-xl text-center">
+              <span className="block text-lg font-black text-emerald-400 font-mono">{feasibleFeatures.length}</span>
+              <span className="text-[10px] text-emerald-200 font-bold">ميزات عالية القابلية</span>
+            </div>
+            <div className="bg-amber-950/60 border border-amber-500/40 px-3.5 py-2 rounded-xl text-center">
+              <span className="block text-lg font-black text-amber-400 font-mono">{challengingFeatures.length}</span>
+              <span className="text-[10px] text-amber-200 font-bold">ميزات صعبة ومقيدة</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* FEASIBLE FEATURES SECTION */}
       <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-4">
-        <h3 className="text-lg font-bold text-emerald-400 flex items-center gap-2 border-b border-slate-800 pb-3">
-          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-          أولاً: الميزات القابلة للإضافة والتطبيق الفوري (High Feasibility & Value)
-        </h3>
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 className="text-lg font-bold text-emerald-400 flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+            أولاً: الميزات القابلة للإضافة والتطبيق المباشر (High Feasibility & Instant Impact)
+          </h3>
+          <span className="text-xs text-slate-400 bg-emerald-500/10 text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-500/20">
+            جاهزة للتنفيذ التفاعلي
+          </span>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {feasibleFeatures.map((item, idx) => (
-            <div key={idx} className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5 hover:border-emerald-500/30 transition-all">
-              <h4 className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                {item.title}
-              </h4>
-              <p className="text-[11px] text-slate-400 leading-relaxed">{item.reason}</p>
+          {feasibleFeatures.map((item) => (
+            <div key={item.id} className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 hover:border-emerald-500/30 transition-all">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  {item.title}
+                </h4>
+                <span className="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">
+                  {item.category}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">{item.reason}</p>
             </div>
           ))}
         </div>
@@ -107,26 +158,45 @@ export default function FeasibilityReport() {
 
       {/* CHALLENGING FEATURES SECTION */}
       <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-4">
-        <h3 className="text-lg font-bold text-red-400 flex items-center gap-2 border-b border-slate-800 pb-3">
-          <XCircle className="w-5 h-5 text-red-400" />
-          ثانياً: الميزات الصعبة أو المعقدة تقنياً/تنظيمياً مع الأسباب التفصيلية
-        </h3>
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 className="text-lg font-bold text-amber-400 flex items-center gap-2">
+            <XCircle className="w-5 h-5 text-amber-400" />
+            ثانياً: الميزات الصعبة والمعقدة تقنياً/تنظيمياً مع أسبابها والحلول البديلة
+          </h3>
+          <span className="text-xs text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+            تتطلب حلولاً هندسية وتصاريح خاصة
+          </span>
+        </div>
 
         <div className="space-y-4">
-          {challengingFeatures.map((item, idx) => (
-            <div key={idx} className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
-              <h4 className="text-xs font-bold text-amber-300 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                {item.title}
-              </h4>
+          {challengingFeatures.map((item) => (
+            <div key={item.id} className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <h4 className="text-xs font-bold text-amber-300 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                  {item.title}
+                </h4>
+                <span className="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded border border-slate-800">
+                  {item.category}
+                </span>
+              </div>
 
-              <ul className="space-y-2 text-xs text-slate-300">
+              <div className="space-y-2">
+                <span className="text-[11px] font-bold text-slate-400 block">الأسباب والتحديات الهندسية:</span>
                 {item.reasons.map((reason, rIdx) => (
-                  <li key={rIdx} className="bg-slate-900/70 p-3 rounded-lg border border-slate-800/80 leading-relaxed text-slate-300">
-                    <span className="font-semibold text-slate-200">السبب {rIdx + 1}:</span> {reason}
-                  </li>
+                  <div key={rIdx} className="bg-slate-900/70 p-3 rounded-lg border border-slate-800/80 text-xs text-slate-300 leading-relaxed">
+                    <span className="font-semibold text-amber-400">التحدي {rIdx + 1}:</span> {reason}
+                  </div>
                 ))}
-              </ul>
+              </div>
+
+              <div className="bg-emerald-950/30 border border-emerald-500/30 p-3 rounded-xl text-xs text-emerald-200 flex items-start gap-2">
+                <ArrowRight className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold text-emerald-400 block mb-0.5">💡 الحل والبديل الهندسي الموصى به للتطبيق:</span>
+                  <p>{item.workaround}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
