@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Clock, CheckSquare, Bell, MapPin, VolumeX, Bluetooth, Smartphone, Plus, Trash2, CheckCircle2 } from 'lucide-react';
+import { Clock, CheckSquare, Bell, MapPin, VolumeX, Bluetooth, Smartphone, Plus, Trash2, CheckCircle2, ShieldAlert, Sparkles, Navigation } from 'lucide-react';
 
 export default function MuslimProductivity() {
   const [activeTab, setActiveTab] = useState('planner'); // 'planner', 'geofence', 'contextAthkar'
 
   // Salah Centric Planner Tasks
   const [tasks, setTasks] = useState([
-    { id: 1, text: 'أذكار الصباح وتلاوة جزء عم', period: 'ما بين الفجر والشروق', completed: true },
-    { id: 2, text: 'التركيز على المهام الذهنية الهامة', period: 'ما بين الشروق والظهر', completed: false },
-    { id: 3, text: 'قراءة تفسير سورة النور وقيلولة سريعة', period: 'ما بين الظهر والعصر', completed: false },
-    { id: 4, text: 'جلسة عائلية ورياضة خفيفة', period: 'ما بين العصر والمغرب', completed: false },
-    { id: 5, text: 'تطوير الذات ومراجعة ورد التسميع', period: 'ما بعد العشاء', completed: false },
+    { id: 1, text: 'أذكار الصباح والورد القرآني (جزء عم)', period: 'ما بين الفجر والشروق', completed: true },
+    { id: 2, text: 'التركيز على المهام المهنية العميقة', period: 'ما بين الشروق والظهر', completed: false },
+    { id: 3, text: 'قراءة تفسير وتدبر سورة النور وقيلولة سريعة', period: 'ما بين الظهر والعصر', completed: false },
+    { id: 4, text: 'رياضة مسائية وصلة رحم عائلية', period: 'ما بين العصر والمغرب', completed: false },
+    { id: 5, text: 'تطوير الذات ومراجعة ورد الحفظ', period: 'ما بعد العشاء', completed: false },
   ]);
 
   const [newTaskText, setNewTaskText] = useState('');
@@ -18,6 +18,8 @@ export default function MuslimProductivity() {
 
   // Geofencing Simulator State
   const [isInsideMosque, setIsInsideMosque] = useState(false);
+  const [selectedMosqueZone, setSelectedMosqueZone] = useState('جامع الراجحي الكبير');
+  const [silentTriggerType, setSilentTriggerType] = useState('gps'); // 'gps', 'iqamaTime'
 
   // Smart Context Athkar State
   const [simulatedSensor, setSimulatedSensor] = useState('none'); // 'bluetooth', 'speed', 'mall'
@@ -100,11 +102,11 @@ export default function MuslimProductivity() {
                 منظم اليوم المعتمد على الصلاة (Salah-Centric Planner)
               </h3>
               <p className="text-slate-400 text-xs mt-1">
-                ربط مهام اليوم بفترات الصلوات الخمس بدلاً من الساعات التقليدية الثابتة.
+                ربط مهام اليوم بفترات الصلوات الخمس بدلاً من الساعات الجافة، مع تحديث الجداول تلقائياً بحسب تبدل المواقيت اليومية.
               </p>
             </div>
             <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-xs text-emerald-400 font-medium">
-              <span>الفجر: 04:45 ص</span> | <span>الظهر: 12:15 م</span> | <span>العصر: 03:30 م</span>
+              <span>الفجر: 04:45 ص</span> | <span>الظهر: 12:15 م</span> | <span>العصر: 03:30 م</span> | <span>المغرب: 06:10 م</span>
             </div>
           </div>
 
@@ -145,7 +147,7 @@ export default function MuslimProductivity() {
                 <div key={pIdx} className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
                   <h4 className="text-xs font-bold text-blue-300 border-b border-slate-800/80 pb-2 flex items-center justify-between">
                     <span>{period}</span>
-                    <span className="text-slate-500 font-normal">({periodTasks.length})</span>
+                    <span className="text-slate-500 font-normal">({periodTasks.length} مهام)</span>
                   </h4>
                   <div className="space-y-2">
                     {periodTasks.map(task => (
@@ -183,55 +185,76 @@ export default function MuslimProductivity() {
       {/* TAB 2: GEOFENCING SILENT MODE */}
       {activeTab === 'geofence' && (
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-6">
-          <div>
-            <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+          <div className="border-b border-slate-800 pb-3">
+            <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-blue-400" />
-              الوضع الصامت التلقائي في المسجد (Geofencing Simulator)
+              الوضع الصامت التلقائي في المسجد (Geofencing & Mosque Mode)
             </h3>
             <p className="text-slate-400 text-xs">
-              يتعرف التطبيق تلقائياً على دخولك لنطاق المسجد الجغرافي أو حان وقت الإقامة، فيحول الهاتف لوضع الصمت التام.
+              محاكاة التعرف على دخول المستخدم إلى نطاق المسجد الجغرافي أو وقت إقامة الصلاة لكتم الهاتف صوناً لحرمة الصلاة.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 items-center">
-            <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center space-y-4">
+            <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center space-y-4 shadow-xl">
               <div className="inline-flex p-4 rounded-full bg-slate-900 border border-slate-800">
                 <VolumeX className={`w-12 h-12 transition-colors ${isInsideMosque ? 'text-emerald-400' : 'text-slate-600'}`} />
               </div>
               <div>
-                <h4 className="text-lg font-bold text-white">حالة الهاتف الحالية</h4>
+                <h4 className="text-lg font-bold text-white">حالة وضع الهاتف الحالية</h4>
                 <p className={`text-xs mt-1 font-semibold ${isInsideMosque ? 'text-emerald-400' : 'text-slate-400'}`}>
-                  {isInsideMosque ? 'الوضع الصامت مفعّل (داخل نطاق مسجد الراجحي)' : 'الوضع العادي (خارج المسجد)'}
+                  {isInsideMosque ? `الوضع الصامت مفعّل (أنت الآن داخل نطاق ${selectedMosqueZone})` : 'الوضع العادي (خارج نطاق المساجد)'}
                 </p>
               </div>
 
-              <button
-                onClick={() => setIsInsideMosque(!isInsideMosque)}
-                className={`w-full py-3 px-4 rounded-xl text-xs font-bold transition-all shadow-md ${
-                  isInsideMosque
-                    ? 'bg-amber-600 hover:bg-amber-500 text-white'
-                    : 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                }`}
-              >
-                {isInsideMosque ? 'محاكاة الخروج من المسجد' : 'محاكاة دخول المسجد الان'}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setIsInsideMosque(!isInsideMosque)}
+                  className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold transition-all shadow-md ${
+                    isInsideMosque
+                      ? 'bg-amber-600 hover:bg-amber-500 text-white'
+                      : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                  }`}
+                >
+                  {isInsideMosque ? 'محاكاة الخروج من المسجد' : 'محاكاة دخول نطاق المسجد'}
+                </button>
+              </div>
+
+              <p className="text-[11px] text-slate-500">
+                الحالة: {isInsideMosque ? 'مكتوم ومجدول للعودة بعد انتهاء الصلاة بـ 20 دقيقة' : 'نغمات الرنين والإشعارات نشطة'}
+              </p>
             </div>
 
             <div className="space-y-3 bg-slate-950/60 p-5 rounded-2xl border border-slate-800 text-xs">
               <h5 className="font-bold text-blue-300 flex items-center gap-1.5">
-                ⚙️ إعدادات النطاق الجغرافي الصامت:
+                ⚙️ معايير تفعيل الصامت في تطبيق أثر:
               </h5>
+
+              <div>
+                <label className="text-slate-400 block mb-1">المسجد المحدد للاختبار:</label>
+                <select
+                  value={selectedMosqueZone}
+                  onChange={(e) => setSelectedMosqueZone(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 text-slate-200 rounded-lg p-2 text-xs"
+                >
+                  <option value="جامع الراجحي الكبير">جامع الراجحي الكبير (نصف قطر 60م)</option>
+                  <option value="مسجد التوحيد">مسجد التوحيد (نصف قطر 40م)</option>
+                  <option value="جامع الملك فهد">جامع الملك فهد (نصف قطر 75م)</option>
+                </select>
+              </div>
+
               <div className="flex items-center justify-between p-2.5 bg-slate-900 rounded-lg">
                 <span className="text-slate-300">مسافة تفعيل النطاق:</span>
-                <span className="text-blue-400 font-bold">50 متر من المسجد</span>
+                <span className="text-blue-400 font-bold">50 - 75 متراً حول المسجد</span>
               </div>
               <div className="flex items-center justify-between p-2.5 bg-slate-900 rounded-lg">
                 <span className="text-slate-300">إعادة الصوت التلقائي:</span>
-                <span className="text-emerald-400 font-bold">بعد 20 دقيقة من الصلاة</span>
+                <span className="text-emerald-400 font-bold">بعد 25 دقيقة من الأذان</span>
               </div>
-              <p className="text-slate-500 text-[11px] leading-relaxed pt-2 border-t border-slate-800">
-                ملاحظة تقنية: تتطلب هذه الميزة صلاحيات النطاق الجغرافي المستمر (Background Location) ومستشعرات الحركة.
-              </p>
+
+              <div className="p-2.5 bg-amber-950/30 rounded-lg border border-amber-500/20 text-amber-300 text-[11px] leading-relaxed">
+                <span className="font-bold">⚠️ ملاحظة هندسية:</span> بسبب قيود iOS التامة على وضع الصامت التلقائي، يُرسل أثر إشعاراً تفاعلياً (Interactive Notification) بضغطة زر واحدة لتفعيل وضع التركيز (Focus Mode).
+              </div>
             </div>
           </div>
         </div>
@@ -240,13 +263,13 @@ export default function MuslimProductivity() {
       {/* TAB 3: CONTEXT ATHKAR */}
       {activeTab === 'contextAthkar' && (
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-6">
-          <div>
-            <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+          <div className="border-b border-slate-800 pb-3">
+            <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
               <Bell className="w-5 h-5 text-blue-400" />
               أذكار ذكية مرتبطة بالسياق والمستشعرات
             </h3>
             <p className="text-slate-400 text-xs">
-              بدلاً من الإشعارات العشوائية، تظهر الأذكار بناءً على حالة الجهاز (بلوتوث السيارة، السرعة العالية، أو الموقع).
+              بدلاً من الإشعارات العشوائية، تظهر الأذكار بناءً على حالة الجهاز (بلوتوث السيارة، سرعة السفر، أو الدخول للمجمعات).
             </p>
           </div>
 
@@ -264,7 +287,7 @@ export default function MuslimProductivity() {
                 <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded">بلوتوث</span>
               </div>
               <h4 className="font-bold text-xs text-slate-200">اتصال ببلوتوث السيارة</h4>
-              <p className="text-[11px] text-slate-400">تنبيه دعاء الركوب والسفر تلقائياً.</p>
+              <p className="text-[11px] text-slate-400">تنبيه دعاء الركوب والسفر تلقائياً عند التشغيل.</p>
             </button>
 
             <button
@@ -279,8 +302,8 @@ export default function MuslimProductivity() {
                 <Smartphone className="w-5 h-5 text-amber-400" />
                 <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">GPS / سرعة</span>
               </div>
-              <h4 className="font-bold text-xs text-slate-200">التحرك بسرعة عالية</h4>
-              <p className="text-[11px] text-slate-400">إظهار أذكار السفر وتوجيهات الطريق.</p>
+              <h4 className="font-bold text-xs text-slate-200">التحرك بسرعة طريق سريع (&gt;80 كم/س)</h4>
+              <p className="text-[11px] text-slate-400">إظهار أذكار السفر واستوداع النفس والأهل.</p>
             </button>
 
             <button
@@ -295,8 +318,8 @@ export default function MuslimProductivity() {
                 <MapPin className="w-5 h-5 text-emerald-400" />
                 <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">موقع</span>
               </div>
-              <h4 className="font-bold text-xs text-slate-200">التواجد في المولات</h4>
-              <p className="text-[11px] text-slate-400">تذكير بدعاء دخول السوق والحفظ.</p>
+              <h4 className="font-bold text-xs text-slate-200">التواجد في المولات والمراكز</h4>
+              <p className="text-[11px] text-slate-400">تذكير بدعاء دخول السوق ونيل مليون حسنة.</p>
             </button>
           </div>
 
@@ -306,35 +329,35 @@ export default function MuslimProductivity() {
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-blue-400 flex items-center gap-1.5">
                   <Bell className="w-4 h-4 animate-bounce" />
-                  إشعار الأذكار الذكي للحدث الحاالي:
+                  إشعار الأذكار الذكي للحدث الحالي:
                 </span>
                 <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">مُكتشف بالمستشعر</span>
               </div>
 
               {simulatedSensor === 'bluetooth' && (
                 <div>
-                  <h5 className="text-base font-serif font-bold text-emerald-300">
+                  <h5 className="text-base font-serif font-bold text-emerald-300 leading-relaxed">
                     "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ"
                   </h5>
-                  <p className="text-xs text-slate-400 mt-1">دعاء الركوب - تم تفعيله عند الاقتران بسيارتك.</p>
+                  <p className="text-xs text-slate-400 mt-1">دعاء الركوب - تم تفعيله عند الاقتران بنظام سيارتك.</p>
                 </div>
               )}
 
               {simulatedSensor === 'speed' && (
                 <div>
-                  <h5 className="text-base font-serif font-bold text-amber-300">
-                    "اللَّهُمَّ إِني أَعُوذُ بِكَ مِنْ وَعْثَاءِ السَّفَرِ وَكَآبَةِ الْمَنْظَرِ"
+                  <h5 className="text-base font-serif font-bold text-amber-300 leading-relaxed">
+                    "اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى، وَمِنَ الْعَمَلِ مَا تَرْضَى، اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا"
                   </h5>
-                  <p className="text-xs text-slate-400 mt-1">دعاء السفر - تم تفعيله للتحرك بسرعة تتجاوز 80 كم/س.</p>
+                  <p className="text-xs text-slate-400 mt-1">دعاء السفر - تم تفعيله عند رصد السرعة العالية على الطريق السريع.</p>
                 </div>
               )}
 
               {simulatedSensor === 'mall' && (
                 <div>
-                  <h5 className="text-base font-serif font-bold text-teal-300">
-                    "لا إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ حَيٌّ لا يَمُوتُ"
+                  <h5 className="text-base font-serif font-bold text-teal-300 leading-relaxed">
+                    "لا إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ حَيٌّ لا يَمُوتُ بِيَدِهِ الْخَيْرُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ"
                   </h5>
-                  <p className="text-xs text-slate-400 mt-1">دعاء دخول السوق - تم تفعيله عند الاقتراب من المركز التجاري.</p>
+                  <p className="text-xs text-slate-400 mt-1">دعاء دخول السوق - قال النبي ﷺ: كُتب له ألف ألف حسنة ومُحي عنه ألف ألف سيئة.</p>
                 </div>
               )}
             </div>
