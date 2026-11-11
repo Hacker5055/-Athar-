@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { HeartPulse, Search, BookOpen, Compass, Info, Sparkles, MessageSquareQuote, Check } from 'lucide-react';
+import { HeartPulse, Search, BookOpen, Compass, Info, Sparkles, MessageSquareQuote, Check, ChevronDown } from 'lucide-react';
 
 export default function DeepUnderstanding() {
   const [activeTab, setActiveTab] = useState('semantic'); // 'semantic', 'contextCard'
   const [userFeeling, setUserFeeling] = useState('');
   const [searchResult, setSearchResult] = useState(null);
+  const [selectedContextVerse, setSelectedContextVerse] = useState('duha');
 
   // Preset Feelings
   const feelingPresets = [
     "أشعر بقلق وتوتر من المستقبل والرزق",
     "تعرضت للظلم وأشعر بضيق شديد في صدري",
     "أبحث عن الطمأنينة والسلام الداخلي",
-    "أمر بابتلاء واختبار صعب في حياتي"
+    "أمر بابتلاء واختبار صعب في حياتي",
+    "أشعر بضياع الوقت والتقصير في العبادة"
   ];
 
   const handleSemanticSearch = (query) => {
@@ -47,6 +49,19 @@ export default function DeepUnderstanding() {
           actionableAdvice: "احرص على ألا تظلم أحداً، واطمئن بأن مظلمتك محفوقة بعناية الله وعدله."
         }
       });
+    } else if (textToSearch.includes("وقت") || textToSearch.includes("تقصير")) {
+      setSearchResult({
+        quran: {
+          verse: "وَٱلْعَصْرِ * إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ * إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ",
+          reference: "سورة العصر - الآيات 1-3",
+          reflection: "الوقت هو رأس مال الإنسان في هذه الدنيا، والنجاة محصورة في الإيمان والعمل الصالح والتواصي بالحق والصبر."
+        },
+        hadith: {
+          text: "نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ: الصِّحَّةُ وَالْفَرَاغُ",
+          reference: "صحيح البخاري",
+          actionableAdvice: "قسم ساعات يومك لفترات صلاة محددة وضع هدفاً واحداً بسيطاً ومستمراً (أحب الأعمال إلى الله أدومها وإن قل)."
+        }
+      });
     } else {
       setSearchResult({
         quran: {
@@ -60,6 +75,43 @@ export default function DeepUnderstanding() {
           actionableAdvice: "خصص 10 دقائق يومياً للاستغفار والتسبيح في مكان هادئ لتجديد الطاقة الإيمانية."
         }
       });
+    }
+  };
+
+  const contextCardsData = {
+    duha: {
+      title: "سورة الضُّحَى - الآية 3",
+      era: "عهد مَكّي 🕋",
+      order: "ترتيب النزول: 11",
+      verse: "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ",
+      story: "احتبس الوحي عن النبي ﷺ أربعة ألقال أو أيام، فقال المشركون شامتون: 'إن محمداً قد ودّعه ربه وقلاه (أبغضه)'، فأنزل الله هذه السورة تسلية لنبيه ونفياً لما زعموه، وبشارة بأن العاقبة خير من البداية.",
+      words: [
+        { word: "مَا وَدَّعَكَ", meaning: "ما تركك وما قطعك منذ أن اختارك واصطفاك." },
+        { word: "وَمَا قَلَىٰ", meaning: "ما أبغضك ولا كرهك قط." }
+      ]
+    },
+    asr: {
+      title: "سورة العَصْر - الآيات 1-3",
+      era: "عهد مَكّي 🕋",
+      order: "ترتيب النزول: 13",
+      verse: "وَٱلْعَصْرِ * إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ * إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ",
+      story: "قال الإمام الشافعي رحمه الله عنها: 'لو ما أنزل الله حجة على خلقه إلا هذه السورة لكفتهم'. نزلت تذكيراً للإنسان بقيمة الزمان المستنفد كل لحظة، ووضعت دستوراً جامعاً من 4 أركان للنجاة من الخسران الأبدي.",
+      words: [
+        { word: "وَٱلْعَصْرِ", meaning: "قَسَم بالدهر والزمان لما فيه من العبر وأحوال الأمم." },
+        { word: "لَفِى خُسْرٍ", meaning: "في غبن ونقصان وهلاك إن ضيعه بغير طاعة." },
+        { word: "وَتَوَاصَوْا۟", meaning: "أوصى بعضهم بعضاً بالثبات والدعوة والتذكير." }
+      ]
+    },
+    inshirah: {
+      title: "سورة الشَّرْح - الآية 5-6",
+      era: "عهد مَكّي 🕋",
+      order: "ترتيب النزول: 12",
+      verse: "فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا * إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+      story: "نزلت لتخفيف وطأة الصعاب والشدائد التي لاقاها النبي ﷺ والمؤمنون في مكة، والقاعدة البلاغية الشهيرة هنا: 'لن يغلب عُسرٌ يُسرين' لأن العسر عُرّف بالألف واللام واليسر نُكّر.",
+      words: [
+        { word: "مَعَ ٱلْعُسْرِ", meaning: "اليسر ملازم ومقترن بالشدة وليس بعدها فقط." },
+        { word: "وَوَضَعْنَا عَنكَ وِزْرَكَ", meaning: "حططنا عنك الثقل والهم الذي أثقل كاهلك." }
+      ]
     }
   };
 
@@ -109,7 +161,7 @@ export default function DeepUnderstanding() {
               ماذا تشعر الآن؟ أو ما هو الموقف الذي يمر بك؟
             </h3>
             <p className="text-slate-400 text-xs mb-4">
-              اكتب تعبيراً حرّاً عن شعورك دون الحاجة لحفظ كلمات الآيات، وسنستخرج لك المواساة والتوجيه الشرعي المناسب.
+              اكتب تعبيراً حرّاً عن مشاعرك أو همومك، وسيقوم المحرك الدلالي باستخراج آيات المواساة والحديث النبوي والخطوة العملية المباشرة.
             </p>
 
             <div className="flex flex-col md:flex-row gap-3 mb-4">
@@ -118,7 +170,7 @@ export default function DeepUnderstanding() {
                   type="text"
                   value={userFeeling}
                   onChange={(e) => setUserFeeling(e.target.value)}
-                  placeholder="مثال: أشعر بقلق وتوتر بخصوص رزقي أو خائف من اتخاذ قرار..."
+                  placeholder="مثال: أشعر بقلق وتوتر بخصوص رزقي، أو حزن على فوات فرصة..."
                   className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-teal-500 pl-10"
                 />
                 <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3.5" />
@@ -151,7 +203,7 @@ export default function DeepUnderstanding() {
 
           {/* Results Box */}
           {searchResult && (
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 animate-fade-in">
               {/* Quranic Guidance */}
               <div className="bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-6 shadow-lg space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -198,65 +250,81 @@ export default function DeepUnderstanding() {
       {/* TAB 2: INTERACTIVE CONTEXT CARD */}
       {activeTab === 'contextCard' && (
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-lg space-y-6">
-          <div className="border-b border-slate-800 pb-4">
-            <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
-              <Info className="w-5 h-5 text-teal-400" />
-              بطاقة السياق التفاعلية (بطاقة الآية)
-            </h3>
-            <p className="text-slate-400 text-sm">
-              عرض سياق النزول، العهد (مكي/مدني)، المعاني البصرية للكلمات الغريبة، وأسباب النزول كقصة قصيرة.
-            </p>
-          </div>
-
-          {/* Sample Verse Context Card */}
-          <div className="bg-gradient-to-b from-slate-950 to-slate-900 border border-teal-500/30 rounded-2xl p-6 space-y-6 shadow-2xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
-              <div className="flex items-center gap-2">
-                <span className="bg-teal-500/20 text-teal-300 text-xs px-3 py-1 rounded-full border border-teal-500/30 font-semibold">
-                  سورة الضُّحَى - الآية 3
-                </span>
-                <span className="bg-purple-500/20 text-purple-300 text-xs px-2.5 py-1 rounded-full border border-purple-500/30">
-                  عهد مَكّي 🕋
-                </span>
-              </div>
-              <span className="text-xs text-slate-400">ترتيب النزول: 11</span>
-            </div>
-
-            <div className="text-center py-4">
-              <p className="text-2xl md:text-3xl font-serif text-teal-100 leading-loose">
-                "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ"
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+                <Info className="w-5 h-5 text-teal-400" />
+                بطاقة السياق التفاعلية (بطاقة الآية)
+              </h3>
+              <p className="text-slate-400 text-xs">
+                عرض سياق النزول، العهد (مكي/مدني)، المعاني البصرية للكلمات الغريبة، وأسباب النزول كقصة قصيرة.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              {/* Cause of Revelation */}
-              <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
-                <h4 className="text-xs font-bold text-teal-400 flex items-center gap-1.5">
-                  📖 سبب النزول (قصة مختصرة):
-                </h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  احتبس الوحي عن النبي ﷺ أربعة ألقال أو أيام، فقال المشركون: "إن محمداً قد ودّعه ربه وقلاه (أبغضه)"، فأنزل الله هذه السورة تسلية لنبيه ونفياً لما زعموه.
+            {/* Select Verse for Context */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400">اختر الآية:</span>
+              <select
+                value={selectedContextVerse}
+                onChange={(e) => setSelectedContextVerse(e.target.value)}
+                className="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-teal-500"
+              >
+                <option value="duha">سورة الضحى (الآية 3)</option>
+                <option value="asr">سورة العصر (الآيات 1-3)</option>
+                <option value="inshirah">سورة الشرح (الآيات 5-6)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Sample Verse Context Card */}
+          {contextCardsData[selectedContextVerse] && (
+            <div className="bg-gradient-to-b from-slate-950 to-slate-900 border border-teal-500/30 rounded-2xl p-6 space-y-6 shadow-2xl">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                <div className="flex items-center gap-2">
+                  <span className="bg-teal-500/20 text-teal-300 text-xs px-3 py-1 rounded-full border border-teal-500/30 font-semibold">
+                    {contextCardsData[selectedContextVerse].title}
+                  </span>
+                  <span className="bg-purple-500/20 text-purple-300 text-xs px-2.5 py-1 rounded-full border border-purple-500/30">
+                    {contextCardsData[selectedContextVerse].era}
+                  </span>
+                </div>
+                <span className="text-xs text-slate-400">{contextCardsData[selectedContextVerse].order}</span>
+              </div>
+
+              <div className="text-center py-4">
+                <p className="text-2xl md:text-3xl font-serif text-teal-100 leading-loose">
+                  "{contextCardsData[selectedContextVerse].verse}"
                 </p>
               </div>
 
-              {/* Visual Word Meanings */}
-              <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
-                <h4 className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                  🔍 معاني الكلمات الغريبة بصرياً:
-                </h4>
-                <ul className="text-xs text-slate-300 space-y-1.5">
-                  <li className="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800">
-                    <span className="font-bold text-amber-300">مَا وَدَّعَكَ:</span>
-                    <span className="text-slate-400">ما تركك وما قطعك منذ أن اختارك.</span>
-                  </li>
-                  <li className="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800">
-                    <span className="font-bold text-amber-300">وَمَا قَلَىٰ:</span>
-                    <span className="text-slate-400">ما أبغضك ولا كرهك قط.</span>
-                  </li>
-                </ul>
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Cause of Revelation */}
+                <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <h4 className="text-xs font-bold text-teal-400 flex items-center gap-1.5">
+                    📖 سبب النزول وسياق القصة:
+                  </h4>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {contextCardsData[selectedContextVerse].story}
+                  </p>
+                </div>
+
+                {/* Visual Word Meanings */}
+                <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <h4 className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                    🔍 معاني الكلمات الغريبة بصرياً:
+                  </h4>
+                  <ul className="text-xs text-slate-300 space-y-1.5">
+                    {contextCardsData[selectedContextVerse].words.map((w, idx) => (
+                      <li key={idx} className="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800">
+                        <span className="font-bold text-amber-300">{w.word}:</span>
+                        <span className="text-slate-400">{w.meaning}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>
